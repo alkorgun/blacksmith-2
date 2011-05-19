@@ -444,7 +444,7 @@ def Security_04si(conf):
 	del Federal_Jail[conf]
 	del Antivipe[conf]
 
-expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, antivipe_func, Security_01eh, Security_02eh, Security_01si, Security_04si])
+expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, AvipeClear, antivipe_func, Security_01eh, Security_02eh, Security_01si, Security_04si])
 expansions[exp_name].ls.extend(["sheriff_answers", "GoodServers", "LawsFile", "Federal_Jail", "Antivipe", "rUser"])
 
 command_handler(command_order, {"RU": "ордер", "EN": "order"}, 6, exp_name)

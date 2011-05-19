@@ -10,7 +10,9 @@ if DefLANG in ["RU", "UA"]:
 		"[№] [Конфа/Ник] [Жид] [Префикc] [Юзеров] [Админ]", # 5
 		"В списке конференций - пусто.", # 6
 		"[№][Клиент][Коннект][Активен]", # 7
-		"Список юзеров в чате:" # 8
+		"Список юзеров в чате:", # 8
+		"Нашел %s похожих пользователей:%s", # 9
+		"Не знаю." # 10
 					]]
 else:
 	info_answers = [
@@ -22,5 +24,7 @@ else:
 		"[#] [Chat/Nick] [Jid] [Prefix] [Users] [Admin]", # 5
 		"The list of conferences is empty.", # 6
 		"[#][Client][Connected][isActive]", # 7
-		"List of users:" # 8
+		"List of users:", # 8
+		"Total %s similar users:%s", # 9
+		"Don't know." # 10
 					]

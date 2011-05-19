@@ -1,4 +1,4 @@
-bot shows where located a specified command 
-where [command]
-*/where join
+bot shows command`s location
+location [command]
+*/location join
 bot informs that the command "join" is located in to "basic_control" expansion

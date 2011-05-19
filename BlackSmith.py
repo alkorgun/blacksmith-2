@@ -251,16 +251,16 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 9, 0)
+(BsMark, BsVer, BsRev) = (2, 10, 0)
 
 if os.access(SvnCache, os.R_OK):
-	BsRev = open(SvnCache).readlines()[3]
+	BsRev = open(SvnCache).readlines()[3].strip()
 
-ProdName = "BlackSmith.mark.%d" % (BsMark)
-ProdVer = "ver.0%d-beta (rev.%s)" % (BsVer, BsRev)
+ProdName = "BlackSmith mark.%d" % (BsMark)
+ProdVer = "%d-[beta] (r.%s)" % (BsVer, BsRev)
 Caps = "http://code.google.com/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
-FullName = "HellDev %s %s (%s)" % (ProdName, ProdVer, Caps)
+FullName = "HellDev's %s %s (%s)" % (ProdName, ProdVer, Caps)
 
 BotOs, BsPid = os.name, os.getpid()
 

@@ -47,12 +47,12 @@ def answer_ping_ver(disp, stanza, ltype, source, instance, source_, start):
 			if not PingStat.has_key(source_):
 				PingStat[source_] = []
 			PingStat[source_].append(answer)
-		name = "[no name]"
+		Name = "[None]"
 		for x in stanza.getQueryChildren():
 			xname = x.getName()
 			if xname == "name":
-				name = x.getData()
-		answer = iq_answers[1] % (name, str(answer))
+				Name = x.getData()
+		answer = iq_answers[1] % (Name, str(answer))
 	else:
 		answer = iq_answers[2]
 	Answer(answer, ltype, source, disp)
@@ -78,6 +78,40 @@ def command_ping_stat(ltype, source, source_, disp):
 			answer = iq_answers[4]
 	else:
 		answer = iq_answers[4]
+	Answer(answer, ltype, source, disp)
+
+def command_version(ltype, source, instance, disp):
+	if Chats.has_key(source[1]):
+		if instance:
+			if Chats.has_key(source[1]) and Chats[source[1]].isHere(instance):
+				if Chats[source[1]].isHereNow(instance):
+					instance = "%s/%s" % (source[1], instance)
+				else:
+					Answer(iq_answers[5] % (instance), ltype, source, disp)
+					raise iThr.ThrKill("exit")
+		else:
+			instance = source[0]
+		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq.addChild(Types[18], {}, [], xmpp.NS_VERSION)
+		iq.setID("iq_%d" % Info["outiq"].plus())
+		CallForResponse(disp, iq, answer_version, {"ltype": ltype, "source": source})
+	else:
+		Answer(AnsBase[0], ltype, source, disp)
+
+def answer_version(disp, stanza, ltype, source):
+	if xmpp.isResultNode(stanza):
+		Name, Ver, Os = "[None]", "[None]", "[None]"
+		for x in stanza.getQueryChildren():
+			xname = x.getName()
+			if xname == "name":
+				Name = x.getData()
+			elif xname == "version":
+				Ver = x.getData()
+			elif xname == "os":
+				Os = x.getData()
+		answer = "\nName: %s\nVer.: %s\nOS: %s" % (Name, Ver, Os)
+	else:
+		answer = iq_answers[6]
 	Answer(answer, ltype, source, disp)
 
 def command_uptime(ltype, source, server, disp):
@@ -113,10 +147,11 @@ def answer_idle(disp, stanza, ltype, source, instance, typ):
 		answer = iq_answers[6]
 	Answer(answer, ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_ping, answer_ping, answer_ping_ver, command_ping_stat, command_uptime, command_idle, answer_idle])
+expansions[exp_name].funcs_add([command_ping, answer_ping, answer_ping_ver, command_ping_stat, command_version, answer_version, command_uptime, command_idle, answer_idle])
 expansions[exp_name].ls.extend(["iq_answers, PingStat"])
 
 command_handler(command_ping, {"RU": "пинг", "EN": "ping"}, 1, exp_name)
 command_handler(command_ping_stat, {"RU": "пингстат", "EN": "pingstat"}, 1, exp_name)
+command_handler(command_version, {"RU": "версия", "EN": "version"}, 1, exp_name)
 command_handler(command_uptime, {"RU": "аптайм", "EN": "uptime"}, 1, exp_name)
 command_handler(command_idle, {"RU": "жив", "EN": "idle"}, 1, exp_name)

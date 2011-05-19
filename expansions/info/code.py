@@ -138,10 +138,36 @@ def command_visitors(ltype, source, body, disp):
 	else:
 		Answer(AnsBase[0], ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_online, command_inchat, command_conflist, command_visitors])
+def command_where(ltype, source, body, disp):
+	if body:
+		acc = enough_access(source[1], source[2], 7)
+		list, col = "", itypes.Number()
+		for conf in sorted(Chats.keys()):
+			for nick in sorted(Chats[conf].get_nicks()):
+				if Chats[conf].isHereNow(nick):
+					jid = get_source(conf, nick)
+					if nick.count(body) or (jid and jid.count(body)):
+						list += "\n%d) %s (%s)" % (col.plus(), nick, conf)
+						if jid and acc:
+							list += " [%s]" % (jid)
+						if col._int() >= 20:
+							break
+		if col._int():
+			if ltype == Types[1]:
+				Answer(AnsBase[11], ltype, source, disp)
+			Msend(source[0], info_answers[9] % (col._str(), list), disp)
+		else:
+			answer = info_answers[10]
+	else:
+		answer = AnsBase[1]
+	if locals().has_key(Types[23]):
+		Answer(answer, ltype, source, disp)
+
+expansions[exp_name].funcs_add([command_online, command_inchat, command_conflist, command_visitors, command_where])
 expansions[exp_name].ls.extend(["info_answers"])
 
 command_handler(command_online, {"RU": "онлайн", "EN": "online"}, 7, exp_name)
 command_handler(command_inchat, {"RU": "инмук", "EN": "inmuc"}, 2, exp_name)
 command_handler(command_conflist, {"RU": "чатлист", "EN": "chatslist"}, 5, exp_name)
 command_handler(command_visitors, {"RU": "ктобыл", "EN": "visitors"}, 4, exp_name)
+command_handler(command_where, {"RU": "где", "EN": "where"}, 2, exp_name)

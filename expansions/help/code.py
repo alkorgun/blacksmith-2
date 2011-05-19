@@ -7,7 +7,7 @@ exp_name = "help" # /code.py v.x4
 
 expansion_register(exp_name)
 
-def command_where(ltype, source, body, disp):
+def command_location(ltype, source, body, disp):
 	if body:
 		command = body.lower()
 		if Cmds.has_key(command):
@@ -97,10 +97,10 @@ def command_commands(ltype, source, body, disp):
 		Answer(AnsBase[11], ltype, source, disp)
 	Msend(source[0], answer, disp)
 
-expansions[exp_name].funcs_add([command_where, command_comacc, command_help, command_commands])
+expansions[exp_name].funcs_add([command_location, command_comacc, command_help, command_commands])
 expansions[exp_name].ls.extend(["help_answers"])
 
-command_handler(command_where, {"RU": "где", "EN": "where"}, 1, exp_name)
+command_handler(command_location, {"RU": "дислокация", "EN": "location"}, 1, exp_name)
 command_handler(command_comacc, {"RU": "комдоступ", "EN": "comacc"}, 1, exp_name)
 command_handler(command_help, {"RU": "хелп", "EN": "help"}, 1, exp_name, False)
 command_handler(command_commands, {"RU": "комлист", "EN": "commands"}, 1, exp_name, False)
