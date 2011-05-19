@@ -17,7 +17,7 @@ from urllib2 import Request as rlink, urlopen as open_site
 
 import sys, os, gc, time, sqlite3, ConfigParser
 
-BsCore = os.path.abspath(sys.argv[0])
+BsCore = __file__
 LibsDir = "librarys.zip"
 BsDir = os.path.dirname(BsCore)
 sys.path.append(LibsDir)
@@ -251,7 +251,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 8, 0)
+(BsMark, BsVer, BsRev) = (2, 9, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3]
