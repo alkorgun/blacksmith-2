@@ -1,0 +1,6 @@
+bot reloads
+reload (reason)
+*/reload
+bot will reload
+*/reload diagnostics
+bot will reload with status "diagnostics"

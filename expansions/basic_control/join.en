@@ -1,0 +1,8 @@
+bot joins specified chatroom
+join [conference] (1=bot`s_jid) (2=bot`s_nick) (3=prefix) (4=chat`s_password)
+*/join chat@conference.jab.com
+bot will join chat@conference.jab.com
+*/join chat@conference.jab.com 4=loko-champ 3=!
+bot will join chatroom with "loko-champ" as the chatroom password and set command prefix - "!"
+*/join chat@conference.jab.com 1=bot@j.ru 2=Black-Bot
+bot will join chatroom with nick "Black-Bot" and jid "bot@j.ru" (if it is bot`s jid)

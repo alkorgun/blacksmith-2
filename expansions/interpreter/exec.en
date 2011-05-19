@@ -1,0 +1,4 @@
+executes python`s code
+exec [code]
+*/exec delivery("Aaa!!")
+bot will send "Aaa!!" in to BOSS`s JID

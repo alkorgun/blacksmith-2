@@ -1,0 +1,4 @@
+bot sends message in to current chat
+say [text]
+*/say AAA!!
+bot will "say": "AAA!!"
