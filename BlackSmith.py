@@ -1546,7 +1546,7 @@ def load_mark2():
 		if MaxMemory and MaxMemory <= calculate():
 			sys_exit("Memory leak...")
 
-def sys_exit(exit_reason = "Suiside!"):
+def sys_exit(exit_reason = "Suicide!"):
 	VarCache["alive"] = False
 	Print("\n\n%s" % (exit_reason), color2)
 	iThr.Threads_kill()

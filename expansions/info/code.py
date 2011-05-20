@@ -140,8 +140,7 @@ def command_visitors(ltype, source, body, disp):
 
 def command_where(ltype, source, body, disp):
 	if body:
-		acc = enough_access(source[1], source[2], 7)
-		list, col = "", itypes.Number()
+		list, col, acc = "", itypes.Number(), enough_access(source[1], source[2], 7)
 		for conf in sorted(Chats.keys()):
 			for nick in sorted(Chats[conf].get_nicks()):
 				if Chats[conf].isHereNow(nick):
