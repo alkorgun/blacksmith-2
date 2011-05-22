@@ -18,7 +18,7 @@ if DefLANG in ["RU", "UA"]:
 		"Статус `%s` мне неизвестен." # 13
 					]]
 else:
-	control_answers = [
+	sconf_answers = [
 		"I can`t, because `%s` is offline.", # 0
 		"`%s` is alredy owned by this conferense.", # 1
 		"`%s` not in available clients.", # 2

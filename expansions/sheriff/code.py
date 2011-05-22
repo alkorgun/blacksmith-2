@@ -201,7 +201,7 @@ def check_nick(conf, nick):
 				return True
 		return False
 
-	if nick:
+	if (nick.strip()):
 		if len(nick) > ChatsAttrs[conf]["laws"]["lnick"]:
 			spesial_kick(conf, nick, sheriff_answers[0] % (ChatsAttrs[conf]["laws"]["lnick"]))
 		if nick_checker(conf, nick):
