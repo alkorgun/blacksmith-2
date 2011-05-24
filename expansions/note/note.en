@@ -1,0 +1,12 @@
+your personal notepade with 16 lines
+note (+/-/*/clear) (line_number/text)
+*/note
+bot will show all of your notes
+*/note + something important
+bot will add new note
+*/note - 13
+bot will delete note in line 13
+*/note * 7
+bot will show note from line 7
+*/note clear
+bot will delete all your records from notepade

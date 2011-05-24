@@ -62,7 +62,7 @@ def edit_Turn_Base(conf):
 	del TurnBase[conf]
 
 expansions[exp_name].funcs_add([command_turn, collect_turnable, init_Turn_Base, edit_Turn_Base])
-expansions[exp_name].ls.extend(["TurnBase"])
+expansions[exp_name].ls.extend(["TurnBase", "TableRU", "TableEN"])
 
 command_handler(command_turn, {"RU": "турн", "EN": "turn"}, 1, exp_name)
 

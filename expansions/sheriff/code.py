@@ -190,7 +190,7 @@ def check_nick(conf, nick):
 
 	def nick_checker(conf, nick):
 		nick = nick.lower()
-		for x in ["%s", "%d", "%f"]:
+		for x in ["%s", "%d", "%i", "%f"]:
 			if nick.count(x):
 				return True
 		nick = nick.split()[0]
