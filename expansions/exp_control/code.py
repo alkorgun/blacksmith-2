@@ -37,7 +37,7 @@ def command_expinfo(ltype, source, body, disp):
 			answer += "\n%d) %s - %s - %s" % (number.plus(), exp_name, code_file, insc_file)
 		elexps = []
 		for exp_name in os.listdir(PlugsDir):
-			if (".svn") is (exp_name) or expansions.has_key(exp_name):
+			if (".svn") == (exp_name) or expansions.has_key(exp_name):
 				continue
 			if os.path.isdir(os.path.join(PlugsDir, exp_name)):
 				exp = expansion(exp_name)

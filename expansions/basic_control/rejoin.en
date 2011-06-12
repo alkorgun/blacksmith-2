@@ -1,6 +1,6 @@
 bot rejoins chatroom
 rejoin (conference)
 */rejoin
-bot will rejoin current chatroom
+bot would rejoin current chatroom
 */rejoin some_chat@conference.jabber.ru
-bot will rejoin some_chat@conference.jabber.ru (if he is there)
+bot would rejoin some_chat@conference.jabber.ru (if he is there)

@@ -251,20 +251,20 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 10, 0)
+(BsMark, BsVer, BsRev) = (2, 11, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
 
 ProdName = "BlackSmith mark.%d" % (BsMark)
-ProdVer = "%d-[beta] (r.%s)" % (BsVer, BsRev)
-Caps = "http://code.google.com/"
+ProdVer = "%d (r.%s)" % (BsVer, BsRev)
+Caps = "http://blacksmith-2.googlecode.com/svn/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
-FullName = "HellDev's %s %s (%s)" % (ProdName, ProdVer, Caps)
+FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
 
 BotOs, BsPid = os.name, os.getpid()
 
-oSlist = [(BotOs is "nt"), (BotOs is "posix")]
+oSlist = [(BotOs == ("nt")), (BotOs == ("posix"))]
 
 Sqlite3Exc = (sqlite3.OperationalError)
 
@@ -1024,7 +1024,7 @@ def lytic_crashlog(handler, command = None):
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
 	for PlugDir in os.listdir(PlugsDir):
-		if (".svn") is (PlugDir) or not os.path.isdir(os.path.join(PlugsDir, PlugDir)):
+		if (".svn") == (PlugDir) or not os.path.isdir(os.path.join(PlugsDir, PlugDir)):
 			continue
 		exp = expansion(PlugDir)
 		if exp.isExp:
@@ -1289,7 +1289,7 @@ def Xmpp_Iq_Cb(disp, stanza):
 				query = answer.getTag(Types[18])
 				query.addChild("identity", {"category": "client",
 											"type": "bot",
-											"name": ProdName.split(".")[0]})
+											"name": ProdName[:10]})
 				for Feature in aFeatures:
 					query.addChild("feature", {"var": Feature})
 			elif Query == Features[4]:

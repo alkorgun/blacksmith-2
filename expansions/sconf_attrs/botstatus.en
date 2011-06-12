@@ -1,8 +1,8 @@
 sets bot`s chatrom`s status
 botstatus [here/everywhere/catroom`s_name] [chat/away/xa/dnd] [status_text]
 */botstatus here xa I`m far far away
-bot will set satus "xa" with text "I`m far far away" in current conference
+bot would set satus "xa" with text "I`m far far away" in current conference
 */botstatus everywhere xa I`m far far away
-bot will set satus in all chats where he sets
+bot would set satus in all chats where he sets
 */botstatus some_chat@c.j.ru xa I`m far far away
-bot will set satus in some_chat@c.j.ru
+bot would set satus in some_chat@c.j.ru

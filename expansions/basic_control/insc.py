@@ -32,7 +32,7 @@ else:
 		"Apparently `%s` isn`t a conference. I wouldn`t join it.", # 6
 		"I`m %s -» XMPP BOT. Joined by order from %s", # 7
 		"Rejoin by command from %s", # 8
-		"Leave by command from %s", # 9
+		"Leaved by command from %s", # 9
 		"I came out from -> `%s`", # 10
 		"Restart by command from %s", # 11
 		"Shutdown by command from %s", # 12

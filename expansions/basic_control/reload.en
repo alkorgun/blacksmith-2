@@ -1,6 +1,6 @@
 bot reloads
 reload (reason)
 */reload
-bot will reload
+bot would reload
 */reload diagnostics
-bot will reload with status "diagnostics"
+bot would reload with status "diagnostics"

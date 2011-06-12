@@ -10,7 +10,7 @@ expansion_register(exp_name)
 GoodServers = ["jabber.ru", "xmpp.ru", "jabbers.ru", "xmpps.ru", "talkonaut.com", "jabber.org", "gtalk.com", "gmail.com", "jabberon.ru", "gajim.org", "jabbrik.ru", "worldskynet.net", "veganet.org", "qip.ru", "blackfishka.ru", "ya.ru"]
 
 if DefLANG != "RU":
-	GoodServers += ["jabber.com", "xmpp.com", "jabber.org", "jabber.uk"]
+	GoodServers += ["jabber.com", "xmpp.com", "jabber.uk", "jabberworld.net"]
 
 LawsFile = "laws.db"
 

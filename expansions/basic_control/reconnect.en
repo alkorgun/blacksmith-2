@@ -1,6 +1,6 @@
 bot`s clients reconnect functoin
 reconnect (jid)
 */reconnect
-bot will reconnect current jid
+bot would reconnect current jid
 */reconnect bot@jabber.ru
-bot will reconnect bot@jabber.ru
+bot would reconnect bot@jabber.ru

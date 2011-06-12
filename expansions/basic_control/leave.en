@@ -1,6 +1,6 @@
 bot leaves the conference
 leave (conference)
 */leave
-bot will leave current chatroom
+bot would leave current chatroom
 */leave some_chat@conference.jabber.ru
-bot will leave some_chat@conference.jabber.ru (if he is there)
+bot would leave some_chat@conference.jabber.ru (if he is there)

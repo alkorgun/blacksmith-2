@@ -1,6 +1,6 @@
 bot`s shutdown
 exit (reason)
 */exit
-bot will shutdown
+bot would shutdown
 */exit update
-bot will shutdown with status "update"
+bot would shutdown with status "update"

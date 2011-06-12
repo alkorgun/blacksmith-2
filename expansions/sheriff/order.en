@@ -1,0 +1,28 @@
+security control system
+order (option) (on/off/number)
+*/order
+bot would show current config
+*/order avipe on
+activation of antivipe feature
+*/order aspace on
+spaces on ends of nicks will be forbidden
+*/order verif off
+deactivation of authorisation feature
+*/order atiser on
+activation of protection service from advertisement
+*/order aobscene off
+deactivation of protection service from obscene
+*/order acaps on
+deactivation of protection service from caps-flood
+*/order lnick 24
+set the maximum length nickname for users (from 12 to 32)
+*/order aban 4
+number of kick after that will ban follow (from 2 to 6)
+*/order loyalty 2
+level of user access to which will respond to the security services (from 1 to 5)
+*/order devoice 180
+time (in seconds) for which user will be deprived of voting for violations (60 to 360)
+*/order msglen 1024
+maximum message length allowed for users (from 512 to 2048)
+*/order prslen 256
+maximum length of status messages, to allow for users (from 128 to 512)
