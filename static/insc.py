@@ -54,17 +54,17 @@ else:
 		"When execut %s --> error was happend!", # 15
 		"Type --> `exception %d` to show error (crashfile --> %s)", # 16
 		"Type --> `exception %d` or `sh %s` to show error", # 17
-		"%s[...]\n\n** %d symbols limit! Type `more` to show rest of the text .", # 18
+		"%s[...]\n\n** %d symbols limit! Type `more` to show rest of the text.", # 18
 		"Command `%s` is unavalable now!" # 19
-		"Ошибка %s (%s) - конфа: «%s»", # 20
-		"Ошибка %s (%s), полный выход из «%s»", # 21
-		"Ошибка %s (%s), пришлось выйти из «%s»", # 22
+		"Error %s (%s) - conference: `%s`", # 20
+		"Error %s (%s), full exit from `%s`", # 21
+		"Error %s (%s), I leaved `%s`", # 22
 		"Service without admin affilation is unavalable!", # 23
 		"I Disable all functions until I`ll become an admin!", # 24
 		"Obtaining rights...", # 25
-		"sCode `%s` в %s (%s). Full leave!", # 26
+		"sCode `%s` in %s (%s). Full leave!", # 26
 		"Type HELP to know more (last action - %s)", # 27
-		"Client `%s` упал!", # 28
+		"Client `%s` falled!", # 28
 		"JID `%s` used in another client! (I have to disconnect it)", # 29
 		"This is not a number" # 30
 				]

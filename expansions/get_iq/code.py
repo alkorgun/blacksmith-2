@@ -147,7 +147,76 @@ def answer_idle(disp, stanza, ltype, source, instance, typ):
 		answer = iq_answers[6]
 	Answer(answer, ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_ping, answer_ping, answer_ping_ver, command_ping_stat, command_version, answer_version, command_uptime, command_idle, answer_idle])
+def command_afls(ltype, source, body, disp):
+
+	def get_afl(body):
+		afls = ["owner", "admin", "member", "outcast"]
+		if DefLANG in ["RU", "UA"]:
+			alsRU = [x.decode("utf-8") for x in ["овнер", "админ", "мембер", "бан"]]
+			for x in alsRU:
+				if body.count(x):
+					return afls[alsRU.index(x)]
+		return (body if body in afls else None)
+
+	if Chats.has_key(source[1]):
+		if body:
+			list = body.split()
+			body = get_afl((list.pop(0)).lower())
+			if body:
+				Numb = 0
+				if list:
+					if check_number(list[0]):
+						x = int(list.pop(0))
+						if x < 20:
+							Numb = 20
+						else:
+							Numb = x
+				iq = xmpp.Iq(to = source[1], typ = Types[10])
+				query = xmpp.Node(Types[18])
+				query.setNamespace(xmpp.NS_MUC_ADMIN)
+				query.addChild("item", {AflRoles[0]: body})
+				iq.addChild(node = query)
+				iq.setID("iq_%d" % Info["outiq"].plus())
+				CallForResponse(disp, iq, answer_afls, {"ltype": ltype, "source": source, "Numb": Numb})
+			else:
+				answer = AnsBase[2]
+		else:
+			answer = AnsBase[1]
+	else:
+		Answer(AnsBase[0], ltype, source, disp)
+
+def answer_afls(disp, stanza, ltype, source, Numb):
+	if xmpp.isResultNode(stanza):
+		list = stanza.getChildren()
+		if list:
+			answer, numb = "", itypes.Number()
+			for x in list[0].getChildren():
+				if x and x != "None":
+					jid = x.getAttr("jid")
+					if jid:
+						if Numb and Numb <= numb._int():
+							numb.plus()
+						else:
+							answer += "\n%d) %s" % (numb.plus(), jid)
+							signature = (x.getTagData("reason"))
+							if signature:
+								answer += " [%s]" % (signature)
+		if answer:
+			if Numb and Numb < numb._int():
+				answer += "\n...\nTotal: %s items." % (numb._str())
+			Msend(source[0], answer, disp)
+			if ltype == Types[1]:
+				answer = AnsBase[11]
+			else:
+				del answer
+		else:
+			answer = iq_answers[6]
+	else:
+		answer = iq_answers[6]
+	if locals().has_key(Types[23]):
+		Answer(answer, ltype, source, disp)
+
+expansions[exp_name].funcs_add([command_ping, answer_ping, answer_ping_ver, command_ping_stat, command_version, answer_version, command_uptime, command_idle, answer_idle, command_afls, answer_afls])
 expansions[exp_name].ls.extend(["iq_answers, PingStat"])
 
 command_handler(command_ping, {"RU": "пинг", "EN": "ping"}, 1, exp_name)
@@ -155,3 +224,4 @@ command_handler(command_ping_stat, {"RU": "пингстат", "EN": "pingstat"},
 command_handler(command_version, {"RU": "версия", "EN": "version"}, 1, exp_name)
 command_handler(command_uptime, {"RU": "аптайм", "EN": "uptime"}, 1, exp_name)
 command_handler(command_idle, {"RU": "жив", "EN": "idle"}, 1, exp_name)
+command_handler(command_afls, {"RU": "список", "EN": "list"}, 4, exp_name)

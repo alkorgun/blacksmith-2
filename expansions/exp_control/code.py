@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x1
-#  Id: 09~1a
+exp_name = "exp_control" # /code.py v.x2
+#  Id: 09~2a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -36,7 +36,7 @@ def command_expinfo(ltype, source, body, disp):
 			insc_file = get_state(expansions[exp_name].insc)
 			answer += "\n%d) %s - %s - %s" % (number.plus(), exp_name, code_file, insc_file)
 		elexps = []
-		for exp_name in os.listdir(PlugsDir):
+		for exp_name in sorted(os.listdir(PlugsDir)):
 			if (".svn") == (exp_name) or expansions.has_key(exp_name):
 				continue
 			if os.path.isdir(os.path.join(PlugsDir, exp_name)):
