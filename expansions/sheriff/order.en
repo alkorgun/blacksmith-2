@@ -1,5 +1,5 @@
 security control system
-order (option) (on/off/number)
+order ([option] [on/off/number])
 */order
 bot would show current config
 */order avipe on

@@ -1,5 +1,5 @@
 your personal notepade with 16 lines
-note (+/-/*/clear) (line_number/text)
+note ([+/-/*/clear] (line_number/text))
 */note
 bot would show all of your notes
 */note + something important

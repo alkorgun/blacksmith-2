@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 #  BlackSmith mark.2
-exp_name = "get_iq" # /code.py v.x2
-#  Id: 13~1a
+exp_name = "get_iq" # /code.py v.x3
+#  Id: 13~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -156,7 +156,7 @@ def command_afls(ltype, source, body, disp):
 			for x in alsRU:
 				if body.count(x):
 					return afls[alsRU.index(x)]
-		return (body if body in afls else None)
+		return (body if afls.count(body) else None)
 
 	if Chats.has_key(source[1]):
 		if body:
@@ -183,32 +183,36 @@ def command_afls(ltype, source, body, disp):
 		else:
 			answer = AnsBase[1]
 	else:
-		Answer(AnsBase[0], ltype, source, disp)
+		answer = AnsBase[0]
+	if locals().has_key(Types[23]):
+		Answer(answer, ltype, source, disp)
 
 def answer_afls(disp, stanza, ltype, source, Numb):
 	if xmpp.isResultNode(stanza):
 		list = stanza.getChildren()
 		if list:
 			answer, numb = "", itypes.Number()
-			for x in list[0].getChildren():
-				if x and x != "None":
-					jid = x.getAttr("jid")
+			for child in list[0].getChildren():
+				if child and child != "None":
+					jid = child.getAttr("jid")
 					if jid:
 						if Numb and Numb <= numb._int():
 							numb.plus()
 						else:
 							answer += "\n%d) %s" % (numb.plus(), jid)
-							signature = (x.getTagData("reason"))
+							signature = child.getTagData("reason")
 							if signature:
 								answer += " [%s]" % (signature)
-		if answer:
-			if Numb and Numb < numb._int():
-				answer += "\n...\nTotal: %s items." % (numb._str())
-			Msend(source[0], answer, disp)
-			if ltype == Types[1]:
-				answer = AnsBase[11]
+			if answer:
+				if Numb and Numb < numb._int():
+					answer += "\n...\nTotal: %s items." % (numb._str())
+				Msend(source[0], answer, disp)
+				if ltype == Types[1]:
+					answer = AnsBase[11]
+				else:
+					del answer
 			else:
-				del answer
+				answer = iq_answers[6]
 		else:
 			answer = iq_answers[6]
 	else:

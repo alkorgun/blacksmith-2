@@ -1,5 +1,5 @@
 config control system (changes will be apply after restart)
-config (option) (value)
+config (option=value)
 */config
 bot would show current config
 */config RESOURCE=Bot_control_center MEMORY=96
