@@ -1,0 +1,8 @@
+default calendar (python`s lib. calendar.month)
+calendar (month`s number) (year)
+*/calendar
+bot would show calendar for current month
+*/calendar 5
+bot would show calendar for may of this year
+*/calendar 1 1
+bot would show calendar for the 1st month of the 1st millennium

@@ -5,7 +5,7 @@ bot would show current config
 */order avipe on
 activation of antivipe feature
 */order aspace on
-spaces on ends of nicks will be forbidden
+spaces at the edges of nicks will be forbidden
 */order verif off
 deactivation of authorisation feature
 */order atiser on

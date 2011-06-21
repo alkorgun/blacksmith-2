@@ -50,7 +50,7 @@ else:
 	sheriff_answers = [
 		"too long nickname. (%d - limit)", # 0
 		"forbidden nickname.", # 1
-		"soaces at the edges of nicknames - forbidden.", # 2
+		"spaces at the edges of nicknames - forbidden.", # 2
 		"unprintable nickname.", # 3
 		"advertising - forbidden.", # 4
 		"unprintable message.", # 5
@@ -81,13 +81,13 @@ else:
 		"Test passed!", # 21
 		"%s: verification missed.", # 22
 		"Wrong answer!", # 23
-		"\nConfiguration of security service:\nBan of the edges of nickname: ", # 24
+		"\nConfiguration of security service:\nForbid of the spaces on the edges of nickname: ", # 24
 		"enabled ", # 25
 		"disabled ", # 26
 		"\nMax nickname length: %d\nAntivipe: ", # 27
 		"\nNumber of the kick, after that ban follows: %d\nVerification: ", # 28
 		"\nLoyalty: %d\nAntiаdvertising: ", # 29
-		"\nDevoive time (seconds): %d\nAntiobscene: ", # 30
+		"\nDevoice time (seconds): %d\nAntiobscene: ", # 30
 		"\nMaximum message length: %d\nAnticaps: ", # 31
 		"\nMaximum presence length: %d", # 32
 		" fuck / sheet /motherfucker/unclefuker/ bitch " # 33
