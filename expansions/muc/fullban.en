@@ -1,0 +1,4 @@
+global add to outcast
+fullban [jid/nick] ([/] [reason])
+*/fullban dude
+bot would ban dude globally

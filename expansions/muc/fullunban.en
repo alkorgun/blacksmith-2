@@ -1,0 +1,4 @@
+global unban (take away affiliation)
+fullunban [jid/nick]
+*/fullunban dude
+bot would unban dude globally

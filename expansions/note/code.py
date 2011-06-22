@@ -15,7 +15,7 @@ def command_note(ltype, source, body, disp):
 		if source_:
 			if body:
 				list = body.split()
-				x = list[0].lower()
+				x = (list.pop(0)).lower()
 				if x in ["clear", "чисть".decode("utf-8")]:
 					base = sqlite3.connect(NoteFile, timeout = 8)
 					cu = base.cursor()
@@ -27,9 +27,9 @@ def command_note(ltype, source, body, disp):
 					else:
 						answer = note_answers[0]
 					base.close()
-				elif len(list) >= 2:
+				elif list:
 					if x == "+":
-						body = body[(body.find(" ") + 1):].strip()
+						body = body[(body.find("+") + 2):].strip()
 						if len(body) <= 512:
 							date = strTime(local = False)
 							base = sqlite3.connect(NoteFile, timeout = 8)
@@ -56,8 +56,8 @@ def command_note(ltype, source, body, disp):
 						else:
 							answer = note_answers[1]
 					elif x in ["-", "*"]:
-						if check_number(list[1]):
-							Numb = int(list[1])
+						if check_number(list[0]):
+							Numb = int(list.pop(0))
 							if Numb in range(1, 17):
 								base = sqlite3.connect(NoteFile, timeout = 8)
 								cu = base.cursor()

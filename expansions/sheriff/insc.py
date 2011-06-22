@@ -90,5 +90,5 @@ else:
 		"\nDevoice time (seconds): %d\nAntiobscene: ", # 30
 		"\nMaximum message length: %d\nAnticaps: ", # 31
 		"\nMaximum presence length: %d", # 32
-		" fuck / sheet /motherfucker/unclefuker/ bitch " # 33
+		" fuck / shit /motherfucker/unclefucker/ bitch / faggot" # 33
 					]

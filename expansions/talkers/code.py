@@ -14,9 +14,10 @@ def command_talkers(ltype, source, body, disp):
 		if body:
 			list_ = body.split()
 			if len(list_) >= 2:
-				key2, key = body[(body.find(" ") + 1):].strip(), list_[0].lower()
-				if key in ["top", "топ".decode("utf-8")]:
-					if key2 in ["local", "локальный".decode("utf-8")]:
+				a1 = (list_.pop(0)).lower()
+				a2 = body[((body.lower()).find(a1) + (len(a1) + 1)):].strip()
+				if a1 in ["top", "топ".decode("utf-8")]:
+					if a2 in ["local", "локальный".decode("utf-8")]:
 						base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
 						cu = base.cursor()
 						base_data = cu.execute("select * from talkers order by -msgs").fetchmany(10)
@@ -27,7 +28,7 @@ def command_talkers(ltype, source, body, disp):
 								answer += "\n%d. %s\t\t%d\t%d\t%s" % (numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
 						else:
 							answer = talkers_answers[1]
-					elif key2 in ["global", "глобальный".decode("utf-8")]:
+					elif a2 in ["global", "глобальный".decode("utf-8")]:
 						Glob_dbs = {}
 						for conf in Chats.keys():
 							base = sqlite3.connect(cefile(chat_file(conf, TalkersFile)), timeout = 8)
@@ -56,8 +57,8 @@ def command_talkers(ltype, source, body, disp):
 							answer = talkers_answers[1]
 					else:
 						answer = AnsBase[2]
-				elif key in ["global", "глобальный".decode("utf-8")]:
-					if key2 in ["my", "мой".decode("utf-8")]:
+				elif a1 in ["global", "глобальный".decode("utf-8")]:
+					if a2 in ["my", "мой".decode("utf-8")]:
 						source_ = get_source(source[1], source[2])
 						if source_:
 							x, y = 0, 0
@@ -76,10 +77,10 @@ def command_talkers(ltype, source, body, disp):
 						else:
 							answer = talkers_answers[1]
 					else:
-						if Chats[source[1]].isHere(key2):
-							source_ = get_source(source[1], key2)
+						if Chats[source[1]].isHere(a2):
+							source_ = get_source(source[1], a2)
 						else:
-							source_ = list_[1].lower()
+							source_ = (list_.pop(0)).lower()
 							if not (source_.count("@") and source_.count(".")):
 								source_ = None
 						if source_:
@@ -96,7 +97,7 @@ def command_talkers(ltype, source, body, disp):
 							for conf in Chats.keys():
 								base = sqlite3.connect(cefile(chat_file(conf, TalkersFile)), timeout = 8)
 								cu = base.cursor()
-								base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (key2, key2)).fetchmany(10)
+								base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2)).fetchmany(10)
 								base.close()
 								for x in base_data:
 									if Glob_dbs.has_key(x[0]):
@@ -119,8 +120,8 @@ def command_talkers(ltype, source, body, disp):
 								answer += talkers_answers[3]
 							else:
 								answer = talkers_answers[1]
-				elif key in ["local", "локальный".decode("utf-8")]:
-					if key2 in ["my", "мой".decode("utf-8")]:
+				elif a1 in ["local", "локальный".decode("utf-8")]:
+					if a2 in ["my", "мой".decode("utf-8")]:
 						source_ = get_source(source[1], source[2])
 						if source_:
 							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
@@ -134,10 +135,10 @@ def command_talkers(ltype, source, body, disp):
 						else:
 							answer = talkers_answers[1]
 					else:
-						if Chats[source[1]].isHere(key2):
-							source_ = get_source(source[1], key2)
+						if Chats[source[1]].isHere(a2):
+							source_ = get_source(source[1], a2)
 						else:
-							source_ = list_[1].lower()
+							source_ = (list_.pop(0)).lower()
 							if not (source_.count("@") and source_.count(".")):
 								source_ = None
 						if source_:
@@ -152,7 +153,7 @@ def command_talkers(ltype, source, body, disp):
 						else:
 							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
 							cu = base.cursor()
-							base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (key2, key2)).fetchmany(10)
+							base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2)).fetchmany(10)
 							base.close()
 							if base_data:
 								answer, numb = talkers_answers[0], itypes.Number()

@@ -47,9 +47,9 @@ def command_send(ltype, source, body, disp):
 		if len(list) >= 2:
 			sTo = list[0]
 			if sTo.count("@") and sTo.count("."):
-				conf = sTo.split("/")[0].lower()
+				conf = (sTo.split("/"))[0].lower()
 				if Chats.has_key(conf) or not conf.count("@conf"):
-					Msend(sTo, bsends_answers[5] % (source[2], body[(body.find(" ") + 1):].strip()))
+					Msend(sTo, bsends_answers[5] % (source[2], body[(body.find(sTo) + (len(sTo) + 1)):].strip()))
 					answer = AnsBase[4]
 				else:
 					answer = AnsBase[8]
