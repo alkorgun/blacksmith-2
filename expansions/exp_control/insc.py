@@ -23,7 +23,7 @@ if DefLANG in ["RU", "UA"]:
 					]]
 else:
 	cexp_answers = [
-		"\n[Name][state][codefile][langfile]", # 0
+		"\n[Name][state][code-file][lang-file]", # 0
 		"exists", # 1
 		"", # 2
 		"loaded", # 3

@@ -131,9 +131,9 @@ def command_cls_config(ltype, source, body, disp):
 					if list:
 						port = (list.pop(0))
 						if not check_number(port):
-							port = 5222
+							port = "5222"
 					else:
-						port = 5222
+						port = "5222"
 					jid = "%s@%s" % (user, host)
 					serv = (host)
 					if list:

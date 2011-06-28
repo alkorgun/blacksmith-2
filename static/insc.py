@@ -52,8 +52,8 @@ else:
 		"command `%s` (%s)", # 13
 		"prosess `%s`", # 14
 		"When execut %s --> error was happend!", # 15
-		"Type --> `exception %d` to show error (crashfile --> %s)", # 16
-		"Type --> `exception %d` or `sh %s` to show error", # 17
+		"Type --> `excinfo %d` to show error (crashfile --> %s)", # 16
+		"Type --> `excinfo %d` or `sh %s` to show error", # 17
 		"%s[...]\n\n** %d symbols limit! Type `more` to show rest of the text.", # 18
 		"Command `%s` is unavalable now!", # 19
 		"Error %s (%s) - conference: `%s`", # 20
