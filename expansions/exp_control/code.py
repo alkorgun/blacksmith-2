@@ -11,24 +11,27 @@ def command_expinfo(ltype, source, body, disp):
 	get_state = lambda filename: (cexp_answers[1] if os.path.isfile(filename) else cexp_answers[2])
 	if body:
 		exp_name = body.lower()
-		if expansions.has_key(exp_name):
-			answer = cexp_answers[0]
-			code_file = get_state(expansions[exp_name].file)
-			insc_file = get_state(expansions[exp_name].insc)
-			answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[3], code_file, insc_file)
-			if len(expansions[exp_name].cmds):
-				answer += cexp_answers[4] % (", ".join(expansions[exp_name].cmds))
-			if len(expansions[exp_name].ls):
-				answer += cexp_answers[5] % (", ".join(expansions[exp_name].ls))
-		else:
-			exp = expansion(exp_name)
-			if os.path.exists(exp.path):
+		if check_nosimbols(exp_name):
+			if expansions.has_key(exp_name):
 				answer = cexp_answers[0]
-				code_file = get_state(exp.file)
-				insc_file = get_state(exp.insc)
-				answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[6], code_file, insc_file)
+				code_file = get_state(expansions[exp_name].file)
+				insc_file = get_state(expansions[exp_name].insc)
+				answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[3], code_file, insc_file)
+				if len(expansions[exp_name].cmds):
+					answer += cexp_answers[4] % (", ".join(expansions[exp_name].cmds))
+				if len(expansions[exp_name].ls):
+					answer += cexp_answers[5] % (", ".join(expansions[exp_name].ls))
 			else:
-				answer = cexp_answers[7]
+				exp = expansion(exp_name)
+				if os.path.exists(exp.path):
+					answer = cexp_answers[0]
+					code_file = get_state(exp.file)
+					insc_file = get_state(exp.insc)
+					answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[6], code_file, insc_file)
+				else:
+					answer = cexp_answers[7]
+		else:
+			answer = cexp_answers[7]
 	else:
 		answer, number = cexp_answers[8], itypes.Number()
 		for exp_name in expansions.keys():
@@ -52,34 +55,37 @@ def command_expinfo(ltype, source, body, disp):
 def command_expload(ltype, source, body, disp):
 	if body:
 		exp_name = body.lower()
-		if expansions.has_key(exp_name):
-			if os.path.isfile(expansions[exp_name].file):
-				with Semph:
-					loaded = expansions[exp_name].load()
-					if loaded[1]:
-						expansions[exp_name].initialize_all()
-						answer = cexp_answers[10] % (loaded[0])
-					else:
-						expansions[exp_name].dels(True)
-						answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
-			else:
-				answer = cexp_answers[12]
-		else:
-			exp = expansion(exp_name)
-			if exp.isExp:
-				with Semph:
-					loaded = exp.load()
-					if loaded[1] and expansions.has_key(exp_name):
-						expansions[exp_name].initialize_all()
-						answer = cexp_answers[10] % (loaded[0])
-					else:
-						exp.dels(True)
-						if loaded[2]:
-							answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
+		if check_nosimbols(exp_name):
+			if expansions.has_key(exp_name):
+				if os.path.isfile(expansions[exp_name].file):
+					with Semph:
+						loaded = expansions[exp_name].load()
+						if loaded[1]:
+							expansions[exp_name].initialize_all()
+							answer = cexp_answers[10] % (loaded[0])
 						else:
-							answer = cexp_answers[13] % (loaded[0])
+							expansions[exp_name].dels(True)
+							answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
+				else:
+					answer = cexp_answers[12]
 			else:
-				answer = cexp_answers[7]
+				exp = expansion(exp_name)
+				if exp.isExp:
+					with Semph:
+						loaded = exp.load()
+						if loaded[1] and expansions.has_key(exp_name):
+							expansions[exp_name].initialize_all()
+							answer = cexp_answers[10] % (loaded[0])
+						else:
+							exp.dels(True)
+							if loaded[2]:
+								answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
+							else:
+								answer = cexp_answers[13] % (loaded[0])
+				else:
+					answer = cexp_answers[7]
+		else:
+			answer = cexp_answers[7]
 	else:
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
@@ -156,4 +162,4 @@ expansions[exp_name].ls.extend(["cexp_answers"])
 command_handler(command_expinfo, {"RU": "плагинфо", "EN": "expinfo"}, 7, exp_name)
 command_handler(command_expload, {"RU": "подгрузи", "EN": "expload"}, 8, exp_name)
 command_handler(command_expunload, {"RU": "выгрузи", "EN": "unload"}, 8, exp_name)
-command_handler(command_states, {"RU": "командa", "EN": "command"}, 8, exp_name)
+command_handler(command_states, {"RU": "команда", "EN": "command"}, 8, exp_name)

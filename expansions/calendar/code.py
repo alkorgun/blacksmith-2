@@ -23,7 +23,7 @@ def command_calendar(ltype, source, body, disp):
 		z = date[1]
 	elif y <= 0:
 		y = date[0]
-	Ans_1 = "\nCalendar:\n*\tM/Y: %s\n*\n*\t%s\n*\nCurrent Date/Time: %s"
+	Ans_1 = "\nCalendar:\n*\n*\tM/Y: %s\n*\n*\t%s\n*\nCurrent Date/Time: %s"
 	clndr = ((calendar.month(y, z)).strip()).splitlines()
 	Ans_2 = clndr.pop(0)
 	Ans_3 = "\n*\t".join(clndr)

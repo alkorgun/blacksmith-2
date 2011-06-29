@@ -41,7 +41,7 @@ def command_ban(ltype, source, body, disp):
 						jid = nick_
 					else:
 						jid = None
-					if jid and Galist.get(jid, 0) < 7:
+					if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
 						if len(body) >= 2 and body[1]:
 							text = "%s: %s" % (source[2], body[1].strip())
 						else:
@@ -230,7 +230,7 @@ def command_kick(ltype, source, body, disp):
 					else:
 						nick = None
 					jid = get_source(source[1], nick)
-					if nick and jid and Galist.get(jid, 0) < 7:
+					if nick and jid and Galist.get(jid, 0) < 7 and jid != get_disp(disp):
 						if len(body) >= 2 and body[1]:
 							text = "%s: %s" % (source[2], body[1].strip())
 						else:
@@ -371,7 +371,7 @@ def command_fullban(ltype, source, body, disp):
 				jid = nick_
 			else:
 				jid = None
-			if jid and Galist.get(jid, 0) < 7:
+			if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
 				if len(body) >= 2 and body[1]:
 					text = "%s: %s" % (source[2], body[1].strip())
 				else:
