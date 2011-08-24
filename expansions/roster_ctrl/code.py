@@ -52,9 +52,9 @@ def command_roster(ltype, source, body, disp):
 						else:
 							answer = AnsBase[2]
 					else:
-						answer = AnsBase[3]
+						answer = AnsBase[2]
 				else:
-					answer = AnsBase[3]
+					answer = AnsBase[2]
 			else:
 				jids = Clients[cl_name].Roster.keys()
 				if jids:

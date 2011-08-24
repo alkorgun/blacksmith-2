@@ -93,10 +93,10 @@ def command_expload(ltype, source, body, disp):
 def command_expunload(ltype, source, body, disp):
 	if body:
 		body = body.split()
-		exp_name = body[0].lower()
+		exp_name = (list_.pop(0)).lower()
 		if expansions.has_key(exp_name):
-			if len(body) >= 2:
-				handler, func_name_ = None, body[1]
+			if body:
+				handler, func_name_ = None, body.pop(0)
 				for instance in expansions[exp_name].hnds.keys():
 					if func_name_ == instance.func_name:
 						handler = instance
@@ -123,11 +123,11 @@ def command_expunload(ltype, source, body, disp):
 
 def command_states(ltype, source, body, disp):
 	if body:
-		list = body.split()
-		cmd = list[0].lower()
+		list_ = body.split()
+		cmd = (list_.pop(0)).lower()
 		if Cmds.has_key(cmd):
-			if len(list) >= 2:
-				body = list[1].lower()
+			if list_:
+				body = (list_.pop(0)).lower()
 				if body in ["off", "выкл".decode("utf-8")]:
 					if Cmds[cmd].isAvalable:
 						if Cmds[cmd].handler:

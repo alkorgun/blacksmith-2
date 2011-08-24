@@ -1,0 +1,6 @@
+google search
+google [text/*]
+*/google
+bot would show 1st search result
+*/google *
+bot would show next result

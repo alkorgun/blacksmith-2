@@ -42,7 +42,7 @@ def command_redisp(ltype, source, body, disp):
 def command_botnick(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
-			nick = replace_all(body, {" ": "_", '"': "", "'": "", "<": "", ">": ""}).strip()
+			nick = replace_all(body, [(" ", "_"), '"', "'", "<", ">", "\n", "\r", "\t"]).strip()
 			if len(nick) <= 16:
 				Chats[source[1]].nick = nick
 				Chats[source[1]].save()

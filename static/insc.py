@@ -5,7 +5,7 @@ if DefLANG in ["RU", "UA"]:
 		"данная команда доступна исключительно в конференциях", # 0
 		"данная команда подразумевает использование параметров", # 1
 		"инвалид синтакс", # 2
-		"почитай-ка помощь по команде", # 3
+		"«%s» нет в списке конференций", # 3
 		"сделано", # 4
 		"слишком длинные параметры", # 5
 		"нет такой команды", # 6
@@ -39,7 +39,7 @@ else:
 		"This command is available only in conferences", # 0
 		"This command implies arguments using", # 1
 		"Invalid syntax", # 2
-		"You should to read commnad`s help", # 3
+		"There is not `%s` in chats list", # 3
 		"Done", # 4
 		"Parameters should be shorter", # 5
 		"Such command isn`t exists", # 6
@@ -53,7 +53,7 @@ else:
 		"prosess `%s`", # 14
 		"When execut %s --> error was happend!", # 15
 		"Type --> `excinfo %d` to show error (crashfile --> %s)", # 16
-		"Type --> `excinfo %d` or `sh %s` to show error", # 17
+		"Type --> `excinfo %d` or `sh cat %s` to show error", # 17
 		"%s[...]\n\n** %d symbols limit! Type `more` to show rest of the text.", # 18
 		"Command `%s` is unavalable now!", # 19
 		"Error %s (%s) - conference: `%s`", # 20

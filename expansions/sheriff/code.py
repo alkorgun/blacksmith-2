@@ -178,8 +178,8 @@ def obscene_checker(body):
 	return False
 
 def lower_checker(conf, body):
-	col, body = 0, replace_all(body, [" "] + Chats[conf].get_nicks(), "").strip()
-	for x in tuple(body):
+	col, body = 0, replace_all(body, [" ", "\n", "\r", "\t"] + Chats[conf].get_nicks()).strip()
+	for x in list(body):
 		if x.isupper():
 			col += 1
 	if col > 12 and col > (len(body) / 3):

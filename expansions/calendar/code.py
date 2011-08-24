@@ -29,7 +29,7 @@ def command_calendar(ltype, source, body, disp):
 	Ans_3 = "\n*\t".join(clndr)
 	Answer(Ans_1 % (Ans_2, Ans_3, time.asctime()), ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_calendar])
-expansions[exp_name].ls.extend(["calendar"])
+expansions[exp_name].funcs_add([command_calendar,])
+expansions[exp_name].ls.extend([calendar.__name__])
 
 command_handler(command_calendar, {"RU": "календарь", "EN": "calendar"}, 1, exp_name)

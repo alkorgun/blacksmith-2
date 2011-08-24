@@ -8,11 +8,11 @@
 
 # imports
 
-from types import UnicodeType, ListType, InstanceType
-from re import search as reFind, compile as re_comp, sub as re_sub
+from types import UnicodeType, ListType, NoneType, InstanceType
 from traceback import print_exc as exc_info__
-from urllib import urlencode, urlretrieve as download
-from random import randrange, choice, shuffle
+from random import choice, randint, shuffle
+from urllib import urlretrieve as wget, urlencode as quote_
+from re import compile as re_comp
 from urllib2 import Request as rlink, urlopen as open_site
 
 import sys, os, gc, time, sqlite3, ConfigParser
@@ -251,7 +251,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 11, 0)
+(BsMark, BsVer, BsRev) = (2, 12, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -339,7 +339,7 @@ Handlers = {
 MultiSemph = iThr.BoundedSemaphore(len(InstansesDesc.keys())*15)
 Semph = iThr.BoundedSemaphore()
 alock = iThr.allocate_lock()
-compile_ = re_comp(r'<[^<>]+>')
+compile_ = re_comp("<[^<>]+>")
 
 # call & execut Threads & handlers
 
@@ -1057,28 +1057,36 @@ def read_url(link, header = ()):
 	return data
 
 def re_search(body, starts, ends):
-	x = reFind(starts, body)
+	x = re_comp(starts, False).search(body)
 	if not x:
 		raise SelfExc("`%s` isn`t found!" % (starts))
 	body = body[x.end():]
-	z = reFind(ends, body)
+	z = re_comp(ends, False).search(body)
 	if not z:
 		raise SelfExc("`%s` isn`t found!" % (ends))
 	body = body[:z.start()]
 	return body.strip()
 
-def replace_all(body, list, data = False):
-	for x in list:
-		body = body.replace(x, data if data != False else list[x])
+def replace_all(body, ls, sbls = False):
+	if isinstance(ls, dict):
+		for x, z in ls.items():
+			body = body.replace(x, z)
+	else:
+		for x in ls:
+			if isinstance(x, tuple) or isinstance(x, list):
+				if len(x) >= 2:
+					body = body.replace(x[0], x[1])
+				else:
+					body = body.replace(x[0], (sbls if sbls else ""))
+			else:
+				body = body.replace(x, (sbls if sbls else ""))
 	return body
 
 strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
 
 def today():
-	x = time.gmtime()
-	y = time.strftime("%d.%m.%Y (%H:%M:%S)", x)
-	z = int(time.strftime("%Y%m%d", x))
-	return (y, z)
+	z = int(strTime("%Y%m%d", False))
+	return (time.asctime(), z)
 
 def check_number(number):
 	try:
