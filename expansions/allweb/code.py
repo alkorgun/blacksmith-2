@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x2
-#  Id: 28~2a
+exp_name = "allweb" # /code.py v.x3
+#  Id: 28~23a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
 import json
 
-UserAgent = ("User-agent", "%s/%s" % (ProdName[:10], CapsVer))
+UserAgent = ("User-Agent", "%s/%s" % (ProdName[:10], CapsVer))
 
-UserAgent_Moz = (UserAgent[0], "Mozilla/5.0")
+UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (X11; U; Linux i686; cs-CZ; rv:1.7.12) Gecko/20050929")
 
 _xml_ = {
 	"&apos;": "'",
@@ -42,6 +42,8 @@ _html_ls_ = [
 	"</p>",
 			]
 
+compile__ = re_comp("<[^<>]+>")
+
 def command_jc(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
@@ -50,41 +52,23 @@ def command_jc(ltype, source, body, disp):
 				cName = (cName.split("@conf"))[0]
 		else:
 			cName = (source[1].split("@conf"))[0]
-		link = "http://jc.jabber.ru/search.html?%s" % quote_({"search": cName.encode('utf-8')})
+		link = "http://jc.jabber.ru/search.html?%s" % eqlnk({"search": cName.encode("utf-8")})
 		try:
-			data = read_url(link, UserAgent)
+			data = get_page(link, UserAgent)
 		except:
 			answer = allweb_answers[0]
 		else:
-			x = re_comp('<div align="left">').search(data)
-			if x:
-				data = data[x.end():].strip()
-				if data.count('<font color="blue">'):
-					answer, Var = "\n", itypes.Number()
-					while True:
-						x = re_comp('<font color="blue">').search(data)
-						if not x:
-							break
-						data = data[x.end():].strip()
-						x = re_comp("</font><br><br>").search(data)
-						if x:
-							body = data[:x.start()].strip()
-							body = replace_all(body, ["\r", '<font color="gray">', "</font>"] + _html_ls_ + _xml_.items()).strip()
-							while body.count("\n\n"):
-								body = body.replace("\n\n", "\n")
-							answer += '%d) %s\n\n' % (Var.plus(), body)
-				else:
-					x = re_comp("</div>").search(data)
-					if x:
-						answer = replace_all(data[:x.start()], ["\r"] + _html_ls_ + _xml_.items()).strip()
-					else:
-						answer = AnsBase[7]
+			compile_ = re_comp('<font color="blue">(.+?)</font></a><br>\n(.+?)<br><font color="gray">(.+?)</font>')
+			list = compile_.findall(data)
+			if list:
+				answer, Var = "\n", itypes.Number()
+				for JID, Name, Desc in list:
+					body = replace_all("%s\n%s\n%s" % (JID, Name, Desc), ["\r"] + _html_ls_ + _xml_.items())
+					answer += '%d) %s\n\n' % (Var.plus(), body.strip())
 			else:
-				answer = AnsBase[7]
+				answer = allweb_answers[5]
 	else:
 		answer = AnsBase[0]
-	if not answer.strip():
-		answer = allweb_answers[1]
 	Answer(answer, ltype, source, disp)
 
 GoogleCache = []
@@ -98,6 +82,7 @@ def command_google(ltype, source, body, disp):
 				for ls in GoogleCache:
 					if ls[0] == source_:
 						list = GoogleCache.pop(GoogleCache.index(ls))[1]
+						break
 				if list:
 					ans = list.pop(0)
 					while list and not ans.has_key("content"):
@@ -119,9 +104,9 @@ def command_google(ltype, source, body, disp):
 			else:
 				answer = allweb_answers[3]
 		else:
-			link = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s" % quote_({"q": body.encode('utf-8')})
+			link = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&%s" % eqlnk({"q": body.encode("utf-8")})
 			try:
-				data = read_url(link, UserAgent)
+				data = get_page(link, UserAgent)
 			except:
 				answer = allweb_answers[0]
 			else:
@@ -162,8 +147,57 @@ def command_google(ltype, source, body, disp):
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_jc, command_google])
-expansions[exp_name].ls.extend([json.__name__, "allweb_answers", "UserAgent", "UserAgent_Moz", "_xml_", "_html_ls_", "GoogleCache"])
+def command_cinema(ltype, source, body, disp):
+	if body:
+		search = True
+		if (body.split()[0]) == "*":
+			body = body[(body.find("*") + 2):].strip()
+		elif check_number(body):
+			search = False
+		if search:
+			link = "http://m.kinopoisk.ru/search/%s" % eqlnk({"s": body.encode("cp1251")})[2:]
+			try:
+				data = get_page(link, UserAgent)
+			except:
+				answer = allweb_answers[0]
+			else:
+				data = data.decode("cp1251")
+				compile_ = re_comp('<a href="http://m.kinopoisk.ru/movie/(\d+?)/">(.+?)</a>')
+				list = compile_.findall(data)
+				if list:
+					answer, Number = "\n[#] [Name, Year] (#id)", itypes.Number()
+					for Numb, Name in list:
+						answer += "\n%d) %s (#%s)" % (Number.plus(), Name, Numb)
+				else:
+					answer = allweb_answers[1]
+		else:
+			link = "http://m.kinopoisk.ru/movie/%d" % int(body)
+			try:
+				data = get_page(link, UserAgent)
+			except:
+				answer = allweb_answers[0]
+			else:
+				data = data.decode("cp1251")
+				data = get_text(data, '<p class="title">', "</div>")
+				if data:
+					data = replace_all(compile__.sub("", data), ["\r"] + _xml_.items()).strip()
+					answer = ""
+					list = data.splitlines()
+					for line in list:
+						line = line.strip()
+						if line:
+							if line[0].islower():
+								line = "%s%s" % (line[0].upper(), line[1:])
+							answer += ("\n" + line)
+				else:
+					answer = allweb_answers[1]
+	else:
+		answer = AnsBase[1]
+	Answer(answer, ltype, source, disp)
+
+expansions[exp_name].funcs_add([command_jc, command_google, command_cinema])
+expansions[exp_name].ls.extend([json.__name__, "allweb_answers", "UserAgent", "UserAgent_Moz", "_xml_", "_html_ls_", "compile__", "GoogleCache"])
 
 command_handler(command_jc, {"RU": "рейтинг", "EN": "jc"}, 2, exp_name)
 command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
+command_handler(command_cinema, {"RU": "кино", "EN": "cinema"}, 2, exp_name)

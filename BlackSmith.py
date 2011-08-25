@@ -11,7 +11,7 @@
 from types import UnicodeType, ListType, NoneType, InstanceType
 from traceback import print_exc as exc_info__
 from random import choice, randint, shuffle
-from urllib import urlretrieve as wget, urlencode as quote_
+from urllib import urlretrieve as wget, urlencode as eqlnk
 from re import compile as re_comp
 from urllib2 import Request as rlink, urlopen as open_site
 
@@ -251,7 +251,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 12, 0)
+(BsMark, BsVer, BsRev) = (2, 13, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -265,8 +265,6 @@ FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
 BotOs, BsPid = os.name, os.getpid()
 
 oSlist = [(BotOs == ("nt")), (BotOs == ("posix"))]
-
-Sqlite3Exc = (sqlite3.OperationalError)
 
 def client_config(config, section):
 	serv = config.get(section, "serv").lower()
@@ -339,7 +337,7 @@ Handlers = {
 MultiSemph = iThr.BoundedSemaphore(len(InstansesDesc.keys())*15)
 Semph = iThr.BoundedSemaphore()
 alock = iThr.allocate_lock()
-compile_ = re_comp("<[^<>]+>")
+Sqlite3Exc = (sqlite3.OperationalError)
 
 # call & execut Threads & handlers
 
@@ -804,7 +802,7 @@ def Msend(instance, body, disp = None):
 			else:
 				disp = Gen_disp
 		if len(body) > PrivLimit:
-			col, all = itypes.Number(), str(len(body) / (PrivLimit + 1))
+			col, all = itypes.Number(), str((len(body) / PrivLimit) + 1)
 			while len(body) > PrivLimit:
 				text = "[%d/%s] %s[...]" % (col.plus(), all, body[:PrivLimit].strip())
 				Info["omsg"].plus()
@@ -1048,7 +1046,7 @@ def read_pipe(command):
 		data = "(...)"
 	return data
 
-def read_url(link, header = ()):
+def get_page(link, header = ()):
 	req = rlink(link)
 	if header:
 		req.add_header(*header)
@@ -1056,16 +1054,12 @@ def read_url(link, header = ()):
 	data = site.read()
 	return data
 
-def re_search(body, starts, ends):
-	x = re_comp(starts, False).search(body)
-	if not x:
-		raise SelfExc("`%s` isn`t found!" % (starts))
-	body = body[x.end():]
-	z = re_comp(ends, False).search(body)
-	if not z:
-		raise SelfExc("`%s` isn`t found!" % (ends))
-	body = body[:z.start()]
-	return body.strip()
+def get_text(body, s0, s2, s1 = "(?:.|\s)*"):
+	compile_ = re_comp("%s(%s?)%s" % (s0, s1, s2), False)
+	body = compile_.search(body)
+	if body:
+		body = (body.group(1)).strip()
+	return body
 
 def replace_all(body, ls, sbls = False):
 	if isinstance(ls, dict):
