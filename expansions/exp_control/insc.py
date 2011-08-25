@@ -30,15 +30,15 @@ else:
 		"\nCommands: %s", # 4
 		"\nObjects: %s", # 5
 		"", # 6
-		"Also, this expansion isn`t exists.", # 7
+		"Also, this expansion isn't exists.", # 7
 		"\n[#][Name][codefile][langfile]", # 8
 		"\n\n## Not loaded (%d) ->\n\n%s", # 9
 		"%s - successfully loaded!", # 10
-		"Can`t load - %s!%s", # 11
+		"Can't load - %s!%s", # 11
 		"Somebody deleted codefile!", # 12
 		"%s was coded incorrectly. Loading aborted.", # 13
-		"This func. isn`t registred.\n## Function list: %s", # 14
+		"This func. isn't registred.\n## Function list: %s", # 14
 		"There is no registred functions in %s", # 15
-		"Command `%s` is off.", # 16
-		"Command `%s` is on." # 17
+		"Command '%s' is off.", # 16
+		"Command '%s' is on." # 17
 					]

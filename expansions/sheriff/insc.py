@@ -67,8 +67,8 @@ else:
 		"%s devoice in to %d seconds.", # 16
 		"%s verification.", # 17
 		"To get the voice %s, you have three attempts.", # 18
-		"""	type: `codename 47` (without quotes)	|	codename 47
-			type: `I am not a bot` (without quotes)	|	I am not a bot
+		"""	type: 'codename 47' (without quotes)	|	codename 47
+			type: 'I am not a bot' (without quotes)	|	I am not a bot
 			type: second symbol of English alphabet	|	б
 			type: sixth symbol of English alphabet	|	е
 			type answer: seven + 127 = ? (integer)	|	128

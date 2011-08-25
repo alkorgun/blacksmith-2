@@ -16,7 +16,7 @@ else:
 		"\nLast leave time - %s\nExit reason - %s", # 1
 		"\nNicks: %s", # 2
 		"no statistics", # 3
-		"`%s` spent here - %s", # 4
+		"'%s' spent here - %s", # 4
 		"You spent here - %s", # 5
 		"No sutch user here" # 6
 					]

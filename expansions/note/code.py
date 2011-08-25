@@ -28,7 +28,7 @@ def command_note(ltype, source, body, disp):
 				base.close()
 			elif list_:
 				if x == "+":
-					body = body[(body.find("+") + 2):].strip()
+					body = body[2:].lstrip()
 					if len(body) <= 512:
 						date = strTime(local = False)
 						base = sqlite3.connect(NoteFile, timeout = 8)

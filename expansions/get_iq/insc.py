@@ -19,8 +19,8 @@ else:
 		"No pong, no version...", # 2
 		"\nPing statistics (total %s):\nFastest - %s\nSlowest - %s\nAverage time - %s", # 3
 		"No statistics.", # 4
-		"«%s» - isn`t here now.", # 5
+		"«%s» - isn't here now.", # 5
 		"No answer.", # 6
-		"%s`s uptime is %s.", # 7
-		"%s`s last activity was %s ago." # 8
+		"%s's uptime is %s.", # 7
+		"%s's last activity was %s ago." # 8
 					]

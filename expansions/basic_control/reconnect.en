@@ -1,4 +1,4 @@
-bot`s clients reconnect functoin
+bot's clients reconnect functoin
 reconnect (jid)
 */reconnect
 bot would reconnect current jid

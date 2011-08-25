@@ -15,8 +15,8 @@ if DefLANG in ["RU", "UA"]:
 else:
 	note_answers = [
 		"Your note is empty.", # 0
-		"Length of one line can`t be more than 512 symbols.", # 1
-		"No chance. I don`t know your jid.", # 2
+		"Length of one line can't be more than 512 symbols.", # 1
+		"No chance. I don't know your jid.", # 2
 		"All of 16 lines are filled.", # 3
 		"There are 16 lines in note.", # 4
 		"This line is empty.", # 5

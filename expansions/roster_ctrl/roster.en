@@ -1,7 +1,7 @@
 roster controller
-roster (bot`s jid/jid`s number) ([+/-] [jid] (nick) (admin))
+roster (bot's jid/jid's number) ([+/-] [jid] (nick) (admin))
 */roster
-bot would show enumerated list of it`s  admin
+bot would show enumerated list of it's  admin
 */roster some@jid.com + qwerty@xmpp.ru Qwerty админ
 bot would add "qwerty@xmpp.ru" in to group "Admins" with nick "Qwerty"
 */roster 1 + qwerty@xmpp.ru

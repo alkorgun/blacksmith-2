@@ -2,5 +2,5 @@ add to outcast
 ban [jid/nick] ([/] [reason])
 */ban manbearpig
 bot would ban manbearpig
-*/ban manbearpig@xmpp.ru/Al Gore was right! I`m serial!
+*/ban manbearpig@xmpp.ru/Al Gore was right! I'm serial!
 bot would ban manbearpig with reason that confirms Al Gore was right - Excelsior!

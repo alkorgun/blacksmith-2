@@ -17,13 +17,12 @@ from urllib2 import Request as rlink, urlopen as open_site
 
 import sys, os, gc, time, sqlite3, ConfigParser
 
-BsCore = __file__
+BsCore2 = __file__
 LibsDir = "librarys.zip"
-BsDir = os.path.dirname(BsCore)
+BsDir = os.path.dirname(BsCore2)
+if BsDir:
+	os.chdir(BsDir)
 sys.path.append(LibsDir)
-if not BsDir:
-	BsDir = "."
-os.chdir(BsDir)
 
 from enconf import *
 
@@ -154,7 +153,7 @@ VarCache = {
 	"idle": 0.24,
 	"alive": True,
 	"errors": [],
-	"action": "#: %s %s &" % (os.path.split(sys.executable)[1], BsCore)
+	"action": "#: %s %s &" % (os.path.split(sys.executable)[1], BsCore2)
 			}
 
 Info = {
@@ -229,13 +228,13 @@ def Exit(text, exit, slp):
 	if exit:
 		os._exit(0)
 	else:
-		os.execl(sys.executable, sys.executable, BsCore)
+		os.execl(sys.executable, sys.executable, BsCore2)
 
 try:
 	reload(sys)
 	sys.setdefaultencoding("utf-8")
 except:
-	Print("\n\nError: can`t set default encoding!", color2)
+	Print("\n\nError: can't set default encoding!", color2)
 
 # Global Names
 
@@ -251,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 13, 0)
+(BsMark, BsVer, BsRev) = (2, 14, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -611,7 +610,7 @@ class sConf(object):
 		return (self.users[nick].source == source)
 
 	def get_user(self, nick):
-		return self.users[nick]
+		return self.users.get(nick)
 
 	def get_nicks(self):
 		return self.users.keys()
@@ -629,11 +628,11 @@ class sConf(object):
 		self.users[nick] = User(nick, afl, role, source, access)
 
 	def aroles_change(self, nick, afl, role):
-		if self.users[nick].aroles(afl, role):
-			source = self.users[nick].source
+		if self.get_user(nick).aroles(afl, role):
+			source = self.get_user(nick).source
 			if not Galist.has_key(source):
 				if not self.alist.has_key(source):
-					self.users[nick].calc_acc()
+					self.get_user(nick).calc_acc()
 
 	def NewNick(self, old_nick, nick):
 		self.users[nick] = self.users.pop(old_nick)
@@ -906,7 +905,7 @@ def Sender(disp, stanza):
 			if Clients.has_key(disp):
 				disp = Clients[disp]
 			else:
-				raise SelfExc("`%s` isn`t my client!" % (disp))
+				raise SelfExc("'%s' isn't my client!" % (disp))
 		disp.send(stanza)
 	except IOError:
 		pass
@@ -994,7 +993,7 @@ def lytic_crashlog(handler, command = None):
 			exc = AnsBase[14] % (handler)
 		delivery(AnsBase[15] % (exc))
 	else:
-		Print("\n\nError: can`t execut `%s`!" % (handler), color2)
+		Print("\n\nError: can't execut '%s'!" % (handler), color2)
 	filename = "%s/error[%d]%s.crash" % (FeilDir, (Info["cfw"]._int() + 1), strTime("[%H.%M.%S][%d.%m.%Y]"))
 	try:
 		if not os.path.exists(FeilDir):
@@ -1031,9 +1030,9 @@ def load_expansions():
 				Print("%s - successfully loaded!" % (loaded[0]), color3)
 			else:
 				exp.dels(True)
-				Print("Can`t load - %s!%s" % (loaded[0], "\n\t* %s: %s") % (loaded[2]), color2)
+				Print("Can't load - %s!%s" % (loaded[0], "\n\t* %s: %s") % (loaded[2]), color2)
 		else:
-			Print("%s - isn`t an expansion!" % (exp.name), color2)
+			Print("%s - isn't an expansion!" % (exp.name), color2)
 
 def read_pipe(command):
 	try:
@@ -1169,7 +1168,7 @@ def join_chats():
 				Chats[conf].join()
 				Print("\n%s joined %s" % (Chats[conf].disp, conf), color3)
 			else:
-				Print("\nI`ll join %s then %s would be connected..." % (conf, Chats[conf].disp), color1)
+				Print("\nI'll join %s then %s would be connected..." % (conf, Chats[conf].disp), color1)
 	else:
 		Print("\n\nError: unable to create chatrooms list file!", color2)
 
@@ -1404,7 +1403,7 @@ def Xmpp_Message_Cb(disp, stanza):
 def connect_client(source, InstanceAttrs):
 	(server, cport, host, user, code) = InstanceAttrs
 	disp = xmpp.Client(host, cport, None)
-	Print("\n\n`%s` connecting..." % (source), color4)
+	Print("\n\n'%s' connecting..." % (source), color4)
 	if ConTls:
 		ConType = disp.connect((server, cport), None, None, False)
 	else:
@@ -1412,31 +1411,31 @@ def connect_client(source, InstanceAttrs):
 	if ConType:
 		ConType = ConType.upper()
 		if ConTls and ConType != "TLS":
-			Print("\n`%s` was connected, but connection isn`t secure.`" % (source), color1)
+			Print("\n'%s' was connected, but connection isn't secure." % (source), color1)
 		else:
-			Print("\n`%s` was successfully connected!" % (source), color3)
-		Print("\n`%s` using - `%s`" % (source, ConType), color4)
+			Print("\n'%s' was successfully connected!" % (source), color3)
+		Print("\n'%s' using - '%s'" % (source, ConType), color4)
 	else:
-		Print("\n`%s` can`t connect to `%s` (Port: %s). I will retry later..." % (source, server.upper(), str(cport)), color2)
+		Print("\n'%s' can't connect to '%s' (Port: %s). I will retry later..." % (source, server.upper(), str(cport)), color2)
 		return (False, False)
-	Print("\n`%s` authenticating..." % (source), color4)
+	Print("\n'%s' authenticating..." % (source), color4)
 	try:
 		Auth = disp.auth(user, code, GenResource)
 	except KeyboardInterrupt:
 		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 	except:
 		eBody = exc_info()
-		Print("Can`t authenticate `%s`!\n\t`%s` - %s" % (source, eBody[0], eBody[1]), color2)
+		Print("Can't authenticate '%s'!\n\t'%s' - %s" % (source, eBody[0], eBody[1]), color2)
 		return (False, eCodes[2])
 	if Auth:
 		if Auth == "sasl":
-			Print("\n`%s` was successfully authenticated!" % (source), color3)
+			Print("\n'%s' was successfully authenticated!" % (source), color3)
 		else:
-			Print("\n`%s` was authenticated, but old auth method was used...", color1)
+			Print("\n'%s' was authenticated, but old auth method was used...", color1)
 	else:
 		eBody = str(disp.lastErr)
 		eCode = str(disp.lastErrCode)
-		Print("Can`t authenticate `%s`! Error: `%s` (%s)" % (source, eCode, eBody), color2)
+		Print("Can't authenticate '%s'! Error: '%s' (%s)" % (source, eCode, eBody), color2)
 		return (False, eCode)
 	try:
 		disp.getRoster()

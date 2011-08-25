@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x3
-#  Id: 28~23a
+exp_name = "allweb" # /code.py v.x4
+#  Id: 28~4a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -151,7 +151,7 @@ def command_cinema(ltype, source, body, disp):
 	if body:
 		search = True
 		if (body.split()[0]) == "*":
-			body = body[(body.find("*") + 2):].strip()
+			body = body[2:].lstrip()
 		elif check_number(body):
 			search = False
 		if search:
@@ -180,7 +180,7 @@ def command_cinema(ltype, source, body, disp):
 				data = data.decode("cp1251")
 				data = get_text(data, '<p class="title">', "</div>")
 				if data:
-					data = replace_all(compile__.sub("", data), ["\r"] + _xml_.items()).strip()
+					data = compile__.sub("", replace_all(data, [("<br>", "\n"), "\r"] + _xml_.items())).strip()
 					answer = ""
 					list = data.splitlines()
 					for line in list:

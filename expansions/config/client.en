@@ -7,4 +7,4 @@ bot would disable client with jid bs@xmpp.ru, and when will rejoin rooms behind 
 */client add xmpp.ru bs xxx 5222 jabber.ru
 bot would start client with jid bs@xmpp.ru (if host = server, server specify is optional, as a port if it=5222)
 */client password bs@xmpp.ru xxx
-bot would change jid`s password (password specify is optional, bot can generate it. with parameter "set" after password, bot will set it, even if it cann`t be changed)
+bot would change jid's password (password specify is optional, bot can generate it. with parameter "set" after password, bot will set it, even if it cann't be changed)

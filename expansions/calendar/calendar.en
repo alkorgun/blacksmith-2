@@ -1,5 +1,5 @@
-default calendar (python`s lib. calendar.month)
-calendar (month`s number) (year)
+default calendar (python's lib. calendar.month)
+calendar (month's number) (year)
 */calendar
 bot would show calendar for current month
 */calendar 5

@@ -20,7 +20,7 @@ if DefLANG in ["RU", "UA"]:
 		"\nВремя работы: %s", # 15
 		"\nПоследняя сессия: %s\nВсего %s перезагрузок:\n%s", # 16
 		" - Работаю без перезагрузок!", # 17
-		"\nСтатистика по команде `%s`:\nВсего использовали - %s раз (%d юзеров)", # 18
+		"\nСтатистика по команде '%s':\nВсего использовали - %s раз (%d юзеров)", # 18
 		"\n[№][Команда][Использований][Юзеров]", # 19
 		"Невозможно отправить ошибку, смотри к крешлогах.", # 20
 		"Ошибки №%s не существует!", # 21
@@ -46,9 +46,9 @@ else:
 		"\nBot uptime: %s", # 15
 		"\nLast working set: %s\nReloads (%s):\n%s", # 16
 		" - Work without reboots!", # 17
-		"\nCommand `%s` usage statistics:\nTotal used - %s times (%d users)", # 18
+		"\nCommand '%s' usage statistics:\nTotal used - %s times (%d users)", # 18
 		"\n[#][Command][Used][Users used]", # 19
 		"Unable to send error, look for crash logs.", # 20
-		"Exception #%s isn`t exists!", # 21
+		"Exception #%s isn't exists!", # 21
 		"Total %d exceptions happened." # 22
 					]
