@@ -1,8 +1,8 @@
 statistic of talkers
-talkers [[top] [global/local]]/[[global/local] [my/nick/jid]]
-*/talkers local my
+talkers [[top] [global/local]]/[[global/local] [mine/nick/jid]]
+*/talkers local mine
 bot would show your statistic in current conference
-*/talkers global my
+*/talkers global mine
 bot would show your statistic in all of the conferences where bot serves
 */talkers top local
 bot would show talkers top of current conference

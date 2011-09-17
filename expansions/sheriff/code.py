@@ -54,10 +54,10 @@ class rUser:
 def command_order(ltype, source, body, disp):
 
 	def change_cfg(conf, key, val):
-		if val in ["on", "1", "вкл".decode("utf-8")]:
+		if val in ("on", "1", "вкл".decode("utf-8")):
 			ChatsAttrs[conf]["laws"][key] = True
 			answer = AnsBase[4]
-		elif val in ["off", "0", "выкл".decode("utf-8")]:
+		elif val in ("off", "0", "выкл".decode("utf-8")):
 			ChatsAttrs[conf]["laws"][key] = False
 			answer = AnsBase[4]
 		else:
@@ -81,29 +81,29 @@ def command_order(ltype, source, body, disp):
 			list = body.split()
 			if len(list) >= 2:
 				key, val = list[0].lower(), list[1].lower()
-				if key in ["avipe", "антивайп".decode("utf-8")]:
+				if key in ("avipe", "антивайп".decode("utf-8")):
 					answer = change_cfg(source[1], "avipe", val)
-				elif key in ["aspace", "антиспэйс".decode("utf-8")]:
+				elif key in ("aspace", "антиспэйс".decode("utf-8")):
 					answer = change_cfg(source[1], "space", val)
-				elif key in ["verif", "авторизация".decode("utf-8")]:
+				elif key in ("verif", "авторизация".decode("utf-8")):
 					answer = change_cfg(source[1], "verif", val)
-				elif key in ["atiser", "антиреклама".decode("utf-8")]:
+				elif key in ("atiser", "антиреклама".decode("utf-8")):
 					answer = change_cfg(source[1], "tiser", val)
-				elif key in ["aobscene", "антимат".decode("utf-8")]:
+				elif key in ("aobscene", "антимат".decode("utf-8")):
 					answer = change_cfg(source[1], "obscene", val)
-				elif key in ["acaps", "антикапс".decode("utf-8")]:
+				elif key in ("acaps", "антикапс".decode("utf-8")):
 					answer = change_cfg(source[1], "lower", val)
-				elif key in ["lnick", "никлен".decode("utf-8")]:
+				elif key in ("lnick", "никлен".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "lnick", val, (12, 33))
-				elif key in ["aban", "автобан".decode("utf-8")]:
+				elif key in ("aban", "автобан".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "aban", val, (2, 7))
-				elif key in ["loyalty", "лояльность".decode("utf-8")]:
+				elif key in ("loyalty", "лояльность".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "loyalty", val, (1, 6))
-				elif key in ["devoice", "девойс".decode("utf-8")]:
+				elif key in ("devoice", "девойс".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "dtime", val, (60, 361))
-				elif key in ["msglen", "мсглен".decode("utf-8")]:
+				elif key in ("msglen", "мсглен".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "len", val, (512, 2049))
-				elif key in ["prslen", "прзлен".decode("utf-8")]:
+				elif key in ("prslen", "прзлен".decode("utf-8")):
 					answer = alt_change_cfg(source[1], "prlen", val, (128, 513))
 				else:
 					answer = AnsBase[2]

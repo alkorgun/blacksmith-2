@@ -1090,8 +1090,8 @@ def sub_desc(body, ls, sbls = False):
 
 strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
 
-def Time2Text(Time, ext = []):
-	ls = [("Year", 0), ("Month", 12), ("Day", 30), ("Hour", 24), ("Minute", 60), ("Second", 60)]
+def Time2Text(Time):
+	ext, ls = [], [("Year", 0), ("Month", 12), ("Day", 30), ("Hour", 24), ("Minute", 60), ("Second", 60)]
 	while True:
 		lr = ls.pop()
 		if lr[1]:
@@ -1103,8 +1103,8 @@ def Time2Text(Time, ext = []):
 		if not (ls and Time):
 			return str.join(chr(32), ext)
 
-def Size2Text(Size, ext = []):
-	ls = list("TGMK.")
+def Size2Text(Size):
+	ext, ls = [], list("TGMK.")
 	while True:
 		lr = ls.pop()
 		if ls:
@@ -1116,11 +1116,11 @@ def Size2Text(Size, ext = []):
 		if not (ls and Size):
 			return str.join(chr(32), ext)
 
-def enumerated_list(list, ext = []):
-	Mumb = itypes.Number()
+def enumerated_list(list):
+	ls, Mumb = [], itypes.Number()
 	for line in list:
-		ext.append(AnsBase[12] % (Mumb.plus(), line))
-	return str.join(chr(10), ext)
+		ls.append(AnsBase[12] % (Mumb.plus(), line))
+	return str.join(chr(10), ls)
 
 isNumber = lambda objt: (None if exec_(int, (objt,)) is None else True)
 

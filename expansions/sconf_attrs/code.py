@@ -61,7 +61,7 @@ def command_prefix(ltype, source, body, disp):
 		if body:
 			if enough_access(source[1], source[2], 6):
 				body = body.lower()
-				if body in ["del", "убрать".decode("utf-8")]:
+				if body in ("del", "убрать".decode("utf-8")):
 					if Chats[source[1]].cPref:
 						Chats[source[1]].cPref = None
 						Chats[source[1]].save()
@@ -102,12 +102,12 @@ def command_status(ltype, source, body, disp):
 				chat = list[0].lower()
 				status = list[2].strip()
 				body = "%s|%s" % (state, status)
-				if chat in ["everywhere", "везде".decode("utf-8")]:
+				if chat in ("everywhere", "везде".decode("utf-8")):
 					for conf in Chats.keys():
 						Chats[conf].change_status(state, status)
 						cat_file(chat_file(conf, ChatStatus), body)
 					answer = AnsBase[4]
-				elif chat in ["here", "здесь".decode("utf-8")]:
+				elif chat in ("here", "здесь".decode("utf-8")):
 					if Chats.has_key(source[1]):
 						Chats[source[1]].change_status(state, status)
 						cat_file(chat_file(source[1], ChatStatus), body)
@@ -131,7 +131,7 @@ def command_status(ltype, source, body, disp):
 def command_password(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
-			if body in ["none", "нет".decode("utf-8")]:
+			if body in ("none", "нет".decode("utf-8")):
 				body = None
 			Chats[source[1]].code = body
 			Chats[source[1]].save()

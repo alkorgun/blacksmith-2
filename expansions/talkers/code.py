@@ -18,8 +18,8 @@ def command_talkers(ltype, source, body, disp):
 			if len(list_) >= 2:
 				a1 = (list_.pop(0)).lower()
 				a2 = body[((body.lower()).find(a1) + (len(a1) + 1)):].strip()
-				if a1 in ["top", "топ".decode("utf-8")]:
-					if a2 in ["local", "локальный".decode("utf-8")]:
+				if a1 in ("top", "топ".decode("utf-8")):
+					if a2 in ("local", "локальный".decode("utf-8")):
 						filename = cefile(chat_file(source[1], TalkersFile))
 						with TalkersDesc[source[1]]:
 							with database(filename) as db:
@@ -31,7 +31,7 @@ def command_talkers(ltype, source, body, disp):
 								answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
 						else:
 							answer = TalkersAnsBase[1]
-					elif a2 in ["global", "глобальный".decode("utf-8")]:
+					elif a2 in ("global", "глобальный".decode("utf-8")):
 						Glob_dbs = {}
 						for conf in Chats.keys():
 							filename = cefile(chat_file(conf, TalkersFile))
@@ -61,7 +61,7 @@ def command_talkers(ltype, source, body, disp):
 							answer = TalkersAnsBase[1]
 					else:
 						answer = AnsBase[2]
-				elif a1 in ["global", "глобальный".decode("utf-8")]:
+				elif a1 in ("global", "глобальный".decode("utf-8")):
 
 					def get_talker_stat(source_):
 						x, y = 0, 0
@@ -80,7 +80,7 @@ def command_talkers(ltype, source, body, disp):
 							answer = TalkersAnsBase[1]
 						return answer
 
-					if a2 in ["mine", "мой".decode("utf-8")]:
+					if a2 in ("mine", "мой".decode("utf-8")):
 						source_ = get_source(source[1], source[2])
 						if source_:
 							answer = get_talker_stat(source_)
@@ -124,7 +124,7 @@ def command_talkers(ltype, source, body, disp):
 								answer += TalkersAnsBase[3]
 							else:
 								answer = TalkersAnsBase[1]
-				elif a1 in ["local", "локальный".decode("utf-8")]:
+				elif a1 in ("local", "локальный".decode("utf-8")):
 
 					def get_talker_stat(source_, conf):
 						filename = cefile(chat_file(conf, TalkersFile))
@@ -138,7 +138,7 @@ def command_talkers(ltype, source, body, disp):
 							answer = TalkersAnsBase[1]
 						return answer
 
-					if a2 in ["mine", "мой".decode("utf-8")]:
+					if a2 in ("mine", "мой".decode("utf-8")):
 						source_ = get_source(source[1], source[2])
 						if source_:
 							answer = get_talker_stat(source_, source[1])

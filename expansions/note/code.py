@@ -15,7 +15,7 @@ def command_note(ltype, source, body, disp):
 		if body:
 			list_ = body.split()
 			x = (list_.pop(0)).lower()
-			if x in ["clear", "чисть".decode("utf-8")]:
+			if x in ("clear", "чисть".decode("utf-8")):
 				with database(NoteFile) as db:
 					db.execute("select * from note where jid=?", (source_,))
 					db_desc = db.fetchone()
@@ -52,7 +52,7 @@ def command_note(ltype, source, body, disp):
 								answer = AnsBase[4]
 					else:
 						answer = NoteAnsBase[1]
-				elif x in ["-", "*"]:
+				elif x in ("-", "*"):
 					Numb = list_.pop(0)
 					if isNumber(Numb):
 						Numb = int(Numb)
