@@ -1,18 +1,18 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "config" # /code.py v.x2
-#  Id: 19~1a
+exp_name = "config" # /code.py v.x3
+#  Id: 19~2a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
-def get_config(config, cfg = ""):
+def get_config(config, ecfg = str()):
 	for s in config.sections():
-		cfg += "[%s]\n" % (s.upper())
-		for (o, v) in config.items(s):
-			cfg += "%s = %s\n" % (o.upper(), str(v))
-	return cfg.strip()
+		ecfg += "[%s]\n" % (s.upper())
+		for (op, i) in config.items(s):
+			ecfg += "%s = %s\n" % (op.upper(), str(i))
+	return ecfg.strip()
 
 def command_config(ltype, source, body, disp):
 	if body:
@@ -20,42 +20,42 @@ def command_config(ltype, source, body, disp):
 		for x in body.split():
 			if not x.count("="):
 				continue
-			option, value = x.split("=", 1)
-			if not value:
+			Name, data = x.split("=", 1)
+			if not data:
 				continue
-			option = option.lower()
-			for section in GenCon.sections():
-				if option in GenCon.options(section):
-					if option in ["chat", "incoming", "memory", "private", "port"]:
-						if check_number(value):
-							value = str(int(value))
+			Name = Name.lower()
+			for Title in GenCon.sections():
+				if Name in GenCon.options(Title):
+					if Name in ("chat", "incoming", "memory", "private", "port"):
+						if isNumber(data):
+							data = str(int(data))
 						else:
 							continue
-					elif option in ["tls", "getexc", "mserve"]:
-						if value not in [str(True), str(False)]:
+					elif Name in ("tls", "getexc", "mserve"):
+						if data not in (str(True), str(False)):
 							continue
-					elif option in ["status", "resource"]:
-						value = replace_all(value, {"_": " "})
-					if not ConfigDesc.has_key(section):
-						ConfigDesc[section] = dict()
-					ConfigDesc[section][option] = value
+					elif Name in ("status", "resource"):
+						data = sub_desc(data, {chr(95): chr(32)})
+					if not ConfigDesc.has_key(Title):
+						ConfigDesc[Title] = dict()
+					ConfigDesc[Title][Name] = data
 		if ConfigDesc:
-			for section in ConfigDesc.keys():
-				for (option, value) in ConfigDesc[section].items():
-					GenCon.set(section, option, value)
+			for Title in ConfigDesc.keys():
+				for (Name, data) in ConfigDesc[Title].items():
+					GenCon.set(Title, Name, data)
 			cat_file(GenConFile, get_config(GenCon))
-			changes = []
-			for options in ConfigDesc.values():
-				changes.extend(options.keys())
-			changes = [option.upper() for option in changes]
-			answer = config_answers[0] % (", ".join(changes))
+			list = []
+			for Name in ConfigDesc.values():
+				list.extend(Name.keys())
+			list = [Name.upper() for Name in list]
+			answer = ConfAnsBase[0] % (", ".join(list))
 		else:
-			answer = config_answers[1]
+			answer = ConfAnsBase[1]
 	else:
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
-		Msend(source[0], get_config(GenCon, config_answers[2]), disp)
-	if locals().has_key(Types[23]):
+		Msend(source[0], get_config(GenCon, ConfAnsBase[2]), disp)
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def command_cls_config(ltype, source, body, disp):
@@ -63,7 +63,7 @@ def command_cls_config(ltype, source, body, disp):
 		list = body.split()
 		if len(list) >= 2:
 			body = (list.pop(0)).lower()
-			if body in ["del", "удалить".decode("utf-8")]:
+			if body in ("del", "удалить".decode("utf-8")):
 				Name = (list.pop(0)).lower()
 				if InstansesDesc.has_key(Name):
 					clients = Clients.keys()
@@ -71,7 +71,7 @@ def command_cls_config(ltype, source, body, disp):
 						if Name == Gen_disp:
 							clients.remove(Gen_disp)
 							Gen = choice(clients)
-							delivery(config_answers[6] % Gen)
+							delivery(ConfAnsBase[6] % Gen)
 							globals()["Gen_disp"], Con = Gen, client_config(GenCon, "CLIENT")[1]
 							for x in ConDisp.sections():
 								z = client_config(ConDisp, x)
@@ -97,9 +97,9 @@ def command_cls_config(ltype, source, body, disp):
 						for conf in Chats.keys():
 							if Chats[conf].disp == Name:
 								if online(Name):
-									Msend(conf, config_answers[4], Name)
+									Msend(conf, ConfAnsBase[4], Name)
 									time.sleep(0.2)
-								Chats[conf].leave(config_answers[5])
+								Chats[conf].leave(ConfAnsBase[5])
 								Chats[conf].disp = IdleClient()
 								Chats[conf].save()
 								time.sleep(0.6)
@@ -120,17 +120,17 @@ def command_cls_config(ltype, source, body, disp):
 							del Clients[Name]
 						answer = AnsBase[4]
 					else:
-						answer = config_answers[7]
+						answer = ConfAnsBase[7]
 				else:
-					answer = config_answers[11]
-			elif body in ["add", "добавить".decode("utf-8")]:
+					answer = ConfAnsBase[11]
+			elif body in ("add", "добавить".decode("utf-8")):
 				if len(list) >= 3:
 					host = (list.pop(0)).lower()
 					user = (list.pop(0)).lower()
 					code = (list.pop(0))
 					if list:
 						port = (list.pop(0))
-						if not check_number(port):
+						if not isNumber(port):
 							port = "5222"
 					else:
 						port = "5222"
@@ -157,32 +157,30 @@ def command_cls_config(ltype, source, body, disp):
 								try:
 									Try_Thr(composeThr(Dispatch_handler, "%s%s" % (Types[13], Instance), (Instance,)), -1)
 								except RuntimeError:
-									answer = config_answers[8]
+									answer = ConfAnsBase[8]
 								else:
 									for conf in Chats.keys():
 										if Instance == Chats[conf].disp:
 											Chats[conf].join()
 									answer = AnsBase[4]
 							else:
-								answer = config_answers[9]
+								answer = ConfAnsBase[9]
 						else:
-							answer = config_answers[10]
+							answer = ConfAnsBase[10]
 					else:
-						answer = config_answers[10]
+						answer = ConfAnsBase[10]
 				else:
 					answer = AnsBase[2]
-			elif body in ["password", "пароль".decode("utf-8")]:
+			elif body in ("password", "пароль".decode("utf-8")):
 				Name = (list.pop(0)).lower()
 				if InstansesDesc.has_key(Name):
 					if list:
 						code = (list.pop(0))
 						if list:
-							if (list.pop(0)).lower() in ["set", "записать".decode("utf-8")]:
+							if (list.pop(0)).lower() in ("set", "записать".decode("utf-8")):
 								changed = True
 					else:
-						from string import digits, letters
-						code, symbols = "", "%s%s._(!}{#)" % (digits, letters)
-						del digits, letters
+						code, symbols = "", "%s%s%s._+(!}{#)" % (CharCase[0], CharCase[1], CharCase[2])
 						for x in range(24):
 							code += choice(symbols)
 					if not locals().has_key("changed"):
@@ -212,22 +210,22 @@ def command_cls_config(ltype, source, body, disp):
 					else:
 						answer = AnsBase[7]
 				else:
-					answer = config_answers[11]
+					answer = ConfAnsBase[11]
 			else:
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[2]
 	elif not len(ConDisp.sections()):
-		answer = config_answers[3]
+		answer = ConfAnsBase[3]
 	else:
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
-		Msend(source[0], get_config(ConDisp, config_answers[2]), disp)
-	if locals().has_key(Types[23]):
+		Msend(source[0], get_config(ConDisp, ConfAnsBase[2]), disp)
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source)
 
 expansions[exp_name].funcs_add([get_config, command_config, command_cls_config])
-expansions[exp_name].ls.extend(["config_answers"])
+expansions[exp_name].ls.extend(["ConfAnsBase"])
 
 command_handler(command_config, {"RU": "конфиг", "EN": "config"}, 8, exp_name)
 command_handler(command_cls_config, {"RU": "клиент", "EN": "client"}, 8, exp_name)

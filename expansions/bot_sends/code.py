@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "bot_sends" # /code.py v.x3
-#  Id: 18~2a
+exp_name = "bot_sends" # /code.py v.x4
+#  Id: 18~3a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -12,7 +12,7 @@ def command_clear(ltype, source, body, disp):
 		if ltype == Types[1]:
 			s1_buckup = Chats[source[1]].state
 			s2_buckup = Chats[source[1]].status
-			Chats[source[1]].change_status(sList[2], bsends_answers[0])
+			Chats[source[1]].change_status(sList[2], BsendAnsBase[0])
 		zero = xmpp.Message(to = source[1], typ = Types[1])
 		for x in range(24):
 			Sender(disp, zero); Info["omsg"].plus()
@@ -25,36 +25,45 @@ def command_clear(ltype, source, body, disp):
 def command_test(ltype, source, body, disp):
 	errors = len(VarCache["errors"])
 	if not errors:
-		answer = bsends_answers[1]
+		answer = BsendAnsBase[1]
 	elif errors < (len(Clients.keys())*3):
-		answer = bsends_answers[2] % (get_self_nick(source[1]), errors)
+		answer = BsendAnsBase[2] % (get_self_nick(source[1]), errors)
 	else:
-		answer = bsends_answers[3] % (errors)
+		answer = BsendAnsBase[3] % (errors)
 	Answer(answer, ltype, source, disp)
 
 def command_sendall(ltype, source, body, disp):
 	if body:
 		for conf in Chats.keys():
-			Msend(conf, bsends_answers[5] % (source[2], body))
+			Msend(conf, BsendAnsBase[5] % (source[2], body))
 		answer = AnsBase[4]
 	else:
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
+
+def command_more(ltype, source, body, disp):
+	if Chats.has_key(source[1]):
+		if Chats[source[1]].more:
+			body = "[&&] %s" % (Chats[source[1]].more)
+			Chats[source[1]].more = ""
+			Msend(source[1], body, disp)
+	else:
+		Answer(AnsBase[0], ltype, source, disp)
 
 def command_send(ltype, source, body, disp):
 	if body:
 		list = body.split()
 		if len(list) >= 2:
 			sTo = list[0]
-			if sTo.count("@") and sTo.count("."):
-				conf = (sTo.split("/"))[0].lower()
+			if isSource(sTo):
+				conf = (sTo.split(chr(47)))[0].lower()
 				if Chats.has_key(conf) or not conf.count("@conf"):
-					Msend(sTo, bsends_answers[5] % (source[2], body[(body.find(sTo) + (len(sTo) + 1)):].strip()))
+					Msend(sTo, BsendAnsBase[5] % (source[2], body[(body.find(sTo) + (len(sTo) + 1)):].strip()))
 					answer = AnsBase[4]
 				else:
 					answer = AnsBase[8]
 			else:
-				answer = bsends_answers[4]
+				answer = BsendAnsBase[4]
 		else:
 			answer = AnsBase[2]
 	else:
@@ -65,7 +74,7 @@ def command_adelivery(ltype, source, body, disp):
 	if body:
 		if PrivLimit >= len(body):
 			instance = get_source(source[1], source[2])
-			delivery(bsends_answers[5] % ((source[2] if not instance else "%s (%s)" % (source[2], instance)), body))
+			delivery(BsendAnsBase[5] % ((source[2] if not instance else "%s (%s)" % (source[2], instance)), body))
 			answer = AnsBase[4]
 		else:
 			answer = AnsBase[5]
@@ -90,10 +99,10 @@ def command_invite(ltype, source, body, disp):
 				source_, jid_ = None, (body.split()[0])
 				if Chats[source[1]].isHere(body):
 					if Chats[source[1]].isHereNow(body):
-						Answer(bsends_answers[6] % (body), ltype, source, disp)
+						Answer(BsendAnsBase[6] % (body), ltype, source, disp)
 						raise iThr.ThrKill("exit")
 					source_ = get_source(source[1], body)
-				elif jid_.count("@") and jid_.count("."):
+				elif isSource(jid_):
 					source_ = jid_.lower()
 				if source_:
 					ChatsAttrs[source[1]]["intr"] = time.time()
@@ -107,9 +116,9 @@ def command_invite(ltype, source, body, disp):
 					Sender(disp, invite)
 					answer = AnsBase[4]
 				else:
-					answer = bsends_answers[7]
+					answer = BsendAnsBase[7]
 			else:
-				answer = bsends_answers[8] % timeElapsed(720 - timer)
+				answer = BsendAnsBase[8] % Time2Text(720 - timer)
 		else:
 			answer = AnsBase[1]
 	else:
@@ -121,12 +130,13 @@ def init_invite_timer(conf):
 		ChatsAttrs[conf] = {}
 	ChatsAttrs[conf]["intr"] = 0
 
-expansions[exp_name].funcs_add([command_clear, command_test, command_sendall, command_send, command_adelivery, command_say, command_invite, init_invite_timer])
-expansions[exp_name].ls.extend(["bsends_answers"])
+expansions[exp_name].funcs_add([command_clear, command_test, command_sendall, command_more, command_send, command_adelivery, command_say, command_invite, init_invite_timer])
+expansions[exp_name].ls.extend(["BsendAnsBase"])
 
 command_handler(command_clear, {"RU": "чисть", "EN": "clear"}, 3, exp_name)
 command_handler(command_test, {"RU": "тест", "EN": "test"}, 1, exp_name, False)
 command_handler(command_sendall, {"RU": "разослать", "EN": "sendall"}, 8, exp_name)
+command_handler(command_more, {"RU": "далее", "EN": "more"}, 1, exp_name)
 command_handler(command_send, {"RU": "сообщение", "EN": "send"}, 8, exp_name)
 command_handler(command_adelivery, {"RU": "суперадмину", "EN": "toadmin"}, 1, exp_name)
 command_handler(command_say, {"RU": "сказать", "EN": "say"}, 7, exp_name)

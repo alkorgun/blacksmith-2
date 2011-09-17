@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	control_answers = [x.decode("utf-8") for x in [
+	ControlAnsBase = [x.decode("utf-8") for x in [
 		"Внимание! %s (%s) загнал меня в -» '%s'", # 0
 		"\nПричина: %s", # 1
 		"Ага я зашел в -» '%s'", # 2
@@ -22,7 +22,7 @@ if DefLANG in ["RU", "UA"]:
 		"«%s» нет в списке клиентов." # 17
 					]]
 else:
-	control_answers = [
+	ControlAnsBase = [
 		"Attention! %s (%s) sent me in to -> '%s'", # 0
 		"\nReason: %s", # 1
 		"I have joined -> '%s'", # 2

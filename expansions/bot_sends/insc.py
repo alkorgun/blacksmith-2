@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	bsends_answers = [x.decode("utf-8") for x in [
+	BsendAnsBase = [x.decode("utf-8") for x in [
 		"чистка конференции...", # 0
 		"Всё круто, я в отличной форме! (0 ошибок)", # 1
 		"Бoeц %s тяжело ранен, но я ещё повоюю! (%d ошибок)", # 2
@@ -13,7 +13,7 @@ if DefLANG in ["RU", "UA"]:
 		"Не более 1го приглащения за 12 минут! (Осталось: %s)" # 8
 					]]
 else:
-	bsends_answers = [
+	BsendAnsBase = [
 		"cleaning conference...", # 0
 		"I am okay! (0 errors)", # 1
 		"Private %s is seriously injured, but I have the rotation! (%d errors)", # 2

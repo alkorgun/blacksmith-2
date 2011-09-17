@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	help_answers = [x.decode("utf-8") for x in [
+	HelpAnsBase = [x.decode("utf-8") for x in [
 		"Команда «%s» находится в плагине -» %s", # 0
 		"Доступ к команде «%s» - %d", # 1
 		"\n%s\nСинтаксис:\n»»» %s", # 2
@@ -22,7 +22,7 @@ if DefLANG in ["RU", "UA"]:
 		"Файл со справкой повреждён!" # 17
 					]]
 else:
-	help_answers = [
+	HelpAnsBase = [
 		"Command '%s' located in expansion %s", # 0
 		"%s's access - %d", # 1
 		"\n%s\nSyntax:\n*** %s", # 2

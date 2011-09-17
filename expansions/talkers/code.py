@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "talkers" # /code.py v.x3
@@ -9,6 +9,8 @@ expansion_register(exp_name)
 
 TalkersFile = "talkers.db"
 
+TalkersDesc = {}
+
 def command_talkers(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
@@ -18,24 +20,26 @@ def command_talkers(ltype, source, body, disp):
 				a2 = body[((body.lower()).find(a1) + (len(a1) + 1)):].strip()
 				if a1 in ["top", "топ".decode("utf-8")]:
 					if a2 in ["local", "локальный".decode("utf-8")]:
-						base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-						cu = base.cursor()
-						base_data = cu.execute("select * from talkers order by -msgs").fetchmany(10)
-						base.close()
-						if base_data:
-							answer, numb = talkers_answers[0], itypes.Number()
-							for x in base_data:
-								answer += "\n%d. %s\t\t%d\t%d\t%s" % (numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
+						filename = cefile(chat_file(source[1], TalkersFile))
+						with TalkersDesc[source[1]]:
+							with database(filename) as db:
+								db.execute("select * from talkers order by -msgs")
+								db_desc = db.fetchmany(10)
+						if db_desc:
+							answer, Numb = TalkersAnsBase[0], itypes.Number()
+							for x in db_desc:
+								answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
 						else:
-							answer = talkers_answers[1]
+							answer = TalkersAnsBase[1]
 					elif a2 in ["global", "глобальный".decode("utf-8")]:
 						Glob_dbs = {}
 						for conf in Chats.keys():
-							base = sqlite3.connect(cefile(chat_file(conf, TalkersFile)), timeout = 8)
-							cu = base.cursor()
-							base_data = cu.execute("select * from talkers order by -msgs").fetchmany(99)
-							base.close()
-							for x in base_data:
+							filename = cefile(chat_file(conf, TalkersFile))
+							with TalkersDesc[conf]:
+								with database(filename) as db:
+									db.execute("select * from talkers order by -msgs")
+									db_desc = db.fetchmany(99)
+							for x in db_desc:
 								if Glob_dbs.has_key(x[0]):
 									Glob_dbs[x[0]][2] += x[2]
 									Glob_dbs[x[0]][3] += x[3]
@@ -46,60 +50,60 @@ def command_talkers(ltype, source, body, disp):
 							for x, y in Glob_dbs.items():
 								Top_list.append([y[2], y[3], y[1]])
 							del Glob_dbs
-							answer, numb = talkers_answers[0], itypes.Number()
+							answer, Numb = TalkersAnsBase[0], itypes.Number()
 							Top_list.sort()
 							Top_list.reverse()
 							for x in Top_list:
-								answer += "\n%d. %s\t\t%d\t%d\t%s" % (numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
-								if numb._int() >= 20:
+								answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
+								if Numb._int() >= 20:
 									break
 						else:
-							answer = talkers_answers[1]
+							answer = TalkersAnsBase[1]
 					else:
 						answer = AnsBase[2]
 				elif a1 in ["global", "глобальный".decode("utf-8")]:
-					if a2 in ["my", "мой".decode("utf-8")]:
+
+					def get_talker_stat(source_):
+						x, y = 0, 0
+						for conf in Chats.keys():
+							filename = cefile(chat_file(conf, TalkersFile))
+							with TalkersDesc[conf]:
+								with database(filename) as db:
+									db.execute("select * from talkers where jid=?", (source_,))
+									db_desc = db.fetchone()
+							if db_desc:
+								x += db_desc[2]
+								y += db_desc[3]
+						if x:
+							answer = TalkersAnsBase[2] % (x, y, str(round((float(y) / x), 1)))
+						else:
+							answer = TalkersAnsBase[1]
+						return answer
+
+					if a2 in ["mine", "мой".decode("utf-8")]:
 						source_ = get_source(source[1], source[2])
 						if source_:
-							x, y = 0, 0
-							for conf in Chats.keys():
-								base = sqlite3.connect(cefile(chat_file(conf, TalkersFile)), timeout = 8)
-								cu = base.cursor()
-								base_data = cu.execute("select * from talkers where jid=?", (source_,)).fetchone()
-								base.close()
-								if base_data:
-									x += base_data[2]
-									y += base_data[3]
-							if x:
-								answer = talkers_answers[2] % (x, y, str(round((float(y) / x), 1)))
-							else:
-								answer = talkers_answers[1]
+							answer = get_talker_stat(source_)
 						else:
-							answer = talkers_answers[1]
+							answer = TalkersAnsBase[1]
 					else:
 						if Chats[source[1]].isHere(a2):
 							source_ = get_source(source[1], a2)
 						else:
 							source_ = (list_.pop(0)).lower()
-							if not (source_.count("@") and source_.count(".")):
+							if not isSource(source_):
 								source_ = None
 						if source_:
-							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-							cu = base.cursor()
-							x = cu.execute("select * from talkers where jid=?", (source_,)).fetchone()
-							base.close()
-							if x:
-								answer = talkers_answers[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
-							else:
-								answer = talkers_answers[1]
+							answer = get_talker_stat(source_)
 						else:
 							Glob_dbs = {}
 							for conf in Chats.keys():
-								base = sqlite3.connect(cefile(chat_file(conf, TalkersFile)), timeout = 8)
-								cu = base.cursor()
-								base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2)).fetchmany(10)
-								base.close()
-								for x in base_data:
+								filename = cefile(chat_file(conf, TalkersFile))
+								with TalkersDesc[conf]:
+									with database(filename) as db:
+										db.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+										db_desc = db.fetchmany(10)
+								for x in db_desc:
 									if Glob_dbs.has_key(x[0]):
 										Glob_dbs[x[0]][2] += x[2]
 										Glob_dbs[x[0]][3] += x[3]
@@ -110,58 +114,58 @@ def command_talkers(ltype, source, body, disp):
 								for x, y in Glob_dbs.items():
 									Usr_list.append([y[2], y[3], y[1]])
 								del Glob_dbs
-								answer, numb = talkers_answers[0], itypes.Number()
+								answer, Numb = TalkersAnsBase[0], itypes.Number()
 								Usr_list.sort()
 								Usr_list.reverse()
 								for x in Usr_list:
-									answer += "\n%d. %s\t\t%d\t%d\t%s" % (numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
-									if numb._int() >= 10:
+									answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
+									if Numb._int() >= 10:
 										break
-								answer += talkers_answers[3]
+								answer += TalkersAnsBase[3]
 							else:
-								answer = talkers_answers[1]
+								answer = TalkersAnsBase[1]
 				elif a1 in ["local", "локальный".decode("utf-8")]:
-					if a2 in ["my", "мой".decode("utf-8")]:
+
+					def get_talker_stat(source_, conf):
+						filename = cefile(chat_file(conf, TalkersFile))
+						with TalkersDesc[conf]:
+							with database(filename) as db:
+								db.execute("select * from talkers where jid=?", (source_,))
+								x = db.fetchone()
+						if x:
+							answer = TalkersAnsBase[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
+						else:
+							answer = TalkersAnsBase[1]
+						return answer
+
+					if a2 in ["mine", "мой".decode("utf-8")]:
 						source_ = get_source(source[1], source[2])
 						if source_:
-							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-							cu = base.cursor()
-							x = cu.execute("select * from talkers where jid=?", (source_,)).fetchone()
-							base.close()
-							if x:
-								answer = talkers_answers[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
-							else:
-								answer = talkers_answers[1]
+							answer = get_talker_stat(source_, source[1])
 						else:
-							answer = talkers_answers[1]
+							answer = TalkersAnsBase[1]
 					else:
 						if Chats[source[1]].isHere(a2):
 							source_ = get_source(source[1], a2)
 						else:
 							source_ = (list_.pop(0)).lower()
-							if not (source_.count("@") and source_.count(".")):
+							if not isSource(source_):
 								source_ = None
 						if source_:
-							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-							cu = base.cursor()
-							x = cu.execute("select * from talkers where jid=?", (source_,)).fetchone()
-							base.close()
-							if x:
-								answer = talkers_answers[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
-							else:
-								answer = talkers_answers[1]
+							answer = get_talker_stat(source_, source[1])
 						else:
-							base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-							cu = base.cursor()
-							base_data = cu.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2)).fetchmany(10)
-							base.close()
-							if base_data:
-								answer, numb = talkers_answers[0], itypes.Number()
-								for x in base_data:
-									answer += "\n%d. %s\t\t%d\t%d\t%s" % (numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
-								answer += talkers_answers[3]
+							filename = cefile(chat_file(source[1], TalkersFile))
+							with TalkersDesc[source[1]]:
+								with database(filename) as db:
+									db.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+									db_desc = db.fetchmany(10)
+							if db_desc:
+								answer, Numb = TalkersAnsBase[0], itypes.Number()
+								for x in db_desc:
+									answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[1], x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
+								answer += TalkersAnsBase[3]
 							else:
-								answer = talkers_answers[1]
+								answer = TalkersAnsBase[1]
 				else:
 					answer = AnsBase[2]
 			else:
@@ -173,33 +177,37 @@ def command_talkers(ltype, source, body, disp):
 	Answer(answer, ltype, source, disp)
 
 def calculate_talkers(stanza, isConf, ltype, source, body, isToBs, disp):
-	if ltype == Types[1] and source[2]:
+	if ltype == Types[1] and source[2] and Chats.has_key(source[1]):
 		source_ = get_source(source[1], source[2])
 		if source_:
 			nick = source[2].strip()
-			base = sqlite3.connect(cefile(chat_file(source[1], TalkersFile)), timeout = 8)
-			cu = base.cursor()
-			db_data = cu.execute("select * from talkers where jid=?", (source_,)).fetchone()
-			if db_data:
-				cu.execute("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_data[2] + 1), (db_data[3] + len(body.split())), source_))
-			else:
-				cu.execute("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
-			base.commit()
-			base.close()
+			filename = cefile(chat_file(source[1], TalkersFile))
+			with TalkersDesc[source[1]]:
+				with database(filename) as db:
+					db.execute("select * from talkers where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc:
+						db.execute("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_desc[2] + 1), (db_desc[3] + len(body.split())), source_))
+					else:
+						db.execute("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
+					db.commit()
 
 def init_talkers_base(conf):
-	db_file = cefile(chat_file(conf, TalkersFile))
-	if not os.path.isfile(db_file):
-		base = sqlite3.connect(db_file)
-		cu = base.cursor()
-		cu.execute("create table talkers (jid text, lastnick text, msgs integer, words integer)")
-		base.commit()
-		base.close()
+	filename = cefile(chat_file(conf, TalkersFile))
+	if not os.path.isfile(filename):
+		with database(filename) as db:
+			db.execute("create table talkers (jid text, lastnick text, msgs integer, words integer)")
+			db.commit()
+	TalkersDesc[conf] = iThr.Semaphore()
 
-expansions[exp_name].funcs_add([command_talkers, calculate_talkers, init_talkers_base])
-expansions[exp_name].ls.extend(["talkers_answers", "TalkersFile"])
+def edit_talkers_desc(conf):
+	del TalkersDesc[conf]
+
+expansions[exp_name].funcs_add([command_talkers, calculate_talkers, init_talkers_base, edit_talkers_desc])
+expansions[exp_name].ls.extend(["TalkersAnsBase", "TalkersFile", "TalkersDesc"])
 
 command_handler(command_talkers, {"RU": "трёп", "EN": "talkers"}, 2, exp_name)
 
 handler_register(init_talkers_base, "01si", exp_name)
+handler_register(edit_talkers_desc, "04si", exp_name)
 handler_register(calculate_talkers, "01eh", exp_name)

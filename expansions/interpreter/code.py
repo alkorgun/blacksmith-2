@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "interpreter" # /code.py v.x4
@@ -21,8 +21,8 @@ def command_eval(ltype, source, body, disp):
 
 def command_exec(ltype, source, body, disp):
 	if body:
-		if "\n" in body and body[-1] != "\n":
-			body += "\n"
+		if chr(10) in body and body[-1] != chr(10):
+			body += chr(10)
 		answer = AnsBase[4]
 		try:
 			exec UnicodeType(body) in globals()
@@ -38,7 +38,7 @@ def command_sh(ltype, source, body, disp):
 			command = sys_cmds[6] % (body.encode("utf-8"))
 		else:
 			command =  body.encode("cp1251")
-		answer = read_pipe(command)
+		answer = get_pipe(command)
 		if answer in ["", None]:
 			answer = AnsBase[4]
 	else:
@@ -48,9 +48,9 @@ def command_sh(ltype, source, body, disp):
 def command_calc(ltype, source, body, disp):
 	if body:
 		if len(body) <= 24 and not body.count("**"):
-			compile_ = re_comp("([0123456789]|[\+\-\/\*\^\.])")
-			Sps = compile_.sub("", body).strip()
-			if not Sps:
+			comp = compile__("([0123456789]|[\+\-\/\*\^\.])")
+			expr = (not comp.sub("", body).strip())
+			if expr:
 				try:
 					answer = UnicodeType(eval(body))
 				except:

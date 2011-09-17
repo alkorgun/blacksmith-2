@@ -1,14 +1,19 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "alive_keeper" # /code.py v.x2
-#  Id: 16~2a
+exp_name = "alive_keeper" # /code.py v.x3
+#  Id: 16~3a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
 def alive_keeper():
-	cheker_name = alive_keeper_answer.func_name
+	exp_name = "alive_keeper"
+
+	def alive_keeper_answer(disp, answer):
+		if answer:
+			Clients[get_disp(disp)].aKeeper = itypes.Number()
+
 	while VarCache["alive"]:
 		time.sleep(360)
 		ThrIds = iThr.ThrNames()
@@ -26,23 +31,28 @@ def alive_keeper():
 					composeThr(connectAndDispatch, ThrName, (disp,)).start()
 				except:
 					delivery(AnsBase[28] % (disp))
-			elif globals().has_key(cheker_name):
+			elif expansions.has_key(exp_name):
 				Clients[disp].aKeeper.plus()
 				iq = xmpp.Iq(to = "%s/%s" % (disp, GenResource), typ = Types[10])
 				iq.addChild(Types[16], {}, [], xmpp.NS_PING)
-				iq.setID("iq_%d" % Info["outiq"].plus())
+				iq.setID("Bs-i%d" % Info["outiq"].plus())
 				CallForResponse(disp, iq, alive_keeper_answer)
 				del iq
 			else:
 				raise iThr.ThrKill("exit")
 		del ThrIds
 
-def alive_keeper_answer(disp, answer):
-	if answer:
-		Clients[get_disp(disp)].aKeeper = itypes.Number()
-
 def conf_alive_keeper():
-	cheker_name = conf_alive_keeper_answer.func_name
+	exp_name = "alive_keeper"
+
+	def conf_alive_keeper_answer(disp, stanza, conf):
+		if Chats.has_key(conf):
+			if xmpp.isErrorNode(stanza):
+				if eCodes[6] == stanza.getErrorCode():
+					Chats[conf].aKeeper = itypes.Number()
+			else:
+				Chats[conf].aKeeper = itypes.Number()
+
 	while VarCache["alive"]:
 		time.sleep(360)
 		ThrIds = iThr.ThrNames()
@@ -59,24 +69,16 @@ def conf_alive_keeper():
 						composeTimer(180, ejoinTimer, TimerName, (conf,)).start()
 					except:
 						pass
-			elif globals().has_key(cheker_name):
+			elif expansions.has_key(exp_name):
 				Chats[conf].aKeeper.plus()
 				iq = xmpp.Iq(to = "%s/%s" % (conf, get_self_nick(conf)), typ = Types[10])
 				iq.addChild(Types[18], {}, [], xmpp.NS_PING)
-				iq.setID("iq_%d" % Info["outiq"].plus())
+				iq.setID("Bs-i%d" % Info["outiq"].plus())
 				CallForResponse(Chats[conf].disp, iq, conf_alive_keeper_answer, {"conf": conf})
 				del iq
 			else:
 				raise iThr.ThrKill("exit")
 		del ThrIds
-
-def conf_alive_keeper_answer(disp, stanza, conf):
-	if Chats.has_key(conf):
-		if xmpp.isErrorNode(stanza):
-			if eCodes[6] == stanza.getErrorCode():
-				Chats[conf].aKeeper = itypes.Number()
-		else:
-			Chats[conf].aKeeper = itypes.Number()
 
 def start_keepers():
 	Name1 = alive_keeper.func_name
@@ -88,6 +90,6 @@ def start_keepers():
 	composeThr(alive_keeper, Name1).start()
 	composeThr(conf_alive_keeper, Name2).start()
 
-expansions[exp_name].funcs_add([alive_keeper, alive_keeper_answer, conf_alive_keeper, conf_alive_keeper_answer, start_keepers])
+expansions[exp_name].funcs_add([alive_keeper, conf_alive_keeper, start_keepers])
 
 handler_register(start_keepers, "02si", exp_name)

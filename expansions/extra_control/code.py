@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "extra_control" # /code.py v.x5
@@ -15,10 +15,10 @@ def command_remote(ltype, source, body, disp):
 			x = list[0].lower()
 			if x in confs:
 				conf = x
-			elif check_number(x):
-				number = (int(x) - 1)
-				if number >= 0 and number <= len(confs):
-					conf = confs[number]
+			elif isNumber(x):
+				Number = (int(x) - 1)
+				if Number >= 0 and Number <= len(confs):
+					conf = confs[Number]
 				else:
 					conf = False
 			else:
@@ -65,7 +65,7 @@ def command_remote(ltype, source, body, disp):
 			answer = AnsBase[2]
 	else:
 		answer = enumerated_list(confs)
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def command_private(ltype, source, body, disp):
@@ -85,7 +85,7 @@ def command_private(ltype, source, body, disp):
 			answer = AnsBase[1]
 	else:
 		answer = AnsBase[0]
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 expansions[exp_name].funcs_add([command_remote, command_private])

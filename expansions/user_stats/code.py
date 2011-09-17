@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "user_stats" # /code.py v.x3
@@ -7,7 +7,9 @@ exp_name = "user_stats" # /code.py v.x3
 
 expansion_register(exp_name)
 
-StatFile = "jstat.db"
+UstatFile = "jstat.db"
+
+UstatDesc = {}
 
 def command_user_stats(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
@@ -15,17 +17,18 @@ def command_user_stats(ltype, source, body, disp):
 			body = get_source(source[1], source[2])
 		elif Chats[source[1]].isHere(body):
 			body = get_source(source[1], body)
-		base = sqlite3.connect(cefile(chat_file(source[1], StatFile)), timeout = 8)
-		cu = base.cursor()
-		x = cu.execute("select * from stat where jid=?", (body,)).fetchone()
-		base.close()
+		filename = cefile(chat_file(source[1], UstatFile))
+		with UstatDesc[source[1]]:
+			with database(filename) as db:
+				db.execute("select * from stat where jid=?", (body,))
+				x = db.fetchone()
 		if x:
-			answer = user_stat_answers[0] % (x[3], x[2], x[1])
+			answer = UstatAnsBase[0] % (x[3], x[2], x[1])
 			if x[3] >= 2 and x[4]:
-				answer += user_stat_answers[1] % (x[4], x[5])
-			answer += user_stat_answers[2] % (", ".join(sorted(x[6].split("-/-"))))
+				answer += UstatAnsBase[1] % (x[4], x[5])
+			answer += UstatAnsBase[2] % (", ".join(sorted(x[6].split("-/-"))))
 		else:
-			answer = user_stat_answers[3]
+			answer = UstatAnsBase[3]
 	else:
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
@@ -35,13 +38,13 @@ def command_here(ltype, source, nick, disp):
 		if not nick:
 			nick = source[2]
 		if Chats[source[1]].isHereNow(nick):
-			jtc = timeElapsed(time.time() - Chats[source[1]].get_user(nick).dates[0])
+			jtc = Time2Text(time.time() - Chats[source[1]].get_user(nick).date[0])
 			if nick != source[2]:
-				answer = user_stat_answers[4] % (nick, jtc)
+				answer = UstatAnsBase[4] % (nick, jtc)
 			else:
-				answer = user_stat_answers[5] % (jtc)
+				answer = UstatAnsBase[5] % (jtc)
 		else:
-			answer = user_stat_answers[6]
+			answer = UstatAnsBase[6]
 	else:
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
@@ -54,62 +57,63 @@ def calc_user_stat(stanza, disp):
 				nick = stanza.getNick()
 				instance = get_source(conf, nick)
 				if instance:
-					base = sqlite3.connect(cefile(chat_file(conf, StatFile)), timeout = 8)
-					cu = base.cursor()
-					db_data = cu.execute("select * from stat where jid=?", (instance,)).fetchone()
-					nick = nick.strip()
-					if db_data and nick not in db_data[6].split("-/-"):
-						cu.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_data[6], nick), instance))
-						base.commit()
-					base.close()
+					nick = UnicodeType(nick).strip()
+					filename = cefile(chat_file(conf, UstatFile))
+					with UstatDesc[conf]:
+						with database(filename) as db:
+							db.execute("select * from stat where jid=?", (instance,))
+							db_desc = db.fetchone()
+							if db_desc and nick not in db_desc[6].split("-/-"):
+								db.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), instance))
+								db.commit()
 		else:
 			sUser = Chats[conf].get_user(nick)
 			if sUser.source:
-				base = sqlite3.connect(cefile(chat_file(conf, StatFile)), timeout = 8)
-				cu = base.cursor()
-				db_data = cu.execute("select * from stat where jid=?", (sUser.source,)).fetchone()
-				if db_data:
-					if stype == Types[4]:
-						scode = stanza.getStatusCode()
-						if scode == sCodes[1]:
-							nick = (stanza.getNick()).strip()
-							if nick not in db_data[6].split("-/-"):
-								cu.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_data[6], nick), sUser.source))
+				filename = cefile(chat_file(conf, UstatFile))
+				with UstatDesc[conf]:
+					with database(filename) as db:
+						db.execute("select * from stat where jid=?", (sUser.source,))
+						db_desc = db.fetchone()
+						if db_desc:
+							if stype == Types[4]:
+								scode = stanza.getStatusCode()
+								if scode == sCodes[0]:
+									status = "banned:(%s)" % UnicodeType(stanza.getReason())
+								elif scode == sCodes[2]:
+									status = "kicked:(%s)" % UnicodeType(stanza.getReason())
+								else:
+									status = UnicodeType(stanza.getStatus())
+								db.execute("update stat set seen=?, leave=? where jid=?", (strTime(local = False), status, sUser.source))
+							elif stype in [Types[3], None]:
+								if (time.time() - sUser.date[0]) <= 0.8:
+									db.execute("update stat set joined=?, joins=? where jid=?", (sUser.date[2], (db_desc[3] + 1), sUser.source))
+									nick = nick.strip()
+									if nick not in db_desc[6].split("-/-"):
+										db.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), sUser.source))
+								arole = "%s/%s" % (sUser.role)
+								if db_desc[1] != arole:
+									db.execute("update stat set arole=? where jid=?", (arole, sUser.source))
 						else:
-							status = (stanza.getReason() or stanza.getStatus() or "None")
-							if scode == sCodes[0]:
-								status = "ban:(%s)" % (status)
-							elif scode == sCodes[2]:
-								status = "kick:(%s)" % (status)
-							cu.execute("update stat set seen=?, leave=? where jid=?", (strTime(local = False), status, sUser.source))
-					elif stype in [Types[3], None]:
-						if (time.time() - sUser.dates[0]) <= 0.8:
-							cu.execute("update stat set joined=?, joins=? where jid=?", (sUser.dates[2], (db_data[3] + 1), sUser.source))
-							nick = nick.strip()
-							if nick not in db_data[6].split("-/-"):
-								cu.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_data[6], nick), sUser.source))
-						arole = "%s/%s" % (sUser.afl, sUser.role)
-						if db_data[1] != arole:
-							cu.execute("update stat set arole=? where jid=?", (arole, sUser.source))
-				else:
-					cu.execute("insert into stat values (?,?,?,?,?,?,?)", (sUser.source, "%s/%s" % (sUser.afl, sUser.role), sUser.dates[2], 1, "", "", nick))
-				base.commit()
-				base.close()
+							db.execute("insert into stat values (?,?,?,?,?,?,?)", (sUser.source, "%s/%s" % (sUser.role), sUser.date[2], 1, "", "", nick))
+						db.commit()
 
 def init_stat_base(conf):
-	db_file = cefile(chat_file(conf, StatFile))
-	if not os.path.isfile(db_file):
-		base = sqlite3.connect(db_file)
-		cu = base.cursor()
-		cu.execute("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
-		base.commit()
-		base.close()
+	filename = cefile(chat_file(conf, UstatFile))
+	if not os.path.isfile(filename):
+		with database(filename) as db:
+			db.execute("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
+			db.commit()
+	UstatDesc[conf] = iThr.Semaphore()
 
-expansions[exp_name].funcs_add([command_user_stats, command_here, calc_user_stat, init_stat_base])
-expansions[exp_name].ls.extend(["user_stat_answers", "StatFile"])
+def edit_stat_desc(conf):
+	del UstatDesc[conf]
+
+expansions[exp_name].funcs_add([command_user_stats, command_here, calc_user_stat, init_stat_base, edit_stat_desc])
+expansions[exp_name].ls.extend(["UstatAnsBase", "UstatFile", "UstatDesc"])
 
 command_handler(command_user_stats, {"RU": "юзерстат", "EN": "userstat"}, 2, exp_name)
 command_handler(command_here, {"RU": "пребывание", "EN": "here"}, 1, exp_name)
 
 handler_register(init_stat_base, "01si", exp_name)
+handler_register(edit_stat_desc, "04si", exp_name)
 handler_register(calc_user_stat, "02eh", exp_name)

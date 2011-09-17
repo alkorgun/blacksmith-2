@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "roster_ctrl" # /code.py v.x1
-#  Id: 24~1a
+#  Id: 23~1a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -16,10 +16,10 @@ def command_roster(ltype, source, body, disp):
 		x = (list.pop(0)).lower()
 		if x in cls:
 			cl_name = x
-		elif check_number(x):
-			number = (int(x) - 1)
-			if number >= 0 and number <= len(cls):
-				cl_name = cls[number]
+		elif isNumber(x):
+			Number = (int(x) - 1)
+			if Number >= 0 and Number <= len(cls):
+				cl_name = cls[Number]
 			else:
 				cl_name = False
 		else:
@@ -34,8 +34,9 @@ def command_roster(ltype, source, body, disp):
 							Clients[cl_name].Roster.Authorize(jid)
 							Clients[cl_name].Roster.Subscribe(jid)
 							if list:
+								Tabe = ("admin", "админ".decode("utf-8"))
 								Nick = list.pop(0)
-								if list and ["admin", "админ".decode("utf-8")].count((list.pop(0)).lower()):
+								if list and Tabe.count(list[0].lower()):
 									Clients[cl_name].Roster.setItem(jid, Nick, ["Admins"])
 								else:
 									Clients[cl_name].Roster.setItem(jid, Nick, ["Users"])
@@ -44,11 +45,12 @@ def command_roster(ltype, source, body, disp):
 							answer = AnsBase[4]
 						elif body == "-":
 							if jid in Clients[cl_name].Roster.keys():
+								Clients[cl_name].Roster.Unauthorize(jid)
 								Clients[cl_name].Roster.Unsubscribe(jid)
 								Clients[cl_name].Roster.delItem(jid)
 								answer = AnsBase[4]
 							else:
-								answer = roster_answers[0]
+								answer = RosterAnsBase[0]
 						else:
 							answer = AnsBase[2]
 					else:
@@ -56,16 +58,32 @@ def command_roster(ltype, source, body, disp):
 				else:
 					answer = AnsBase[2]
 			else:
-				jids = Clients[cl_name].Roster.keys()
-				if jids:
-					for x in jids:
-						if x.count("@conference."):
-							jids.remove(x)
+				Rdsp = getattr(Clients[cl_name], "Roster")
+				if Rdsp:
+					jids = Rdsp.keys()
+					for jx in jids:
+						if jx.count("@conference."):
+							jids.remove(jx)
+				if Rdsp and jids:
+#					Numb = itypes.Number()
+#					answer = "[#] [JID] [Nick] (Group)"
+#					Gpoups = []
+#					for jx in jids:
+#						Name = Rdsp.getName(jx)
+#						Grps = Rdsp.getGroups(jx)
+#						if Grps:
+#							
+#						else:
+#							
+#						if Groups:
+#							answer += "\n%d) %s - %s (%s)" % (Numb.plus(), Name, Groups[0])
+#						else:
+#							answer += "\n%d) %s - %s" % (Numb.plus(), Name)
 					answer = enumerated_list(sorted(jids))
 				else:
-					answer = roster_answers[1]
+					answer = RosterAnsBase[1]
 		else:
-			answer = roster_answers[2]
+			answer = RosterAnsBase[2]
 	else:
 		answer = enumerated_list(cls)
 	Answer(answer, ltype, source, disp)
@@ -75,9 +93,9 @@ def init_roster_state():
 		Roster["on"] = eval(get_file(RosterFile))
 
 expansions[exp_name].funcs_add([command_roster, init_roster_state])
-expansions[exp_name].ls.extend(["roster_answers", "RosterFile"])
+expansions[exp_name].ls.extend(["RosterAnsBase", "RosterFile"])
 
 command_handler(command_roster, {"RU": "ростер", "EN": "roster"}, 7, exp_name)
-#command_handler(command_roster_state, {"RU": "ростер*", "EN": "roster*"}, 7, exp_name)
+#command_handler(command_roster_state, {"RU": "ростер*", "EN": "roster2"}, 7, exp_name)
 
 #handler_register(init_roster_state, "00si", exp_name)

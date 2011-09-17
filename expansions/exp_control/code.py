@@ -1,39 +1,39 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x2
-#  Id: 09~2a
+exp_name = "exp_control" # /code.py v.x3
+#  Id: 09~3a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
 def command_expinfo(ltype, source, body, disp):
-	get_state = lambda filename: (cexp_answers[1] if os.path.isfile(filename) else cexp_answers[2])
+	get_state = lambda filename: (CexpAnsBase[1] if os.path.isfile(filename) else CexpAnsBase[2])
 	if body:
 		exp_name = body.lower()
 		if check_nosimbols(exp_name):
 			if expansions.has_key(exp_name):
-				answer = cexp_answers[0]
+				answer = CexpAnsBase[0]
 				code_file = get_state(expansions[exp_name].file)
 				insc_file = get_state(expansions[exp_name].insc)
-				answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[3], code_file, insc_file)
+				answer += "\n%s - %s - %s - %s" % (exp_name, CexpAnsBase[3], code_file, insc_file)
 				if len(expansions[exp_name].cmds):
-					answer += cexp_answers[4] % (", ".join(expansions[exp_name].cmds))
+					answer += CexpAnsBase[4] % (", ".join(expansions[exp_name].cmds))
 				if len(expansions[exp_name].ls):
-					answer += cexp_answers[5] % (", ".join(expansions[exp_name].ls))
+					answer += CexpAnsBase[5] % (", ".join(expansions[exp_name].ls))
 			else:
 				exp = expansion(exp_name)
 				if os.path.exists(exp.path):
-					answer = cexp_answers[0]
+					answer = CexpAnsBase[0]
 					code_file = get_state(exp.file)
 					insc_file = get_state(exp.insc)
-					answer += "\n%s - %s - %s - %s" % (exp_name, cexp_answers[6], code_file, insc_file)
+					answer += "\n%s - %s - %s - %s" % (exp_name, CexpAnsBase[6], code_file, insc_file)
 				else:
-					answer = cexp_answers[7]
+					answer = CexpAnsBase[7]
 		else:
-			answer = cexp_answers[7]
+			answer = CexpAnsBase[7]
 	else:
-		answer, number = cexp_answers[8], itypes.Number()
+		answer, number = CexpAnsBase[8], itypes.Number()
 		for exp_name in expansions.keys():
 			code_file = get_state(expansions[exp_name].file)
 			insc_file = get_state(expansions[exp_name].insc)
@@ -49,8 +49,10 @@ def command_expinfo(ltype, source, body, disp):
 				elexps.append("%d) %s - %s - %s" % (number.plus(), exp_name, code_file, insc_file))
 		elexps_len = len(elexps)
 		if elexps_len:
-			answer += cexp_answers[9] % (elexps_len, "\n".join(elexps))
+			answer += CexpAnsBase[9] % (elexps_len, chr(10).join(elexps))
 	Answer(answer, ltype, source, disp)
+
+ReloadSemaphore = iThr.Semaphore()
 
 def command_expload(ltype, source, body, disp):
 	if body:
@@ -58,34 +60,34 @@ def command_expload(ltype, source, body, disp):
 		if check_nosimbols(exp_name):
 			if expansions.has_key(exp_name):
 				if os.path.isfile(expansions[exp_name].file):
-					with Semph:
+					with ReloadSemaphore:
 						loaded = expansions[exp_name].load()
 						if loaded[1]:
 							expansions[exp_name].initialize_all()
-							answer = cexp_answers[10] % (loaded[0])
+							answer = CexpAnsBase[10] % (loaded[0])
 						else:
 							expansions[exp_name].dels(True)
-							answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
+							answer = CexpAnsBase[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
 				else:
-					answer = cexp_answers[12]
+					answer = CexpAnsBase[12]
 			else:
 				exp = expansion(exp_name)
 				if exp.isExp:
-					with Semph:
+					with ReloadSemaphore:
 						loaded = exp.load()
 						if loaded[1] and expansions.has_key(exp_name):
 							expansions[exp_name].initialize_all()
-							answer = cexp_answers[10] % (loaded[0])
+							answer = CexpAnsBase[10] % (loaded[0])
 						else:
 							exp.dels(True)
 							if loaded[2]:
-								answer = cexp_answers[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
+								answer = CexpAnsBase[11] % (loaded[0], "\n\t* %s: %s") % (loaded[2])
 							else:
-								answer = cexp_answers[13] % (loaded[0])
+								answer = CexpAnsBase[13] % (loaded[0])
 				else:
-					answer = cexp_answers[7]
+					answer = CexpAnsBase[7]
 		else:
-			answer = cexp_answers[7]
+			answer = CexpAnsBase[7]
 	else:
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
@@ -101,22 +103,22 @@ def command_expunload(ltype, source, body, disp):
 					if func_name_ == instance.func_name:
 						handler = instance
 				if handler:
-					with Semph:
+					with ReloadSemaphore:
 						expansions[exp_name].funcs_del(handler)
 					answer = AnsBase[4]
 				else:
 					exp_funcs = expansions[exp_name].hnds.keys()
 					if exp_funcs:
 						list = [x.func_name for x in exp_funcs]
-						answer = cexp_answers[14] % (", ".join(sorted(list)))
+						answer = CexpAnsBase[14] % (", ".join(sorted(list)))
 					else:
-						answer = cexp_answers[15] % (exp_name)
+						answer = CexpAnsBase[15] % (exp_name)
 			else:
-				with Semph:
+				with ReloadSemaphore:
 					expansions[exp_name].dels(True)
 				answer = AnsBase[4]
 		else:
-			answer = cexp_answers[7]
+			answer = CexpAnsBase[7]
 	else:
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
@@ -128,7 +130,7 @@ def command_states(ltype, source, body, disp):
 		if Cmds.has_key(cmd):
 			if list_:
 				body = (list_.pop(0)).lower()
-				if body in ["off", "выкл".decode("utf-8")]:
+				if body in ("off", "выкл".decode("utf-8")):
 					if Cmds[cmd].isAvalable:
 						if Cmds[cmd].handler:
 							Cmds[cmd].isAvalable = False
@@ -136,8 +138,8 @@ def command_states(ltype, source, body, disp):
 						else:
 							answer = AnsBase[19] % (cmd)
 					else:
-						answer = cexp_answers[16] % (cmd)
-				elif body in ["on", "вкл".decode("utf-8")]:
+						answer = CexpAnsBase[16] % (cmd)
+				elif body in ("on", "вкл".decode("utf-8")):
 					if not Cmds[cmd].isAvalable:
 						if Cmds[cmd].handler:
 							Cmds[cmd].isAvalable = True
@@ -145,7 +147,7 @@ def command_states(ltype, source, body, disp):
 						else:
 							answer = AnsBase[19] % (cmd)
 					else:
-						answer = cexp_answers[17] % (cmd)
+						answer = CexpAnsBase[17] % (cmd)
 				else:
 					answer = AnsBase[2]
 			else:
@@ -157,7 +159,7 @@ def command_states(ltype, source, body, disp):
 	Answer(answer, ltype, source, disp)
 
 expansions[exp_name].funcs_add([command_expinfo, command_expload, command_expunload, command_states])
-expansions[exp_name].ls.extend(["cexp_answers"])
+expansions[exp_name].ls.extend(["CexpAnsBase", "ReloadSemaphore"])
 
 command_handler(command_expinfo, {"RU": "плагинфо", "EN": "expinfo"}, 7, exp_name)
 command_handler(command_expload, {"RU": "подгрузи", "EN": "expload"}, 8, exp_name)

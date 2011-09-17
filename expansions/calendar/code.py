@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "calendar" # /code.py v.x1
-#  Id: 25~1a
+#  Id: 24~1a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -14,9 +14,9 @@ def command_calendar(ltype, source, body, disp):
 	if body:
 		body = body.split()
 		x = body.pop(0)
-		if check_number(x):
+		if isNumber(x):
 			z = int(x)
-			if body and check_number(body[0]):
+			if body and isNumber(body[0]):
 				y = int(body.pop(0))
 	if z not in range(1, 13):
 		y = date[0]

@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	user_stat_answers = [x.decode("utf-8") for x in [
+	UstatAnsBase = [x.decode("utf-8") for x in [
 		"\nВсего входов - %d\nВремя последнего входа - %s\nПоследняя роль - %s", # 0
 		"\nВремя последнего выхода - %s\nПричина выхода - %s", # 1
 		"\nНики: %s", # 2
@@ -11,7 +11,7 @@ if DefLANG in ["RU", "UA"]:
 		"здесь нет такого юзера" # 6
 					]]
 else:
-	user_stat_answers = [
+	UstatAnsBase = [
 		"\nTotal joins - %d\nLast join time - %s\nLast role - %s", # 0
 		"\nLast leave time - %s\nExit reason - %s", # 1
 		"\nNicks: %s", # 2

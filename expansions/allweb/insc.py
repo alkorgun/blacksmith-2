@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	allweb_answers = [x.decode("utf-8") for x in [
+	AllwebAnsBase = [x.decode("utf-8") for x in [
 		"Не могу получить доступ к странице.", # 0
 		"Проблемы с разметкой...", # 1
 		"Твоих запросов нет в базе.", # 2
@@ -10,7 +10,7 @@ if DefLANG in ["RU", "UA"]:
 		"Ничего не найдено..." # 5
 					]]
 else:
-	allweb_answers = [
+	AllwebAnsBase = [
 		"No access to the page.", # 0
 		"Trouble with the marking...", # 1
 		"There are no your requests in cache.", # 2

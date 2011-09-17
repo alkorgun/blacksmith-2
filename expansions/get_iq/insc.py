@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	iq_answers = [x.decode("utf-8") for x in [
+	IqAnsBase = [x.decode("utf-8") for x in [
 		"Понг - %s сек.", # 0
 		"Понга нет. Ответ на версию (%s) за %s секунд.", # 1
 		"Ни пинга, ни версии...", # 2
@@ -13,7 +13,7 @@ if DefLANG in ["RU", "UA"]:
 		"Послеедняя активность «%s» - %s назад." # 8
 					]]
 else:
-	iq_answers = [
+	IqAnsBase = [
 		"Pong - %s sec.", # 0
 		"No pong. Answer for version (%s) in %s sec.", # 1
 		"No pong, no version...", # 2

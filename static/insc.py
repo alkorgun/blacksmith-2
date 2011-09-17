@@ -14,7 +14,7 @@ if DefLANG in ["RU", "UA"]:
 		"тип указан не корректно", # 9
 		"недостаточный доступ", # 10
 		"ответ в привате", # 11
-		"\n№ %d. - %s", # 12
+		"№ %d. - %s", # 12
 		"команды «%s» (%s)", # 13
 		"процесса «%s»", # 14
 		"При выполнении %s --» произошла ошибка!", # 15
@@ -48,7 +48,7 @@ else:
 		"Type specified is incorrect", # 9
 		"You need to access higher", # 10
 		"You should to look in to your private", # 11
-		"\n# %d. - %s", # 12
+		"# %d. - %s", # 12
 		"command '%s' (%s)", # 13
 		"prosess '%s'", # 14
 		"When execut %s --> error was happend!", # 15

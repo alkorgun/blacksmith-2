@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "basic_control" # /code.py v.x8
@@ -56,7 +56,7 @@ def command_join(ltype, source, body, disp):
 								codename = x[1]
 					source_ = get_source(source[1], source[2])
 					if SuperAdmin != source_:
-						delivery(control_answers[0] % (source[2], source_, conf))
+						delivery(ControlAnsBase[0] % (source[2], source_, conf))
 					if not disp_:
 						disp_ = IdleClient()
 					Chats[conf] = sConf(conf, disp_, codename, cPref, nick)
@@ -64,19 +64,19 @@ def command_join(ltype, source, body, disp):
 					Chats[conf].join()
 					Chat_check(conf)
 					if Chats.has_key(conf) and Chats[conf].IamHere:
-						Msend(conf, control_answers[7] % (ProdName, source[2]), disp_)
-						answer = control_answers[2] % (conf)
+						Msend(conf, ControlAnsBase[7] % (ProdName, source[2]), disp_)
+						answer = ControlAnsBase[2] % (conf)
 					else:
-						answer = control_answers[3] % (conf)
+						answer = ControlAnsBase[3] % (conf)
 						time.sleep(3.6)
 						if ejoinTimerName(conf) in iThr.ThrNames():
-							answer += control_answers[13]
+							answer += ControlAnsBase[13]
 				else:
-					answer = control_answers[15]
+					answer = ControlAnsBase[15]
 			else:
-				answer = control_answers[5]
+				answer = ControlAnsBase[5]
 		else:
-			answer = control_answers[6] % (conf)
+			answer = ControlAnsBase[6] % (conf)
 	else:
 		answer = AnsBase[1]
 	Answer(answer, ltype, source, disp)
@@ -88,7 +88,7 @@ def command_rejoin(ltype, source, body, disp):
 		conf = source[1]
 	if Chats.has_key(conf):
 		if online(Chats[conf].disp):
-			Chats[conf].leave(control_answers[8] % (source[2]))
+			Chats[conf].leave(ControlAnsBase[8] % (source[2]))
 			time.sleep(2)
 			Chats[conf].join()
 			Chat_check(conf)
@@ -97,7 +97,7 @@ def command_rejoin(ltype, source, body, disp):
 			else:
 				answer = AnsBase[7]
 		else:
-			answer = control_answers[14]
+			answer = ControlAnsBase[14]
 	else:
 		answer = AnsBase[8]
 	Answer(answer, ltype, source, disp)
@@ -111,18 +111,18 @@ def command_leave(ltype, source, body, disp):
 		if Chats.has_key(conf):
 			source_ = get_source(source[1], source[2])
 			if SuperAdmin != source_:
-				delivery(control_answers[4] % (source[2], source_, conf))
-			info = control_answers[9] % (source[2])
+				delivery(ControlAnsBase[4] % (source[2], source_, conf))
+			info = ControlAnsBase[9] % (source[2])
 			Msend(conf, info, Chats[conf].disp)
 			time.sleep(2)
 			Chats[conf].full_leave(info)
 			if conf != source[1]:
-				answer = control_answers[10] % (conf)
+				answer = ControlAnsBase[10] % (conf)
 		else:
 			answer = AnsBase[8]
 	else:
 		answer = AnsBase[10]
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def command_reconnect(ltype, source, body, disp):
@@ -147,7 +147,7 @@ def command_reconnect(ltype, source, body, disp):
 			try:
 				Try_Thr(composeThr(Dispatch_handler, ThrName, (Name,)), -1)
 			except RuntimeError:
-				answer = control_answers[16]
+				answer = ControlAnsBase[16]
 			else:
 				for conf in Chats.keys():
 					if Name == Chats[conf].disp:
@@ -156,41 +156,41 @@ def command_reconnect(ltype, source, body, disp):
 		else:
 			answer = AnsBase[7]
 	else:
-		answer = control_answers[17]
+		answer = ControlAnsBase[17]
 	Answer(answer, ltype, source, disp)
 
 def command_reload(ltype, source, body, disp):
-	status = control_answers[11] % (source[2])
+	exit_desclr = ControlAnsBase[11] % (source[2])
 	if body:
-		status += control_answers[1] % (body)
+		exit_desclr += ControlAnsBase[1] % (body)
 	for conf in Chats.keys():
-		Msend(conf, status, Chats[conf].disp)
+		Msend(conf, exit_desclr, Chats[conf].disp)
 	time.sleep(6)
 	VarCache["alive"] = False
 	iThr.Threads_kill()
 	for disp in Clients.keys():
 		if online(disp):
-			Unavailable(disp, status)
+			sUnavailable(disp, exit_desclr)
 	call_sfunctions("03si")
 	Exit("\n\nRestart command...", 0, 15)
 
 def command_exit(ltype, source, body, disp):
-	status = control_answers[12] % (source[2])
+	exit_desclr = ControlAnsBase[12] % (source[2])
 	if body:
-		status += control_answers[1] % (body)
+		exit_desclr += ControlAnsBase[1] % (body)
 	for conf in Chats.keys():
-		Msend(conf, status, Chats[conf].disp)
+		Msend(conf, exit_desclr, Chats[conf].disp)
 	time.sleep(6)
 	VarCache["alive"] = False
 	iThr.Threads_kill()
 	for disp in Clients.keys():
 		if online(disp):
-			Unavailable(disp, status)
+			sUnavailable(disp, exit_desclr)
 	call_sfunctions("03si")
 	Exit("\n\nSysExit command...", 1, 15)
 
 expansions[exp_name].funcs_add([Chat_check, command_join, command_rejoin, command_leave, command_reconnect, command_reload, command_exit])
-expansions[exp_name].ls.extend(["control_answers"])
+expansions[exp_name].ls.extend(["ControlAnsBase"])
 
 command_handler(command_join, {"RU": "джойн", "EN": "join"}, 7, exp_name)
 command_handler(command_rejoin, {"RU": "реджойн", "EN": "rejoin"}, 7, exp_name)

@@ -1,33 +1,33 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "new_year" # /code.py v.x2
-#  Id: 02~1a
+exp_name = "new_year" # /code.py v.x3
+#  Id: 02~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
-ny_answers = ["До нового года (по GMT) осталось - ", "дн", "час", "мин", "сек"] if DefLANG in ["RU", "UA"] else ["Until the new year (GMT) left - ", "days", "hours", "minutes", "seconds"]
-
 def command_new_year(ltype, source, body, disp):
-	months = {"01": 0, "02": 31, "03": 59, "04": 90, "05": 120, "06": 151, "07": 181, "08": 212, "09": 243, "10": 273, "11": 304, "12": 334}
-	time_list = strTime("%m/%d/%H/%M/%S", False).split("/")
-	answer = ny_answers[0]
-	days = 365 - (months[time_list[0]] + int(time_list[1]))
-	if days:
-		answer += "%s %s " % (str(days), ny_answers[1])
-	hours = 23 - int(time_list[2])
-	if hours:
-		answer += "%s %s " % (str(hours), ny_answers[2])
-	minutes = 59 - int(time_list[3])
-	if minutes:
-		answer += "%s %s " % (str(minutes), ny_answers[3])
-	seconds = (59 - int(time_list[4])) + 1
-	if seconds:
-		answer += "%s %s" % (str(seconds), ny_answers[4])
-	Answer(answer, ltype, source, disp)
+	list = ["Until the New Year (GMT) left:"]
+	Time = time.gmtime()
+	dr = lambda Numb: (Numb, ("s" if Numb >= 2 else ""))
+	t0 = (365 if (Time.tm_year%4) else 366)
+	t1 = (t0 - Time.tm_yday)
+	t2 = (23 - Time.tm_hour)
+	t3 = (59 - Time.tm_min)
+	t4 = (59 - Time.tm_sec)
+	if t1:
+		list.append("%d Day%s" % dr(t1))
+	if t2:
+		list.append("%d Hour%s" % dr(t2))
+	if t3:
+		list.append("%d Minute%s" % dr(t3))
+	if t4:
+		list.append("%d Second%s" % dr(t4))
+	if len(list) == 1:
+		list = ["Happy New Year!"]
+	Answer(str.join(chr(32), list), ltype, source, disp)
 
 expansions[exp_name].funcs_add([command_new_year])
-expansions[exp_name].ls.extend(["ny_answers"])
 
 command_handler(command_new_year, {"RU": "нг", "EN": "new_year"}, 1, exp_name)

@@ -1,29 +1,29 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "clear_stats" # /code.py v.x1
-#  Id: 12~1a
+exp_name = "clear_stats" # /code.py v.x2
+#  Id: 12~2a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
-def join_clear(conf, nick, instance, afl, role, disp):
+def join_clear(conf, nick, instance, role, disp):
 	if instance:
-		for user in Chats[conf].get_users():
-			if user.source == instance and not user.ishere and user.nick != nick:
-				if Chats[conf].isHere(user.nick):
-					del Chats[conf].users[user.nick]
+		for obj in Chats[conf].get_users():
+			if obj.source == instance and not obj.ishere and obj.nick != nick:
+				if Chats[conf].isHere(obj.nick):
+					Chats[conf].users.pop(obj.nick)
 
 def exit_clear(conf, nick, status, scode, disp):
 	instance = get_source(conf, nick)
 	if instance:
 		delete = False
-		for user in Chats[conf].get_users():
-			if user.source == instance and user.ishere:
+		for obj in Chats[conf].get_users():
+			if obj.source == instance and obj.ishere:
 				delete = True
 				break
 		if delete and Chats[conf].isHere(nick):
-			del Chats[conf].users[nick]
+			Chats[conf].users.pop(nick)
 
 expansions[exp_name].funcs_add([join_clear, exit_clear])
 

@@ -1,56 +1,56 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "info" # /code.py v.x2
-#  Id: 11~1a
+exp_name = "info" # /code.py v.x3
+#  Id: 11~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
 def command_online(ltype, source, body, disp):
-	list, col, ThrIds = info_answers[7], itypes.Number(), iThr.ThrNames()
+	list, Numb, ThrIds = InfoAnsBase[7], itypes.Number(), iThr.ThrNames()
 	for disp_ in sorted(InstansesDesc.keys()):
 		connect, alive = online(disp_), str("%s%s" % (Types[13], disp_) in ThrIds)
 		if not connect:
 			connect = False
-		list += "\n%d) %s - %s - %s" % (col.plus(), disp_, str(connect), alive)
+		list += "\n%d) %s - %s - %s" % (Numb.plus(), disp_, str(connect), alive)
 	if ltype == Types[1]:
 		Answer(AnsBase[11], ltype, source, disp)
 	Msend(source[0], list, disp)
 
 def command_inchat(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
-		list, col, acc = info_answers[8], itypes.Number(), enough_access(source[1], source[2], 4)
+		list, Numb, acc = InfoAnsBase[8], itypes.Number(), enough_access(source[1], source[2], 4)
 		owners, admins, members, none = [], [], [], []
 		for nick in Chats[source[1]].sorted_users():
 			if nick.ishere:
 				text = nick.nick
 				if acc and nick.source:
 					text += " (%s)" % (nick.source)
-				if nick.afl == AflRoles[5]:
+				if nick.role[0] == AflRoles[5]:
 					owners.append(text)
-				elif nick.afl == AflRoles[4]:
+				elif nick.role[0] == AflRoles[4]:
 					admins.append(text)
-				elif nick.afl == AflRoles[3]:
+				elif nick.role[0] == AflRoles[3]:
 					members.append(text)
 				else:
 					none.append(text)
 		if owners:
 			list += "\n\nOwners:"
 			for x in owners:
-				list += "\n%d) %s" % (col.plus(), x)
+				list += "\n%d) %s" % (Numb.plus(), x)
 		if admins:
 			list += "\n\nAdmins:"
 			for x in admins:
-				list += "\n%d) %s" % (col.plus(), x)
+				list += "\n%d) %s" % (Numb.plus(), x)
 		if members:
 			list += "\n\nMembers:"
 			for x in members:
-				list += "\n%d) %s" % (col.plus(), x)
+				list += "\n%d) %s" % (Numb.plus(), x)
 		if none:
 			list += "\n\nOthers:"
 			for x in none:
-				list += "\n%d) %s" % (col.plus(), x)
+				list += "\n%d) %s" % (Numb.plus(), x)
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
 		Msend(source[0], list, disp)
@@ -58,10 +58,10 @@ def command_inchat(ltype, source, body, disp):
 		Answer(AnsBase[0], ltype, source, disp)
 
 def command_conflist(ltype, source, body, disp):
-	answer, col, admin = info_answers[5], itypes.Number(), enough_access(source[1], source[2], 7)
+	answer, Numb, admin = InfoAnsBase[5], itypes.Number(), enough_access(source[1], source[2], 7)
 	for conf in sorted(Chats.keys()):
 		BsNick = get_self_nick(conf)
-		ismoder = str(Chats[conf].ismoder)
+		isModer = str(Chats[conf].isModer)
 		ConfName = conf.split("@")[0]
 		disp_ = (Chats[conf].disp if admin else "***")
 		cPref = str(Chats[conf].cPref)
@@ -69,101 +69,100 @@ def command_conflist(ltype, source, body, disp):
 		for nick in Chats[conf].get_users():
 			if nick.ishere:
 				online.plus()
-		answer += '\n%d) %s/%s [%s] "%s" (%s) - %s' % (col.plus(), ConfName, BsNick, disp_, cPref, online._str(), ismoder)
-	if col._int():
+		answer += '\n%d) %s/%s [%s] "%s" (%s) - %s' % (Numb.plus(), ConfName, BsNick, disp_, cPref, online._str(), isModer)
+	if Numb._int():
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
 		Msend(source[0], answer, disp)
 	else:
-		Answer(info_answers[6], ltype, source, disp)
+		Answer(InfoAnsBase[6], ltype, source, disp)
 
 def command_visitors(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
-			action = body.lower()
+			Var = body.lower()
 		else:
-			action = "default"
-		if action in ["today", "сегодня".decode("utf-8")]:
-			date = today()[1]
-			list = ""
-			col = itypes.Number()
-			col2 = itypes.Number()
+			Var = "default"
+		if Var in ("today", "сегодня".decode("utf-8")):
+			list = str()
+			date = Yday()
+			Numb = itypes.Number()
+			Numb2 = itypes.Number()
 			for nick in Chats[source[1]].sorted_users():
 				if not nick.ishere:
-					if nick.dates[1] == date:
+					if nick.date[1] == date:
 						if nick.source:
-							list += "\n%d. %s (%s)" % (col.plus(), nick.nick, nick.source)
+							list += "\n%d. %s (%s)" % (Numb.plus(), nick.nick, nick.source)
 						else:
-							list += "\n%d. %s" % (col.plus(), nick.nick)
+							list += "\n%d. %s" % (Numb.plus(), nick.nick)
 				else:
-					col2.plus()
-			if col._int():
+					Numb2.plus()
+			if Numb._int():
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
-				Msend(source[0], info_answers[0] % (col._str(), list, col2._str()), disp)
+				Msend(source[0], InfoAnsBase[0] % (Numb._str(), list, Numb2._str()), disp)
 			else:
-				Answer(info_answers[1], ltype, source, disp)
-		elif action in ["dates", "даты".decode("utf-8")]:
-			list = ""
-			col = itypes.Number()
+				Answer(InfoAnsBase[1], ltype, source, disp)
+		elif Var in ("dates", "даты".decode("utf-8")):
+			list = str()
+			Numb = itypes.Number()
 			for nick in Chats[source[1]].sorted_users():
-				list += "\n%d. %s\t\t%s" % (col.plus(), nick.nick, nick.dates[2])
+				list += "\n%d. %s\t\t%s" % (Numb.plus(), nick.nick, nick.date[2])
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], info_answers[2] % (col._str(), list), disp)
-		elif action in ["list", "лист".decode("utf-8")]:
-			list = Chats[source[1]].get_nicks()
-			text = ", ".join(sorted(list))
+			Msend(source[0], InfoAnsBase[2] % (Numb._str(), list), disp)
+		elif Var in ("list", "лист".decode("utf-8")):
+			text = ", ".join(sorted(Chats[source[1]].get_nicks()))
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], info_answers[2] % (str(len(list)), text), disp)
+			Msend(source[0], InfoAnsBase[2] % (str(len(list)), text), disp)
 		else:
-			list = ""
-			col = itypes.Number()
-			col2 = itypes.Number()
+			list = str()
+			Numb = itypes.Number()
+			Numb2 = itypes.Number()
 			for nick in Chats[source[1]].sorted_users():
 				if not nick.ishere:
 					if nick.source:
-						list += "\n%d. %s (%s)" % (col.plus(), nick.nick, nick.source)
+						list += "\n%d. %s (%s)" % (Numb.plus(), nick.nick, nick.source)
 					else:
-						list += "\n%d. %s" % (col.plus(), nick.nick)
+						list += "\n%d. %s" % (Numb.plus(), nick.nick)
 				else:
-					col2.plus()
-			if col._int():
+					Numb2.plus()
+			if Numb._int():
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
-				Msend(source[0], info_answers[3] % (col._str(), list, col2._str()), disp)
+				Msend(source[0], InfoAnsBase[3] % (Numb._str(), list, Numb2._str()), disp)
 			else:
-				Answer(info_answers[4], ltype, source, disp)
+				Answer(InfoAnsBase[4], ltype, source, disp)
 	else:
 		Answer(AnsBase[0], ltype, source, disp)
 
 def command_where(ltype, source, body, disp):
 	if body:
-		list, col, acc = "", itypes.Number(), enough_access(source[1], source[2], 7)
+		list, Numb, acc = str(), itypes.Number(), enough_access(source[1], source[2], 7)
 		for conf in sorted(Chats.keys()):
 			for nick in sorted(Chats[conf].get_nicks()):
 				if Chats[conf].isHereNow(nick):
 					jid = get_source(conf, nick)
 					if nick.count(body) or (jid and jid.count(body)):
-						list += "\n%d) %s (%s)" % (col.plus(), nick, conf)
+						list += "\n%d) %s (%s)" % (Numb.plus(), nick, conf)
 						if jid and acc:
 							list += " [%s]" % (jid)
-						if col._int() >= 20:
+						if Numb._int() >= 20:
 							break
-		if col._int():
+		if Numb._int():
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], info_answers[9] % (col._str(), list), disp)
+			Msend(source[0], InfoAnsBase[9] % (Numb._str(), list), disp)
 		else:
-			answer = info_answers[10]
+			answer = InfoAnsBase[10]
 	else:
 		answer = AnsBase[1]
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 expansions[exp_name].funcs_add([command_online, command_inchat, command_conflist, command_visitors, command_where])
-expansions[exp_name].ls.extend(["info_answers"])
+expansions[exp_name].ls.extend(["InfoAnsBase"])
 
 command_handler(command_online, {"RU": "онлайн", "EN": "online"}, 7, exp_name)
 command_handler(command_inchat, {"RU": "инмук", "EN": "inmuc"}, 2, exp_name)

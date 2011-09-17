@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	sess_answers = [x.decode("utf-8") for x in [
+	SstatAnsBase = [x.decode("utf-8") for x in [
 		"\n*// Статистика работы (Pid: %d):", # 0
 		"\n-//- Время работы %s", # 1
 		"\n-//- Последняя сессия %s", # 2
@@ -27,7 +27,7 @@ if DefLANG in ["RU", "UA"]:
 		"Всего произошло %d ошибок." # 22
 					]]
 else:
-	sess_answers = [
+	SstatAnsBase = [
 		"\n*// Session statistics (Pid: %d):", # 0
 		"\n-//- Bot uptime %s", # 1
 		"\n-//- Last working set %s", # 2

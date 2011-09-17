@@ -1,0 +1,14 @@
+statistic of talkers
+talkers [[top] [global/local]]/[[global/local] [my/nick/jid]]
+*/talkers local my
+bot would show your statistic in current conference
+*/talkers global my
+bot would show your statistic in all of the conferences where bot serves
+*/talkers top local
+bot would show talkers top of current conference
+*/talkers top global
+bot would show talkers top of all of the conferences where bot serves
+*/talkers local Dude
+bot would show Dude's statistic in current conference
+*/talkers global dude@jub.net
+bot would show statistic of dude@jub.net in all of the conferences where bot serves

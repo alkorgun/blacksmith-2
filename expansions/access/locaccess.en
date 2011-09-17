@@ -1,0 +1,6 @@
+bot sets local access
+globaccess [!/access] [jid/nick]
+*/globaccess 6 Obi-Wan Kenobi
+bot would set local access with level 6 for Obi-Wan Kenobi
+*/globaccess ! obi-wan_kenobi@jab.net
+bot would remove obi-wan_kenobi@jab.net from local access list

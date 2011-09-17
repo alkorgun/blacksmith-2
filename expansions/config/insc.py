@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	config_answers = [x.decode("utf-8") for x in [
+	ConfAnsBase = [x.decode("utf-8") for x in [
 		"Изменённые пункты: %s", # 0
 		"Очевидно параметры неверны.", # 1
 		"Настройки:\n", # 2
@@ -16,7 +16,7 @@ if DefLANG in ["RU", "UA"]:
 		"«%s» нет в списке клиентов." # 11
 					]]
 else:
-	config_answers = [
+	ConfAnsBase = [
 		"Changed options: %s", # 0
 		"Parameters are incorrect.", # 1
 		"Config:\n", # 2

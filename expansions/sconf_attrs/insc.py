@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	sconf_answers = [x.decode("utf-8") for x in [
+	CstatAnsBase = [x.decode("utf-8") for x in [
 		"Сдаётся мне '%s' сейчас оффлайн.", # 0
 		"Сдаётся мне '%s' итак закреплён за этой конфой.", # 1
 		"'%s' нет среди доступных клиентов!", # 2
@@ -18,7 +18,7 @@ if DefLANG in ["RU", "UA"]:
 		"Статус '%s' мне неизвестен." # 13
 					]]
 else:
-	sconf_answers = [
+	CstatAnsBase = [
 		"I can't, because '%s' is offline.", # 0
 		"'%s' is alredy owned by this conferense.", # 1
 		"'%s' not in available clients.", # 2

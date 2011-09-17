@@ -1,21 +1,19 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
-# BlackSmith`s core mark.2
+# BlackSmith's core mark.2
 # BlackSmith.py
 
 # Code © (2010-2011) by WitcherGeralt (alkorgun@gmail.com)
 
 # imports
 
-from types import UnicodeType, ListType, NoneType, InstanceType
+from types import NoneType, UnicodeType, InstanceType
 from traceback import print_exc as exc_info__
-from random import choice, randint, shuffle
-from urllib import urlretrieve as wget, urlencode as eqlnk
-from re import compile as re_comp
-from urllib2 import Request as rlink, urlopen as open_site
+from random import shuffle, randint, choice
+from re import compile as compile__
 
-import sys, os, gc, time, sqlite3, ConfigParser
+import sys, os, gc, time, ConfigParser
 
 BsCore2 = __file__
 LibsDir = "librarys.zip"
@@ -44,7 +42,7 @@ sys_cmds = [
 	"COLOR F0", # 2
 	"Title", # 3
 	"TASKKILL /PID %d /T /f", # 4
-	"ver", # 5
+	"Ver", # 5
 	'sh -c "%s" 2>&1' # 6
 			]
 
@@ -60,8 +58,8 @@ Types = [
 	"result", # 8
 	"set", # 9
 	"get", # 10
-	"error", # 11
-	"can't start new thread", # 12
+	"received", # 11
+	"answer", # 12
 	"dispatch-", # 13
 	"чат".decode("utf-8"), # 14
 	"приват".decode("utf-8"), # 15
@@ -70,9 +68,8 @@ Types = [
 	"query", # 18
 	"jid", # 19
 	"nick", # 20
-	"request", # 21
-	"received", # 22
-	"answer" # 23
+	"can't start new thread", # 21
+	"request" # 22
 		]
 
 AflRoles = [
@@ -124,7 +121,7 @@ eCodesDesc = {
 	"407": "subscription-required", # 8
 	"409": "conflict", # 9
 	"500": "undefined-condition", # 10
-	"501": "feature-not-implemented", ## 11
+	"501": "feature-not-implemented", # 11
 	"503": "service-unavailable", # 12
 	"504": "remote-server-timeout" # 13
 			}
@@ -150,10 +147,11 @@ aFeatures = Features + [
 			]
 
 VarCache = {
+	"isjid": compile__("\w+@\w+\.\w+", 32),
 	"idle": 0.24,
 	"alive": True,
 	"errors": [],
-	"action": "#: %s %s &" % (os.path.split(sys.executable)[1], BsCore2)
+	"action": "# %s %s &" % (os.path.split(sys.executable)[1], BsCore2)
 			}
 
 Info = {
@@ -171,6 +169,8 @@ Info = {
 class SelfExc(Exception):
 	pass
 
+database = itypes.Base
+
 def exc_info():
 	exc = sys.exc_info()
 	return (exc[0].__name__, str(exc[1]))
@@ -183,7 +183,7 @@ def exc_info_(fp = None):
 
 def get_exc():
 	try:
-		exc = iThr.error_()
+		exc = iThr.get_exc()
 	except:
 		exc = "(...)"
 	return exc
@@ -284,14 +284,14 @@ try:
 	ConTls = eval(GenCon.get("STATES", "TLS"))
 	Mserve = eval(GenCon.get("STATES", "MSERVE"))
 	GetExc = eval(GenCon.get("STATES", "GETEXC"))
-	DefLANG = GenCon.get("STATES", "LANG").upper()
-	DefStatus = GenCon.get("CONFIG", "STATUS")
+	DefLANG = GenCon.get("STATES", "LANG").upper()[0:2]
 	DefNick = GenCon.get("CONFIG", "NICK").split()[0]
+	DefStatus = GenCon.get("CONFIG", "STATUS")
 	GenResource = GenCon.get("CONFIG", "RESOURCE")
 	SuperAdmin = GenCon.get("CONFIG", "ADMIN").lower()
 	IncLimit = int(GenCon.get("LIMITS", "INCOMING"))
-	ConfLimit = int(GenCon.get("LIMITS", "CHAT"))
 	PrivLimit = int(GenCon.get("LIMITS", "PRIVATE"))
+	ConfLimit = int(GenCon.get("LIMITS", "CHAT"))
 	MaxMemory = int(GenCon.get("LIMITS", "MEMORY"))*1024
 	ConDisp = ConfigParser.ConfigParser()
 	if os.path.isfile(ConDispFile):
@@ -333,18 +333,14 @@ Handlers = {
 	"03si": [], "04si": []
 			}
 
-MultiSemph = iThr.BoundedSemaphore(len(InstansesDesc.keys())*15)
-Semph = iThr.BoundedSemaphore()
-alock = iThr.allocate_lock()
-Sqlite3Exc = (sqlite3.OperationalError)
+Sequeque = iThr.Semaphore(len(InstansesDesc.keys())*15)
+Sequence = iThr.Semaphore()
 
 # call & execut Threads & handlers
 
 def execute_handler(handler_instance, list = (), command = None):
 	try:
 		handler_instance(*list)
-	except Sqlite3Exc:
-		pass
 	except KeyboardInterrupt:
 		pass
 	except iThr.ThrKill:
@@ -370,19 +366,19 @@ def composeThr(handler, Name, list = (), command = None):
 		Name = "%s-%d" % (Name, iThr.aCounter._int())
 	return iThr.KThread(execute_handler, Name, (handler, list, command,))
 
-def Try_Thr(Thr, number = 0):
-	if number >= 4:
-		raise RuntimeError("Thread try limit!")
+def Try_Thr(Thr, Number = 0):
+	if Number >= 4:
+		raise RuntimeError("exit")
 	try:
 		Thr.start()
 	except:
-		Try_Thr(Thr, (number + 1))
+		Try_Thr(Thr, (Number + 1))
 
-def Thread_Run(Thr, handler, command = None):
+def sThread_Run(Thr, handler, command = None):
 	try:
 		Thr.start()
-	except:
-		if (exc_info()[1] == Types[12]):
+	except iThr.ThrFail:
+		if (exc_info()[1] == Types[21]):
 			try:
 				Try_Thr(Thr)
 			except RuntimeError:
@@ -393,11 +389,13 @@ def Thread_Run(Thr, handler, command = None):
 				except:
 					lytic_crashlog(handler, command)
 		else:
-			lytic_crashlog(Thread_Run, command)
+			lytic_crashlog(sThread_Run, command)
+	except:
+		lytic_crashlog(sThread_Run, command)
 
 def sThread(name, handler, list = (), command = None):
-	with MultiSemph:
-		Thread_Run(composeThr(handler, name, list, command), handler, command)
+	with Sequeque:
+		sThread_Run(composeThr(handler, name, list, command), handler, command)
 
 def call_functions(ls, list = ()):
 	for handler in Handlers[ls]:
@@ -547,32 +545,28 @@ def command_handler(handler, commands, access, name, pfx = True):
 
 # Chats, Users & other
 
-class User(object):
+class sUser:
 
-	def __init__(self, nick, afl, role, source, access = None):
+	def __init__(self, nick, role, source, access = None):
 		self.nick = nick
 		self.source = source
-		self.afl = afl
 		self.role = role
 		self.ishere = True
-		date = today()
-		self.dates = [time.time(), date[1], date[0]]
-		del date
+		self.date = (time.time(), Yday(), time.asctime())
 		self.access = access
 		if not access and access != 0:
 			self.calc_acc()
 
-	def aroles(self, afl, role):
-		if (self.afl+self.role) != (afl+role):
+	def aroles(self, role):
+		if self.role != role:
 			self.role = role
-			self.afl = afl
 			return True
 		return False
 
 	def calc_acc(self):
-		self.access = (aDesc.get(self.afl, 0) + aDesc.get(self.role, 0))
+		self.access = (aDesc.get(self.role[0], 0) + aDesc.get(self.role[1], 0))
 
-class sConf(object):
+class sConf:
 
 	def __init__(self, name, disp, code = None, cPref = None, nick = DefNick, added = False):
 		self.name = name
@@ -581,7 +575,7 @@ class sConf(object):
 		self.code = code
 		self.more = ""
 		self.IamHere = None
-		self.ismoder = True
+		self.isModer = True
 		self.alist = {}
 		self.oCmds = []
 		self.users = {}
@@ -621,14 +615,14 @@ class sConf(object):
 	def get_users(self):
 		return self.users.values()
 
-	def joined(self, nick, afl, role, source):
+	def joined(self, nick, role, source):
 		access = Galist.get(source, None)
 		if not access and access != 0:
 			access = self.alist.get(source, None)
-		self.users[nick] = User(nick, afl, role, source, access)
+		self.users[nick] = sUser(nick, role, source, access)
 
-	def aroles_change(self, nick, afl, role):
-		if self.get_user(nick).aroles(afl, role):
+	def aroles_change(self, nick, role):
+		if self.get_user(nick).aroles(role):
 			source = self.get_user(nick).source
 			if not Galist.has_key(source):
 				if not self.alist.has_key(source):
@@ -670,7 +664,7 @@ class sConf(object):
 
 	def leave(self, estatus = False):
 		self.IamHere = None
-		self.ismoder = True
+		self.isModer = True
 		self.more = ""
 		stanza = xmpp.Presence(self.name, Types[4])
 		if estatus:
@@ -693,14 +687,14 @@ class sConf(object):
 				if list.has_key(self.name):
 					del list[self.name]
 			else:
-				list[self.name] = {"disp": self.disp, "nick": self.nick, "cPref": self.cPref, "code": self.code}
+				list[self.name] = {"disp": self.disp, Types[20]: self.nick, "cPref": self.cPref, "code": self.code}
 			cat_file(ChatsFile, str(list))
 		else:
 			delivery("%s" % (self.name))
 
 	def iq_sender(self, x, y, afrls, afrl, text = "", source = ()):
 		stanza = xmpp.Iq(to = self.name, typ = Types[9])
-		stanza.setID("iq_%d" % Info["outiq"].plus())
+		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(Types[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)
 		arole = query.addChild("item", {x: y, afrls: afrl})
@@ -757,9 +751,9 @@ def get_access(source, nick):
 		access = Galist.get(source, 2)
 	return access
 
-enough_access = lambda x, nick, ac = 0: (ac <= get_access(x, nick))
+enough_access = lambda x, nick, acc = 0: (acc <= get_access(x, nick))
 
-object_encode = lambda x: x if isinstance(x, UnicodeType) else x.decode("utf-8", "replace")
+object_encode = lambda x: x if isinstance(x, UnicodeType) else x.decode("utf-8", str.replace.__name__)
 
 def delivery(body):
 	try:
@@ -795,7 +789,7 @@ def Msend(instance, body, disp = None):
 			if isinstance(instance, xmpp.JID):
 				chat = instance.getStripped()
 			else:
-				chat = object_encode(instance).split("/")[0].lower()
+				chat = (instance.split(chr(47)))[0].lower()
 			if Chats.has_key(chat):
 				disp = Chats[chat].disp
 			else:
@@ -834,7 +828,7 @@ def CheckFlood(disp):
 			Flood[disp].pop(0)
 
 def IdleClient():
-	cls = {}
+	cls = dict()
 	for disp in Clients.keys():
 		if online(disp):
 			cls[disp] = 0
@@ -914,14 +908,13 @@ def Sender(disp, stanza):
 	except:
 		lytic_crashlog(Sender)
 
-def Unavailable(disp, status):
-	stanza = xmpp.Presence(typ = Types[4])
-	stanza.setStatus(status)
-	Sender(disp, stanza)
+sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = Types[4], status = data))
 
 def caps_add(node):
 	node.setTag("c", {"node": Caps, "ver": CapsVer}, xmpp.NS_CAPS)
 	return node
+
+Yday = lambda: getattr(time.gmtime(), "tm_yday")
 
 def sAttrs(stanza):
 	source = stanza.getFrom()
@@ -965,16 +958,12 @@ def get_file(filename):
 	fp.close()
 	return x
 
-def cat_file(filename, data, mode = "w"):
-	with Semph:
-		alock.acquire()
-		try:
-			fp = open(cefile(filename), mode)
-			Info["fw"].plus()
-			fp.write(data)
-			fp.close()
-		finally:
-			alock.release()
+def cat_file(filename, data, mode = "wb"):
+	with Sequence:
+		fp = open(cefile(filename), mode)
+		Info["fw"].plus()
+		fp.write(data)
+		fp.close()
 
 # Crashlogs
 
@@ -1034,7 +1023,7 @@ def load_expansions():
 		else:
 			Print("%s - isn't an expansion!" % (exp.name), color2)
 
-def read_pipe(command):
+def get_pipe(command):
 	try:
 		pipe = os.popen(command)
 		data = pipe.read()
@@ -1045,22 +1034,46 @@ def read_pipe(command):
 		data = "(...)"
 	return data
 
-def get_page(link, header = ()):
-	req = rlink(link)
-	if header:
-		req.add_header(*header)
-	site = open_site(req)
-	data = site.read()
-	return data
+class Web:
 
-def get_text(body, s0, s2, s1 = "(?:.|\s)*"):
-	compile_ = re_comp("%s(%s?)%s" % (s0, s1, s2), False)
-	body = compile_.search(body)
+	import urllib as One, urllib2 as Two
+
+	Opener = One.FancyURLopener()
+	Opener_2 = Two.build_opener()
+
+	def __init__(self, link, data = [], headers = {}):
+		self.link = link
+		self.headers = headers
+		if data:
+			list = []
+			for Name, Attr in data:
+				Name = self.One.quote_plus(Name)
+				Attr = self.One.quote_plus(Attr)
+				list.append("%s=%s" % (Name, Attr))
+			self.link += "&".join(list)
+
+	def add_header(self, name, header):
+		self.headers[name] = header
+
+	def get_page(self, header = ()):
+		dest = self.Two.Request(self.link)
+		if header:
+			self.add_header(*header)
+		if self.headers:
+			for header, desc in self.headers.iteritems():
+				dest.add_header(header, desc)
+		site = self.Opener_2.open(dest)
+		data = site.read()
+		return data
+
+def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
+	comp = compile__("%s(%s?)%s" % (s0, s1, s2), 16)
+	body = comp.search(body)
 	if body:
 		body = (body.group(1)).strip()
 	return body
 
-def replace_all(body, ls, sbls = False):
+def sub_desc(body, ls, sbls = False):
 	if isinstance(ls, dict):
 		for x, z in ls.items():
 			body = body.replace(x, z)
@@ -1077,56 +1090,54 @@ def replace_all(body, ls, sbls = False):
 
 strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
 
-def today():
-	z = int(strTime("%Y%m%d", False))
-	return (time.asctime(), z)
+def Time2Text(Time, ext = []):
+	ls = [("Year", 0), ("Month", 12), ("Day", 30), ("Hour", 24), ("Minute", 60), ("Second", 60)]
+	while True:
+		lr = ls.pop()
+		if lr[1]:
+			(Time, Rest) = divmod(Time, lr[1])
+		else:
+			Rest = Time
+		if Rest:
+			ext.insert(0, "%d %s%s" % (Rest, lr[0], ("s" if Rest >= 2 else "")))
+		if not (ls and Time):
+			return str.join(chr(32), ext)
 
-def check_number(number):
-	try:
-		int(number)
-	except:
-		return False
-	return True
+def Size2Text(Size, ext = []):
+	ls = list("TGMK.")
+	while True:
+		lr = ls.pop()
+		if ls:
+			(Size, Rest) = divmod(Size, 1024)
+		else:
+			Rest = Size
+		if Rest:
+			ext.insert(0, "%d %sB." % (Rest, (lr if lr != "." else "")))
+		if not (ls and Size):
+			return str.join(chr(32), ext)
 
-Elist = [" 0 %s" % (x) for x in ["months", "days", "hours", "minutes", "seconds"]]
+def enumerated_list(list, ext = []):
+	Mumb = itypes.Number()
+	for line in list:
+		ext.append(AnsBase[12] % (Mumb.plus(), line))
+	return str.join(chr(10), ext)
 
-def timeElapsed(or_seconds): # Part of function from Talisman © 2007 Als (Als@exploit.in)
-	minutes, seconds = divmod(or_seconds, 60)
-	hours, minutes = divmod(minutes, 60)
-	days, hours = divmod(hours, 24)
-	months, days = divmod(days, 30)
-	years, months = divmod(months, 12)
-	body = "%d seconds" % (seconds)
-	if or_seconds >= 60:
-		body = "%d minutes %s" % (minutes, body)
-	if or_seconds >= 3600:
-		body = "%d hours %s" % (hours, body)
-	if or_seconds >= 86400:
-		body = "%d days %s" % (days, body)
-	if or_seconds >= 2592000:
-		body = "%d months %s" % (months, body)
-	if or_seconds >= 31104000:
-		body = "%d years %s" % (years, body)
-	return replace_all(body, Elist, "")
+isNumber = lambda objt: (None if exec_(int, (objt,)) is None else True)
 
-def enumerated_list(list, answer = ""):
-	number = itypes.Number()
-	for x in list:
-		answer += AnsBase[12] % (number.plus(), x)
-	return answer
+isSource = lambda data: VarCache["isjid"].match(data)
 
-def calculate(answer = 0):
+def calculate(Numb = int()):
 	if oSlist[0]:
-		lines = read_pipe(sys_cmds[1] % (BsPid)).splitlines()
+		lines = get_pipe(sys_cmds[1] % (BsPid)).splitlines()
 		if len(lines) >= 3:
 			list = lines[3].split()
 			if len(list) >= 6:
-				answer = "%s%s" % (list[4], list[5])
+				Numb = "%s%s" % (list[4], list[5])
 	else:
-		lines = read_pipe(sys_cmds[0] % (BsPid)).splitlines()
+		lines = get_pipe(sys_cmds[0] % (BsPid)).splitlines()
 		if len(lines) >= 2:
-			answer = lines[1].strip()
-	return (0 if not check_number(answer) else int(answer))
+			Numb = lines[1].strip()
+	return (int() if not isNumber(Numb) else int(Numb))
 
 def check_copies():
 	try:
@@ -1139,7 +1150,7 @@ def check_copies():
 		if BsPid == Cache["PID"]:
 			Cache["alls"].append(strTime())
 		elif oSlist[0]:
-			read_pipe(sys_cmds[4] % (Cache["PID"])); raise SelfExc()
+			get_pipe(sys_cmds[4] % (Cache["PID"])); raise SelfExc()
 		else:
 			os.kill(Cache["PID"], 9); raise SelfExc()
 	except:
@@ -1185,16 +1196,16 @@ def Xmpp_Presence_Cb(disp, stanza):
 			if enough_access(conf, nick, 7):
 				Clients[disp].Roster.Authorize(conf)
 				Clients[disp].Roster.setItem(conf, conf, ["Admins"])
+				Clients[disp].Roster.Subscribe(conf)
 			elif Roster["on"]:
 				Clients[disp].Roster.Authorize(conf)
 				Clients[disp].Roster.setItem(conf, conf, ["Users"])
+				Clients[disp].Roster.Subscribe(conf)
 			else:
-				Clients[disp].Roster.Unauthorize(conf)
-				if conf in Clients[disp].Roster.keys():
-					Clients[disp].Roster.delItem(conf)
+				Sender(disp, xmpp.Presence(conf, Types[7]))
 		xmpp_raise()
 	elif Chats.has_key(conf):
-		if stype == Types[11]:
+		if stype == Types[7]:
 			ecode = stanza.getErrorCode()
 			if ecode:
 				if ecode == eCodes[9]:
@@ -1220,28 +1231,28 @@ def Xmpp_Presence_Cb(disp, stanza):
 			Role = GetRole(stanza)
 			instance = stanza.getJid()
 			if not instance:
-				if Chats[conf].ismoder:
-					Chats[conf].ismoder = False
+				if Chats[conf].isModer:
+					Chats[conf].isModer = False
 					if not Mserve:
 						Chats[conf].change_status(AnsBase[23], sList[2])
 						Msend(conf, AnsBase[24], disp)
 						xmpp_raise()
 				elif not Mserve:
 					xmpp_raise()
-			elif Chats[conf].ismoder is False:
+			elif Chats[conf].isModer is False:
 				if Chats[conf].nick == nick and aDesc.get(Role[0], 0) >= 2:
-					Chats[conf].ismoder = True
+					Chats[conf].isModer = True
 					Chats[conf].leave(AnsBase[25])
 					time.sleep(0.4)
 					Chats[conf].join()
 				xmpp_raise()
 			else:
-				instance = (instance.split("/"))[0].lower()
+				instance = (instance.split(chr(47)))[0].lower()
 			if Chats[conf].isHereNow(nick) and Chats[conf].isHe(nick, instance):
-				Chats[conf].aroles_change(nick, Role[0], Role[1])
+				Chats[conf].aroles_change(nick, Role)
 			else:
-				Chats[conf].joined(nick, Role[0], Role[1], instance)
-				call_functions("04eh", (conf, nick, instance, Role[0], Role[1], disp,))
+				Chats[conf].joined(nick, Role, instance)
+				call_functions("04eh", (conf, nick, instance, Role, disp,))
 		elif stype == Types[4]:
 			scode = stanza.getStatusCode()
 			if Chats[conf].nick == nick and scode in [sCodes[0], sCodes[2]]:
@@ -1257,18 +1268,19 @@ def Xmpp_Presence_Cb(disp, stanza):
 				else:
 					instance = stanza.getJid()
 					if instance:
-						instance = (instance.split("/"))[0].lower()
+						instance = (instance.split(chr(47)))[0].lower()
 					Role = GetRole(stanza)
 					if Chats[conf].isHereNow(Nick) and Chats[conf].isHe(Nick, instance):
-						Chats[conf].aroles_change(Nick, Role[0], Role[1])
+						Chats[conf].aroles_change(Nick, Role)
 					else:
-						Chats[conf].joined(Nick, Role[0], Role[1], instance)
+						Chats[conf].joined(Nick, Role, instance)
 			else:
 				status = (stanza.getReason() or stanza.getStatus())
 				if Chats[conf].isHereNow(nick):
 					Chats[conf].leaved(nick)
 				call_functions("05eh", (conf, nick, status, scode, disp,))
-		call_functions("02eh", (stanza, disp,))
+		if Chats.has_key(conf):
+			call_functions("02eh", (stanza, disp,))
 
 # Iq Handler
 
@@ -1303,7 +1315,7 @@ def Xmpp_Iq_Cb(disp, stanza):
 				query.setTagData("version", ProdVer)
 				PyVer = str(sys.version).split()[0]
 				if oSlist[0]:
-					os_name = read_pipe(sys_cmds[5]).strip()
+					os_name = get_pipe(sys_cmds[5]).strip()
 				elif oSlist[1]:
 					os_name = os.uname()[0]
 				else:
@@ -1342,7 +1354,7 @@ def Xmpp_Message_Cb(disp, stanza):
 	isConf = Chats.has_key(instance)
 	if not isConf:
 		CheckFlood(disp)
-	if not Mserve and isConf and Chats[instance].ismoder is False:
+	if not Mserve and isConf and Chats[instance].isModer is False:
 		xmpp_raise()
 	BotNick = (DefNick if not isConf else Chats[instance].nick)
 	if nick == BotNick:
@@ -1355,7 +1367,7 @@ def Xmpp_Message_Cb(disp, stanza):
 	if len(body) > IncLimit:
 		body = "%s[...] %d symbols limit." % (body[:IncLimit].strip(), IncLimit)
 	stype = stanza.getType()
-	if stype == Types[11]:
+	if stype == Types[7]:
 		ecode = stanza.getErrorCode()
 		if ecode in [eCodes[10], eCodes[7]]:
 			if ecode == eCodes[7]:
@@ -1366,9 +1378,9 @@ def Xmpp_Message_Cb(disp, stanza):
 			Msend(source, body)
 		xmpp_raise()
 	if stype != Types[1]:
-		if (stanza.getTag(Types[21])):
+		if (stanza.getTag(Types[22])):
 			answer = xmpp.Message(source)
-			answer.setTag(Types[22], namespace = xmpp.NS_RECEIPTS)
+			answer.setTag(Types[11], namespace = xmpp.NS_RECEIPTS)
 			answer.setID(stanza.getID())
 			Sender(disp, answer)
 		stype = Types[0]
@@ -1391,8 +1403,8 @@ def Xmpp_Message_Cb(disp, stanza):
 		xmpp_raise()
 	if Cmds.has_key(command):
 		VarCache["action"] = AnsBase[27] % (command.upper())
-		if cbody.count(" "):
-			Parameters = cbody[(cbody.find(" ") + 1):].strip()
+		if cbody.count(chr(32)):
+			Parameters = cbody[(cbody.find(chr(32)) + 1):].strip()
 		VarCache["idle"] = time.time()
 		Cmds[command].execute(stype, (source, instance, nick), Parameters, disp)
 	else:
@@ -1485,12 +1497,13 @@ def Reverse_disp(disp, chats_ = True):
 			time.sleep(60)
 
 def Dispatch_handler(disp):
-	DeadIters = itypes.Number()
+	ZeroCycles = itypes.Number()
 	while VarCache["alive"]:
 		try:
-			Iter = Clients[disp].Process(8)
-			if not Iter:
-				if DeadIters.plus() >= 16:
+			Cycle = Clients[disp].iter()
+			if not Cycle:
+				Cycles = ZeroCycles.plus()
+				if Cycles >= 16:
 					raise IOError("disconnected!")
 		except KeyboardInterrupt:
 			break
@@ -1500,7 +1513,7 @@ def Dispatch_handler(disp):
 			if not Reverse_disp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
-			DeadIters = itypes.Number()
+			ZeroCycles = itypes.Number()
 		except xmpp.Conflict:
 			delivery(AnsBase[29] % (disp))
 			break
@@ -1508,7 +1521,7 @@ def Dispatch_handler(disp):
 			if not Reverse_disp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
-			DeadIters = itypes.Number()
+			ZeroCycles = itypes.Number()
 		except xmpp.StreamError:
 			pass
 		except:
@@ -1547,13 +1560,13 @@ def load_mark2():
 		if MaxMemory and MaxMemory <= calculate():
 			sys_exit("Memory leak...")
 
-def sys_exit(exit_reason = "Suicide!"):
+def sys_exit(exit_desclr = "Suicide!"):
 	VarCache["alive"] = False
-	Print("\n\n%s" % (exit_reason), color2)
+	Print("\n\n%s" % (exit_desclr), color2)
 	iThr.Threads_kill()
 	for disp in Clients.keys():
 		if online(disp):
-			Unavailable(disp, exit_reason)
+			sUnavailable(disp, exit_desclr)
 	call_sfunctions("03si")
 	Exit("\n\nReloading...\n\nPress Ctrl+C to exit", 0, 30)
 

@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "note" # /code.py v.x3
-#  Id: 23~2a
+exp_name = "note" # /code.py v.x4
+#  Id: 22~3a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -16,69 +16,66 @@ def command_note(ltype, source, body, disp):
 			list_ = body.split()
 			x = (list_.pop(0)).lower()
 			if x in ["clear", "чисть".decode("utf-8")]:
-				base = sqlite3.connect(NoteFile, timeout = 8)
-				cu = base.cursor()
-				base_data = cu.execute("select * from note where jid=?", (source_,)).fetchone()
-				if base_data:
-					cu.execute("delete from note where jid=?", (source_,))
-					base.commit()
-					answer = AnsBase[4]
-				else:
-					answer = note_answers[0]
-				base.close()
+				with database(NoteFile) as db:
+					db.execute("select * from note where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc:
+						db.execute("delete from note where jid=?", (source_,))
+						db.commit()
+						answer = AnsBase[4]
+					else:
+						answer = NoteAnsBase[0]
 			elif list_:
 				if x == "+":
 					body = body[2:].lstrip()
 					if len(body) <= 512:
 						date = strTime(local = False)
-						base = sqlite3.connect(NoteFile, timeout = 8)
-						cu = base.cursor()
-						base_data = cu.execute("select * from note where jid=?", (source_,)).fetchone()
-						if base_data:
-							Numb, Added = itypes.Number(), False
-							for line in base_data:
-								if not line:
-									cu.execute("update note set line_%s=? where jid=?" % (Numb._str()), ("[%s] %s" % (date, body), source_))
-									base.commit()
-									Added = True
-									break
-								Numb.plus()
-							if Added:
-								answer = note_answers[7] % (Numb._str())
+						with database(NoteFile) as db:
+							db.execute("select * from note where jid=?", (source_,))
+							db_desc = db.fetchone()
+							if db_desc:
+								Numb, Added = itypes.Number(), False
+								for line in db_desc:
+									if not line:
+										db.execute("update note set line_%s=? where jid=?" % (Numb._str()), ("[%s] %s" % (date, body), source_))
+										db.commit()
+										Added = True
+										break
+									Numb.plus()
+								if Added:
+									answer = NoteAnsBase[7] % (Numb._str())
+								else:
+									answer = NoteAnsBase[3]
 							else:
-								answer = note_answers[3]
-						else:
-							cu.execute("insert into note values (%s)" % (",".join(["?" for x in range(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
-							base.commit()
-							answer = AnsBase[4]
-						base.close()
+								db.execute("insert into note values (%s)" % (",".join(["?" for x in range(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+								db.commit()
+								answer = AnsBase[4]
 					else:
-						answer = note_answers[1]
+						answer = NoteAnsBase[1]
 				elif x in ["-", "*"]:
 					Numb = list_.pop(0)
-					if check_number(Numb):
+					if isNumber(Numb):
 						Numb = int(Numb)
 						if Numb in range(1, 17):
-							base = sqlite3.connect(NoteFile, timeout = 8)
-							cu = base.cursor()
-							base_data = cu.execute("select * from note where jid=?", (source_,)).fetchone()
-							if base_data:
-								if x == "*":
-									if base_data[Numb]:
-										answer = base_data[Numb]
+							with database(NoteFile) as db:
+								db.execute("select * from note where jid=?", (source_,))
+								db_desc = db.fetchone()
+								if db_desc:
+									if x == "*":
+										if db_desc[Numb]:
+											answer = db_desc[Numb]
+										else:
+											answer = NoteAnsBase[5]
+									elif not db_desc[Numb]:
+										answer = NoteAnsBase[8]
 									else:
-										answer = note_answers[5]
-								elif not base_data[Numb]:
-									answer = note_answers[8]
+										db.execute("update note set line_%d=? where jid=?" % (Numb), ("", source_))
+										db.commit()
+										answer = AnsBase[4]
 								else:
-									cu.execute("update note set line_%d=? where jid=?" % (Numb), ("", source_))
-									base.commit()
-									answer = AnsBase[4]
-							else:
-								answer = note_answers[0]
-							base.close()
+									answer = NoteAnsBase[0]
 						else:
-							answer = note_answers[4]
+							answer = NoteAnsBase[4]
 					else:
 						answer = AnsBase[30]
 				else:
@@ -86,45 +83,42 @@ def command_note(ltype, source, body, disp):
 			else:
 				answer = AnsBase[2]
 		else:
-			base = sqlite3.connect(NoteFile, timeout = 8)
-			cu = base.cursor()
-			base_data = cu.execute("select * from note where jid=?", (source_,)).fetchone()
-			if base_data:
-				Numb, Notes = 0, ""
-				for line in base_data:
-					if not Numb:
-						Numb += 1
-						continue
-					if line:
-						Notes += "\nLine[%d] %s" % (Numb, line)
-					Numb += 1
-				if Notes:
-					Notes = (note_answers[6] % (Notes))
-					if ltype == Types[1]:
-						Answer(AnsBase[11], ltype, source, disp)
-					Msend(source[0], Notes, disp)
+			with database(NoteFile) as db:
+				db.execute("select * from note where jid=?", (source_,))
+				db_desc = db.fetchone()
+				if db_desc:
+					Notes, Numb = str(), itypes.Number()
+					for line in db_desc:
+						if not Numb._int():
+							Numb.plus()
+							continue
+						if line:
+							Notes += "\nLine[%s] %s" % (Numb._str(), line)
+						Numb.plus()
+					if Notes:
+						Notes = (NoteAnsBase[6] % (Notes))
+						if ltype == Types[1]:
+							Answer(AnsBase[11], ltype, source, disp)
+						Msend(source[0], Notes, disp)
+					else:
+						db.execute("delete from note where jid=?", (source_,))
+						db.commit()
+						answer = NoteAnsBase[0]
 				else:
-					cu.execute("delete from note where jid=?", (source_,))
-					base.commit()
-					answer = note_answers[0]
-			else:
-				answer = note_answers[0]
-			base.close()
+					answer = NoteAnsBase[0]
 	else:
-		answer = note_answers[2]
-	if locals().has_key(Types[23]):
+		answer = NoteAnsBase[2]
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def init_note_file():
 	if not os.path.isfile(NoteFile):
-		base = sqlite3.connect(NoteFile)
-		cu = base.cursor()
-		cu.execute("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in range(1, 17)])))
-		base.commit()
-		base.close()
+		with database(NoteFile) as db:
+			db.execute("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in range(1, 17)])))
+			db.commit()
 
 expansions[exp_name].funcs_add([command_note, init_note_file])
-expansions[exp_name].ls.extend(["note_answers", "NoteFile"])
+expansions[exp_name].ls.extend(["NoteAnsBase", "NoteFile"])
 
 command_handler(command_note, {"RU": "блокнот", "EN": "note"}, 2, exp_name)
 

@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sconf_attrs" # /code.py v.x2
-#  Id: 07~1a
+exp_name = "sconf_attrs" # /code.py v.x3
+#  Id: 07~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -19,7 +19,7 @@ def command_redisp(ltype, source, body, disp):
 			if Chats.has_key(conf):
 				if Chats[conf].disp != disp_:
 					if online(disp_):
-						Chats[conf].leave(sconf_answers[3])
+						Chats[conf].leave(CstatAnsBase[3])
 						Chats[conf].disp = disp_
 						Chats[conf].save()
 						time.sleep(0.6)
@@ -28,13 +28,13 @@ def command_redisp(ltype, source, body, disp):
 							disp = disp_
 						answer = AnsBase[4]
 					else:
-						answer = sconf_answers[0] % (disp_)
+						answer = CstatAnsBase[0] % (disp_)
 				else:
-					answer = sconf_answers[1] % (disp_)
+					answer = CstatAnsBase[1] % (disp_)
 			else:
 				answer = AnsBase[8]
 		else:
-			answer = sconf_answers[2] % (disp_)
+			answer = CstatAnsBase[2] % (disp_)
 	else:
 		answer = AnsBase[2]
 	Answer(answer, ltype, source, disp)
@@ -42,14 +42,14 @@ def command_redisp(ltype, source, body, disp):
 def command_botnick(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
 		if body:
-			nick = replace_all(body, [(" ", "_"), '"', "'", "<", ">", "\n", "\r", "\t"]).strip()
-			if len(nick) <= 16:
-				Chats[source[1]].nick = nick
+			Nick = sub_desc(body, [(chr(32), chr(95)), chr(10), chr(13), chr(9)]).strip()
+			if len(Nick) <= 16:
+				Chats[source[1]].nick = xmpp.XMLescape(Nick)
 				Chats[source[1]].save()
 				Chats[source[1]].join()
-				answer = sconf_answers[4] % (nick)
+				answer = CstatAnsBase[4] % (Nick)
 			else:
-				answer = sconf_answers[5]
+				answer = CstatAnsBase[5]
 		else:
 			answer = AnsBase[1]
 	else:
@@ -65,24 +65,24 @@ def command_prefix(ltype, source, body, disp):
 					if Chats[source[1]].cPref:
 						Chats[source[1]].cPref = None
 						Chats[source[1]].save()
-						answer = sconf_answers[6]
+						answer = CstatAnsBase[6]
 					else:
-						answer = sconf_answers[7]
+						answer = CstatAnsBase[7]
 				elif body in cPrefs:
 					if Chats[source[1]].cPref != body:
 						Chats[source[1]].cPref = body
 						Chats[source[1]].save()
-						answer = sconf_answers[8] % (body)
+						answer = CstatAnsBase[8] % (body)
 					else:
-						answer = sconf_answers[9] % (body)
+						answer = CstatAnsBase[9] % (body)
 				else:
-					answer = sconf_answers[10] % (", ".join(cPrefs))
+					answer = CstatAnsBase[10] % (", ".join(cPrefs))
 			else:
 				answer = AnsBase[10]
 		elif Chats[source[1]].cPref:
-			answer = sconf_answers[11] % (Chats[source[1]].cPref)
+			answer = CstatAnsBase[11] % (Chats[source[1]].cPref)
 		else:
-			answer = sconf_answers[12]
+			answer = CstatAnsBase[12]
 	else:
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
@@ -121,7 +121,7 @@ def command_status(ltype, source, body, disp):
 				else:
 					answer = AnsBase[8]
 			else:
-				answer = sconf_answers[13] % (state)
+				answer = CstatAnsBase[13] % (state)
 		else:
 			answer = AnsBase[2]
 	else:
@@ -148,7 +148,7 @@ def load_status(conf):
 		Chats[conf].set_status(*get_file(filename).split("|", 1))
 
 expansions[exp_name].funcs_add([command_redisp, command_botnick, command_prefix, command_status, command_password, load_status])
-expansions[exp_name].ls.extend(["sconf_answers, StatusDesc, ChatStatus"])
+expansions[exp_name].ls.extend(["CstatAnsBase, StatusDesc, ChatStatus"])
 
 command_handler(command_redisp, {"RU": "ботжид", "EN": "botjid"}, 7, exp_name)
 command_handler(command_botnick, {"RU": "ботник", "EN": "botnick"}, 6, exp_name)

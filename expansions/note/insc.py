@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	note_answers = [x.decode("utf-8") for x in [
+	NoteAnsBase = [x.decode("utf-8") for x in [
 		"У тебя нет записей в блокноте.", # 0
 		"Длинна одной записи не должна превышать 512 символов.", # 1
 		"Не получится. Твой jid мне не известен.", # 2
@@ -13,7 +13,7 @@ if DefLANG in ["RU", "UA"]:
 		"Эта строка итак пуста." # 8
 					]]
 else:
-	note_answers = [
+	NoteAnsBase = [
 		"Your note is empty.", # 0
 		"Length of one line can't be more than 512 symbols.", # 1
 		"No chance. I don't know your jid.", # 2

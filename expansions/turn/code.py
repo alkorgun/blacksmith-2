@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "turn" # /code.py v.x1
-#  Id: 22~1a
+#  Id: 21~1a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -31,7 +31,7 @@ def command_turn(ltype, source, body, disp):
 				Turned += TableEN[TableRU.index(x)]
 			else:
 				Turned += x
-		return replace_all(Turned, list_)
+		return sub_desc(Turned, list_)
 	
 	if Chats.has_key(source[1]):
 		if body:
@@ -46,7 +46,7 @@ def command_turn(ltype, source, body, disp):
 				answer = AnsBase[7]
 	else:
 		answer = AnsBase[0]
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def collect_turnable(stanza, isConf, ltype, source, body, isToBs, disp):

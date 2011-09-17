@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 #  BlackSmith mark.2
 exp_name = "access" # /code.py v.x1
@@ -7,11 +7,11 @@ exp_name = "access" # /code.py v.x1
 
 expansion_register(exp_name)
 
-GaccessFile = dynamic % ("access.db")
+AccessFile = dynamic % ("access.db")
 ChatAccessFile = "access.db"
 
 def command_get_access(ltype, source, body, disp):
-	
+
 	def get_acc(access):
 		if access >= 8:
 			access = "%d (BOSS)" % (access)
@@ -20,22 +20,22 @@ def command_get_access(ltype, source, body, disp):
 		else:
 			access = str(access)
 		return access
-	
+
 	if not body:
-		answer = access_answers[0] % get_acc(get_access(source[1], source[2]))
+		answer = AccAnsBase[0] % get_acc(get_access(source[1], source[2]))
 	elif Chats.has_key(source[1]):
 		if Chats[source[1]].isHere(body):
-			answer = access_answers[1] % (body, get_acc(get_access(source[1], body)))
+			answer = AccAnsBase[1] % (body, get_acc(get_access(source[1], body)))
 		elif Galist.has_key(body):
-			answer = access_answers[1] % (body, get_acc(Galist.get(body, 0)))
+			answer = AccAnsBase[1] % (body, get_acc(Galist.get(body, 0)))
 		elif Chats[source[1]].alist.has_key(body):
-			answer = access_answers[1] % (body, str(Chats[source[1]].alist.get(body, 0)))
+			answer = AccAnsBase[1] % (body, str(Chats[source[1]].alist.get(body, 0)))
 		else:
-			answer = access_answers[2] % (body)
+			answer = AccAnsBase[2] % (body)
 	elif Galist.has_key(body):
-		answer = access_answers[1] % (body, get_acc(Galist.get(body, 0)))
+		answer = AccAnsBase[1] % (body, get_acc(Galist.get(body, 0)))
 	else:
-		answer = access_answers[2] % (body)
+		answer = AccAnsBase[2] % (body)
 	Answer(answer, ltype, source, disp)
 
 def command_get_galist(ltype, source, body, disp):
@@ -47,12 +47,12 @@ def command_get_galist(ltype, source, body, disp):
 		list.reverse()
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
-		answer, numb = access_answers[5], itypes.Number()
+		answer, Numb = AccAnsBase[5], itypes.Number()
 		for x in list:
-			answer += "%d) %s - %d\n" % (numb.plus(), x[1], x[0])
+			answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
 		Msend(source[0], answer, disp)
 	else:
-		Answer(access_answers[3], ltype, source, disp)
+		Answer(AccAnsBase[3], ltype, source, disp)
 
 def command_get_lalist(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
@@ -64,25 +64,25 @@ def command_get_lalist(ltype, source, body, disp):
 			list.reverse()
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			answer, numb = access_answers[5], itypes.Number()
+			answer, Numb = AccAnsBase[5], itypes.Number()
 			for x in list:
-				answer += "%d) %s - %d\n" % (numb.plus(), x[1], x[0])
+				answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
 			Msend(source[0], answer, disp)
 		else:
-			answer = access_answers[4]
+			answer = AccAnsBase[4]
 	else:
 		answer = AnsBase[0]
-	if locals().has_key(Types[23]):
+	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
 def command_set_access(ltype, source, body, disp):
-	
+
 	def set_access(instance, access = None):
 		if access != None:
 			Galist[instance] = access
 		else:
 			del Galist[instance]
-		cat_file(GaccessFile, str(Galist))
+		cat_file(AccessFile, str(Galist))
 		for conf in Chats.keys():
 			for sUser in Chats[conf].get_users():
 				if sUser.source and sUser.source == instance:
@@ -92,38 +92,37 @@ def command_set_access(ltype, source, body, disp):
 						sUser.access = access
 					else:
 						sUser.calc_acc()
-	
+
 	if body:
 		body = body.split(None, 1)
 		if len(body) == 2:
-			Nick = body[1]
+			Nick = body.pop(1)
 			if Chats.has_key(source[1]):
 				if Chats[source[1]].isHere(Nick):
 					instance = get_source(source[1], Nick)
 			if not locals().has_key("instance"):
-				if Nick.count("@") and Nick.count("."):
-					instance = (Nick.split()[0]).lower()
-				else:
+				instance = (Nick.split())[0].lower()
+				if not isSource(instance):
 					instance = None
 			if instance:
-				access = body[0]
+				access = body.pop(0)
 				if access == "!":
 					if Galist.has_key(instance):
 						set_access(instance)
 						answer = AnsBase[4]
 					else:
-						answer = access_answers[6] % (Nick)
-				elif check_number(access):
+						answer = AccAnsBase[6] % (Nick)
+				elif isNumber(access):
 					access = int(access)
 					if access in range(-1, 9):
 						set_access(instance, access)
 						answer = AnsBase[4]
 					else:
-						answer = access_answers[7]
+						answer = AccAnsBase[7]
 				else:
 					answer = AnsBase[30]
 			else:
-				answer = access_answers[10] % (Nick)
+				answer = AccAnsBase[10] % (Nick)
 		else:
 			answer = AnsBase[2]
 	else:
@@ -131,7 +130,7 @@ def command_set_access(ltype, source, body, disp):
 	Answer(answer, ltype, source, disp)
 
 def command_set_local_access(ltype, source, body, disp):
-	
+
 	def set_access(conf, instance, access = None):
 		if access != None:
 			Chats[conf].alist[instance] = access
@@ -146,40 +145,40 @@ def command_set_local_access(ltype, source, body, disp):
 					sUser.access = access
 				else:
 					sUser.calc_acc()
-	
+
 	if Chats.has_key(source[1]):
 		if body:
 			body = body.split(None, 1)
 			if len(body) == 2:
-				Nick = body[1]
+				Nick = body.pop(1)
 				if Chats[source[1]].isHere(Nick):
 					instance = get_source(source[1], Nick)
-				elif Nick.count("@") and Nick.count("."):
-					instance = (Nick.split()[0]).lower()
 				else:
-					instance = None
+					instance = (Nick.split())[0].lower()
+					if not isSource(instance):
+						instance = None
 				if instance:
-					access = body[0]
+					access = body.pop(0)
 					if access == "!":
 						if Chats[source[1]].alist.has_key(instance):
 							set_access(source[1], instance)
 							answer = AnsBase[4]
 						else:
-							answer = access_answers[6] % (Nick)
+							answer = AccAnsBase[6] % (Nick)
 					elif not Galist.has_key(instance):
-						if check_number(access):
+						if isNumber(access):
 							access = int(access)
 							if access in range(7):
 								set_access(source[1], instance, access)
 								answer = AnsBase[4]
 							else:
-								answer = access_answers[8]
+								answer = AccAnsBase[8]
 						else:
 							answer = AnsBase[30]
 					else:
-						answer = access_answers[9] % (Nick)
+						answer = AccAnsBase[9] % (Nick)
 				else:
-					answer = access_answers[10] % (Nick)
+					answer = AccAnsBase[10] % (Nick)
 			else:
 				answer = AnsBase[2]
 		else:
@@ -188,23 +187,23 @@ def command_set_local_access(ltype, source, body, disp):
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
 
-def load_accesses():
-	if initialize_file(GaccessFile):
-		Galist.update(eval(get_file(GaccessFile)))
+def load_acclist():
+	if initialize_file(AccessFile):
+		Galist.update(eval(get_file(AccessFile)))
 
-def load_chat_accesses(conf):
+def load_local_acclist(conf):
 	filename = chat_file(conf, ChatAccessFile)
 	if initialize_file(filename):
 		Chats[conf].alist.update(eval(get_file(filename)))
 
-expansions[exp_name].funcs_add([command_get_access, command_get_galist, command_get_lalist, command_set_access, command_set_local_access, load_accesses, load_chat_accesses])
-expansions[exp_name].ls.extend(["GaccessFile", "ChatAccessFile", "access_answers"])
+expansions[exp_name].funcs_add([command_get_access, command_get_galist, command_get_lalist, command_set_access, command_set_local_access, load_acclist, load_local_acclist])
+expansions[exp_name].ls.extend(["AccessFile", "ChatAccessFile", "AccAnsBase"])
 
 command_handler(command_get_access, {"RU": "доступ", "EN": "access"}, 1, exp_name)
-command_handler(command_get_galist, {"RU": "доступы", "EN": "accesses"}, 7, exp_name)
-command_handler(command_get_lalist, {"RU": "доступы*", "EN": "accesses*"}, 4, exp_name)
+command_handler(command_get_galist, {"RU": "доступы", "EN": "acclist"}, 7, exp_name)
+command_handler(command_get_lalist, {"RU": "доступы*", "EN": "acclist2"}, 4, exp_name)
 command_handler(command_set_access, {"RU": "глобдоступ", "EN": "globaccess"}, 8, exp_name)
 command_handler(command_set_local_access, {"RU": "локдоступ", "EN": "locaccess"}, 6, exp_name)
 
-handler_register(load_accesses, "00si", exp_name)
-handler_register(load_chat_accesses, "01si", exp_name)
+handler_register(load_acclist, "00si", exp_name)
+handler_register(load_local_acclist, "01si", exp_name)

@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 if DefLANG in ["RU", "UA"]:
-	cexp_answers = [x.decode("utf-8") for x in [
+	CexpAnsBase = [x.decode("utf-8") for x in [
 		"\n[Название][состояние][файл кода][файл языка]", # 0
 		"в наличии", # 1
 		"отсутствует", # 2
@@ -22,7 +22,7 @@ if DefLANG in ["RU", "UA"]:
 		"Команда «%s» итак включена." # 17
 					]]
 else:
-	cexp_answers = [
+	CexpAnsBase = [
 		"\n[Name][state][code-file][lang-file]", # 0
 		"exists", # 1
 		"", # 2
