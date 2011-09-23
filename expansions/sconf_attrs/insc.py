@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	CstatAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	CstatAnsBase = tuple([line.decode("utf-8") for line in (
 		"Сдаётся мне '%s' сейчас оффлайн.", # 0
 		"Сдаётся мне '%s' итак закреплён за этой конфой.", # 1
 		"'%s' нет среди доступных клиентов!", # 2
@@ -16,9 +16,9 @@ if DefLANG in ["RU", "UA"]:
 		"'%s' является здесь префиксом.", # 11
 		"Префикс не установлен.", # 12
 		"Статус '%s' мне неизвестен." # 13
-					]]
+					)])
 else:
-	CstatAnsBase = [
+	CstatAnsBase = (
 		"I can't, because '%s' is offline.", # 0
 		"'%s' is alredy owned by this conferense.", # 1
 		"'%s' not in available clients.", # 2
@@ -33,4 +33,4 @@ else:
 		"'%s' is current prefix here.", # 11
 		"Prefix wasn't set.", # 12
 		"'%s' isn't a status." # 13
-					]
+					)

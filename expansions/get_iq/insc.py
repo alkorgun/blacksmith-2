@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	IqAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	IqAnsBase = tuple([line.decode("utf-8") for line in (
 		"Понг - %s сек.", # 0
 		"Понга нет. Ответ на версию (%s) за %s секунд.", # 1
 		"Ни пинга, ни версии...", # 2
@@ -11,9 +11,9 @@ if DefLANG in ["RU", "UA"]:
 		"Нет ответа.", # 6
 		"Время работы «%s» - %s.", # 7
 		"Послеедняя активность «%s» - %s назад." # 8
-					]]
+					)])
 else:
-	IqAnsBase = [
+	IqAnsBase = (
 		"Pong - %s sec.", # 0
 		"No pong. Answer for version (%s) in %s sec.", # 1
 		"No pong, no version...", # 2
@@ -23,4 +23,4 @@ else:
 		"No answer.", # 6
 		"%s's uptime is %s.", # 7
 		"%s's last activity was %s ago." # 8
-					]
+					)

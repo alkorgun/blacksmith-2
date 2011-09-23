@@ -181,7 +181,7 @@ def command_cls_config(ltype, source, body, disp):
 								changed = True
 					else:
 						code, symbols = "", "%s%s%s._+(!}{#)" % (CharCase[0], CharCase[1], CharCase[2])
-						for x in range(24):
+						for x in xrange(24):
 							code += choice(symbols)
 					if not locals().has_key("changed"):
 						if Clients.has_key(Name):

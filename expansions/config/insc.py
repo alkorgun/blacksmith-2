@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	ConfAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	ConfAnsBase = tuple([line.decode("utf-8") for line in (
 		"Изменённые пункты: %s", # 0
 		"Очевидно параметры неверны.", # 1
 		"Настройки:\n", # 2
@@ -14,9 +14,9 @@ if DefLANG in ["RU", "UA"]:
 		"Не коннектится.", # 9
 		"Этот jid уже есть в списках.", # 10
 		"«%s» нет в списке клиентов." # 11
-					]]
+					)])
 else:
-	ConfAnsBase = [
+	ConfAnsBase = (
 		"Changed options: %s", # 0
 		"Parameters are incorrect.", # 1
 		"Config:\n", # 2
@@ -29,4 +29,4 @@ else:
 		"No connection.", # 9
 		"This jid is already in list.", # 10
 		"'%s' not in clients list." # 11
-					]
+					)

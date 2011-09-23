@@ -114,7 +114,7 @@ def command_set_access(ltype, source, body, disp):
 						answer = AccAnsBase[6] % (Nick)
 				elif isNumber(access):
 					access = int(access)
-					if access in range(-1, 9):
+					if access in xrange(-1, 9):
 						set_access(instance, access)
 						answer = AnsBase[4]
 					else:
@@ -168,7 +168,7 @@ def command_set_local_access(ltype, source, body, disp):
 					elif not Galist.has_key(instance):
 						if isNumber(access):
 							access = int(access)
-							if access in range(7):
+							if access in xrange(7):
 								set_access(source[1], instance, access)
 								answer = AnsBase[4]
 							else:

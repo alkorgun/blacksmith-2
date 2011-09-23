@@ -59,7 +59,7 @@ def command_help(ltype, source, body, disp):
 def command_commands(ltype, source, body, disp):
 	answer = HelpAnsBase[6] % (HelpAnsBase[7] % (Chats[source[1]].cPref) if (Chats.has_key(source[1]) and Chats[source[1]].cPref) else ":")
 	cmds, lcmds = {}, {}
-	for x in range(1, 9):
+	for x in xrange(1, 9):
 		lcmds[x] = itypes.Number()
 	for cmd in Cmds.keys():
 		access = Cmds[cmd].access

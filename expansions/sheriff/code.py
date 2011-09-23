@@ -67,7 +67,7 @@ def command_order(ltype, source, body, disp):
 	def alt_change_cfg(conf, key, val, drange):
 		if isNumber(val):
 			val = int(val)
-			if val in range(*drange):
+			if val in xrange(*drange):
 				ChatsAttrs[conf]["laws"][key] = val
 				answer = AnsBase[4]
 			else:

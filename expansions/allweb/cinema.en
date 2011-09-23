@@ -1,8 +1,0 @@
-info about movies from kinopoisk.ru
-cinema [Name/*/id] (Name)
-*/cinema A Beautiful Mind
-bot would search a movie with name "A Beautiful Mind"
-*/cinema 530
-bot would show the page of the movie with id 530 (A Beautiful Mind)
-*/cinema * 2012
-bot would search a movie with name "2012"

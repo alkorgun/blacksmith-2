@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-if DefLANG in ["RU", "UA"]:
-	AnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	AnsBase = tuple([line.decode("utf-8") for line in (
 		"данная команда доступна исключительно в конференциях", # 0
 		"данная команда подразумевает использование параметров", # 1
 		"инвалид синтакс", # 2
@@ -33,9 +33,9 @@ if DefLANG in ["RU", "UA"]:
 		"Клиент «%s» упал!", # 28
 		"JID «%s» используется в другом клиенте! (отключаю его)", # 29
 		"это не число" # 30
-				]]
+				)])
 else:
-	AnsBase = [
+	AnsBase = (
 		"This command is available only in conferences", # 0
 		"This command implies arguments using", # 1
 		"Invalid syntax", # 2
@@ -67,4 +67,4 @@ else:
 		"Client '%s' falled!", # 28
 		"JID '%s' used in another client! (I have to disconnect it)", # 29
 		"This is not a number" # 30
-				]
+				)

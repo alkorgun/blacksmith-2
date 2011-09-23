@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	SstatAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	SstatAnsBase = tuple([line.decode("utf-8") for line in (
 		"\n*// Статистика работы (Pid: %d):", # 0
 		"\n-//- Время работы %s", # 1
 		"\n-//- Последняя сессия %s", # 2
@@ -25,9 +25,9 @@ if DefLANG in ["RU", "UA"]:
 		"Невозможно отправить ошибку, смотри к крешлогах.", # 20
 		"Ошибки №%s не существует!", # 21
 		"Всего произошло %d ошибок." # 22
-					]]
+					)])
 else:
-	SstatAnsBase = [
+	SstatAnsBase = (
 		"\n*// Session statistics (Pid: %d):", # 0
 		"\n-//- Bot uptime %s", # 1
 		"\n-//- Last working set %s", # 2
@@ -51,4 +51,4 @@ else:
 		"Unable to send error, look for crash logs.", # 20
 		"Exception #%s isn't exists!", # 21
 		"Total %d exceptions happened." # 22
-					]
+					)

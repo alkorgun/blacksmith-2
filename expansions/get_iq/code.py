@@ -150,12 +150,12 @@ def answer_idle(disp, stanza, ltype, source, instance, typ):
 def command_afls(ltype, source, body, disp):
 
 	def get_req(body):
-		afls = ["owner", "admin", "member", "outcast"]
-		if DefLANG in ["RU", "UA"]:
-			alsRU = [x.decode("utf-8") for x in ["овнер", "админ", "мембер", "бан"]]
-			for x in alsRU:
-				if body.count(x):
-					return afls[alsRU.index(x)]
+		afls = ("owner", "admin", "member", "outcast")
+		if DefLANG in ("RU", "UA"):
+			alsRU = tuple([afl.decode("utf-8") for afl in ("овнер", "админ", "мембер", "бан")])
+			for afl in alsRU:
+				if body.count(afl):
+					return afls[alsRU.index(afl)]
 		return (body if afls.count(body) else None)
 
 	if Chats.has_key(source[1]):

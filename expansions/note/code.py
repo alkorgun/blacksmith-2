@@ -47,7 +47,7 @@ def command_note(ltype, source, body, disp):
 								else:
 									answer = NoteAnsBase[3]
 							else:
-								db.execute("insert into note values (%s)" % (",".join(["?" for x in range(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+								db.execute("insert into note values (%s)" % (",".join(["?" for x in xrange(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
 								db.commit()
 								answer = AnsBase[4]
 					else:
@@ -56,7 +56,7 @@ def command_note(ltype, source, body, disp):
 					Numb = list_.pop(0)
 					if isNumber(Numb):
 						Numb = int(Numb)
-						if Numb in range(1, 17):
+						if Numb in xrange(1, 17):
 							with database(NoteFile) as db:
 								db.execute("select * from note where jid=?", (source_,))
 								db_desc = db.fetchone()
@@ -114,7 +114,7 @@ def command_note(ltype, source, body, disp):
 def init_note_file():
 	if not os.path.isfile(NoteFile):
 		with database(NoteFile) as db:
-			db.execute("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in range(1, 17)])))
+			db.execute("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in xrange(1, 17)])))
 			db.commit()
 
 expansions[exp_name].funcs_add([command_note, init_note_file])

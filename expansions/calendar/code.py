@@ -18,7 +18,7 @@ def command_calendar(ltype, source, body, disp):
 			z = int(x)
 			if body and isNumber(body[0]):
 				y = int(body.pop(0))
-	if z not in range(1, 13):
+	if z not in xrange(1, 13):
 		y = date[0]
 		z = date[1]
 	elif y <= 0:

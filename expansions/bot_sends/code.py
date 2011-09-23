@@ -14,7 +14,7 @@ def command_clear(ltype, source, body, disp):
 			s2_buckup = Chats[source[1]].status
 			Chats[source[1]].change_status(sList[2], BsendAnsBase[0])
 		zero = xmpp.Message(to = source[1], typ = Types[1])
-		for x in range(24):
+		for x in xrange(24):
 			Sender(disp, zero); Info["omsg"].plus()
 			time.sleep(1.4)
 		if ltype == Types[1]:

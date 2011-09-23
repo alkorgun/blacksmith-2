@@ -147,7 +147,7 @@ aFeatures = Features + [
 			]
 
 VarCache = {
-	"isjid": compile__("\w+@\w+\.\w+", 32),
+	"isjid": compile__("\w+?@\w+?\.\w+?", 32),
 	"idle": 0.24,
 	"alive": True,
 	"errors": [],
@@ -169,8 +169,6 @@ Info = {
 class SelfExc(Exception):
 	pass
 
-database = itypes.Base
-
 def exc_info():
 	exc = sys.exc_info()
 	return (exc[0].__name__, str(exc[1]))
@@ -180,6 +178,8 @@ def exc_info_(fp = None):
 		exc_info__(None, fp)
 	except:
 		pass
+
+database = (itypes.Base)
 
 def get_exc():
 	try:
@@ -250,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 14, 0)
+(BsMark, BsVer, BsRev) = (2, 15, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -317,7 +317,7 @@ if oSlist[0]:
 
 expansions = {}
 Cmds = {}
-cPrefs = ["!","@","#",".","*"]
+cPrefs = ("!","@","#",".","*")
 sCmds = []
 Chats = {}
 Flood = {}
@@ -420,9 +420,9 @@ class expansion(object):
 				Cmds[cmd].off()
 		self.funcs_del()
 		while len(self.ls):
-			name_ = self.ls.pop()
-			if globals().has_key(name_):
-				del globals()[name_]
+			Name = self.ls.pop()
+			if globals().has_key(Name):
+				del globals()[Name]
 		if full and expansions.has_key(self.name):
 			del expansions[self.name]
 

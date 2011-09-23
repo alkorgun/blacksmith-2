@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	BsendAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	BsendAnsBase = tuple([line.decode("utf-8") for line in (
 		"чистка конференции...", # 0
 		"Всё круто, я в отличной форме! (0 ошибок)", # 1
 		"Бoeц %s тяжело ранен, но я ещё повоюю! (%d ошибок)", # 2
@@ -11,9 +11,9 @@ if DefLANG in ["RU", "UA"]:
 		"«%s» сейчас здесь.", # 6
 		"Адресат неопределён.", # 7
 		"Не более 1го приглащения за 12 минут! (Осталось: %s)" # 8
-					]]
+					)])
 else:
-	BsendAnsBase = [
+	BsendAnsBase = (
 		"cleaning conference...", # 0
 		"I am okay! (0 errors)", # 1
 		"Private %s is seriously injured, but I have the rotation! (%d errors)", # 2
@@ -23,4 +23,4 @@ else:
 		"'%s' is here now.", # 6
 		"Unknown target.", # 7
 		"Users can send only one invite in 12 minutes! (Remain: %s)" # 8
-					]
+					)

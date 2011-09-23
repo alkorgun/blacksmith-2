@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	ControlAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	ControlAnsBase = tuple([line.decode("utf-8") for line in (
 		"Внимание! %s (%s) загнал меня в -» '%s'", # 0
 		"\nПричина: %s", # 1
 		"Ага я зашел в -» '%s'", # 2
@@ -20,9 +20,9 @@ if DefLANG in ["RU", "UA"]:
 		"Не могу создать директорию, вероятно «%s» содержит запрещённые символы. Соответственно, я не могу обслуживать эту конференцию.", # 15
 		"Система не может выделить ресурсы на ещё один клиент.", # 16
 		"«%s» нет в списке клиентов." # 17
-					]]
+					)])
 else:
-	ControlAnsBase = [
+	ControlAnsBase = (
 		"Attention! %s (%s) sent me in to -> '%s'", # 0
 		"\nReason: %s", # 1
 		"I have joined -> '%s'", # 2
@@ -41,4 +41,4 @@ else:
 		"Unable to create directory, probably '%s' contains invalid characters. Accordingly, I can't serve this conference.", # 15
 		"The system can not allocate resources to another client.", # 16
 		"'%s' not in clients list." # 17
-					]
+					)

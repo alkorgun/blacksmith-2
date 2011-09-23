@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	CexpAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	CexpAnsBase = tuple([line.decode("utf-8") for line in (
 		"\n[Название][состояние][файл кода][файл языка]", # 0
 		"в наличии", # 1
 		"отсутствует", # 2
@@ -20,9 +20,9 @@ if DefLANG in ["RU", "UA"]:
 		"В %s нет зарегистрированных функций.", # 15
 		"Команда «%s» итак отключена.", # 16
 		"Команда «%s» итак включена." # 17
-					]]
+					)])
 else:
-	CexpAnsBase = [
+	CexpAnsBase = (
 		"\n[Name][state][code-file][lang-file]", # 0
 		"exists", # 1
 		"", # 2
@@ -41,4 +41,4 @@ else:
 		"There is no registred functions in %s", # 15
 		"Command '%s' is off.", # 16
 		"Command '%s' is on." # 17
-					]
+					)

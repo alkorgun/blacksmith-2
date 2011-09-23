@@ -11,7 +11,7 @@ def command_exc_info(ltype, source, body, disp):
 	if body:
 		if isNumber(body):
 			number = (int(body) - 1)
-			if number in range(len(VarCache["errors"])):
+			if number in xrange(len(VarCache["errors"])):
 				try:
 					exc = VarCache["errors"][number]
 					if oSlist[0]:

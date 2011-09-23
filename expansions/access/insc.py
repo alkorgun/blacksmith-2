@@ -1,7 +1,7 @@
 # coding: utf-8
 
-if DefLANG in ["RU", "UA"]:
-	AccAnsBase = [x.decode("utf-8") for x in [
+if DefLANG in ("RU", "UA"):
+	AccAnsBase = tuple([line.decode("utf-8") for line in (
 		"Твой доступ = %s", # 0
 		"Доступ «%s» = %s", # 1
 		"На «%s» нет информации.", # 2
@@ -13,9 +13,9 @@ if DefLANG in ["RU", "UA"]:
 		"Нельзя дать локальный доступ меньше 0 и больше 6.", # 8
 		"У «%s» глобальный доступ.", # 9
 		"Не могу дать доступ «%s»." # 10
-					]]
+					)])
 else:
-	AccAnsBase = [
+	AccAnsBase = (
 		"Your access = %s", # 0
 		"%s's access = %s", # 1
 		"I have not information about '%s'.", # 2
@@ -27,4 +27,4 @@ else:
 		"You can't give local access < 0 & > 6.", # 8
 		"'%s' has global access.", # 9
 		"I can't give access to '%s'." # 10
-					]
+					)
