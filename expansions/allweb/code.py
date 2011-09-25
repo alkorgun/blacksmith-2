@@ -24,7 +24,7 @@ Web.Opener.addheaders = [UserAgent_Moz]
 
 REP_desc = {
 	"<br>": chr(10),
-	"< /br>": chr(10)
+	"<br />": chr(10)
 			}
 
 XML_ls = [
@@ -313,7 +313,9 @@ def command_imdb(ltype, source, body, disp):
 						if Vtds:
 							Numb = "%s (Votes: %s)" % (Numb, Vtds)
 						ls.append("Raiting: %s" % Numb)
-					Ttls = (("Director", "\s+Director:\s+"), ("Stars", "Stars:"), ("Writers", "\s+Writers:\s+"))
+					Ttls = (("Director", "\s+Director:\s+"), ("Director", "Director:"),
+							("Stars", "\s+Stars:\s+"), ("Stars", "Stars:"),
+							("Writers", "\s+Writers:\s+"), ("Writers", "Writers:"))
 					for Title in Ttls:
 						list = get_text(data, '<h4 class="inline">%s</h4>' % Title[1], "</div>")
 						if list:
