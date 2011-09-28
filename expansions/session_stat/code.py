@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "session_stat" # /code.py v.x3
-#  Id: 10~1a
+exp_name = "session_stat" # /code.py v.x4
+#  Id: 10~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -10,10 +10,10 @@ expansion_register(exp_name)
 def command_exc_info(ltype, source, body, disp):
 	if body:
 		if isNumber(body):
-			number = (int(body) - 1)
-			if number in xrange(len(VarCache["errors"])):
+			Number = (int(body) - 1)
+			if Number in xrange(len(VarCache["errors"])):
 				try:
-					exc = VarCache["errors"][number]
+					exc = VarCache["errors"][Number]
 					if oSlist[0]:
 						exc = exc.decode("cp1251")
 					exc = "%s" % (exc)
@@ -46,20 +46,22 @@ def command_session(ltype, source, body, disp):
 	answer += SstatAnsBase[1] % (Time2Text(NowTime - Info["up"]))
 	if len(Info["alls"]):
 		answer += SstatAnsBase[2] % (Time2Text(NowTime - Info["sess"]))
+	answer += SstatAnsBase[7] % len(Chats.keys())
 	answer += SstatAnsBase[3] % (Info["msg"]._str())
 	answer += SstatAnsBase[4] % (Info["cmd"]._str())
 	answer += SstatAnsBase[5] % (Info["prs"]._str(), Info["iq"]._str())
 	answer += SstatAnsBase[6] % (Info["omsg"]._str(), Info["outiq"]._str())
-	answer += SstatAnsBase[7] % (Info["fcr"]._str())
-	answer += SstatAnsBase[8] % (Info["fr"]._str())
-	answer += SstatAnsBase[9] % (Info["fw"]._str())
+	Number = itypes.Number()
+	for conf in Chats.keys():
+		Number.plus(len(Chats[conf].get_nicks()))
+	answer += SstatAnsBase[8] % (int(Number))
 	answer += SstatAnsBase[10] % (len(VarCache["errors"]), Info["errors"]._str())
 	answer += SstatAnsBase[11] % (Info["cfw"]._str())
 	answer += SstatAnsBase[12] % (iThr.Counter._str(), len(iThr.enumerate()))
 	answer += SstatAnsBase[13] % os.times()[0]
-	number = calculate()
-	if number:
-		answer += SstatAnsBase[14] % str(round(float(number) / 1024, 3))
+	Number = calculate()
+	if Number:
+		answer += SstatAnsBase[14] % str(round(float(Number) / 1024, 3))
 	Answer(answer, ltype, source, disp)
 
 def command_stat(ltype, source, body, disp):

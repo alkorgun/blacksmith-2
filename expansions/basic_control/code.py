@@ -55,7 +55,7 @@ def command_join(ltype, source, body, disp):
 							if len(x) == 2 and x[1]:
 								codename = x[1]
 					source_ = get_source(source[1], source[2])
-					if SuperAdmin != source_:
+					if GodName != source_:
 						delivery(ControlAnsBase[0] % (source[2], source_, conf))
 					if not disp_:
 						disp_ = IdleClient()
@@ -110,7 +110,7 @@ def command_leave(ltype, source, body, disp):
 	if not body or enough_access(source[1], source[2], 7) or conf == source[1]:
 		if Chats.has_key(conf):
 			source_ = get_source(source[1], source[2])
-			if SuperAdmin != source_:
+			if GodName != source_:
 				delivery(ControlAnsBase[4] % (source[2], source_, conf))
 			info = ControlAnsBase[9] % (source[2])
 			Msend(conf, info, Chats[conf].disp)

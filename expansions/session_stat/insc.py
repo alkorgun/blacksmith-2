@@ -9,9 +9,9 @@ if DefLANG in ("RU", "UA"):
 		"\n-//- Выполнено %s команд", # 4
 		"\n-//- Обработано %s презенсов и %s iq-запросов", # 5
 		"\n-//- Отправлено %s сообщений и %s iq-запросов", # 6
-		"\n-//- Создано файлов %s", # 7
-		"\n-//- Прочтений файлов %s", # 8
-		"\n-//- Записей в файлах %s", # 9
+		"\n-//- Обслуживаю %d конференций", # 7
+		"\n-//- Зафиксировано %d пользователей", # 8
+		"", # 9
 		"\n-//- Произошло %d ошибок и %s Dispatch Errors", # 10
 		"\n-//- Записей crash логов %s", # 11
 		"\n-//- Создано %s тредов, %d из них активно", # 12
@@ -35,9 +35,9 @@ else:
 		"\n-//- Completed %s commands", # 4
 		"\n-//- Processed %s presences & %s iq-request", # 5
 		"\n-//- Sent %s messages & %s iq-request", # 6
-		"\n-//- Created %s files", # 7
-		"\n-//- Read %s files", # 8
-		"\n-//- Wrote %s files", # 9
+		"\n-//- Serve %d conferences", # 7
+		"\n-//- Fixed %d users", # 8
+		"", # 9
 		"\n-//- Happened %d exceptions & %s Dispatch Errors", # 10
 		"\n-//- Wrote crash logs %s", # 11
 		"\n-//- Created %s threads, %d is now active", # 12

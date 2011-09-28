@@ -146,8 +146,9 @@ aFeatures = Features + [
 	xmpp.NS_RECEIPTS
 			]
 
+IsJID = compile__("\w+?@\w+?\.\w+?", 32)
+
 VarCache = {
-	"isjid": compile__("\w+?@\w+?\.\w+?", 32),
 	"idle": 0.24,
 	"alive": True,
 	"errors": [],
@@ -157,10 +158,9 @@ VarCache = {
 Info = {
 	"cmd": itypes.Number(),		"sess": time.time(),
 	"msg": itypes.Number(),		"alls": [],
-	"fcr": itypes.Number(),		"up": 1.24,
-	"cfw": itypes.Number(),		"fr": itypes.Number(),
-	"prs": itypes.Number(),		"fw": itypes.Number(),
-	"errors": itypes.Number(),	"iq": itypes.Number(),
+	"cfw": itypes.Number(),		"up": 1.24,
+	"prs": itypes.Number(),		"iq": itypes.Number(),
+	"errors": itypes.Number(),
 	"omsg": itypes.Number(),	"outiq": itypes.Number()
 		}
 
@@ -250,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 15, 0)
+(BsMark, BsVer, BsRev) = (2, 16, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -285,10 +285,10 @@ try:
 	Mserve = eval(GenCon.get("STATES", "MSERVE"))
 	GetExc = eval(GenCon.get("STATES", "GETEXC"))
 	DefLANG = GenCon.get("STATES", "LANG").upper()[0:2]
+	GodName = GenCon.get("CONFIG", "ADMIN").lower()
 	DefNick = GenCon.get("CONFIG", "NICK").split()[0]
 	DefStatus = GenCon.get("CONFIG", "STATUS")
 	GenResource = GenCon.get("CONFIG", "RESOURCE")
-	SuperAdmin = GenCon.get("CONFIG", "ADMIN").lower()
 	IncLimit = int(GenCon.get("LIMITS", "INCOMING"))
 	PrivLimit = int(GenCon.get("LIMITS", "PRIVATE"))
 	ConfLimit = int(GenCon.get("LIMITS", "CHAT"))
@@ -321,7 +321,7 @@ cPrefs = ("!","@","#",".","*")
 sCmds = []
 Chats = {}
 Flood = {}
-Galist = {SuperAdmin: 8}
+Galist = {GodName: 8}
 Roster = {"on": True}
 Clients = {}
 ChatsAttrs = {}
@@ -766,7 +766,7 @@ def delivery(body):
 				if Gen_disp == disp:
 					raise SelfExc("None connected clients!")
 		Info["omsg"].plus()
-		Clients[disp].send(xmpp.Message(SuperAdmin, body, Types[0]))
+		Clients[disp].send(xmpp.Message(GodName, body, Types[0]))
 	except IOError:
 		Print("\n\n%s" % (body), color1)
 	except SelfExc:
@@ -940,10 +940,7 @@ def initialize_file(filename, data = "{}"):
 		folder = os.path.dirname(filename)
 		if folder and not os.path.exists(folder):
 			os.makedirs(folder, 0755)
-		fp = open(filename, "w")
-		Info["fcr"].plus()
-		fp.write(data)
-		fp.close()
+		cat_file(filename, data)
 	except:
 		return False
 	return True
@@ -952,18 +949,15 @@ def del_file(filename):
 	exec_(os.remove, (cefile(filename),))
 
 def get_file(filename):
-	fp = open(cefile(filename), "r")
-	Info["fr"].plus()
-	gdata = fp.read()
-	fp.close()
-	return gdata
+	path = cefile(filename)
+	with open(path, "r") as fp:
+		return fp.read()
 
-def cat_file(filename, data, mode = "wb"):
+def cat_file(filename, data, otp = "wb"):
+	path = cefile(filename)
 	with Sequence:
-		fp = open(cefile(filename), mode)
-		Info["fw"].plus()
-		fp.write(data)
-		fp.close()
+		with open(path, otp) as fp:
+			fp.write(data)
 
 # Crashlogs
 
@@ -987,7 +981,7 @@ def lytic_crashlog(handler, command = None):
 	try:
 		if not os.path.exists(FeilDir):
 			os.mkdir(FeilDir, 0755)
-		crashfile = open(filename, "w")
+		crashfile = open(filename, "wb")
 		Info["cfw"].plus()
 		exc_info_(crashfile)
 		crashfile.close()
@@ -1124,7 +1118,7 @@ def enumerated_list(list):
 
 isNumber = lambda objt: (None if exec_(int, (objt,)) is None else True)
 
-isSource = lambda data: VarCache["isjid"].match(data)
+isSource = lambda data: IsJID.match(data)
 
 def calculate(Numb = int()):
 	if oSlist[0]:
