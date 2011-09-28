@@ -179,7 +179,7 @@ def exc_info_(fp = None):
 	except:
 		pass
 
-database = (itypes.Base)
+database = (itypes.Database)
 
 def get_exc():
 	try:
@@ -851,7 +851,7 @@ ejoinTimerName = lambda conf: "%s-%s" % (ejoinTimer.func_name, conf.decode("utf-
 
 def get_self_nick(conf):
 	if Chats.has_key(conf):
-		return Chats[conf].nick
+		return getattr(Chats[conf], Types[20], DefNick)
 	return DefNick
 
 get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server)
@@ -954,9 +954,9 @@ def del_file(filename):
 def get_file(filename):
 	fp = open(cefile(filename), "r")
 	Info["fr"].plus()
-	x = fp.read()
+	gdata = fp.read()
 	fp.close()
-	return x
+	return gdata
 
 def cat_file(filename, data, mode = "wb"):
 	with Sequence:

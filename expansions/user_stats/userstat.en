@@ -1,0 +1,8 @@
+conferense users statistics
+userstat (nick/jid)
+*/userstat dude
+bot would show dude's statistics
+*/userstat dude@j.ru
+bot would show dude's statistics
+*/userstat
+bot would show your statistics

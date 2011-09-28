@@ -20,7 +20,7 @@ def command_user_stats(ltype, source, body, disp):
 		filename = cefile(chat_file(source[1], UstatFile))
 		with UstatDesc[source[1]]:
 			with database(filename) as db:
-				db.execute("select * from stat where jid=?", (body,))
+				db("select * from stat where jid=?", (body,))
 				x = db.fetchone()
 		if x:
 			answer = UstatAnsBase[0] % (x[3], x[2], x[1])
@@ -61,10 +61,10 @@ def calc_user_stat(stanza, disp):
 					filename = cefile(chat_file(conf, UstatFile))
 					with UstatDesc[conf]:
 						with database(filename) as db:
-							db.execute("select * from stat where jid=?", (instance,))
+							db("select * from stat where jid=?", (instance,))
 							db_desc = db.fetchone()
 							if db_desc and nick not in db_desc[6].split("-/-"):
-								db.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), instance))
+								db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), instance))
 								db.commit()
 		else:
 			sUser = Chats[conf].get_user(nick)
@@ -72,7 +72,7 @@ def calc_user_stat(stanza, disp):
 				filename = cefile(chat_file(conf, UstatFile))
 				with UstatDesc[conf]:
 					with database(filename) as db:
-						db.execute("select * from stat where jid=?", (sUser.source,))
+						db("select * from stat where jid=?", (sUser.source,))
 						db_desc = db.fetchone()
 						if db_desc:
 							if stype == Types[4]:
@@ -83,25 +83,25 @@ def calc_user_stat(stanza, disp):
 									status = "kicked:(%s)" % UnicodeType(stanza.getReason())
 								else:
 									status = UnicodeType(stanza.getStatus())
-								db.execute("update stat set seen=?, leave=? where jid=?", (strTime(local = False), status, sUser.source))
+								db("update stat set seen=?, leave=? where jid=?", (strTime(local = False), status, sUser.source))
 							elif stype in [Types[3], None]:
 								if (time.time() - sUser.date[0]) <= 0.8:
-									db.execute("update stat set joined=?, joins=? where jid=?", (sUser.date[2], (db_desc[3] + 1), sUser.source))
+									db("update stat set joined=?, joins=? where jid=?", (sUser.date[2], (db_desc[3] + 1), sUser.source))
 									nick = nick.strip()
 									if nick not in db_desc[6].split("-/-"):
-										db.execute("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), sUser.source))
+										db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), sUser.source))
 								arole = "%s/%s" % (sUser.role)
 								if db_desc[1] != arole:
-									db.execute("update stat set arole=? where jid=?", (arole, sUser.source))
+									db("update stat set arole=? where jid=?", (arole, sUser.source))
 						else:
-							db.execute("insert into stat values (?,?,?,?,?,?,?)", (sUser.source, "%s/%s" % (sUser.role), sUser.date[2], 1, "", "", nick))
+							db("insert into stat values (?,?,?,?,?,?,?)", (sUser.source, "%s/%s" % (sUser.role), sUser.date[2], 1, "", "", nick))
 						db.commit()
 
 def init_stat_base(conf):
 	filename = cefile(chat_file(conf, UstatFile))
 	if not os.path.isfile(filename):
 		with database(filename) as db:
-			db.execute("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
+			db("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
 			db.commit()
 	UstatDesc[conf] = iThr.Semaphore()
 

@@ -17,10 +17,10 @@ def command_note(ltype, source, body, disp):
 			x = (list_.pop(0)).lower()
 			if x in ("clear", "чисть".decode("utf-8")):
 				with database(NoteFile) as db:
-					db.execute("select * from note where jid=?", (source_,))
+					db("select * from note where jid=?", (source_,))
 					db_desc = db.fetchone()
 					if db_desc:
-						db.execute("delete from note where jid=?", (source_,))
+						db("delete from note where jid=?", (source_,))
 						db.commit()
 						answer = AnsBase[4]
 					else:
@@ -31,13 +31,13 @@ def command_note(ltype, source, body, disp):
 					if len(body) <= 512:
 						date = strTime(local = False)
 						with database(NoteFile) as db:
-							db.execute("select * from note where jid=?", (source_,))
+							db("select * from note where jid=?", (source_,))
 							db_desc = db.fetchone()
 							if db_desc:
 								Numb, Added = itypes.Number(), False
 								for line in db_desc:
 									if not line:
-										db.execute("update note set line_%s=? where jid=?" % (Numb._str()), ("[%s] %s" % (date, body), source_))
+										db("update note set line_%s=? where jid=?" % (Numb._str()), ("[%s] %s" % (date, body), source_))
 										db.commit()
 										Added = True
 										break
@@ -47,7 +47,7 @@ def command_note(ltype, source, body, disp):
 								else:
 									answer = NoteAnsBase[3]
 							else:
-								db.execute("insert into note values (%s)" % (",".join(["?" for x in xrange(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
+								db("insert into note values (%s)" % (",".join(["?" for x in xrange(17)])), (source_, "[%s] %s" % (date, body), "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""))
 								db.commit()
 								answer = AnsBase[4]
 					else:
@@ -58,7 +58,7 @@ def command_note(ltype, source, body, disp):
 						Numb = int(Numb)
 						if Numb in xrange(1, 17):
 							with database(NoteFile) as db:
-								db.execute("select * from note where jid=?", (source_,))
+								db("select * from note where jid=?", (source_,))
 								db_desc = db.fetchone()
 								if db_desc:
 									if x == "*":
@@ -69,7 +69,7 @@ def command_note(ltype, source, body, disp):
 									elif not db_desc[Numb]:
 										answer = NoteAnsBase[8]
 									else:
-										db.execute("update note set line_%d=? where jid=?" % (Numb), ("", source_))
+										db("update note set line_%d=? where jid=?" % (Numb), ("", source_))
 										db.commit()
 										answer = AnsBase[4]
 								else:
@@ -84,7 +84,7 @@ def command_note(ltype, source, body, disp):
 				answer = AnsBase[2]
 		else:
 			with database(NoteFile) as db:
-				db.execute("select * from note where jid=?", (source_,))
+				db("select * from note where jid=?", (source_,))
 				db_desc = db.fetchone()
 				if db_desc:
 					Notes, Numb = str(), itypes.Number()
@@ -101,7 +101,7 @@ def command_note(ltype, source, body, disp):
 							Answer(AnsBase[11], ltype, source, disp)
 						Msend(source[0], Notes, disp)
 					else:
-						db.execute("delete from note where jid=?", (source_,))
+						db("delete from note where jid=?", (source_,))
 						db.commit()
 						answer = NoteAnsBase[0]
 				else:
@@ -114,7 +114,7 @@ def command_note(ltype, source, body, disp):
 def init_note_file():
 	if not os.path.isfile(NoteFile):
 		with database(NoteFile) as db:
-			db.execute("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in xrange(1, 17)])))
+			db("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in xrange(1, 17)])))
 			db.commit()
 
 expansions[exp_name].funcs_add([command_note, init_note_file])

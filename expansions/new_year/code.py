@@ -8,7 +8,7 @@ exp_name = "new_year" # /code.py v.x3
 expansion_register(exp_name)
 
 def command_new_year(ltype, source, body, disp):
-	list = ["Until the New Year (GMT) left:"]
+	list = ["Until the New Year (UTC) left:"]
 	Time = time.gmtime()
 	dr = lambda Numb: (Numb, ("s" if Numb >= 2 else ""))
 	t0 = (365 if (Time.tm_year%4) else 366)

@@ -23,7 +23,7 @@ def command_talkers(ltype, source, body, disp):
 						filename = cefile(chat_file(source[1], TalkersFile))
 						with TalkersDesc[source[1]]:
 							with database(filename) as db:
-								db.execute("select * from talkers order by -msgs")
+								db("select * from talkers order by -msgs")
 								db_desc = db.fetchmany(10)
 						if db_desc:
 							answer, Numb = TalkersAnsBase[0], itypes.Number()
@@ -37,7 +37,7 @@ def command_talkers(ltype, source, body, disp):
 							filename = cefile(chat_file(conf, TalkersFile))
 							with TalkersDesc[conf]:
 								with database(filename) as db:
-									db.execute("select * from talkers order by -msgs")
+									db("select * from talkers order by -msgs")
 									db_desc = db.fetchmany(99)
 							for x in db_desc:
 								if Glob_dbs.has_key(x[0]):
@@ -69,7 +69,7 @@ def command_talkers(ltype, source, body, disp):
 							filename = cefile(chat_file(conf, TalkersFile))
 							with TalkersDesc[conf]:
 								with database(filename) as db:
-									db.execute("select * from talkers where jid=?", (source_,))
+									db("select * from talkers where jid=?", (source_,))
 									db_desc = db.fetchone()
 							if db_desc:
 								x += db_desc[2]
@@ -101,7 +101,7 @@ def command_talkers(ltype, source, body, disp):
 								filename = cefile(chat_file(conf, TalkersFile))
 								with TalkersDesc[conf]:
 									with database(filename) as db:
-										db.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+										db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
 										db_desc = db.fetchmany(10)
 								for x in db_desc:
 									if Glob_dbs.has_key(x[0]):
@@ -130,7 +130,7 @@ def command_talkers(ltype, source, body, disp):
 						filename = cefile(chat_file(conf, TalkersFile))
 						with TalkersDesc[conf]:
 							with database(filename) as db:
-								db.execute("select * from talkers where jid=?", (source_,))
+								db("select * from talkers where jid=?", (source_,))
 								x = db.fetchone()
 						if x:
 							answer = TalkersAnsBase[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
@@ -157,7 +157,7 @@ def command_talkers(ltype, source, body, disp):
 							filename = cefile(chat_file(source[1], TalkersFile))
 							with TalkersDesc[source[1]]:
 								with database(filename) as db:
-									db.execute("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+									db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
 									db_desc = db.fetchmany(10)
 							if db_desc:
 								answer, Numb = TalkersAnsBase[0], itypes.Number()
@@ -184,19 +184,19 @@ def calculate_talkers(stanza, isConf, ltype, source, body, isToBs, disp):
 			filename = cefile(chat_file(source[1], TalkersFile))
 			with TalkersDesc[source[1]]:
 				with database(filename) as db:
-					db.execute("select * from talkers where jid=?", (source_,))
+					db("select * from talkers where jid=?", (source_,))
 					db_desc = db.fetchone()
 					if db_desc:
-						db.execute("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_desc[2] + 1), (db_desc[3] + len(body.split())), source_))
+						db("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_desc[2] + 1), (db_desc[3] + len(body.split())), source_))
 					else:
-						db.execute("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
+						db("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
 					db.commit()
 
 def init_talkers_base(conf):
 	filename = cefile(chat_file(conf, TalkersFile))
 	if not os.path.isfile(filename):
 		with database(filename) as db:
-			db.execute("create table talkers (jid text, lastnick text, msgs integer, words integer)")
+			db("create table talkers (jid text, lastnick text, msgs integer, words integer)")
 			db.commit()
 	TalkersDesc[conf] = iThr.Semaphore()
 
