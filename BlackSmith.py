@@ -751,9 +751,9 @@ def get_access(source, nick):
 		access = Galist.get(source, 2)
 	return access
 
-enough_access = lambda x, nick, acc = 0: (acc <= get_access(x, nick))
+enough_access = lambda conf, nick, Numb = int(): (Numb <= get_access(conf, nick))
 
-object_encode = lambda x: x if isinstance(x, UnicodeType) else x.decode("utf-8", str.replace.__name__)
+object_encode = lambda body: (body if isinstance(body, UnicodeType) else body.decode("utf-8", str.replace.__name__))
 
 def delivery(body):
 	try:
@@ -1285,25 +1285,25 @@ def Xmpp_Iq_Cb(disp, stanza):
 	if not enough_access(instance, nick):
 		xmpp_raise()
 	if stype == Types[10]:
-		Query = stanza.getQueryNS()
-		if not Query:
-			Query = (stanza.getTag(Types[16]) or stanza.getTag(Types[17]))
-			if Query:
-				Query = Query.getNamespace()
-		if Query in Features:
+		Name = stanza.getQueryNS()
+		if not Name:
+			Name = (stanza.getTag(Types[16]) or stanza.getTag(Types[17]))
+			if Name:
+				Name = Name.getNamespace()
+		if Features.count(Name):
 			answer = stanza.buildReply(Types[8])
-			if Query == Features[5]:
+			if Name == Features[5]:
 				query = answer.getTag(Types[18])
 				query.addChild("identity", {"category": "client",
 											"type": "bot",
 											"name": ProdName[:10]})
 				for Feature in aFeatures:
 					query.addChild("feature", {"var": Feature})
-			elif Query == Features[4]:
+			elif Name == Features[4]:
 				query = answer.getTag(Types[18])
 				query.setAttr("seconds", int(time.time() - VarCache["idle"]))
 				query.setData(VarCache["action"])
-			elif Query == Features[0]:
+			elif Name == Features[0]:
 				query = answer.getTag(Types[18])
 				query.setTagData("name", ProdName)
 				query.setTagData("version", ProdVer)
@@ -1315,7 +1315,7 @@ def Xmpp_Iq_Cb(disp, stanza):
 				else:
 					os_name = "Os[%s]" % (BotOs)
 				query.setTagData("os", "%s / PyVer[%s]" % (os_name, PyVer))
-			elif Query == Features[2]:
+			elif Name == Features[2]:
 				query = answer.getTag(Types[18])
 				utc = strTime("%Y%m%dT%H:%M:%S", False)
 				tz = strTime("%Z")
@@ -1325,7 +1325,7 @@ def Xmpp_Iq_Cb(disp, stanza):
 				query.setTagData("utc", utc)
 				query.setTagData("tz", tz)
 				query.setTagData("display", dis)
-			elif Query == Features[3]:
+			elif Name == Features[3]:
 				query = answer.addChild(Types[17], {}, [], Features[3])
 				query.setTagData("utc", strTime("%Y-%m-%dT%H:%M:%SZ", False))
 				TimeZone = (time.altzone if time.daylight else time.timezone)

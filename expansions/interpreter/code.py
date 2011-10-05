@@ -37,7 +37,7 @@ def command_sh(ltype, source, body, disp):
 		if oSlist[1]:
 			command = sys_cmds[6] % (body.encode("utf-8"))
 		else:
-			command =  body.encode("cp1251")
+			command = body.encode("cp1251")
 		answer = get_pipe(command)
 		if answer in ["", None]:
 			answer = AnsBase[4]

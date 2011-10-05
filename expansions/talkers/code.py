@@ -177,7 +177,7 @@ def command_talkers(ltype, source, body, disp):
 	Answer(answer, ltype, source, disp)
 
 def calculate_talkers(stanza, isConf, ltype, source, body, isToBs, disp):
-	if ltype == Types[1] and source[2] and Chats.has_key(source[1]):
+	if isConf and ltype == Types[1] and source[2]:
 		source_ = get_source(source[1], source[2])
 		if source_:
 			nick = source[2].strip()

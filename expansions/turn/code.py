@@ -50,7 +50,7 @@ def command_turn(ltype, source, body, disp):
 		Answer(answer, ltype, source, disp)
 
 def collect_turnable(stanza, isConf, ltype, source, body, isToBs, disp):
-	if Chats.has_key(source[1]) and (ltype == Types[1]) and source[2]:
+	if isConf and ltype == Types[1] and source[2]:
 		source_ = get_source(source[1], source[2])
 		if source_:
 			TurnBase[source[1]][source_] = (strTime("%H:%M:%S", False), body)
