@@ -1,5 +1,5 @@
 security control system
-order ([option] [on/off/number])
+order ([option] [on/off/number])/([servers] ([add/del] [server]))
 */order
 bot would show current config
 */order avipe on
@@ -14,6 +14,8 @@ activation of protection service from advertisement
 deactivation of protection service from obscene
 */order acaps on
 deactivation of protection service from caps-flood
+*/order sparta on
+activation of "Sparta mode" (bot will ban all of new servers which are not in "white list")
 */order lnick 24
 set the maximum length nickname for users (from 12 to 32)
 */order aban 4
@@ -26,3 +28,9 @@ time (in seconds) for which user will be deprived of voting for violations (60 t
 maximum message length allowed for users (from 512 to 2048)
 */order prslen 256
 maximum length of status messages, to allow for users (from 128 to 512)
+*/order servers
+bot would show "white list" of servers
+*/order servers add some_server.com
+bot would append "some_server.com" to "white list"
+*/order servers del some_server.com
+bot would remove "some_server.com" from "white list"

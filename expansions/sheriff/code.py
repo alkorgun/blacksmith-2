@@ -53,22 +53,22 @@ class rUser:
 
 def command_order(ltype, source, body, disp):
 
-	def change_cfg(conf, key, val):
-		if val in ("on", "1", "вкл".decode("utf-8")):
-			ChatsAttrs[conf]["laws"][key] = True
+	def change_cfg(conf, Name, mode):
+		if mode in ("on", "1", "вкл".decode("utf-8")):
+			ChatsAttrs[conf]["laws"][Name] = True
 			answer = AnsBase[4]
-		elif val in ("off", "0", "выкл".decode("utf-8")):
-			ChatsAttrs[conf]["laws"][key] = False
+		elif mode in ("off", "0", "выкл".decode("utf-8")):
+			ChatsAttrs[conf]["laws"][Name] = False
 			answer = AnsBase[4]
 		else:
 			answer = AnsBase[2]
 		return answer
 
-	def alt_change_cfg(conf, key, val, drange):
-		if isNumber(val):
-			val = int(val)
-			if val in xrange(*drange):
-				ChatsAttrs[conf]["laws"][key] = val
+	def alt_change_cfg(conf, Name, mode, drange):
+		if isNumber(mode):
+			mode = int(mode)
+			if mode in xrange(*drange):
+				ChatsAttrs[conf]["laws"][Name] = mode
 				answer = AnsBase[4]
 			else:
 				answer = AnsBase[2]
@@ -78,37 +78,69 @@ def command_order(ltype, source, body, disp):
 
 	if Chats.has_key(source[1]):
 		if body:
-			list = body.split()
-			if len(list) >= 2:
-				key, val = list[0].lower(), list[1].lower()
-				if key in ("avipe", "антивайп".decode("utf-8")):
-					answer = change_cfg(source[1], "avipe", val)
-				elif key in ("aspace", "антиспэйс".decode("utf-8")):
-					answer = change_cfg(source[1], "space", val)
-				elif key in ("verif", "авторизация".decode("utf-8")):
-					answer = change_cfg(source[1], "verif", val)
-				elif key in ("atiser", "антиреклама".decode("utf-8")):
-					answer = change_cfg(source[1], "tiser", val)
-				elif key in ("aobscene", "антимат".decode("utf-8")):
-					answer = change_cfg(source[1], "obscene", val)
-				elif key in ("acaps", "антикапс".decode("utf-8")):
-					answer = change_cfg(source[1], "lower", val)
-				elif key in ("lnick", "никлен".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "lnick", val, (12, 33))
-				elif key in ("aban", "автобан".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "aban", val, (2, 7))
-				elif key in ("loyalty", "лояльность".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "loyalty", val, (1, 6))
-				elif key in ("devoice", "девойс".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "dtime", val, (60, 361))
-				elif key in ("msglen", "мсглен".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "len", val, (512, 2049))
-				elif key in ("prslen", "прзлен".decode("utf-8")):
-					answer = alt_change_cfg(source[1], "prlen", val, (128, 513))
+			ls = (body.lower()).split()
+			Name = ls.pop(0)
+			if ls:
+				mode = ls.pop(0)
+				if Name in ("servers", "сервера".decode("utf-8")):
+					if enough_access(source[1], source[2], 7):
+						if ls:
+							jid = ls.pop(0)
+							if jid.count(chr(46)):
+								if mode in ("add", "+"):
+									if jid not in (GoodServers + ChatsAttrs[source[1]]["laws"]["list"]):
+										ChatsAttrs[source[1]]["laws"]["list"].append(jid)
+										answer = AnsBase[4]
+									else:
+										answer = SheriffAnsBase[34]
+								elif mode in ("del", "-"):
+									if ChatsAttrs[source[1]]["laws"]["list"].count(jid):
+										ChatsAttrs[source[1]]["laws"]["list"].remove(jid)
+										answer = AnsBase[4]
+									else:
+										answer = SheriffAnsBase[35]
+								else:
+									answer = AnsBase[2]
+							else:
+								answer = SheriffAnsBase[36]
+						else:
+							answer = AnsBase[2]
+					else:
+						answer = AnsBase[10]
+				elif Name in ("avipe", "антивайп".decode("utf-8")):
+					answer = change_cfg(source[1], "avipe", mode)
+				elif Name in ("aspace", "антиспэйс".decode("utf-8")):
+					answer = change_cfg(source[1], "space", mode)
+				elif Name in ("sparta", "спарта".decode("utf-8")):
+					answer = change_cfg(source[1], "space", mode)
+				elif Name in ("verif", "авторизация".decode("utf-8")):
+					answer = change_cfg(source[1], "verif", mode)
+				elif Name in ("atiser", "антиреклама".decode("utf-8")):
+					answer = change_cfg(source[1], "tiser", mode)
+				elif Name in ("aobscene", "антимат".decode("utf-8")):
+					answer = change_cfg(source[1], "obscene", mode)
+				elif Name in ("acaps", "антикапс".decode("utf-8")):
+					answer = change_cfg(source[1], "lower", mode)
+				elif Name in ("lnick", "никлен".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "lnick", mode, (12, 33))
+				elif Name in ("aban", "автобан".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "aban", mode, (2, 7))
+				elif Name in ("loyalty", "лояльность".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "loyalty", mode, (1, 6))
+				elif Name in ("devoice", "девойс".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "dtime", mode, (60, 361))
+				elif Name in ("msglen", "мсглен".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "len", mode, (512, 2049))
+				elif Name in ("prslen", "прзлен".decode("utf-8")):
+					answer = alt_change_cfg(source[1], "prlen", mode, (128, 513))
 				else:
 					answer = AnsBase[2]
-				if answer not in [AnsBase[2], AnsBase[30]]:
+				if answer == AnsBase[4]:
 					cat_file(chat_file(source[1], LawsFile), str(ChatsAttrs[source[1]]["laws"]))
+			elif Name in ("servers", "сервера".decode("utf-8")):
+				answer = "\nDefault:\n%s" % enumerated_list(sorted(GoodServers))
+				if ChatsAttrs[source[1]]["laws"]["list"]:
+					answer += "\n\nDefined:\n%s" % enumerated_list(sorted(ChatsAttrs[source[1]]["laws"]["list"]))
 			else:
 				answer = AnsBase[2]
 		else:
@@ -143,6 +175,10 @@ def command_order(ltype, source, body, disp):
 			else:
 				answer += SheriffAnsBase[26][:-1]
 			answer += SheriffAnsBase[32] % (ChatsAttrs[source[1]]["laws"]["prlen"])
+			if ChatsAttrs[source[1]]["laws"]["sparta"]:
+				answer += SheriffAnsBase[25][:-1]
+			else:
+				answer += SheriffAnsBase[26][:-1]
 	else:
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
@@ -289,63 +325,71 @@ def AvipeClear(conf, list):
 		Antivipe[conf]["clear"] = []
 		for sUser in Chats[conf].get_users():
 			if sUser.source in list:
-				if not Chats[conf].isHereNow(sUser.nick):
+				if sUser.ishere:
 					if Chats[conf].isHere(sUser.nick):
 						del Chats[conf].users[sUser.nick]
 					if Federal_Jail[conf].has_key(sUser.source):
 						del Federal_Jail[conf][sUser.source]
-		for x in list:
-			Chats[conf].none(x)
+		for User in list:
+			Chats[conf].none(User)
+			time.sleep(0.4)
+
+def get_server(source, state = 0):
+	if source.count(chr(64)):
+		source = source.split(chr(64))[1]
+		if state:
+			source = source.split(chr(46), 1)[1]
+	return source
+
+GoodServers__ = lambda conf: (GoodServers + ChatsAttrs[conf]["laws"]["list"] + [get_server(conf, True)])
 
 def antivipe_func(conf, nick, role, source):
-
-	def get_server(source, state = 0):
-		if source.count("@"):
-			source = source.split("@")[1]
-			if state:
-				source = source.split(".", 1)[1]
-		return source
-
-	if ChatsAttrs[conf]["laws"]["avipe"] and Chats[conf].isModer and role == AflRoles[2]:
-		NowTime = time.time()
-		if (NowTime - Chats[conf].sdate) >= 60:
-			difference = (NowTime - Antivipe[conf]["ltime"])
-			if difference > 360 and Antivipe[conf]["clear"]:
-				sThread(AvipeClear.func_name, AvipeClear, (conf, Antivipe[conf]["clear"],))
-			if difference > 15:
-				Antivipe[conf]["ltime"] = NowTime
-				Antivipe[conf]["jids"] = [source]
-			else:
-				Antivipe[conf]["jids"].append(source)
-				joined = Antivipe[conf]["jids"]
-				Numb = len(joined)
-				if Numb >= 3:
+	if Chats[conf].isModer and role == AflRoles[2]:
+		BsNick = get_self_nick(conf)
+		if ChatsAttrs[conf]["laws"]["sparta"]:
+			jid = get_server(source)
+			if jid not in GoodServers__():
+				Reason = ("%s: This is SPARTA!!" % BsNick)
+				Chats[conf].ban(jid, Reason); Chats[conf].kick(nick, Reason)
+		elif ChatsAttrs[conf]["laws"]["avipe"]:
+			NowTime = time.time()
+			if (NowTime - Chats[conf].sdate) >= 60:
+				difference = (NowTime - Antivipe[conf]["ltime"])
+				if difference > 360 and Antivipe[conf]["clear"]:
+					sThread(AvipeClear.func_name, AvipeClear, (conf, Antivipe[conf]["clear"],))
+				if difference > 15:
 					Antivipe[conf]["ltime"] = NowTime
-					BsNick = get_self_nick(conf)
-					Server = get_server(source)
-					if Server == get_server(joined[Numb - 2]) and Server == get_server(joined[Numb - 3]):
-						if Server not in (GoodServers + [get_server(conf, True)]):
-							Chats[conf].ban(Server, SheriffAnsBase[12] % (BsNick))
-							for sUser in Chats[conf].get_users():
-								if sUser.source and sUser.ishere:
-									if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
-										if Server == get_server(sUser.source):
-											if Federal_Jail[conf].has_key(sUser.source):
-												if not Federal_Jail[conf][sUser.source].verif:
-													Chats[conf].kick(sUser.nick, SheriffAnsBase[12] % (BsNick))
+					Antivipe[conf]["jids"] = [source,]
+				else:
+					Antivipe[conf]["jids"].append(source)
+					joined = Antivipe[conf]["jids"]
+					Numb = len(joined)
+					if Numb >= 3:
+						Antivipe[conf]["ltime"] = NowTime
+						jid = get_server(source)
+						if jid == get_server(joined[Numb - 2]) and jid == get_server(joined[Numb - 3]):
+							if jid not in GoodServers__():
+								Chats[conf].ban(jid, SheriffAnsBase[12] % (BsNick))
+								for sUser in Chats[conf].get_users():
+									if sUser.source and sUser.ishere:
+										if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
+											if jid == get_server(sUser.source):
+												if Federal_Jail[conf].has_key(sUser.source):
+													if not Federal_Jail[conf][sUser.source].verif:
+														Chats[conf].kick(sUser.nick, SheriffAnsBase[12] % (BsNick))
+							else:
+								for sUser in Chats[conf].get_users():
+									if sUser.source and sUser.ishere:
+										if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
+											if jid == get_server(sUser.source):
+												if Federal_Jail[conf].has_key(sUser.source):
+													if not Federal_Jail[conf][sUser.source].verif:
+														Antivipe[conf]["clear"].append(sUser.source)
+														Chats[conf].ban(sUser.source, SheriffAnsBase[12] % (BsNick))
 						else:
-							for sUser in Chats[conf].get_users():
-								if sUser.source and sUser.ishere:
-									if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
-										if Server == get_server(sUser.source):
-											if Federal_Jail[conf].has_key(sUser.source):
-												if not Federal_Jail[conf][sUser.source].verif:
-													Antivipe[conf]["clear"].append(sUser.source)
-													Chats[conf].ban(sUser.source, SheriffAnsBase[12] % (BsNick))
-					else:
-						Antivipe[conf]["clear"].append(source)
-						Chats[conf].ban(source, SheriffAnsBase[12] % (BsNick))
-					raise iThr.ThrKill("exit")
+							Antivipe[conf]["clear"].append(source)
+							Chats[conf].ban(source, SheriffAnsBase[12] % (BsNick))
+						raise iThr.ThrKill("exit")
 
 def Security_02eh(stanza, disp):
 	(source, conf, stype, nick) = sAttrs(stanza)
@@ -435,17 +479,21 @@ def Security_01si(conf):
 	Antivipe[conf] = {"ltime": 0, "jids": [], "clear": []}
 	if not ChatsAttrs.has_key(conf):
 		ChatsAttrs[conf] = {}
-	ChatsAttrs[conf]["laws"] = {"avipe": True, "space": True, "verif": False, "tiser": True, "obscene": False, "lower": False, "dtime": 180, "loyalty": 1, "aban": 3, "prlen": 256, "lnick": 24, "len": 1024}
+	ChatsAttrs[conf]["laws"] = {"avipe": True, "space": True, "verif": False, "tiser": True, "obscene": False, "lower": False, "sparta": False, "list": [], "dtime": 180, "loyalty": 1, "aban": 3, "prlen": 256, "lnick": 24, "len": 1024}
 	Name = chat_file(conf, LawsFile)
 	if initialize_file(Name, str(ChatsAttrs[conf]["laws"])):
 		ChatsAttrs[conf]["laws"] = eval(get_file(Name))
+		if not ChatsAttrs[conf]["laws"].has_key("list"):
+			ChatsAttrs[conf]["laws"]["sparta"] = False
+			ChatsAttrs[conf]["laws"]["list"] = []
+			cat_file(Name, str(ChatsAttrs[conf]["laws"]))
 
 def Security_04si(conf):
 	del Federal_Jail[conf]
 	del Antivipe[conf]
 
-expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, AvipeClear, antivipe_func, Security_01eh, Security_02eh, Security_01si, Security_04si])
-expansions[exp_name].ls.extend(["SheriffAnsBase", "GoodServers", "LawsFile", "Federal_Jail", "Antivipe", rUser.__name__])
+expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, AvipeClear, get_server, antivipe_func, Security_01eh, Security_02eh, Security_01si, Security_04si])
+expansions[exp_name].ls.extend(["SheriffAnsBase", "GoodServers", "LawsFile", "Federal_Jail", "Antivipe", rUser.__name__, "GoodServers__"])
 
 command_handler(command_order, {"RU": "ордер", "EN": "order"}, 6, exp_name)
 

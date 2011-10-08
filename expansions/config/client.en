@@ -1,5 +1,5 @@
 clients control system
-client (del/add/password) (jid/host) (accout/password) (password/set) (port) (server)
+client ([del] [jid])/([add] [host] [accout] [password] (port) (server))/([password] [jid] [text])
 */client
 bot would show current config
 */client del bs@xmpp.ru

@@ -38,7 +38,7 @@ def command_ban(ltype, source, body, disp):
 						jid = get_source(source[1], nick)
 					elif Chats[source[1]].isHere(Nick):
 						jid = get_source(source[1], Nick)
-					elif isSource(Nick):
+					elif nick.count(chr(46)) and not Nick.count(chr(32)):
 						jid = Nick
 					else:
 						jid = None
@@ -77,7 +77,7 @@ def command_none(ltype, source, body, disp):
 						jid = get_source(source[1], nick)
 					elif Chats[source[1]].isHere(Nick):
 						jid = get_source(source[1], Nick)
-					elif isSource(Nick):
+					elif nick.count(chr(46)) and not Nick.count(chr(32)):
 						jid = Nick
 					else:
 						jid = None
@@ -116,7 +116,7 @@ def command_member(ltype, source, body, disp):
 						jid = get_source(source[1], nick)
 					elif Chats[source[1]].isHere(Nick):
 						jid = get_source(source[1], Nick)
-					elif isSource(Nick):
+					elif nick.count(chr(46)) and not Nick.count(chr(32)):
 						jid = Nick
 					else:
 						jid = None
@@ -155,7 +155,7 @@ def command_admin(ltype, source, body, disp):
 						jid = get_source(source[1], nick)
 					elif Chats[source[1]].isHere(Nick):
 						jid = get_source(source[1], Nick)
-					elif isSource(Nick):
+					elif nick.count(chr(46)) and not Nick.count(chr(32)):
 						jid = Nick
 					else:
 						jid = None
@@ -194,7 +194,7 @@ def command_owner(ltype, source, body, disp):
 						jid = get_source(source[1], nick)
 					elif Chats[source[1]].isHere(Nick):
 						jid = get_source(source[1], Nick)
-					elif isSource(Nick):
+					elif nick.count(chr(46)) and not Nick.count(chr(32)):
 						jid = Nick
 					else:
 						jid = None
@@ -377,7 +377,7 @@ def command_fullban(ltype, source, body, disp):
 				jid = get_source(source[1], nick)
 			elif Chats[source[1]].isHere(Nick):
 				jid = get_source(source[1], Nick)
-			elif isSource(Nick):
+			elif nick.count(chr(46)) and not Nick.count(chr(32)):
 				jid = Nick
 			else:
 				jid = None
@@ -407,7 +407,7 @@ def command_fullunban(ltype, source, body, disp):
 				jid = get_source(source[1], nick)
 			elif Chats[source[1]].isHere(Nick):
 				jid = get_source(source[1], Nick)
-			elif isSource(Nick):
+			elif nick.count(chr(46)) and not Nick.count(chr(32)):
 				jid = Nick
 			else:
 				jid = None

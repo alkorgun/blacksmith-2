@@ -552,7 +552,7 @@ class sUser:
 		self.source = source
 		self.role = role
 		self.ishere = True
-		self.date = (time.time(), Yday(), time.asctime())
+		self.date = (time.time(), Yday(), strTime(local = False))
 		self.access = access
 		if not access and access != 0:
 			self.calc_acc()
