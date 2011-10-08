@@ -83,30 +83,27 @@ def command_order(ltype, source, body, disp):
 			if ls:
 				mode = ls.pop(0)
 				if Name in ("servers", "сервера".decode("utf-8")):
-					if enough_access(source[1], source[2], 7):
-						if ls:
-							jid = ls.pop(0)
-							if jid.count(chr(46)):
-								if mode in ("add", "+"):
-									if jid not in (GoodServers + ChatsAttrs[source[1]]["laws"]["list"]):
-										ChatsAttrs[source[1]]["laws"]["list"].append(jid)
-										answer = AnsBase[4]
-									else:
-										answer = SheriffAnsBase[34]
-								elif mode in ("del", "-"):
-									if ChatsAttrs[source[1]]["laws"]["list"].count(jid):
-										ChatsAttrs[source[1]]["laws"]["list"].remove(jid)
-										answer = AnsBase[4]
-									else:
-										answer = SheriffAnsBase[35]
+					if ls:
+						jid = ls.pop(0)
+						if jid.count(chr(46)):
+							if mode in ("add", "+"):
+								if jid not in (GoodServers + ChatsAttrs[source[1]]["laws"]["list"]):
+									ChatsAttrs[source[1]]["laws"]["list"].append(jid)
+									answer = AnsBase[4]
 								else:
-									answer = AnsBase[2]
+									answer = SheriffAnsBase[34]
+							elif mode in ("del", "-"):
+								if ChatsAttrs[source[1]]["laws"]["list"].count(jid):
+									ChatsAttrs[source[1]]["laws"]["list"].remove(jid)
+									answer = AnsBase[4]
+								else:
+									answer = SheriffAnsBase[35]
 							else:
-								answer = SheriffAnsBase[36]
+								answer = AnsBase[2]
 						else:
-							answer = AnsBase[2]
+							answer = SheriffAnsBase[36]
 					else:
-						answer = AnsBase[10]
+						answer = AnsBase[2]
 				elif Name in ("avipe", "антивайп".decode("utf-8")):
 					answer = change_cfg(source[1], "avipe", mode)
 				elif Name in ("aspace", "антиспэйс".decode("utf-8")):
@@ -253,7 +250,7 @@ def sheriff_set(ltype, source, source_, access, loyalty, body, disp):
 	if access <= loyalty:
 		if Federal_Jail[source[1]].has_key(source_):
 			Federal_Jail[source[1]][source_].offenses += 1
-			if Federal_Jail[source[1]][source_].offenses in [1, 2]:
+			if Federal_Jail[source[1]][source_].offenses in (1, 2):
 				Answer(body, ltype, source, disp)
 				raise iThr.ThrKill("exit")
 			elif Federal_Jail[source[1]][source_].offenses == 3:
@@ -272,8 +269,7 @@ def sheriff_set(ltype, source, source_, access, loyalty, body, disp):
 
 def Security_01eh(stanza, isConf, ltype, source, body, isToBs, disp):
 	if isConf and source[2] and Chats[source[1]].isModer:
-		access = get_access(source[1], source[2])
-		loyalty = sheriffs_loyalty(source[1])
+		loyalty, access = sheriffs_loyalty(source[1]), get_access(source[1], source[2])
 		if access <= loyalty[0]:
 			source_ = get_source(source[1], source[2])
 			if ChatsAttrs[source[1]]["laws"]["tiser"]:
