@@ -344,7 +344,7 @@ def antivipe_func(conf, nick, role, source):
 		BsNick = get_self_nick(conf)
 		if ChatsAttrs[conf]["laws"]["sparta"]:
 			jid = get_server(source)
-			if jid not in GoodServers__():
+			if jid not in GoodServers__(conf):
 				Reason = ("%s: This is SPARTA!!" % BsNick)
 				Chats[conf].ban(jid, Reason); Chats[conf].kick(nick, Reason)
 		elif ChatsAttrs[conf]["laws"]["avipe"]:
@@ -364,7 +364,7 @@ def antivipe_func(conf, nick, role, source):
 						Antivipe[conf]["ltime"] = NowTime
 						jid = get_server(source)
 						if jid == get_server(joined[Numb - 2]) and jid == get_server(joined[Numb - 3]):
-							if jid not in GoodServers__():
+							if jid not in GoodServers__(conf):
 								Chats[conf].ban(jid, SheriffAnsBase[12] % (BsNick))
 								for sUser in Chats[conf].get_users():
 									if sUser.source and sUser.ishere:

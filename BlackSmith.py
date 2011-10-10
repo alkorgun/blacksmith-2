@@ -1086,7 +1086,7 @@ strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data,
 
 def Time2Text(Time):
 	ext, ls = [], [("Year", 0), ("Month", 12), ("Day", 30), ("Hour", 24), ("Minute", 60), ("Second", 60)]
-	while True:
+	while ls:
 		lr = ls.pop()
 		if lr[1]:
 			(Time, Rest) = divmod(Time, lr[1])
@@ -1099,7 +1099,7 @@ def Time2Text(Time):
 
 def Size2Text(Size):
 	ext, ls = [], list("TGMK.")
-	while True:
+	while ls:
 		lr = ls.pop()
 		if ls:
 			(Size, Rest) = divmod(Size, 1024)
