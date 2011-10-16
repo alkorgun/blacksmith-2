@@ -43,7 +43,7 @@ def command_ban(ltype, source, body, disp):
 					else:
 						jid = None
 					if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -82,7 +82,7 @@ def command_none(ltype, source, body, disp):
 					else:
 						jid = None
 					if jid:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -121,7 +121,7 @@ def command_member(ltype, source, body, disp):
 					else:
 						jid = None
 					if jid:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -160,7 +160,7 @@ def command_admin(ltype, source, body, disp):
 					else:
 						jid = None
 					if jid:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -199,7 +199,7 @@ def command_owner(ltype, source, body, disp):
 					else:
 						jid = None
 					if jid:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -237,7 +237,7 @@ def command_kick(ltype, source, body, disp):
 						nick = None
 					jid = get_source(source[1], nick)
 					if nick and jid and Galist.get(jid, 0) < 7 and jid != get_disp(disp):
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -275,7 +275,7 @@ def command_visitor(ltype, source, body, disp):
 						nick = None
 					jid = get_source(source[1], nick)
 					if nick and jid and Galist.get(jid, 0) < 7:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -312,7 +312,7 @@ def command_participant(ltype, source, body, disp):
 					else:
 						nick = None
 					if nick:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -349,7 +349,7 @@ def command_moder(ltype, source, body, disp):
 					else:
 						nick = None
 					if nick:
-						if len(body) >= 2 and body[0]:
+						if body and body[0]:
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
@@ -382,7 +382,7 @@ def command_fullban(ltype, source, body, disp):
 			else:
 				jid = None
 			if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
-				if len(body) >= 2 and body[0]:
+				if body and body[0]:
 					text = "%s: %s" % (source[2], (body.pop(0)).strip())
 				else:
 					text = "%s/%s" % (get_self_nick(source[1]), source[2])

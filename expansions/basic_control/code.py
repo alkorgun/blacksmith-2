@@ -72,7 +72,7 @@ def command_join(ltype, source, body, disp):
 						if ejoinTimerName(conf) in iThr.ThrNames():
 							answer += ControlAnsBase[13]
 				else:
-					answer = ControlAnsBase[15]
+					answer = ControlAnsBase[15] % (conf)
 			else:
 				answer = ControlAnsBase[5]
 		else:

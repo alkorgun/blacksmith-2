@@ -10,7 +10,8 @@ if DefLANG in ("RU", "UA"):
 		"Сообщение от %s:\n%s", # 5
 		"«%s» сейчас здесь.", # 6
 		"Адресат неопределён.", # 7
-		"Не более 1го приглащения за 12 минут! (Осталось: %s)" # 8
+		"Не более 1го приглащения за 12 минут! (Осталось: %s)", # 8
+		"Чистка итак в процессе!" # 9
 					)])
 else:
 	BsendAnsBase = (
@@ -22,5 +23,6 @@ else:
 		"Message from %s:\n%s", # 5
 		"'%s' is here now.", # 6
 		"Unknown target.", # 7
-		"Users can send only one invite in 12 minutes! (Remain: %s)" # 8
+		"Users can send only one invite in 12 minutes! (Remain: %s)", # 8
+		"Cleaning already in the process!" # 9
 					)

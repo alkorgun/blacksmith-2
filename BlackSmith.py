@@ -250,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 16, 0)
+(BsMark, BsVer, BsRev) = (2, 17, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -371,8 +371,10 @@ def Try_Thr(Thr, Number = 0):
 		raise RuntimeError("exit")
 	try:
 		Thr.start()
-	except:
+	except iThr.ThrFail:
 		Try_Thr(Thr, (Number + 1))
+	except:
+		lytic_crashlog(Thr.start)
 
 def sThread_Run(Thr, handler, command = None):
 	try:

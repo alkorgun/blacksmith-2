@@ -1,26 +1,36 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "bot_sends" # /code.py v.x4
-#  Id: 18~3a
+exp_name = "bot_sends" # /code.py v.x5
+#  Id: 18~4a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
 def command_clear(ltype, source, body, disp):
 	if Chats.has_key(source[1]):
-		if ltype == Types[1]:
-			s1_buckup = Chats[source[1]].state
-			s2_buckup = Chats[source[1]].status
-			Chats[source[1]].change_status(sList[2], BsendAnsBase[0])
-		zero = xmpp.Message(to = source[1], typ = Types[1])
-		for x in xrange(24):
-			Sender(disp, zero); Info["omsg"].plus()
-			time.sleep(1.4)
-		if ltype == Types[1]:
-			Chats[source[1]].change_status(s1_buckup, s2_buckup)
+		if ChatsAttrs[source[1]]["dirt"]:
+			ChatsAttrs[source[1]]["dirt"] = None
+			if ltype == Types[1]:
+				s1_buckup = Chats[source[1]].state
+				s2_buckup = Chats[source[1]].status
+				Chats[source[1]].change_status(sList[2], BsendAnsBase[0])
+			zero = xmpp.Message(to = source[1], typ = Types[1])
+			for Numb in xrange(24):
+				if not Chats.has_key(source[1]):
+					raise SelfExc("exit")
+				Sender(disp, zero); Info["omsg"].plus()
+				if (Numb != 23):
+					time.sleep(1.4)
+			if ltype == Types[1]:
+				Chats[source[1]].change_status(s1_buckup, s2_buckup)
+			ChatsAttrs[source[1]]["dirt"] = True
+		else:
+			answer = BsendAnsBase[9]
 	else:
-		Answer(AnsBase[0], ltype, source, disp)
+		answer = AnsBase[0]
+	if locals().has_key(Types[12]):
+		Answer(answer, ltype, source, disp)
 
 def command_test(ltype, source, body, disp):
 	errors = len(VarCache["errors"])
@@ -125,12 +135,13 @@ def command_invite(ltype, source, body, disp):
 		answer = AnsBase[0]
 	Answer(answer, ltype, source, disp)
 
-def init_invite_timer(conf):
+def init_bot_sender(conf):
 	if not ChatsAttrs.has_key(conf):
 		ChatsAttrs[conf] = {}
 	ChatsAttrs[conf]["intr"] = 0
+	ChatsAttrs[conf]["dirt"] = True
 
-expansions[exp_name].funcs_add([command_clear, command_test, command_sendall, command_more, command_send, command_adelivery, command_say, command_invite, init_invite_timer])
+expansions[exp_name].funcs_add([command_clear, command_test, command_sendall, command_more, command_send, command_adelivery, command_say, command_invite, init_bot_sender])
 expansions[exp_name].ls.extend(["BsendAnsBase"])
 
 command_handler(command_clear, {"RU": "чисть", "EN": "clear"}, 3, exp_name)
@@ -142,4 +153,4 @@ command_handler(command_adelivery, {"RU": "суперадмину", "EN": "toadm
 command_handler(command_say, {"RU": "сказать", "EN": "say"}, 7, exp_name)
 command_handler(command_invite, {"RU": "пригласить", "EN": "invite"}, 4, exp_name)
 
-handler_register(init_invite_timer, "01si", exp_name)
+handler_register(init_bot_sender, "01si", exp_name)

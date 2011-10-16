@@ -10,10 +10,10 @@ expansion_register(exp_name)
 def command_redisp(ltype, source, body, disp):
 	body = body.split()
 	if len(body) >= 1:
-		disp_ = body[0].lower()
+		disp_ = (body.pop(0)).lower()
 		if Clients.has_key(disp_):
-			if len(body) >= 2:
-				conf = body[1].lower()
+			if body:
+				conf = (body.pop(0)).lower()
 			else:
 				conf = source[1]
 			if Chats.has_key(conf):
