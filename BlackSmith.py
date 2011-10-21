@@ -1251,7 +1251,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 				call_functions("04eh", (conf, nick, instance, Role, disp,))
 		elif stype == Types[4]:
 			scode = stanza.getStatusCode()
-			if Chats[conf].nick == nick and scode in [sCodes[0], sCodes[2]]:
+			if Chats[conf].nick == nick and scode in (sCodes[0], sCodes[2]):
 				Chats[conf].full_leave(sCodesDesc[scode])
 				delivery(AnsBase[26] % (scode, conf, sCodesDesc[scode]))
 				xmpp_raise()
@@ -1381,7 +1381,7 @@ def Xmpp_Message_Cb(disp, stanza):
 			Sender(disp, answer)
 		stype = Types[0]
 	cbody, isToBs, Parameters = body, (stype == Types[0]), ""
-	for x in ["%s%s" % (BotNick, Key) for Key in [":",",",">"]]:
+	for x in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
 		if cbody.startswith(x):
 			cbody, isToBs = cbody[len(x):].lstrip(), True
 			break

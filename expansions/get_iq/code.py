@@ -66,14 +66,14 @@ def command_ping_stat(ltype, source, source_, disp):
 	else:
 		source_ = get_source(source[1], source[2])
 	if source_ and PingStat.has_key(source_):
-		number = 0
+		Number = 0.0
 		for x in PingStat[source_]:
-			number += x
+			Number += x
 		len_ = len(PingStat[source_])
 		max_ = max(PingStat[source_])
 		min_ = min(PingStat[source_])
 		if len_:
-			answer = IqAnsBase[3] % (str(len_), str(min_), str(max_), str(round(number / len_, 3)))
+			answer = IqAnsBase[3] % (str(len_), str(min_), str(max_), str(round(Number / len_, 3)))
 		else:
 			answer = IqAnsBase[4]
 	else:

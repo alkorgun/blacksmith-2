@@ -33,11 +33,11 @@ def command_expinfo(ltype, source, body, disp):
 		else:
 			answer = CexpAnsBase[7]
 	else:
-		answer, number = CexpAnsBase[8], itypes.Number()
+		answer, Number = CexpAnsBase[8], itypes.Number()
 		for exp_name in expansions.keys():
 			code_file = get_state(expansions[exp_name].file)
 			insc_file = get_state(expansions[exp_name].insc)
-			answer += "\n%d) %s - %s - %s" % (number.plus(), exp_name, code_file, insc_file)
+			answer += "\n%d) %s - %s - %s" % (Number.plus(), exp_name, code_file, insc_file)
 		elexps = []
 		for exp_name in sorted(os.listdir(PlugsDir)):
 			if (".svn") == (exp_name) or expansions.has_key(exp_name):
@@ -46,7 +46,7 @@ def command_expinfo(ltype, source, body, disp):
 				exp = expansion(exp_name)
 				code_file = get_state(exp.file)
 				insc_file = get_state(exp.insc)
-				elexps.append("%d) %s - %s - %s" % (number.plus(), exp_name, code_file, insc_file))
+				elexps.append("%d) %s - %s - %s" % (Number.plus(), exp_name, code_file, insc_file))
 		elexps_len = len(elexps)
 		if elexps_len:
 			answer += CexpAnsBase[9] % (elexps_len, chr(10).join(elexps))

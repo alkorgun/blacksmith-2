@@ -295,16 +295,15 @@ def Security_01eh(stanza, isConf, ltype, source, body, isToBs, disp):
 							Msend(source[0], SheriffAnsBase[23], disp)
 						raise iThr.ThrKill("exit")
 				Federal_Jail[source[1]][source_].addMsTime()
-				list = Federal_Jail[source[1]][source_].msdates
-				len_msg = len(list)
-				if len_msg >= 4:
-					if (list[len_msg - 1] - list[0]) <= 6:
-						Federal_Jail[source[1]][source_].msdates = [list[len_msg - 1]]
+				list = getattr(Federal_Jail[source[1]][source_], "msdates")
+				if len(list) >= 4:
+					if (list[-1] - list[0]) <= 6:
+						Federal_Jail[source[1]][source_].msdates = [list.pop()]
 						Federal_Jail[source[1]][source_].SetDevoice()
 						spesial_kick(source[1], source[2], SheriffAnsBase[15])
 					else:
 						Federal_Jail[source[1]][source_].msdates.pop(0)
-				del list, len_msg
+				del list
 			if ltype == Types[1]:
 				if ChatsAttrs[source[1]]["laws"]["obscene"]:
 					if obscene_checker(body):
@@ -433,15 +432,14 @@ def Security_02eh(stanza, disp):
 								Msend("%s/%s" % (conf, nick), SheriffAnsBase[18] % (ques[0].strip()), disp)
 								del ques
 					del isHere
-					list = Federal_Jail[conf][sUser.source].prdates
-					len_prs = len(list)
-					if len_prs >= 4:
-						if (list[len_prs - 1] - list[0]) <= 10:
-							Federal_Jail[conf][sUser.source].prdates = [list[len_prs - 1]]
+					list = getattr(Federal_Jail[conf][sUser.source], "prdates")
+					if len(list) >= 4:
+						if (list[-1] - list[0]) <= 10:
+							Federal_Jail[conf][sUser.source].prdates = [list.pop()]
 							spesial_kick(conf, nick, SheriffAnsBase[13])
 						else:
 							Federal_Jail[conf][sUser.source].prdates.pop(0)
-					del list, len_prs
+					del list
 					status = stanza.getStatus()
 					if status:
 						if ChatsAttrs[conf]["laws"]["tiser"]:
