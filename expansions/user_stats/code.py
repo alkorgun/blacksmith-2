@@ -37,7 +37,7 @@ def command_here(ltype, source, nick, disp):
 	if Chats.has_key(source[1]):
 		if not nick:
 			nick = source[2]
-		if Chats[source[1]].isHereNow(nick):
+		if Chats[source[1]].isHereTS(nick):
 			jtc = Time2Text(time.time() - Chats[source[1]].get_user(nick).date[0])
 			if nick != source[2]:
 				answer = UstatAnsBase[4] % (nick, jtc)
@@ -68,7 +68,7 @@ def calc_user_stat(stanza, disp):
 								db.commit()
 		else:
 			sUser = Chats[conf].get_user(nick)
-			if sUser.source:
+			if getattr(sUser, "source", 0):
 				filename = cefile(chat_file(conf, UstatFile))
 				with UstatDesc[conf]:
 					with database(filename) as db:
@@ -84,7 +84,7 @@ def calc_user_stat(stanza, disp):
 								else:
 									status = UnicodeType(stanza.getStatus())
 								db("update stat set seen=?, leave=? where jid=?", (strTime(local = False), status, sUser.source))
-							elif stype in [Types[3], None]:
+							elif stype in (Types[3], None):
 								if (time.time() - sUser.date[0]) <= 0.8:
 									db("update stat set joined=?, joins=? where jid=?", (sUser.date[2], (db_desc[3] + 1), sUser.source))
 									nick = nick.strip()

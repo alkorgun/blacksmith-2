@@ -49,8 +49,8 @@ def command_remote(ltype, source, body, disp):
 								sThread("command", self.handler, (type2, (source[0], conf, source[2]), Parameters, disp_), self.name)
 								self.numb.plus()
 								source = get_source(source[1], source[2])
-								if source and source not in self.users:
-									self.users.append(source)
+								if source and source not in self.desc:
+									self.desc.append(source)
 							else:
 								Answer(AnsBase[19] % (self.name), ltype, source, disp)
 						else:

@@ -108,7 +108,7 @@ def command_invite(ltype, source, body, disp):
 			if timer >= 720:
 				source_, jid_ = None, (body.split()[0])
 				if Chats[source[1]].isHere(body):
-					if Chats[source[1]].isHereNow(body):
+					if Chats[source[1]].isHereTS(body):
 						Answer(BsendAnsBase[6] % (body), ltype, source, disp)
 						raise iThr.ThrKill("exit")
 					source_ = get_source(source[1], body)

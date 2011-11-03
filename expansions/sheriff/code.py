@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sheriff" # /code.py v.x3
-#  Id: 15~3a
+exp_name = "sheriff" # /code.py v.x4
+#  Id: 15~4a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -14,36 +14,33 @@ if DefLANG != "RU":
 
 LawsFile = "laws.db"
 
-Federal_Jail, Antivipe = {}, {}
+Federal_Jail, Antiwipe = {}, {}
 
 class rUser:
 
-	def __init__(self, joined):
-		self.ishere = True
+	def __init__(self):
 		self.devoice = 0
-		self.prdates = [joined]
+		self.prdates = [time.time()]
 		self.msdates = []
 		self.offenses = 0
 		self.verif = False
-		self.kicks = 0
+		self.kicks = itypes.Number()
 		self.vakey = ""
 		self.vnumb = itypes.Number()
 
 	def Autenticated(self):
 		self.verif = True
 		self.vakey = ""
-		del self.vnumb
+		delattr(self, "vnumb")
 
 	def leaved(self):
-		self.ishere = False
 		self.msdates = []
 		self.vakey = ""
 
 	def SetDevoice(self):
 		self.devoice = time.time()
 
-	def GetDevoice(self):
-		return (time.time() - self.devoice)
+	GetDevoice = lambda self: (time.time() - self.devoice)
 
 	def addPrTime(self):
 		self.prdates.append(time.time())
@@ -104,8 +101,8 @@ def command_order(ltype, source, body, disp):
 							answer = SheriffAnsBase[36]
 					else:
 						answer = AnsBase[2]
-				elif Name in ("avipe", "антивайп".decode("utf-8")):
-					answer = change_cfg(source[1], "avipe", mode)
+				elif Name in ("awipe", "антивайп".decode("utf-8")):
+					answer = change_cfg(source[1], "awipe", mode)
 				elif Name in ("aspace", "антиспэйс".decode("utf-8")):
 					answer = change_cfg(source[1], "space", mode)
 				elif Name in ("sparta", "спарта".decode("utf-8")):
@@ -147,7 +144,7 @@ def command_order(ltype, source, body, disp):
 			else:
 				answer += SheriffAnsBase[26][:-1]
 			answer += SheriffAnsBase[27] % (ChatsAttrs[source[1]]["laws"]["lnick"])
-			if ChatsAttrs[source[1]]["laws"]["avipe"]:
+			if ChatsAttrs[source[1]]["laws"]["awipe"]:
 				answer += SheriffAnsBase[25]
 			else:
 				answer += SheriffAnsBase[26]
@@ -193,11 +190,11 @@ def sheriffs_loyalty(conf):
 def tiser_checker(body):
 	body = body.lower()
 	c1, c2 = 0, 0
-	for x in ["@", "conf", "ence"]:
-		if body.count(x):
+	for dkey in ["@", "conf", "ence"]:
+		if body.count(dkey):
 			c1 += 1
-	for x in ["http", "//", "www"]:
-		if body.count(x):
+	for dkey in ["http", "//", "www"]:
+		if body.count(dkey):
 			c2 += 1
 	if c1 == 3 or c2 > 1:
 		return True
@@ -205,15 +202,15 @@ def tiser_checker(body):
 
 def obscene_checker(body):
 	body = " %s " % body.lower()
-	for x in SheriffAnsBase[33].split("/"):
-		if body.count(x):
+	for dkey in SheriffAnsBase[33].split(chr(47)):
+		if body.count(dkey):
 			return True
 	return False
 
 def lower_checker(conf, body):
 	Numb, body = 0, sub_desc(body, [chr(32), chr(10), chr(13), chr(9)] + Chats[conf].get_nicks()).strip()
-	for x in list(body):
-		if x.isupper():
+	for char in list(body):
+		if char.isupper():
 			Numb += 1
 	if Numb > 12 and Numb > (len(body) / 3):
 		return True
@@ -223,8 +220,8 @@ def check_nick(conf, nick):
 
 	def nick_checker(conf, nick):
 		nick = nick.lower()
-		for x in ["%s", "%d", "%i", "%f"]:
-			if nick.count(x):
+		for dkey in ("%s", "%d", "%i", "%f"):
+			if nick.count(dkey):
 				return True
 		nick = nick.split()[0]
 		if nick in Cmds.keys():
@@ -248,18 +245,19 @@ def check_nick(conf, nick):
 
 def sheriff_set(ltype, source, source_, access, loyalty, body, disp):
 	if access <= loyalty:
-		if Federal_Jail[source[1]].has_key(source_):
-			Federal_Jail[source[1]][source_].offenses += 1
-			if Federal_Jail[source[1]][source_].offenses in (1, 2):
+		prisoner = Federal_Jail[source[1]].get(source_)
+		if prisoner:
+			prisoner.offenses += 1
+			if prisoner.offenses in (1, 2):
 				Answer(body, ltype, source, disp)
 				raise iThr.ThrKill("exit")
-			elif Federal_Jail[source[1]][source_].offenses == 3:
+			elif prisoner.offenses == 3:
 				Chats[source[1]].visitor(source[2], "%s: %s" % (get_self_nick(source[1]), body))
-				Federal_Jail[source[1]][source_].SetDevoice()
+				prisoner.SetDevoice()
 				Msend(source[0], SheriffAnsBase[16] % (body, ChatsAttrs[source[1]]["laws"]["dtime"]), disp)
 				raise iThr.ThrKill("exit")
 			else:
-				Federal_Jail[source[1]][source_].SetDevoice()
+				prisoner.SetDevoice()
 				spesial_kick(source[1], source[2], body)
 		else:
 			spesial_kick(source[1], source[2], body)
@@ -269,109 +267,115 @@ def sheriff_set(ltype, source, source_, access, loyalty, body, disp):
 
 def Security_01eh(stanza, isConf, ltype, source, body, isToBs, disp):
 	if isConf and source[2] and Chats[source[1]].isModer:
-		loyalty, access = sheriffs_loyalty(source[1]), get_access(source[1], source[2])
-		if access <= loyalty[0]:
-			source_ = get_source(source[1], source[2])
-			if ChatsAttrs[source[1]]["laws"]["tiser"]:
-				if tiser_checker(body):
-					if access <= loyalty[1]:
-						if Federal_Jail[source[1]].has_key(source_):
-							Federal_Jail[source[1]][source_].SetDevoice()
-						spesial_kick(source[1], source[2], SheriffAnsBase[4])
-					else:
-						Answer(SheriffAnsBase[4], ltype, source, disp)
-					raise iThr.ThrKill("exit")
-			if Federal_Jail[source[1]].has_key(source_):
-				if ChatsAttrs[source[1]]["laws"]["verif"]:
-					if access < 2 and Federal_Jail[source[1]][source_].vakey and ltype == Types[0]:
-						if Federal_Jail[source[1]][source_].vakey == body.lower():
-							Federal_Jail[source[1]][source_].Autenticated()
-							Chats[source[1]].participant(source[2], SheriffAnsBase[20] % get_self_nick(source[1]))
-							Msend(source[0], SheriffAnsBase[21], disp)
-						elif Federal_Jail[source[1]][source_].vnumb.plus() >= 3:
-							Federal_Jail[source[1]][source_].vnumb = itypes.Number()
-							spesial_kick(source[1], source[2], SheriffAnsBase[22])
+		source_ = get_source(source[1], source[2])
+		if source_:
+			loyalty, access = sheriffs_loyalty(source[1]), get_access(source[1], source[2])
+			if access <= loyalty[0]:
+				prisoner = Federal_Jail[source[1]].get(source_)
+				if prisoner:
+					prisoner.addMsTime()
+					if ChatsAttrs[source[1]]["laws"]["tiser"]:
+						if tiser_checker(body):
+							if access <= loyalty[1]:
+								if prisoner:
+									prisoner.SetDevoice()
+								spesial_kick(source[1], source[2], SheriffAnsBase[4])
+							else:
+								Answer(SheriffAnsBase[4], ltype, source, disp)
+							raise iThr.ThrKill("exit")
+					if ChatsAttrs[source[1]]["laws"]["verif"]:
+						if access < 2 and prisoner.vakey and ltype == Types[0]:
+							if prisoner.vakey == body.lower():
+								prisoner.Autenticated()
+								Chats[source[1]].participant(source[2], SheriffAnsBase[20] % get_self_nick(source[1]))
+								Msend(source[0], SheriffAnsBase[21], disp)
+							elif prisoner.vnumb.plus() >= 3:
+								prisoner.vnumb = itypes.Number()
+								spesial_kick(source[1], source[2], SheriffAnsBase[22])
+							else:
+								Msend(source[0], SheriffAnsBase[23], disp)
+							raise iThr.ThrKill("exit")
+					list = getattr(prisoner, "msdates")
+					if len(list) >= 4:
+						if (list[-1] - list[0]) <= 6:
+							prisoner.msdates = [list.pop()]
+							prisoner.SetDevoice()
+							spesial_kick(source[1], source[2], SheriffAnsBase[15])
 						else:
-							Msend(source[0], SheriffAnsBase[23], disp)
-						raise iThr.ThrKill("exit")
-				Federal_Jail[source[1]][source_].addMsTime()
-				list = getattr(Federal_Jail[source[1]][source_], "msdates")
-				if len(list) >= 4:
-					if (list[-1] - list[0]) <= 6:
-						Federal_Jail[source[1]][source_].msdates = [list.pop()]
-						Federal_Jail[source[1]][source_].SetDevoice()
-						spesial_kick(source[1], source[2], SheriffAnsBase[15])
-					else:
-						Federal_Jail[source[1]][source_].msdates.pop(0)
-				del list
-			if ltype == Types[1]:
-				if ChatsAttrs[source[1]]["laws"]["obscene"]:
-					if obscene_checker(body):
-						sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[5], disp)
-				if ChatsAttrs[source[1]]["laws"]["len"]:
-					if len(body) > ChatsAttrs[source[1]]["laws"]["len"]:
-						sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[6], disp)
-				if ChatsAttrs[source[1]]["laws"]["lower"]:
-					if lower_checker(source[1], body):
-						sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[7], disp)
+							prisoner.msdates.pop(0)
+					del list
+				if ltype == Types[1]:
+					if ChatsAttrs[source[1]]["laws"]["obscene"]:
+						if obscene_checker(body):
+							sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[5], disp)
+					if ChatsAttrs[source[1]]["laws"]["len"]:
+						if len(body) > ChatsAttrs[source[1]]["laws"]["len"]:
+							sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[6], disp)
+					if ChatsAttrs[source[1]]["laws"]["lower"]:
+						if lower_checker(source[1], body):
+							sheriff_set(ltype, source, source_, access, loyalty[1], SheriffAnsBase[7], disp)
 
-def AvipeClear(conf, list):
+def AwipeClear(conf, list):
 	if Chats.has_key(conf):
-		Antivipe[conf]["clear"] = []
+		Antiwipe[conf]["clear"] = []
 		for sUser in Chats[conf].get_users():
 			if sUser.source in list:
-				if sUser.ishere:
+				if not sUser.ishere:
 					if Chats[conf].isHere(sUser.nick):
-						del Chats[conf].users[sUser.nick]
+						del Chats[conf].desc[sUser.nick]
 					if Federal_Jail[conf].has_key(sUser.source):
 						del Federal_Jail[conf][sUser.source]
-		for User in list:
-			Chats[conf].none(User)
-			time.sleep(0.4)
+		for source_ in list:
+			Chats[conf].none(source_); time.sleep(0.4)
 
 def get_server(source, state = 0):
-	if source.count(chr(64)):
-		source = source.split(chr(64))[1]
+	At = chr(64)
+	if source.count(At):
+		source = source.split(At)[1]
 		if state:
 			source = source.split(chr(46), 1)[1]
 	return source
 
 GoodServers__ = lambda conf: (GoodServers + ChatsAttrs[conf]["laws"]["list"] + [get_server(conf, True)])
 
-def antivipe_func(conf, nick, role, source):
-	if Chats[conf].isModer and role == AflRoles[2]:
+def check_wipe(conf, nick, role, inst):
+	if role == AflRoles[2]:
 		BsNick = get_self_nick(conf)
 		if ChatsAttrs[conf]["laws"]["sparta"]:
-			jid = get_server(source)
+			jid = get_server(inst)
 			if jid not in GoodServers__(conf):
 				Reason = ("%s: This is SPARTA!!" % BsNick)
 				Chats[conf].ban(jid, Reason); Chats[conf].kick(nick, Reason)
-		elif ChatsAttrs[conf]["laws"]["avipe"]:
+		elif ChatsAttrs[conf]["laws"]["awipe"]:
 			NowTime = time.time()
 			if (NowTime - Chats[conf].sdate) >= 60:
-				difference = (NowTime - Antivipe[conf]["ltime"])
-				if difference > 360 and Antivipe[conf]["clear"]:
-					sThread(AvipeClear.func_name, AvipeClear, (conf, Antivipe[conf]["clear"],))
+				difference = (NowTime - Antiwipe[conf]["ltime"])
+				if difference > 360 and Antiwipe[conf]["clear"]:
+					sThread(AwipeClear.func_name, AwipeClear, (conf, Antiwipe[conf]["clear"],))
 				if difference > 15:
-					Antivipe[conf]["ltime"] = NowTime
-					Antivipe[conf]["jids"] = [source,]
+					Antiwipe[conf]["ltime"] = NowTime
+					Antiwipe[conf]["jids"] = [inst]
 				else:
-					Antivipe[conf]["jids"].append(source)
-					joined = Antivipe[conf]["jids"]
+					Antiwipe[conf]["jids"].append(inst)
+					joined = Antiwipe[conf]["jids"]
 					Numb = len(joined)
 					if Numb >= 3:
-						Antivipe[conf]["ltime"] = NowTime
-						jid = get_server(source)
+						Antiwipe[conf]["ltime"] = NowTime
+						jid = get_server(inst)
 						if jid == get_server(joined[Numb - 2]) and jid == get_server(joined[Numb - 3]):
 							if jid not in GoodServers__(conf):
-								Chats[conf].ban(jid, SheriffAnsBase[12] % (BsNick))
+								ls = []
 								for sUser in Chats[conf].get_users():
 									if sUser.source and sUser.ishere:
 										if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
 											if jid == get_server(sUser.source):
 												if Federal_Jail[conf].has_key(sUser.source):
 													if not Federal_Jail[conf][sUser.source].verif:
-														Chats[conf].kick(sUser.nick, SheriffAnsBase[12] % (BsNick))
+														ls.append(sUser)
+								Chats[conf].ban(jid, SheriffAnsBase[12] % (BsNick))
+								if ls:
+									for sUser in ls:
+										Chats[conf].kick(sUser.nick, SheriffAnsBase[12] % (BsNick))
 							else:
 								for sUser in Chats[conf].get_users():
 									if sUser.source and sUser.ishere:
@@ -379,101 +383,137 @@ def antivipe_func(conf, nick, role, source):
 											if jid == get_server(sUser.source):
 												if Federal_Jail[conf].has_key(sUser.source):
 													if not Federal_Jail[conf][sUser.source].verif:
-														Antivipe[conf]["clear"].append(sUser.source)
+														Antiwipe[conf]["clear"].append(sUser.source)
 														Chats[conf].ban(sUser.source, SheriffAnsBase[12] % (BsNick))
 						else:
-							Antivipe[conf]["clear"].append(source)
-							Chats[conf].ban(source, SheriffAnsBase[12] % (BsNick))
+							Antiwipe[conf]["clear"].append(inst)
+							Chats[conf].ban(inst, SheriffAnsBase[12] % (BsNick))
 						raise iThr.ThrKill("exit")
 
-def Security_02eh(stanza, disp):
-	(source, conf, stype, nick) = sAttrs(stanza)
-	if nick != get_self_nick(conf):
-		if not Chats[conf].isHere(nick):
-			if stype == Types[4] and sCodes[1] == stanza.getStatusCode():
-				source_ = stanza.getJid()
-				if source_:
-					nick = stanza.getNick()
-					if get_access(conf, nick) <= sheriffs_loyalty(conf)[1]:
-						if not Federal_Jail[conf].has_key(source_):
-							Federal_Jail[conf][source_] = rUser(time.time())
-						antivipe_func(conf, nick, GetRole(stanza)[0], source_)
-						check_nick(conf, nick)
-			raise iThr.ThrKill("exit")
-		sUser = Chats[conf].get_user(nick)
-		if sUser.source:
-			relapser = Federal_Jail[conf].has_key(sUser.source)
-			if sUser.access <= sheriffs_loyalty(conf)[1]:
-				if stype in [Types[3], None]:
-					if not relapser:
-						Federal_Jail[conf][sUser.source] = rUser(sUser.date[0])
+def Security_04eh(conf, nick, source_, role, stanza, disp):
+	if source_ and nick != get_self_nick(conf):
+		access = get_access(conf, nick)
+		if access <= sheriffs_loyalty(conf)[1]:
+			prisoner = Federal_Jail[conf].get(source_)
+			if prisoner:
+				prisoner.addPrTime()
+				if prisoner.devoice:
+					eTime = prisoner.GetDevoice()
+					if (eTime < ChatsAttrs[conf]["laws"]["dtime"]):
+						Chats[conf].visitor(nick, SheriffAnsBase[11] % get_self_nick(conf))
+						Msend("%s/%s" % (conf, nick), SheriffAnsBase[14] % Time2Text(ChatsAttrs[conf]["laws"]["dtime"] - eTime), disp)
 					else:
-						Federal_Jail[conf][sUser.source].addPrTime()
-					isHere = Federal_Jail[conf][sUser.source].ishere
-					if not isHere:
-						Federal_Jail[conf][sUser.source].ishere = True
-						if Federal_Jail[conf][sUser.source].devoice:
-							etime = Federal_Jail[conf][sUser.source].GetDevoice()
-							if etime < ChatsAttrs[conf]["laws"]["dtime"]:
-								Chats[conf].visitor(nick, SheriffAnsBase[11] % get_self_nick(conf))
-								Msend("%s/%s" % (conf, nick), SheriffAnsBase[14] % Time2Text(ChatsAttrs[conf]["laws"]["dtime"] - etime), disp)
-							else:
-								Federal_Jail[conf][sUser.source].devoice = 0
-					if sUser.access >= 2 and not Federal_Jail[conf][sUser.source].verif:
-						Federal_Jail[conf][sUser.source].Autenticated()
-					if not relapser or not isHere:
-						antivipe_func(conf, nick, sUser.role[0], sUser.source)
-						check_nick(conf, nick)
-						if ChatsAttrs[conf]["laws"]["verif"] and not Federal_Jail[conf][sUser.source].devoice and sUser.access <= 1 and AflRoles[2] == GetRole(stanza)[0]:
-							if not Federal_Jail[conf][sUser.source].verif:
-								Chats[conf].visitor(nick, SheriffAnsBase[17] % get_self_nick(conf))
-								ques = choice(SheriffAnsBase[19].splitlines()).split("|")
-								Federal_Jail[conf][sUser.source].vakey = (ques[1].strip()).lower()
-								Msend("%s/%s" % (conf, nick), SheriffAnsBase[18] % (ques[0].strip()), disp)
-								del ques
-					del isHere
-					list = getattr(Federal_Jail[conf][sUser.source], "prdates")
-					if len(list) >= 4:
-						if (list[-1] - list[0]) <= 10:
-							Federal_Jail[conf][sUser.source].prdates = [list.pop()]
-							spesial_kick(conf, nick, SheriffAnsBase[13])
-						else:
-							Federal_Jail[conf][sUser.source].prdates.pop(0)
-					del list
-					status = stanza.getStatus()
-					if status:
-						if ChatsAttrs[conf]["laws"]["tiser"]:
-							if tiser_checker(status):
-								spesial_kick(conf, nick, SheriffAnsBase[4])
-						if ChatsAttrs[conf]["laws"]["obscene"]:
-							if obscene_checker(status):
-								spesial_kick(conf, nick, SheriffAnsBase[8])
-						if ChatsAttrs[conf]["laws"]["prlen"]:
-							if len(status) > ChatsAttrs[conf]["laws"]["prlen"]:
-								spesial_kick(conf, nick, SheriffAnsBase[9])
-				elif stype == Types[4]:
-					if relapser:
-						scode = stanza.getStatusCode()
-						if scode in [sCodes[0], sCodes[3]]:
-							del Federal_Jail[conf][sUser.source]
-						elif scode == sCodes[2]:
-							Federal_Jail[conf][sUser.source].leaved()
-							Federal_Jail[conf][sUser.source].kicks += 1
-							if ChatsAttrs[conf]["laws"]["aban"] and Chats[conf].isModer:
-								if ChatsAttrs[conf]["laws"]["aban"] <= Federal_Jail[conf][sUser.source].kicks:
-									del Federal_Jail[conf][sUser.source]
-									Chats[conf].ban(sUser.source, SheriffAnsBase[10] % (get_self_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
-						else:
-							Federal_Jail[conf][sUser.source].leaved()
-			elif relapser:
-				del Federal_Jail[conf][sUser.source]
+						prisoner.devoice = 0
+			else:
+				Federal_Jail[conf][source_] = prisoner = rUser()
+			if not prisoner.verif and access >= 2:
+				prisoner.Autenticated()
+			check_wipe(conf, nick, role[0], source_)
+			check_nick(conf, nick)
+			if ChatsAttrs[conf]["laws"]["verif"] and access < 2 and AflRoles[2] == role[0]:
+				if not prisoner.verif and not prisoner.devoice:
+					Chats[conf].visitor(nick, SheriffAnsBase[17] % get_self_nick(conf))
+					ques = choice(SheriffAnsBase[19].splitlines())
+					ques = ques.split(chr(124), 1)
+					prisoner.vakey = (ques[1].strip()).lower()
+					Msend("%s/%s" % (conf, nick), SheriffAnsBase[18] % (ques[0].strip()), disp)
+					del ques
+			list = getattr(prisoner, "prdates")
+			if len(list) >= 4:
+				if (list[-1] - list[0]) <= 10:
+					prisoner.prdates = [list.pop()]
+					spesial_kick(conf, nick, SheriffAnsBase[13])
+				else:
+					prisoner.prdates.pop(0)
+			del list
+			status = stanza.getStatus()
+			if status:
+				if ChatsAttrs[conf]["laws"]["tiser"]:
+					if tiser_checker(status):
+						spesial_kick(conf, nick, SheriffAnsBase[4])
+				if ChatsAttrs[conf]["laws"]["obscene"]:
+					if obscene_checker(status):
+						spesial_kick(conf, nick, SheriffAnsBase[8])
+				if ChatsAttrs[conf]["laws"]["prlen"]:
+					if len(status) > ChatsAttrs[conf]["laws"]["prlen"]:
+						spesial_kick(conf, nick, SheriffAnsBase[9])
+
+def Security_05eh(conf, nick, sbody, scode, disp):
+	if nick != get_self_nick(conf):
+		source_ = get_source(conf, nick)
+		if source_:
+			prisoner = Federal_Jail[conf].get(source_)
+			if prisoner:
+				if not Chats[conf].isModer or scode in (sCodes[0], sCodes[3]):
+					del Federal_Jail[conf][source_]
+				else:
+					prisoner.leaved()
+					if scode == sCodes[2] and prisoner.kicks.plus() >= ChatsAttrs[conf]["laws"]["aban"]:
+						if ChatsAttrs[conf]["laws"]["aban"]:
+							del Federal_Jail[conf][source_]
+							Chats[conf].ban(source_, SheriffAnsBase[10] % (get_self_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
+
+def Security_06eh(conf, old_nick, nick, disp):
+	if nick != get_self_nick(conf) and Chats[conf].isModer:
+		sUser = Chats[conf].get_user(nick)
+		if getattr(sUser, "source", 0):
+			prisoner = Federal_Jail[conf].get(sUser.source)
+			if prisoner:
+				prisoner.addPrTime()
+				check_wipe(conf, nick, sUser.role[0], sUser.source)
+				check_nick(conf, nick)
+				list = getattr(prisoner, "prdates")
+				if len(list) >= 4:
+					if (list[-1] - list[0]) <= 10:
+						prisoner.prdates = [list.pop()]
+						spesial_kick(conf, nick, SheriffAnsBase[13])
+					else:
+						prisoner.prdates.pop(0)
+
+def Security_07eh(conf, nick, role, disp):
+	if nick != get_self_nick(conf):
+		sUser = Chats[conf].get_user(nick)
+		if getattr(sUser, "source", 0):
+			prisoner = ((sUser.access <= sheriffs_loyalty(conf)[1]) and Chats[conf].isModer)
+			if Federal_Jail[conf].has_key(sUser.source):
+				if not prisoner:
+					del Federal_Jail[conf][sUser.source]
+			elif prisoner:
+				Federal_Jail[conf][sUser.source] = rUser()
+
+def Security_08eh(conf, nick, stanza, disp):
+	if nick != get_self_nick(conf) and Chats[conf].isModer:
+		source_ = get_source(conf, nick)
+		if source_:
+			prisoner = Federal_Jail[conf].get(source_)
+			if prisoner:
+				prisoner.addPrTime()
+				list = getattr(prisoner, "prdates")
+				if len(list) >= 4:
+					if (list[-1] - list[0]) <= 10:
+						prisoner.prdates = [list.pop()]
+						spesial_kick(conf, nick, SheriffAnsBase[13])
+					else:
+						prisoner.prdates.pop(0)
+				del list
+				status = stanza.getStatus()
+				if status:
+					if ChatsAttrs[conf]["laws"]["tiser"]:
+						if tiser_checker(status):
+							spesial_kick(conf, nick, SheriffAnsBase[4])
+					if ChatsAttrs[conf]["laws"]["obscene"]:
+						if obscene_checker(status):
+							spesial_kick(conf, nick, SheriffAnsBase[8])
+					if ChatsAttrs[conf]["laws"]["prlen"]:
+						if len(status) > ChatsAttrs[conf]["laws"]["prlen"]:
+							spesial_kick(conf, nick, SheriffAnsBase[9])
 
 def Security_01si(conf):
 	Federal_Jail[conf] = {}
-	Antivipe[conf] = {"ltime": 0, "jids": [], "clear": []}
+	Antiwipe[conf] = {"ltime": 0, "jids": [], "clear": []}
 	if not ChatsAttrs.has_key(conf):
 		ChatsAttrs[conf] = {}
-	ChatsAttrs[conf]["laws"] = {"avipe": True, "space": True, "verif": False, "tiser": True, "obscene": False, "lower": False, "sparta": False, "list": [], "dtime": 180, "loyalty": 1, "aban": 3, "prlen": 256, "lnick": 24, "len": 1024}
+	ChatsAttrs[conf]["laws"] = {"awipe": True, "space": True, "verif": False, "tiser": True, "obscene": False, "lower": False, "sparta": False, "list": [], "dtime": 180, "loyalty": 1, "aban": 3, "prlen": 256, "lnick": 24, "len": 1024}
 	Name = chat_file(conf, LawsFile)
 	if initialize_file(Name, str(ChatsAttrs[conf]["laws"])):
 		ChatsAttrs[conf]["laws"] = eval(get_file(Name))
@@ -481,17 +521,25 @@ def Security_01si(conf):
 			ChatsAttrs[conf]["laws"]["sparta"] = False
 			ChatsAttrs[conf]["laws"]["list"] = []
 			cat_file(Name, str(ChatsAttrs[conf]["laws"]))
+		if ChatsAttrs[conf]["laws"].has_key("avipe"):
+			Awipe = ChatsAttrs[conf]["laws"].pop("avipe")
+			ChatsAttrs[conf]["laws"]["awipe"] = Awipe
+			cat_file(Name, str(ChatsAttrs[conf]["laws"]))
 
 def Security_04si(conf):
 	del Federal_Jail[conf]
-	del Antivipe[conf]
+	del Antiwipe[conf]
 
-expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, AvipeClear, get_server, antivipe_func, Security_01eh, Security_02eh, Security_01si, Security_04si])
-expansions[exp_name].ls.extend(["SheriffAnsBase", "GoodServers", "LawsFile", "Federal_Jail", "Antivipe", rUser.__name__, "GoodServers__"])
+expansions[exp_name].funcs_add([command_order, spesial_kick, sheriffs_loyalty, tiser_checker, obscene_checker, lower_checker, check_nick, sheriff_set, AwipeClear, get_server, check_wipe, Security_01eh, Security_04eh, Security_05eh, Security_06eh, Security_07eh, Security_08eh, Security_01si, Security_04si])
+expansions[exp_name].ls.extend(["SheriffAnsBase", "GoodServers", "LawsFile", "Federal_Jail", "Antiwipe", rUser.__name__, "GoodServers__"])
 
 command_handler(command_order, {"RU": "ордер", "EN": "order"}, 6, exp_name)
 
 handler_register(Security_01si, "01si", exp_name)
 handler_register(Security_04si, "04si", exp_name)
 handler_register(Security_01eh, "01eh", exp_name)
-handler_register(Security_02eh, "02eh", exp_name)
+handler_register(Security_04eh, "04eh", exp_name)
+handler_register(Security_05eh, "05eh", exp_name)
+handler_register(Security_06eh, "06eh", exp_name)
+handler_register(Security_07eh, "07eh", exp_name)
+handler_register(Security_08eh, "08eh", exp_name)

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x3
-#  Id: 09~3a
+exp_name = "exp_control" # /code.py v.x4
+#  Id: 09~4a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -98,21 +98,23 @@ def command_expunload(ltype, source, body, disp):
 		exp_name = (list_.pop(0)).lower()
 		if expansions.has_key(exp_name):
 			if body:
-				handler, func_name_ = None, body.pop(0)
-				for instance in expansions[exp_name].hnds.keys():
-					if func_name_ == instance.func_name:
-						handler = instance
+				handler, Name = None, body.pop(0)
+				list = []
+				for ls in expansions[exp_name].hnds.values():
+					for instance in ls:
+						inst = instance.func_name
+						list.append(inst)
+						if inst == Name:
+							handler = instance
+							break
 				if handler:
 					with ReloadSemaphore:
 						expansions[exp_name].funcs_del(handler)
 					answer = AnsBase[4]
+				elif list:
+					answer = CexpAnsBase[14] % (", ".join(sorted(list)))
 				else:
-					exp_funcs = expansions[exp_name].hnds.keys()
-					if exp_funcs:
-						list = [x.func_name for x in exp_funcs]
-						answer = CexpAnsBase[14] % (", ".join(sorted(list)))
-					else:
-						answer = CexpAnsBase[15] % (exp_name)
+					answer = CexpAnsBase[15] % (exp_name)
 			else:
 				with ReloadSemaphore:
 					expansions[exp_name].dels(True)

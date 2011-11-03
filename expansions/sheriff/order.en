@@ -2,8 +2,8 @@ security control system
 order ([option] [on/off/number])/([servers] ([add/del] [server]))
 */order
 bot would show current config
-*/order avipe on
-activation of antivipe feature
+*/order awipe on
+activation of antiwipe feature
 */order aspace on
 spaces at the edges of nicks will be forbidden
 */order verif off

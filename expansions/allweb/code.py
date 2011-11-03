@@ -90,7 +90,7 @@ def command_jc(ltype, source, body, disp):
 					Name = Name.strip()
 					Desc = Desc.strip()
 					ls.append("%d) %s\n%s\n%s" % (Number.plus(), JID, Name, Desc))
-				answer = chr(10) + decodeHTML(str.join(chr(10)*2, ls))
+				answer = (chr(10) + decodeHTML(str.join(chr(10)*2, ls)))
 			else:
 				answer = AllwebAnsBase[5]
 	else:
@@ -120,9 +120,8 @@ def command_google(ltype, source, body, disp):
 						ls = []
 						ls.append(desc.get("title", ""))
 						ls.append(desc.get("content", ""))
-						ls.append(chr(10))
 						ls.append(desc.get("unescapedUrl", ""))
-						answer = decodeHTML(str.join("", ls))
+						answer = decodeHTML(str.join(chr(10), ls))
 						if list:
 							source_ = get_source(source[1], source[2])
 							if source_:
@@ -150,9 +149,8 @@ def command_google(ltype, source, body, disp):
 					ls = []
 					ls.append(desc.get("title", ""))
 					ls.append(desc.get("content", ""))
-					ls.append(chr(10))
 					ls.append(desc.get("unescapedUrl", ""))
-					answer = decodeHTML(str.join("", ls))
+					answer = decodeHTML(str.join(chr(10), ls))
 					if list:
 						gCache.append((source_, list))
 						answer += AllwebAnsBase[4] % len(list)
@@ -372,7 +370,47 @@ def command_python(ltype, source, body, disp):
 					ls.append(line)
 			answer = str.join(chr(10), ls)
 		else:
-			answer = AllwebAnsBase[5]
+			answer = AllwebAnsBase[1]
+	Answer(answer, ltype, source, disp)
+
+def command_jquote(ltype, source, body, disp):
+	if body:
+		if isNumber(body):
+			Numb = int(body)
+			if Numb > 0:
+				Req = Web("http://jabber-quotes.ru/id%d" % Numb)
+			else:
+				Req = Web("http://jabber-quotes.ru/new")
+			try:
+				data = Req.get_page(UserAgent)
+			except:
+				answer = AllwebAnsBase[0]
+			else:
+				data = data.decode("cp1251")
+				data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
+				if data:
+					answer = (chr(10) + decodeHTML(data))
+					while answer.count(chr(10)*3):
+						answer = answer.replace(chr(10)*3, chr(10)*2)
+				else:
+					answer = AllwebAnsBase[5]
+		else:
+			answer = AnsBase[30]
+	else:
+		Req = Web("http://jabber-quotes.ru/random")
+		try:
+			data = Req.get_page(UserAgent)
+		except:
+			answer = AllwebAnsBase[0]
+		else:
+			data = data.decode("cp1251")
+			data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
+			if data:
+				answer = (chr(10) + decodeHTML(data))
+				while answer.count(chr(10)*3):
+					answer = answer.replace(chr(10)*3, chr(10)*2)
+			else:
+				answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
 
 expansions[exp_name].funcs_add([sub_ehtmls, e_sb, decodeHTML, command_jc, command_google, command_imdb, command_python])
@@ -395,11 +433,12 @@ command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
 
 if DefLANG in ("RU", "UA"):
 
-	expansions[exp_name].ls.append(command_kino.func_name)
+	expansions[exp_name].funcs_add([command_kino, command_jquote])
 
 	command_handler(command_kino, {"RU": "кино", "EN": "kino"}, 2, exp_name)
+	command_handler(command_jquote, {"RU": "цитата", "EN": "jquote"}, 2, exp_name)
 else:
-	del command_kino
+	del command_kino, command_jquote
 
 command_handler(command_imdb, {"RU": "imdb", "EN": "imdb"}, 2, exp_name)
 command_handler(command_python, {"RU": "питон", "EN": "python"}, 2, exp_name)

@@ -11,7 +11,7 @@ def command_ping(ltype, source, instance, disp):
 	if instance:
 		source_ = instance
 		if Chats.has_key(source[1]) and Chats[source[1]].isHere(instance):
-			if Chats[source[1]].isHereNow(instance):
+			if Chats[source[1]].isHereTS(instance):
 				conf_nick = (source[1], instance)
 				instance, source_ = "%s/%s" % conf_nick, get_source(*conf_nick)
 			else:
@@ -84,7 +84,7 @@ def command_version(ltype, source, instance, disp):
 	if Chats.has_key(source[1]):
 		if instance:
 			if Chats.has_key(source[1]) and Chats[source[1]].isHere(instance):
-				if Chats[source[1]].isHereNow(instance):
+				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
 					Answer(IqAnsBase[5] % (instance), ltype, source, disp)
@@ -126,7 +126,7 @@ def command_idle(ltype, source, instance, disp):
 	if instance:
 		nick = instance
 		if Chats.has_key(source[1]) and Chats[source[1]].isHere(instance):
-			if Chats[source[1]].isHereNow(instance):
+			if Chats[source[1]].isHereTS(instance):
 				instance = "%s/%s" % (source[1], instance)
 			else:
 				Answer(IqAnsBase[5] % (instance), ltype, source, disp)

@@ -142,7 +142,7 @@ def command_where(ltype, source, body, disp):
 		list, Numb, acc = str(), itypes.Number(), enough_access(source[1], source[2], 7)
 		for conf in sorted(Chats.keys()):
 			for nick in sorted(Chats[conf].get_nicks()):
-				if Chats[conf].isHereNow(nick):
+				if Chats[conf].isHereTS(nick):
 					jid = get_source(conf, nick)
 					if nick.count(body) or (jid and jid.count(body)):
 						list += "\n%d) %s (%s)" % (Numb.plus(), nick, conf)

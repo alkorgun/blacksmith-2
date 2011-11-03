@@ -68,7 +68,7 @@ def command_stat(ltype, source, body, disp):
 	if body:
 		x = body.lower()
 		if x in Cmds.keys():
-			answer = SstatAnsBase[18] % (x, Cmds[x].numb._str(), len(Cmds[x].users))
+			answer = SstatAnsBase[18] % (x, Cmds[x].numb._str(), len(Cmds[x].desc))
 		else:
 			answer = AnsBase[6]
 	else:
@@ -76,7 +76,7 @@ def command_stat(ltype, source, body, disp):
 		for x in Cmds.values():
 			x_len = x.numb._int()
 			if x_len:
-				list.append((x_len, len(x.users), x.name))
+				list.append((x_len, len(x.desc), x.name))
 		list.sort()
 		list.reverse()
 		answer, Numb = SstatAnsBase[19], itypes.Number()

@@ -15,13 +15,13 @@ TurnBase = {}
 def command_turn(ltype, source, body, disp):
 	
 	def Turn(conf, body):
-		list_ = {}
+		desc = {}
 		for nick in Chats[conf].get_nicks():
-			if Chats[conf].isHereNow(nick):
+			if Chats[conf].isHereTS(nick):
 				for x in (["%s%s" % (nick, Key) for Key in [":",",",">"]] + [nick]):
 					if body.count(x):
-						Numb = "*%s*" % str(len(list_.keys()) + 1)
-						list_[Numb] = x
+						Numb = "*%s*" % str(len(desc.keys()) + 1)
+						desc[Numb] = x
 						body = body.replace(x, Numb)
 		Turned = ""
 		for x in body:
@@ -31,7 +31,7 @@ def command_turn(ltype, source, body, disp):
 				Turned += TableEN[TableRU.index(x)]
 			else:
 				Turned += x
-		return sub_desc(Turned, list_)
+		return sub_desc(Turned, desc)
 	
 	if Chats.has_key(source[1]):
 		if body:

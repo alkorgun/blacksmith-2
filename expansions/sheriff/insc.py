@@ -63,7 +63,7 @@ else:
 		"too long status message.", # 9
 		"%s: ban after %d kicks.", # 10
 		"%s: intruder.", # 11
-		"%s: antivipe.", # 12
+		"%s: antiwipe.", # 12
 		"presence flood.", # 13
 		"Ooops! You earned devoice. Left %s.", # 14
 		"flood.", # 15
@@ -87,7 +87,7 @@ else:
 		"\nConfiguration of security service:\nForbid of the spaces on the edges of nickname: ", # 24
 		"enabled ", # 25
 		"disabled ", # 26
-		"\nMax nickname length: %d\nAntivipe: ", # 27
+		"\nMax nickname length: %d\nAntiwipe: ", # 27
 		"\nNumber of the kick, after that ban follows: %d\nVerification: ", # 28
 		"\nLoyalty: %d\nAntiаdvertising: ", # 29
 		"\nDevoice time (seconds): %d\nAntiobscene: ", # 30
