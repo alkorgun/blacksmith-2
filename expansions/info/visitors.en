@@ -1,0 +1,10 @@
+bot shows the visitors of the conference
+visitors (today/dates/list)
+*/visitors
+bot would show all of the visitors
+*/visitors today
+bot would show all of the visitors, who joined today
+*/visitors dates
+bot would show all of the visitors, with dates of join
+*/visitors list
+bot would show shortlist of the visitors

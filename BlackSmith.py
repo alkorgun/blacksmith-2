@@ -250,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 18, 0)
+(BsMark, BsVer, BsRev) = (2, 19, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -660,6 +660,8 @@ class sConf:
 		return caps_add(stanza)
 
 	def join(self):
+		for sUser in self.get_users():
+			sUser.ishere = None
 		stanza = self.composePres()
 		self.sdate = time.time()
 		query = stanza.setTag("x", namespace = xmpp.NS_MUC)

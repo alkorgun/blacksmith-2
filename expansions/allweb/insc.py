@@ -1,5 +1,11 @@
 # coding: utf-8
 
+UAL_desc = {
+	"RU": "ru-RU",
+	"UA": "ua-UA",
+	"EN": "en-US"
+			}
+
 if DefLANG in ("RU", "UA"):
 	AllwebAnsBase = tuple([line.decode("utf-8") for line in (
 		"Не могу получить доступ к странице.", # 0

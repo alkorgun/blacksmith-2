@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "info" # /code.py v.x3
-#  Id: 11~2a
+exp_name = "info" # /code.py v.x4
+#  Id: 11~3a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -137,7 +137,7 @@ def command_visitors(ltype, source, body, disp):
 	else:
 		Answer(AnsBase[0], ltype, source, disp)
 
-def command_where(ltype, source, body, disp):
+def command_search(ltype, source, body, disp):
 	if body:
 		list, Numb, acc = str(), itypes.Number(), enough_access(source[1], source[2], 7)
 		for conf in sorted(Chats.keys()):
@@ -161,11 +161,11 @@ def command_where(ltype, source, body, disp):
 	if locals().has_key(Types[12]):
 		Answer(answer, ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_online, command_inchat, command_conflist, command_visitors, command_where])
+expansions[exp_name].funcs_add([command_online, command_inchat, command_conflist, command_visitors, command_search])
 expansions[exp_name].ls.extend(["InfoAnsBase"])
 
 command_handler(command_online, {"RU": "онлайн", "EN": "online"}, 7, exp_name)
 command_handler(command_inchat, {"RU": "инмук", "EN": "inmuc"}, 2, exp_name)
 command_handler(command_conflist, {"RU": "чатлист", "EN": "chatslist"}, 5, exp_name)
 command_handler(command_visitors, {"RU": "ктобыл", "EN": "visitors"}, 4, exp_name)
-command_handler(command_where, {"RU": "где", "EN": "where"}, 2, exp_name)
+command_handler(command_search, {"RU": "где", "EN": "search"}, 2, exp_name)

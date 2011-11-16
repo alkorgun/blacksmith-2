@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x6
-#  Id: 25~6a
+exp_name = "allweb" # /code.py v.x7
+#  Id: 25~7a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -11,7 +11,7 @@ import htmlentitydefs, json
 
 UserAgent = ("User-Agent", "%s/%s" % (ProdName[:10], CapsVer))
 
-UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (X11; U; Linux i686; cs-CZ; rv:1.7.9) Gecko/20050929")
+UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (X11; U; Linux i686; {0}; rv:1.7.12) Gecko/20050929".format(UAL_desc.get(DefLANG, "en-US")))
 
 edefs = dict()
 
@@ -361,7 +361,7 @@ def command_python(ltype, source, body, disp):
 		answer = AllwebAnsBase[0]
 	else:
 		data = data.decode("koi8-r")
-		data = get_text(data, '<h2 class="news">', "</div>")
+		data = get_text(data, "<h2 class=\"news\">", "</div>")
 		if data:
 			data = decodeHTML(data)
 			ls = []
@@ -421,8 +421,9 @@ expansions[exp_name].ls.extend([
 						"UserAgent",
 						"UserAgent_Moz",
 						"edefs",
-						"XML_ls",
+						"UAL_desc",
 						"REP_desc",
+						"XML_ls",
 						"compile_st",
 						"compile_ehtmls",
 						"gCache"

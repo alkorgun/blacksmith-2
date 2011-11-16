@@ -26,5 +26,5 @@ else:
 		"[#][Client][Connected][isActive]", # 7
 		"List of users:", # 8
 		"Total %s similar users:%s", # 9
-		"Don't know." # 10
+		"No result." # 10
 					)
