@@ -250,7 +250,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 19, 0)
+(BsMark, BsVer, BsRev) = (2, 20, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -1088,13 +1088,13 @@ def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
 		body = (body.group(1)).strip()
 	return body
 
-def sub_desc(body, ls, sbls = False):
+def sub_desc(body, ls, sbls = None):
 	if isinstance(ls, dict):
 		for x, z in ls.items():
 			body = body.replace(x, z)
 	else:
 		for x in ls:
-			if isinstance(x, tuple) or isinstance(x, list):
+			if isinstance(x, (list, tuple)):
 				if len(x) >= 2:
 					body = body.replace(x[0], x[1])
 				else:
@@ -1106,7 +1106,7 @@ def sub_desc(body, ls, sbls = False):
 strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
 
 def Time2Text(Time):
-	ext, ls = [], [("Year", 0), ("Month", 12), ("Day", 30), ("Hour", 24), ("Minute", 60), ("Second", 60)]
+	ext, ls = [], [("Year", None), ("Day", 365.25), ("Hour", 24), ("Minute", 60), ("Second", 60)]
 	while ls:
 		lr = ls.pop()
 		if lr[1]:
@@ -1119,7 +1119,7 @@ def Time2Text(Time):
 			return str.join(chr(32), ext)
 
 def Size2Text(Size):
-	ext, ls = [], list("TGMK.")
+	ext, ls = [], list("YZEPTGMK.")
 	while ls:
 		lr = ls.pop()
 		if ls:
@@ -1127,7 +1127,7 @@ def Size2Text(Size):
 		else:
 			Rest = Size
 		if Rest:
-			ext.insert(0, "%d %sB." % (Rest, (lr if lr != "." else "")))
+			ext.insert(0, "%d%sB" % (Rest, (lr if lr != "." else "")))
 		if not (ls and Size):
 			return str.join(chr(32), ext)
 

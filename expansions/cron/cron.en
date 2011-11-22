@@ -1,0 +1,14 @@
+scheduler (all times are in UTC)
+cron ([timeout] [command] (parameters))/([cycled] [timeout] [cycles] [command] (parameters))/([date] [[hour]:(minute):(second)(&[day].(month).(year))] [command] (parameters))/([stop] [ID_of_task])
+*/cron
+bot would show all scheduled tasks
+*/cron 60 ping Some_User
+bot would ping "Some_User" after 60 seconds
+*/cron cycled 360 4 test
+bot would execute 'test' 4 times with a timeout in 6 minutes
+*/cron date 21&27 clear
+bot would clean the conference on the 27th of current month at 21:00 (UTC)
+*/cron date 18:40:20&02.12 Ping
+bot would ping you on 2nd December at 18:40:20 (UTC)
+*/cron stop 47
+bot would stop the task with ID=47
