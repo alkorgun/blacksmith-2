@@ -1226,7 +1226,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 				if ecode == eCodes[9]:
 					Chats[conf].nick = "%s." % (nick)
 					Chats[conf].join()
-				elif ecode in [eCodes[5], eCodes[12]]:
+				elif ecode in (eCodes[5], eCodes[12]):
 					Chats[conf].IamHere = False
 					TimerName = ejoinTimerName(conf)
 					if TimerName not in iThr.ThrNames():

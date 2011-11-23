@@ -120,7 +120,7 @@ def command_uptime(ltype, source, server, disp):
 	iq = xmpp.Iq(to = server, typ = Types[10])
 	iq.addChild(Types[18], {}, [], xmpp.NS_LAST)
 	iq.setID("Bs-i%d" % Info["outiq"].plus())
-	CallForResponse(disp, iq, answer_idle, {"ltype": ltype, "source": source, "instance": server, "typ": 0})
+	CallForResponse(disp, iq, answer_idle, {"ltype": ltype, "source": source, "instance": server, "typ": None})
 
 def command_idle(ltype, source, instance, disp):
 	if instance:
@@ -129,14 +129,16 @@ def command_idle(ltype, source, instance, disp):
 			if Chats[source[1]].isHereTS(instance):
 				instance = "%s/%s" % (source[1], instance)
 			else:
-				Answer(IqAnsBase[5] % (instance), ltype, source, disp)
-				raise iThr.ThrKill("exit")
+				answer = IqAnsBase[5] % (instance)
+		if not locals().has_key(Types[12]):
+			iq = xmpp.Iq(to = instance, typ = Types[10])
+			iq.addChild(Types[18], {}, [], xmpp.NS_LAST)
+			iq.setID("Bs-i%d" % Info["outiq"].plus())
+			CallForResponse(disp, iq, answer_idle, {"ltype": ltype, "source": source, "instance": nick, "typ": True})
 	else:
-		instance, nick = source[0], source[2]
-	iq = xmpp.Iq(to = instance, typ = Types[10])
-	iq.addChild(Types[18], {}, [], xmpp.NS_LAST)
-	iq.setID("Bs-i%d" % Info["outiq"].plus())
-	CallForResponse(disp, iq, answer_idle, {"ltype": ltype, "source": source, "instance": nick, "typ": 1})
+		answer = AnsBase[1]
+	if locals().has_key(Types[12]):
+		Answer(answer, ltype, source, disp)
 
 def answer_idle(disp, stanza, ltype, source, instance, typ):
 	if xmpp.isResultNode(stanza):
@@ -191,7 +193,7 @@ def answer_afls(disp, stanza, ltype, source, Numb):
 	if xmpp.isResultNode(stanza):
 		list = stanza.getChildren()
 		if list:
-			answer, Number = "", itypes.Number()
+			Number, answer = itypes.Number(), str()
 			for child in list[0].getChildren():
 				if child and child != "None":
 					jid = child.getAttr("jid")

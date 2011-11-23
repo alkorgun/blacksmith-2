@@ -1,0 +1,8 @@
+client(server)'s version
+version (nick/jid)
+*/version
+bot would show your client's version
+*/version Dude
+bot would show client's version of Dude
+*/version dude@jabr.com
+bot would show client's version of dude@jabr.com

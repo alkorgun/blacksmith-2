@@ -1,0 +1,6 @@
+users's idle
+idle [nick/jid]
+*/idle Dude
+bot would show Dude's idle (if client allow that)
+*/idle dude@jabr.com
+bot would show the idle of dude@jabr.com
