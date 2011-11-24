@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x7
-#  Id: 25~7a
+exp_name = "allweb" # /code.py v.x8
+#  Id: 25~8a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -80,16 +80,14 @@ def command_jc(ltype, source, body, disp):
 		except:
 			answer = AllwebAnsBase[0]
 		else:
-			comp = compile__("<font color.+?>(.+?)</font></a><br>(.+?)<br><font color.+?>(.+?)</font>", 16)
+			comp = compile__("<li>((?:.|\s)+?)</li>", 16)
 			list = comp.findall(data)
 			if list:
 				Number = itypes.Number()
 				ls = []
-				for JID, Name, Desc in list:
-					JID = JID.strip()
-					Name = Name.strip()
-					Desc = Desc.strip()
-					ls.append("%d) %s\n%s\n%s" % (Number.plus(), JID, Name, Desc))
+				for line in list:
+					line = line.strip()
+					ls.append("%d) %s" % (Number.plus(), line))
 				answer = (chr(10) + decodeHTML(str.join(chr(10)*2, ls)))
 			else:
 				answer = AllwebAnsBase[5]

@@ -1,13 +1,11 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "cron" # /code.py v.x2
-#  Id: 27~1a
+exp_name = "cron" # /code.py v.x3
+#  Id: 27~2a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
-
-from calendar import mdays as Mdays
 
 CronFile = dynamic % ("cdesc.db")
 
@@ -45,19 +43,19 @@ def getDate(ls, sft, sftime = "%H:%M:%S (%d.%m.%Y)"):
 	while ls[5] >= 60:
 		ls[5] -= 60
 		ls[4] += 1
-	while ls[4] >= 60:
-		ls[4] -= 60
-		ls[3] += 1
-	while ls[3] >= 24:
-		ls[3] -= 24
-		ls[2] += 1
-	dn = Mdays[ls[1]]
-	while ls[2] > dn:
-		ls[2] -= dn
-		ls[1] += 1
-	while ls[1] > 12:
-		ls[1] -= 11
-		ls[0] += 1
+		if ls[4] >= 60:
+			ls[4] -= 60
+			ls[3] += 1
+			if ls[3] >= 24:
+				ls[3] -= 24
+				ls[2] += 1
+				days = (0, 31, (28 if (ls[0] % 4) else 29), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+				if ls[2] > days[ls[1]]:
+					ls[2] -= days[ls[1]]
+					ls[1] += 1
+					if ls[1] > 12:
+						ls[1] -= 12
+						ls[0] += 1
 	return time.strftime(sftime, time.struct_time(ls))
 
 def add_cron(disp, ls, body, Te, source, ltype, gt, answer, repeat, **ext):
@@ -243,7 +241,7 @@ def cdesc_save(conf = None):
 		cat_file(CronFile, str((cdesc, int(CronCounter))))
 
 expansions[exp_name].funcs_add([def_cron, getDate, add_cron, command_cron, start_cron, cdesc_save])
-expansions[exp_name].ls.extend(["CronAnsBase", "Mdays", "CronDesc", "CronCounter"])
+expansions[exp_name].ls.extend(["CronAnsBase", "CronDesc", "CronCounter"])
 
 command_handler(command_cron, {"RU": "хрон", "EN": "cron"}, 5, exp_name)
 
