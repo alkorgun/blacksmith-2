@@ -198,6 +198,8 @@ def command_kino(ltype, source, body, disp):
 	#					Msend(source[0], Top250, disp)
 	#				else:
 	#					answer = str.join(chr(10), ls)
+	#			elif data.count("(СЗоР)"):
+	#				answer = AllwebAnsBase[-1]
 	#			else:
 	#				answer = AllwebAnsBase[1]
 		if isNumber(body):
@@ -208,17 +210,19 @@ def command_kino(ltype, source, body, disp):
 				answer = AllwebAnsBase[0]
 			else:
 				data = data.decode("cp1251")
-				data = get_text(data, '<p class="title">', "</div>")
-				if data:
-					data = decodeHTML(data)
+				relt = get_text(data, "<p class=\"title\">", "</div>")
+				if relt:
+					relt = decodeHTML(relt)
 					ls = ["\->"]
-					for line in data.splitlines():
+					for line in relt.splitlines():
 						line = line.strip()
 						if line:
 							if line[0].islower():
-								line = "%s%s" % (line[0].upper(), line[1:])
+								line = "{1}{0}".format(line[1:], line[0].upper())
 							ls.append(line)
 					answer = str.join(chr(10), ls)
+				elif data.count("(СЗоР)"):
+					answer = AllwebAnsBase[-1]
 				else:
 					answer = AllwebAnsBase[5]
 		else:
@@ -231,7 +235,7 @@ def command_kino(ltype, source, body, disp):
 				answer = AllwebAnsBase[0]
 			else:
 				data = data.decode("cp1251")
-				comp = compile__('<a href="http://m.kinopoisk.ru/movie/(\d+?)/">(.+?)</a>')
+				comp = compile__("<a href=\"http://m.kinopoisk.ru/movie/(\d+?)/\">(.+?)</a>")
 				list = comp.findall(data)
 				if list:
 					Number = itypes.Number()
@@ -239,6 +243,8 @@ def command_kino(ltype, source, body, disp):
 					for Numb, Name in list:
 						ls.append("%d) %s (#%s)" % (Number.plus(), sub_ehtmls(Name), Numb))
 					answer = str.join(chr(10), ls)
+				elif data.count("(СЗоР)"):
+					answer = AllwebAnsBase[-1]
 				else:
 					answer = AllwebAnsBase[5]
 	else:

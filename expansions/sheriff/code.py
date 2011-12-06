@@ -1,16 +1,16 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sheriff" # /code.py v.x4
-#  Id: 15~4a
+exp_name = "sheriff" # /code.py v.x5
+#  Id: 15~3a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
 
-GoodServers = ["jabber.ru", "xmpp.ru", "jabbers.ru", "xmpps.ru", "talkonaut.com", "jabber.org", "gtalk.com", "gmail.com", "jabberon.ru", "gajim.org", "jabbrik.ru", "worldskynet.net", "veganet.org", "qip.ru", "blackfishka.ru", "ya.ru"]
+GoodServers = ["jabber.ru", "xmpp.ru", "jabbers.ru", "xmpps.ru", "talkonaut.com", "jabber.org", "gtalk.com", "gmail.com", "jabberon.ru", "gajim.org", "jabbrik.ru", "worldskynet.net", "qip.ru", "blackfishka.ru", "ya.ru"]
 
 if DefLANG != "RU":
-	GoodServers += ["jabber.com", "xmpp.com", "jabber.uk", "jabberworld.net"]
+	GoodServers += ["jabber.com", "xmpp.com", "jabber.uk", "jabber.co.uk", "jabberworld.net"]
 
 LawsFile = "laws.db"
 
@@ -517,14 +517,6 @@ def Security_01si(conf):
 	Name = chat_file(conf, LawsFile)
 	if initialize_file(Name, str(ChatsAttrs[conf]["laws"])):
 		ChatsAttrs[conf]["laws"] = eval(get_file(Name))
-		if not ChatsAttrs[conf]["laws"].has_key("list"):
-			ChatsAttrs[conf]["laws"]["sparta"] = False
-			ChatsAttrs[conf]["laws"]["list"] = []
-			cat_file(Name, str(ChatsAttrs[conf]["laws"]))
-		if ChatsAttrs[conf]["laws"].has_key("avipe"):
-			Awipe = ChatsAttrs[conf]["laws"].pop("avipe")
-			ChatsAttrs[conf]["laws"]["awipe"] = Awipe
-			cat_file(Name, str(ChatsAttrs[conf]["laws"]))
 
 def Security_04si(conf):
 	del Federal_Jail[conf]

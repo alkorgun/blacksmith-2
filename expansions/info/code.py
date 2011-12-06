@@ -112,10 +112,10 @@ def command_visitors(ltype, source, body, disp):
 				Answer(AnsBase[11], ltype, source, disp)
 			Msend(source[0], InfoAnsBase[2] % (Numb._str(), list), disp)
 		elif Var in ("list", "лист".decode("utf-8")):
-			text = ", ".join(sorted(Chats[source[1]].get_nicks()))
+			ls = sorted(Chats[source[1]].get_nicks())
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], InfoAnsBase[2] % (str(len(list)), text), disp)
+			Msend(source[0], InfoAnsBase[2] % (str(len(ls)), ", ".join(ls)), disp)
 		else:
 			list = str()
 			Numb = itypes.Number()

@@ -25,7 +25,7 @@ def command_exec(ltype, source, body, disp):
 			body += chr(10)
 		answer = AnsBase[4]
 		try:
-			exec UnicodeType(body) in globals()
+			exec(UnicodeType(body), globals())
 		except:
 			answer = "%s - %s" % exc_info()
 	else:

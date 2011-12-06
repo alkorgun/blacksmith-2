@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "cron" # /code.py v.x3
-#  Id: 27~2a
+exp_name = "cron" # /code.py v.x4
+#  Id: 27~3a
 #  Code © (2010-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -91,12 +91,12 @@ def command_cron(ltype, source, body, disp):
 					id = int(id)
 					if CronDesc.has_key(id):
 						if enough_access(source[1], source[2], 7):
-							del CronDesc[id]
+							del CronDesc[id]; cdesc_save()
 							answer = AnsBase[4]
 						else:
 							date, ls = CronDesc.get(id)
 							if ls[1] == get_source(source[1], source[2]):
-								del CronDesc[id]
+								del CronDesc[id]; cdesc_save()
 								answer = AnsBase[4]
 							else:
 								answer = AnsBase[10]
@@ -171,8 +171,12 @@ def command_cron(ltype, source, body, disp):
 								Te = (Te - Time)
 								if 59 < Te <= 4147200 or enough_access(source[1], source[2], 7):
 									repeat = (Te,)
-									answer = CronAnsBase[6] % time.strftime("%H:%M:%S (%d.%m.%Y)", date)
-									answer = add_cron(**locals())
+									try:
+										answer = CronAnsBase[6] % time.strftime("%H:%M:%S (%d.%m.%Y)", date)
+									except ValueError:
+										answer = CronAnsBase[9]
+									else:
+										answer = add_cron(**locals())
 								else:
 									answer = CronAnsBase[5]
 							else:
