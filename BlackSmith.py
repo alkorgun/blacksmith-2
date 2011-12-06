@@ -20,7 +20,7 @@ ZipLib = "librarys.zip"
 BsDir = os.path.split(BsCore)[0]
 if BsDir:
 	os.chdir(BsDir)
-sys.path.append(ZipLib)
+sys.path.insert(0, ZipLib)
 
 from enconf import *
 
@@ -651,7 +651,7 @@ class sConf:
 		call_efunctions("06eh", (self.name, old_nick, nick, self.disp,))
 
 	def sleaved(self, nick):
-		self.desc[nick].ishere = False
+		self.desc[nick].ishere = None
 
 	def composePres(self):
 		stanza = xmpp.Presence("%s/%s" % (self.name, self.nick))
