@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x8
-#  Id: 25~8a
+exp_name = "allweb" # /code.py v.x9
+#  Id: 25~9a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -11,7 +11,7 @@ import htmlentitydefs, json
 
 UserAgent = ("User-Agent", "%s/%s" % (ProdName[:10], CapsVer))
 
-UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (X11; U; Linux i686; {0}; rv:1.7.12) Gecko/20050929".format(UAL_desc.get(DefLANG, "en-US")))
+UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (X11; U; Linux i686; {0}; rv:1.7.12) Gecko/20050929".format(UserAgents.get(DefLANG, "en-US")))
 
 edefs = dict()
 
@@ -377,6 +377,68 @@ def command_python(ltype, source, body, disp):
 			answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
 
+def command_currency(ltype, source, body, disp):
+	if body:
+		ls = body.split()
+		Code = (ls.pop(0)).lower()
+		if Code in ("code", "аббревиатура".decode("utf-8")):
+			if ls:
+				Code = (ls.pop(0)).upper()
+				if Currency_desc.has_key(Code):
+					answer = Currency_desc[Code].decode("utf-8")
+				else:
+					answer = AllwebAnsBase[1]
+			else:
+				answer = AnsBase[2]
+		elif Code in ("list", "список".decode("utf-8")):
+			if ltype == Types[1]:
+				Answer(AnsBase[11], ltype, source, disp)
+			Curls = ["\->"] + ["%s: %s" % desc for desc in sorted(Currency_desc.items())]
+			Msend(source[0], str.join(chr(10), Curls), disp)
+		elif (Code != "rub") and Code.isalpha():
+			Code = Code.upper()
+			if Currency_desc.has_key(Code):
+				Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
+				try:
+					data = Req.get_page(UserAgent)
+				except:
+					answer = AllwebAnsBase[0]
+				else:
+					data = data.decode("cp1251")
+					comp = compile__("<CharCode>%s</CharCode>\s+?<Nominal>(.+?)</Nominal>\s+?<Name>.+?</Name>\s+?<Value>(.+?)</Value>" % (Code), 16)
+					data = comp.search(data)
+					if data:
+						No, Numb = data.groups()
+						answer = "%s/RUB: %s/%s" % (Code, No, Numb)
+					else:
+						answer = AllwebAnsBase[1]
+			else:
+				answer = AnsBase[2]
+		else:
+			answer = AnsBase[2]
+	else:
+		Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
+		try:
+			data = Req.get_page(UserAgent)
+		except:
+			answer = AllwebAnsBase[0]
+		else:
+			data = data.decode("cp1251")
+			comp = compile__("<CharCode>(.+?)</CharCode>\s+?<Nominal>(.+?)</Nominal>\s+?<Name>.+?</Name>\s+?<Value>(.+?)</Value>", 16)
+			list = comp.findall(data)
+			if list:
+				ls, Number = ["\->"], itypes.Number()
+				for Code, No, Numb in sorted(list):
+					ls.append("%d) %s/RUB - %s/%s" % (Number.plus(), Code, No, Numb))
+				if ltype == Types[1]:
+					Answer(AnsBase[11], ltype, source, disp)
+				Curls = str.join(chr(10), ls)
+				Msend(source[0], Curls, disp)
+			else:
+				answer = AllwebAnsBase[1]
+	if locals().has_key(Types[12]):
+		Answer(answer, ltype, source, disp)
+
 def command_jquote(ltype, source, body, disp):
 	if body:
 		if isNumber(body):
@@ -393,9 +455,10 @@ def command_jquote(ltype, source, body, disp):
 				data = data.decode("cp1251")
 				data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
 				if data:
-					answer = (chr(10) + decodeHTML(data))
-					while answer.count(chr(10)*3):
-						answer = answer.replace(chr(10)*3, chr(10)*2)
+					ls = chr(10)*3
+					answer = (ls[0] + decodeHTML(data))
+					while answer.count(ls):
+						answer = answer.replace(ls, ls[:2])
 				else:
 					answer = AllwebAnsBase[5]
 		else:
@@ -410,9 +473,10 @@ def command_jquote(ltype, source, body, disp):
 			data = data.decode("cp1251")
 			data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
 			if data:
-				answer = (chr(10) + decodeHTML(data))
-				while answer.count(chr(10)*3):
-					answer = answer.replace(chr(10)*3, chr(10)*2)
+				ls = chr(10)*3
+				answer = (ls[0] + decodeHTML(data))
+				while answer.count(ls):
+					answer = answer.replace(ls, ls[:2])
 			else:
 				answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
@@ -425,9 +489,9 @@ expansions[exp_name].ls.extend([
 						"UserAgent",
 						"UserAgent_Moz",
 						"edefs",
-						"UAL_desc",
 						"REP_desc",
 						"XML_ls",
+						"UserAgents",
 						"compile_st",
 						"compile_ehtmls",
 						"gCache"
@@ -438,12 +502,14 @@ command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
 
 if DefLANG in ("RU", "UA"):
 
-	expansions[exp_name].funcs_add([command_kino, command_jquote])
+	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote])
+	expansions[exp_name].ls.extend(["Currency_desc"])
 
 	command_handler(command_kino, {"RU": "кино", "EN": "kino"}, 2, exp_name)
+	command_handler(command_currency, {"RU": "валюты", "EN": "currency"}, 2, exp_name)
 	command_handler(command_jquote, {"RU": "цитата", "EN": "jquote"}, 2, exp_name)
 else:
-	del command_kino, command_jquote
+	del command_kino, command_currency, command_jquote
 
 command_handler(command_imdb, {"RU": "imdb", "EN": "imdb"}, 2, exp_name)
 command_handler(command_python, {"RU": "питон", "EN": "python"}, 2, exp_name)
