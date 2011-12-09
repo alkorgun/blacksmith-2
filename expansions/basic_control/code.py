@@ -18,8 +18,8 @@ def Chat_check(conf):
 
 def command_join(ltype, source, body, disp):
 	if body:
-		list = body.split()
-		conf = (list.pop(0)).lower()
+		ls = body.split()
+		conf = (ls.pop(0)).lower()
 		if conf.count("@conference.") and conf.count(".") >= 2:
 			if not Chats.has_key(conf):
 				confname = dynamic % (conf)
@@ -32,8 +32,8 @@ def command_join(ltype, source, body, disp):
 						confname = None
 				if confname:
 					codename, disp_, cPref, nick = None, None, None, DefNick
-					while len(list):
-						x = list.pop()
+					while ls:
+						x = ls.pop()
 						if x.startswith("1="):
 							x = x.split("1=", 1)
 							if len(x) == 2 and x[1]:
@@ -54,9 +54,9 @@ def command_join(ltype, source, body, disp):
 							x = x.split("4=", 1)
 							if len(x) == 2 and x[1]:
 								codename = x[1]
-					source_ = get_source(source[1], source[2])
-					if GodName != source_:
-						delivery(ControlAnsBase[0] % (source[2], source_, conf))
+					inst = get_source(source[1], source[2])
+					if GodName != inst:
+						delivery(ControlAnsBase[0] % (source[2], inst, conf))
 					if not disp_:
 						disp_ = IdleClient()
 					Chats[conf] = sConf(conf, disp_, codename, cPref, nick)

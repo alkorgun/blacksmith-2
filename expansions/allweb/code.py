@@ -409,7 +409,7 @@ def command_currency(ltype, source, body, disp):
 					data = comp.search(data)
 					if data:
 						No, Numb = data.groups()
-						answer = "%s/RUB: %s/%s" % (Code, No, Numb)
+						answer = "%s/RUB - %s/%s" % (Code, No, Numb)
 					else:
 						answer = AllwebAnsBase[1]
 			else:
