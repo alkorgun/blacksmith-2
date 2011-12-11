@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x9
-#  Id: 25~9a
+exp_name = "allweb" # /code.py v.x10
+#  Id: 25~10a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -315,9 +315,9 @@ def command_imdb(ltype, source, body, disp):
 						if Vtds:
 							Numb = "%s (Votes: %s)" % (Numb, Vtds)
 						ls.append("Raiting: %s" % Numb)
-					Ttls = (("Director", "\s+Director:\s+"), ("Director", "Director:"),
-							("Stars", "\s+Stars:\s+"), ("Stars", "Stars:"),
-							("Writers", "\s+Writers:\s+"), ("Writers", "Writers:"))
+					Ttls = (("Director", "\s*Director:\s*"),
+							("Stars", "\s*Stars:\s*"),
+							("Writers", "\s*Writers:\s*"), ("Writer", "\s*Writer:\s*"))
 					for Title in Ttls:
 						list = get_text(data, '<h4 class="inline">%s</h4>' % Title[1], "</div>")
 						if list:
@@ -481,6 +481,63 @@ def command_jquote(ltype, source, body, disp):
 				answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
 
+def command_gismeteo(ltype, source, body, disp):
+	if body:
+		ls = body.split()
+		Numb = ls.pop(0)
+		if ls and isNumber(Numb):
+			City = body[(body.find(Numb) + len(Numb) + 1):].strip()
+			Numb = int(Numb)
+		else:
+			Numb, City = (None, body)
+		if -1 < Numb < 13 or not Numb:
+			Req = Web("http://m.gismeteo.ru/citysearch/by_name/?", [("gis_search", City.encode("utf-8"))])
+			try:
+				data = Req.get_page(UserAgent)
+			except:
+				answer = AllwebAnsBase[0]
+			else:
+				data = data.decode("utf-8")
+				data = get_text(data, "<li><a href=\"/weather/", "/\"><span>", "\d+")
+				if data:
+					if Numb != None:
+						data = str.join(chr(47), [data, str(Numb) if Numb != 0 else "weekly"])
+					Req = Web("http://m.gismeteo.ru/weather/%s/" % data)
+					try:
+						data = Req.get_page(UserAgent)
+					except:
+						answer = AllwebAnsBase[0]
+					else:
+						data = data.decode("utf-8")
+						mark = get_text(data, "<th colspan=\"2\">", "</th>")
+						if Numb != 0:
+							comp = compile__('<tr class="tbody">\s+?<th.*?>(.+?)</th>\s+?<td.+?/></td>\s+?</tr>\s+?<tr>\s+?<td.+?>(.+?)</td>\s+?</tr>\s+?<tr class="dl">\s+?<td>&nbsp;</td>\s+?<td class="clpersp"><p>(.+?)</p></td>\s+?</tr>\s+?<tr class="dl"><td class="left">(.+?)</td><td>(.+?)</td></tr>\s+?<tr class="dl"><td class="left">(.+?)</td><td>(.+?)</td></tr>\s+?<tr class="dl bottom"><td class="left">(.+?)</td><td>(.+?)</td></tr>', 16)
+							list = comp.findall(data)
+							if list:
+								ls = [(decodeHTML(mark) if mark else "\->")]
+								for data in list:
+									ls.append("{0}:\n\t{2}, {1}\n\t{3} {4}\n\t{5} {6}\n\t{7} {8}".format(*data))
+								answer = decodeHTML(str.join(chr(10), ls))
+							else:
+								answer = AllwebAnsBase[1]
+						else:
+							comp = compile__('<tr class="tbody">\s+?<td class="date" colspan="3"><a.+?>(.+?)</a></td>\s+?</tr>\s+?<tr>\s+?<td rowspan="2"><a.+?/></a></td>\s+?<td class="clpersp"><p>(.+?)</p></td>\s+?</tr>\s+?<tr>\s+?<td.+?>(.+?)</td>', 16)
+							list = comp.findall(data)
+							if list:
+								ls = [(decodeHTML(mark) if mark else "\->")]
+								for data in list:
+									ls.append("{0}:\n\t{1}, {2}".format(*data))
+								answer = decodeHTML(str.join(chr(10), ls))
+							else:
+								answer = AllwebAnsBase[1]
+				else:
+					answer = AllwebAnsBase[5]
+		else:
+			answer = AnsBase[2]
+	else:
+		answer = AnsBase[1]
+	Answer(answer, ltype, source, disp)
+
 expansions[exp_name].funcs_add([sub_ehtmls, e_sb, decodeHTML, command_jc, command_google, command_imdb, command_python])
 expansions[exp_name].ls.extend([
 						htmlentitydefs.__name__,
@@ -502,14 +559,15 @@ command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
 
 if DefLANG in ("RU", "UA"):
 
-	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote])
+	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote, command_gismeteo])
 	expansions[exp_name].ls.extend(["Currency_desc"])
 
 	command_handler(command_kino, {"RU": "кино", "EN": "kino"}, 2, exp_name)
 	command_handler(command_currency, {"RU": "валюты", "EN": "currency"}, 2, exp_name)
 	command_handler(command_jquote, {"RU": "цитата", "EN": "jquote"}, 2, exp_name)
+	command_handler(command_gismeteo, {"RU": "погода", "EN": "gismeteo"}, 2, exp_name)
 else:
-	del command_kino, command_currency, command_jquote
+	del command_kino, command_currency, command_jquote, command_gismeteo
 
 command_handler(command_imdb, {"RU": "imdb", "EN": "imdb"}, 2, exp_name)
 command_handler(command_python, {"RU": "питон", "EN": "python"}, 2, exp_name)
