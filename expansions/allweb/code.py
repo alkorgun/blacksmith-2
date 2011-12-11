@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x10
-#  Id: 25~10a
+exp_name = "allweb" # /code.py v.x11
+#  Id: 25~11a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -162,11 +162,12 @@ def command_google(ltype, source, body, disp):
 
 def command_kino(ltype, source, body, disp):
 	if body:
-		list = body.split()
-		c1st = (list.pop(0)).lower()
+		ls = body.split()
+		c1st = (ls.pop(0)).lower()
+		c3op = "СЗоР"
 	#	if c1st in ("top250", "топ250".decode("utf-8")):
-	#		if list:
-	#			limit = exec_(int, (list.pop(0),))
+	#		if ls:
+	#			limit = exec_(int, (ls.pop(0),))
 	#			if limit <= 5:
 	#				limit = 5
 	#		else:
@@ -198,7 +199,7 @@ def command_kino(ltype, source, body, disp):
 	#					Msend(source[0], Top250, disp)
 	#				else:
 	#					answer = str.join(chr(10), ls)
-	#			elif data.count("(СЗоР)"):
+	#			elif data.count(c3op):
 	#				answer = AllwebAnsBase[-1]
 	#			else:
 	#				answer = AllwebAnsBase[1]
@@ -221,7 +222,7 @@ def command_kino(ltype, source, body, disp):
 								line = "{1}{0}".format(line[1:], line[0].upper())
 							ls.append(line)
 					answer = str.join(chr(10), ls)
-				elif data.count("(СЗоР)"):
+				elif data.count(c3op):
 					answer = AllwebAnsBase[-1]
 				else:
 					answer = AllwebAnsBase[5]
@@ -243,7 +244,7 @@ def command_kino(ltype, source, body, disp):
 					for Numb, Name in list:
 						ls.append("%d) %s (#%s)" % (Number.plus(), sub_ehtmls(Name), Numb))
 					answer = str.join(chr(10), ls)
-				elif data.count("(СЗоР)"):
+				elif data.count(c3op):
 					answer = AllwebAnsBase[-1]
 				else:
 					answer = AllwebAnsBase[5]
@@ -254,11 +255,11 @@ def command_kino(ltype, source, body, disp):
 
 def command_imdb(ltype, source, body, disp):
 	if body:
-		list = body.split()
-		c1st = (list.pop(0)).lower()
+		ls = body.split()
+		c1st = (ls.pop(0)).lower()
 		if c1st in ("top250", "топ250".decode("utf-8")):
-			if list:
-				limit = exec_(int, (list.pop(0),))
+			if ls:
+				limit = exec_(int, (ls.pop(0),))
 				if limit <= 5:
 					limit = 5
 			else:
@@ -395,6 +396,40 @@ def command_currency(ltype, source, body, disp):
 				Answer(AnsBase[11], ltype, source, disp)
 			Curls = ["\->"] + ["%s: %s" % desc for desc in sorted(Currency_desc.items())]
 			Msend(source[0], str.join(chr(10), Curls), disp)
+		elif Code in ("calc", "перевести".decode("utf-8")):
+			if len(ls) >= 2:
+				Number = ls.pop(0)
+				if isNumber(Number) and ls[0].isalpha():
+					Number = int(Number)
+					Code = (ls.pop(0)).upper()
+					if Currency_desc.has_key(Code) and (Code != "RUB"):
+						Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
+						try:
+							data = Req.get_page(UserAgent)
+						except:
+							answer = AllwebAnsBase[0]
+						else:
+							data = data.decode("cp1251")
+							comp = compile__("<CharCode>%s</CharCode>\s+?<Nominal>(.+?)</Nominal>\s+?<Name>.+?</Name>\s+?<Value>(.+?)</Value>" % (Code), 16)
+							data = comp.search(data)
+							if data:
+								No, Numb = data.groups()
+								Numb = Numb.replace(chr(44), chr(46))
+								No = No.replace(chr(44), chr(46))
+								try:
+									Numb = (Number*(float(Numb)/float(No)))
+								except:
+									answer = AnsBase[7]
+								else:
+									answer = "%.2f RUB" % (Numb)
+							else:
+								answer = AllwebAnsBase[1]
+					else:
+						answer = AnsBase[2]
+				else:
+					answer = AnsBase[2]
+			else:
+				answer = AnsBase[2]
 		elif (Code != "rub") and Code.isalpha():
 			Code = Code.upper()
 			if Currency_desc.has_key(Code):
@@ -489,7 +524,8 @@ def command_gismeteo(ltype, source, body, disp):
 			City = body[(body.find(Numb) + len(Numb) + 1):].strip()
 			Numb = int(Numb)
 		else:
-			Numb, City = (None, body)
+			City = body
+			Numb = None
 		if -1 < Numb < 13 or not Numb:
 			Req = Web("http://m.gismeteo.ru/citysearch/by_name/?", [("gis_search", City.encode("utf-8"))])
 			try:
@@ -498,7 +534,7 @@ def command_gismeteo(ltype, source, body, disp):
 				answer = AllwebAnsBase[0]
 			else:
 				data = data.decode("utf-8")
-				data = get_text(data, "<li><a href=\"/weather/", "/\"><span>", "\d+")
+				data = get_text(data, "<a href=\"/weather/", "/(1/)*?\">", "\d+")
 				if data:
 					if Numb != None:
 						data = str.join(chr(47), [data, str(Numb) if Numb != 0 else "weekly"])
@@ -526,7 +562,7 @@ def command_gismeteo(ltype, source, body, disp):
 							if list:
 								ls = [(decodeHTML(mark) if mark else "\->")]
 								for data in list:
-									ls.append("{0}:\n\t{1}, {2}".format(*data))
+									ls.append("%s:\n\t%s, %s" % (data))
 								answer = decodeHTML(str.join(chr(10), ls))
 							else:
 								answer = AllwebAnsBase[1]
