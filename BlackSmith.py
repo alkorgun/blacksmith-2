@@ -203,15 +203,13 @@ def try_body(body, color):
 	return (body, color)
 
 def text_color(text, color):
-	if eColors:
+	if eColors and color:
 		text = color+text+color0
 	return text
 
 def Print(text, color = False):
 	try:
-		if color:
-			text = text_color(text, color)
-		print text
+		print text_color(text, color)
 	except:
 		pass
 
@@ -236,6 +234,22 @@ try:
 except:
 	Print("\n\nError: can't set default encoding!", color2)
 
+stdout = "stdout.file"
+if not sys.stdin.isatty():
+	if os.path.isfile(stdout):
+		if os.path.getsize(stdout) >= 131072:
+			stdout = open(stdout, "wb", 0)
+		else:
+			stdout = open(stdout, "ab", 0)
+	else:
+		stdout = open(stdout, "wb", 0)
+	sys.stdout = stdout
+	sys.stderr = stdout
+	if eColors:
+		eColors = None
+else:
+	stdout = sys.stdout
+
 # Global Names
 
 dynamic = "current/%s"
@@ -245,12 +259,12 @@ SvnCache = ".svn/entries"
 FeilDir = "feillog"
 PidFile = "sessions.db"
 GenCrash = "dispatcher.crash"
-InscrFile = static % ("insc.py")
+GenInscFile = static % ("insc.py")
 GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 20, 0)
+(BsMark, BsVer, BsRev) = (2, 21, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -263,7 +277,7 @@ FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
 
 BotOs, BsPid = os.name, os.getpid()
 
-oSlist = [(BotOs == ("nt")), (BotOs == ("posix"))]
+oSlist = ((BotOs == ("nt")), (BotOs == ("posix")))
 
 def client_config(config, section):
 	serv = config.get(section, "serv").lower()
@@ -302,10 +316,12 @@ try:
 except:
 	Exit("\n\nOne of config files is corrupted!", 1, 30)
 
+del Instance, desc, block
+
 MaxMemory = (32768 if (MaxMemory and MaxMemory <= 32768) else MaxMemory)
 
 try:
-	execfile(InscrFile)
+	execfile(GenInscFile)
 except:
 	Exit("\n\nError: inscript is damaged!", 1, 30)
 

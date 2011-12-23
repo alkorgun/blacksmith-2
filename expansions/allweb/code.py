@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x11
-#  Id: 25~11a
+exp_name = "allweb" # /code.py v.x12
+#  Id: 25~12a
 #  Code © (2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
 
 expansion_register(exp_name)
@@ -402,7 +402,9 @@ def command_currency(ltype, source, body, disp):
 				if isNumber(Number) and ls[0].isalpha():
 					Number = int(Number)
 					Code = (ls.pop(0)).upper()
-					if Currency_desc.has_key(Code) and (Code != "RUB"):
+					if (Code == "RUB"):
+						answer = "%d %s" % (Number, Code)
+					elif Currency_desc.has_key(Code):
 						Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 						try:
 							data = Req.get_page(UserAgent)
@@ -553,6 +555,7 @@ def command_gismeteo(ltype, source, body, disp):
 								ls = [(decodeHTML(mark) if mark else "\->")]
 								for data in list:
 									ls.append("{0}:\n\t{2}, {1}\n\t{3} {4}\n\t{5} {6}\n\t{7} {8}".format(*data))
+								ls.append(AllwebAnsBase[-2])
 								answer = decodeHTML(str.join(chr(10), ls))
 							else:
 								answer = AllwebAnsBase[1]
@@ -563,6 +566,7 @@ def command_gismeteo(ltype, source, body, disp):
 								ls = [(decodeHTML(mark) if mark else "\->")]
 								for data in list:
 									ls.append("%s:\n\t%s, %s" % (data))
+								ls.append(AllwebAnsBase[-2])
 								answer = decodeHTML(str.join(chr(10), ls))
 							else:
 								answer = AllwebAnsBase[1]

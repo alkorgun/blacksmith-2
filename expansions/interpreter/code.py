@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "interpreter" # /code.py v.x4
-#  Id: 04~2a
+exp_name = "interpreter" # /code.py v.x6
+#  Id: 04~4a
 #  Code © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Code © (2007) by Als [Als@exploit.in]
 #  Code © (2009-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
@@ -47,12 +47,14 @@ def command_sh(ltype, source, body, disp):
 
 def command_calc(ltype, source, body, disp):
 	if body:
-		if len(body) <= 24 and not body.count("**"):
-			comp = compile__("([0123456789]|[\+\-\/\*\^\.])")
+		if not body.count(chr(42)*2) and 32 >= len(body):
+			comp = compile__("([0-9]|[\+\-\(\/\*\)\%\^\.])")
 			expr = (not comp.sub("", body).strip())
 			if expr:
 				try:
 					answer = UnicodeType(eval(body))
+				except ZeroDivisionError:
+					answer = "+∞".decode("utf-8")
 				except:
 					answer = AnsBase[2]
 			else:
