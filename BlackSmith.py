@@ -234,7 +234,7 @@ try:
 except:
 	Print("\n\nError: can't set default encoding!", color2)
 
-stdout = "stdout.file"
+stdout = "stdout.tmp"
 if not sys.stdin.isatty():
 	if os.path.isfile(stdout):
 		if os.path.getsize(stdout) >= 131072:
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 21, 0)
+(BsMark, BsVer, BsRev) = (2, 22, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -310,13 +310,13 @@ try:
 	ConDisp = ConfigParser.ConfigParser()
 	if os.path.isfile(ConDispFile):
 		ConDisp.read(ConDispFile)
-		for block in ConDisp.sections():
-			Instance, desc = client_config(ConDisp, block)
-			InstansesDesc[Instance] = desc
+		for Block in ConDisp.sections():
+			Disp, Instance = client_config(ConDisp, Block)
+			InstansesDesc[Disp] = Instance
 except:
 	Exit("\n\nOne of config files is corrupted!", 1, 30)
 
-del Instance, desc, block
+del Instance
 
 MaxMemory = (32768 if (MaxMemory and MaxMemory <= 32768) else MaxMemory)
 
