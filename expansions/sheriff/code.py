@@ -106,7 +106,7 @@ def command_order(ltype, source, body, disp):
 				elif Name in ("aspace", "антиспэйс".decode("utf-8")):
 					answer = change_cfg(source[1], "space", mode)
 				elif Name in ("sparta", "спарта".decode("utf-8")):
-					answer = change_cfg(source[1], "space", mode)
+					answer = change_cfg(source[1], "sparta", mode)
 				elif Name in ("verif", "авторизация".decode("utf-8")):
 					answer = change_cfg(source[1], "verif", mode)
 				elif Name in ("atiser", "антиреклама".decode("utf-8")):
@@ -345,7 +345,7 @@ def check_wipe(conf, nick, role, inst):
 			jid = get_server(inst)
 			if jid not in GoodServers__(conf):
 				Reason = ("%s: This is SPARTA!!" % BsNick)
-				Chats[conf].ban(jid, Reason); Chats[conf].kick(nick, Reason)
+				Chats[conf].outcast(jid, Reason); Chats[conf].kick(nick, Reason)
 		elif ChatsAttrs[conf]["laws"]["awipe"]:
 			NowTime = time.time()
 			if (NowTime - Chats[conf].sdate) >= 60:
@@ -372,7 +372,7 @@ def check_wipe(conf, nick, role, inst):
 												if Federal_Jail[conf].has_key(sUser.source):
 													if not Federal_Jail[conf][sUser.source].verif:
 														ls.append(sUser)
-								Chats[conf].ban(jid, SheriffAnsBase[12] % (BsNick))
+								Chats[conf].outcast(jid, SheriffAnsBase[12] % (BsNick))
 								if ls:
 									for sUser in ls:
 										Chats[conf].kick(sUser.nick, SheriffAnsBase[12] % (BsNick))
@@ -384,10 +384,10 @@ def check_wipe(conf, nick, role, inst):
 												if Federal_Jail[conf].has_key(sUser.source):
 													if not Federal_Jail[conf][sUser.source].verif:
 														Antiwipe[conf]["clear"].append(sUser.source)
-														Chats[conf].ban(sUser.source, SheriffAnsBase[12] % (BsNick))
+														Chats[conf].outcast(sUser.source, SheriffAnsBase[12] % (BsNick))
 						else:
 							Antiwipe[conf]["clear"].append(inst)
-							Chats[conf].ban(inst, SheriffAnsBase[12] % (BsNick))
+							Chats[conf].outcast(inst, SheriffAnsBase[12] % (BsNick))
 						raise iThr.ThrKill("exit")
 
 def Security_04eh(conf, nick, source_, role, stanza, disp):
@@ -451,7 +451,7 @@ def Security_05eh(conf, nick, sbody, scode, disp):
 					if scode == sCodes[2] and prisoner.kicks.plus() >= ChatsAttrs[conf]["laws"]["aban"]:
 						if ChatsAttrs[conf]["laws"]["aban"]:
 							del Federal_Jail[conf][source_]
-							Chats[conf].ban(source_, SheriffAnsBase[10] % (get_self_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
+							Chats[conf].outcast(source_, SheriffAnsBase[10] % (get_self_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
 
 def Security_06eh(conf, old_nick, nick, disp):
 	if nick != get_self_nick(conf) and Chats[conf].isModer:

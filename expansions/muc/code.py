@@ -47,7 +47,7 @@ def command_ban(ltype, source, body, disp):
 							text = "%s: %s" % (source[2], (body.pop(0)).strip())
 						else:
 							text = "%s/%s" % (get_self_nick(source[1]), source[2])
-						Chats[source[1]].ban(jid, text, (ltype, source))
+						Chats[source[1]].outcast(jid, text, (ltype, source))
 					else:
 						answer = AnsBase[7]
 				else:
@@ -387,7 +387,7 @@ def command_fullban(ltype, source, body, disp):
 				else:
 					text = "%s/%s" % (get_self_nick(source[1]), source[2])
 				for conf in Chats.keys():
-					Chats[conf].ban(jid, text)
+					Chats[conf].outcast(jid, text)
 				answer = AnsBase[4]
 			else:
 				answer = AnsBase[7]

@@ -743,7 +743,7 @@ class sConf:
 		else:
 			CallForResponse(self.disp, stanza, Handle_Answer, {"source": source})
 
-	def ban(self, jid, text = str(), source = ()):
+	def outcast(self, jid, text = str(), source = ()):
 		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[1], text, source)
 
 	def none(self, jid, text = str(), source = ()):
