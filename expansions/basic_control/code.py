@@ -156,7 +156,7 @@ def command_reconnect(ltype, source, body, disp):
 		else:
 			answer = AnsBase[7]
 	else:
-		answer = ControlAnsBase[17]
+		answer = ControlAnsBase[17] % (Name)
 	Answer(answer, ltype, source, disp)
 
 def command_reload(ltype, source, body, disp):

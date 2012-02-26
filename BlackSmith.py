@@ -1253,7 +1253,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 				elif ecode == eCodes[4]:
 					Chats[conf].full_leave(eCodesDesc[ecode])
 					delivery(AnsBase[21] % (ecode, eCodesDesc[ecode], conf))
-				elif ecode in [eCodes[2], eCodes[6]]:
+				elif ecode in (eCodes[2], eCodes[6]):
 					Chats[conf].leave(eCodesDesc[ecode])
 					delivery(AnsBase[22] % (ecode, eCodesDesc[ecode], conf))
 		elif stype in (Types[3], None):
