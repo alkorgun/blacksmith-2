@@ -146,7 +146,7 @@ aFeatures = Features + [
 	xmpp.NS_RECEIPTS
 			]
 
-IsJID = compile__("\w+?@\w+?\.\w+?", 32)
+IsJID = compile__(".+?@\w+?\.\w+?", 32)
 
 VarCache = {
 	"idle": 0.24,
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 22, 0)
+(BsMark, BsVer, BsRev) = (2, 23, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -729,12 +729,12 @@ class sConf:
 		else:
 			delivery(self.name)
 
-	def iq_sender(self, x, y, afrls, afrl, text = str(), source = ()):
+	def iq_sender(self, x, y, afrls, role, text = str(), source = ()):
 		stanza = xmpp.Iq(to = self.name, typ = Types[9])
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(Types[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)
-		arole = query.addChild("item", {x: y, afrls: afrl})
+		arole = query.addChild("item", {x: y, afrls: role})
 		if text:
 			arole.setTagData("reason", text)
 		stanza.addChild(node = query)
@@ -1104,7 +1104,7 @@ def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
 		body = (body.group(1)).strip()
 	return body
 
-def sub_desc(body, ls, sbls = None):
+def sub_desc(body, ls, sub = None):
 	if isinstance(ls, dict):
 		for x, z in ls.items():
 			body = body.replace(x, z)
@@ -1114,9 +1114,9 @@ def sub_desc(body, ls, sbls = None):
 				if len(x) >= 2:
 					body = body.replace(x[0], x[1])
 				else:
-					body = body.replace(x[0], (sbls if sbls else ""))
+					body = body.replace(x[0], (sub if sub else ""))
 			else:
-				body = body.replace(x, (sbls if sbls else ""))
+				body = body.replace(x, (sub if sub else ""))
 	return body
 
 strTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
@@ -1129,7 +1129,7 @@ def Time2Text(Time):
 			(Time, Rest) = divmod(Time, lr[1])
 		else:
 			Rest = Time
-		if Rest:
+		if Rest >= 1.0:
 			ext.insert(0, "%d %s%s" % (Rest, lr[0], ("s" if Rest >= 2 else "")))
 		if not (ls and Time):
 			return str.join(chr(32), ext)
@@ -1142,7 +1142,7 @@ def Size2Text(Size):
 			(Size, Rest) = divmod(Size, 1024)
 		else:
 			Rest = Size
-		if Rest:
+		if Rest >= 1.0:
 			ext.insert(0, "%d%sB" % (Rest, (lr if lr != "." else "")))
 		if not (ls and Size):
 			return str.join(chr(32), ext)
