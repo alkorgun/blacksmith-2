@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 23, 0)
+(BsMark, BsVer, BsRev) = (2, 24, 0)
 
 if os.access(SvnCache, os.R_OK):
 	BsRev = open(SvnCache).readlines()[3].strip()
@@ -801,7 +801,7 @@ def delivery(body):
 					disp = desp
 					break
 			if Gen_disp == disp:
-				raise SelfExc("None connected clients!")
+				raise SelfExc("disconnected!")
 		Info["omsg"].plus()
 		Clients[disp].send(xmpp.Message(GodName, body, Types[0]))
 	except IOError:
@@ -890,7 +890,7 @@ def get_self_nick(conf):
 		return getattr(Chats[conf], Types[20], DefNick)
 	return DefNick
 
-get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server)
+get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server) if isinstance(disp, (xmpp.Client, xmpp.dispatcher.Dispatcher)) else disp
 
 def online(disp):
 	if isinstance(disp, InstanceType):
@@ -1274,7 +1274,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 				if Chats[conf].nick == nick and aDesc.get(Role[0], 0) >= 2:
 					Chats[conf].isModer = True
 					Chats[conf].leave(AnsBase[25])
-					time.sleep(0.4)
+					time.sleep(.4)
 					Chats[conf].join()
 				xmpp_raise()
 			else:

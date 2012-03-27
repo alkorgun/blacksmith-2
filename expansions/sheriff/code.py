@@ -190,10 +190,10 @@ def sheriffs_loyalty(conf):
 def tiser_checker(body):
 	body = body.lower()
 	c1, c2 = 0, 0
-	for dkey in ["@", "conf", "ence"]:
+	for dkey in ("@", "conf", "ence"):
 		if body.count(dkey):
 			c1 += 1
-	for dkey in ["http", "//", "www"]:
+	for dkey in ("http", "//", "www"):
 		if body.count(dkey):
 			c2 += 1
 	if c1 == 3 or c2 > 1:
