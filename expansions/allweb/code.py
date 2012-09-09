@@ -309,12 +309,13 @@ def command_imdb(ltype, source, body, disp):
 						ls.append(Name)
 					desc = get_text(data, '<p itemprop="description">', "</p>")
 					if desc:
-						ls.append(chr(10) + desc + chr(10))
+						ls.append(desc)
+						desc = ls.index(desc)
 					Numb = get_text(data, '<span itemprop="ratingValue">', "</span>")
-					Vtds = get_text(data, '<span itemprop="ratingCount">', "</span>")
+					UsrV = get_text(data, '<span itemprop="ratingCount">', "</span>")
 					if Numb:
-						if Vtds:
-							Numb = "%s (Votes: %s)" % (Numb, Vtds)
+						if UsrV:
+							Numb = "%s (Votes: %s)" % (Numb, UsrV)
 						ls.append("Raiting: %s" % Numb)
 					Ttls = (("Director", "\s*Director:\s*"),
 							("Stars", "\s*Stars:\s*"),
@@ -327,7 +328,19 @@ def command_imdb(ltype, source, body, disp):
 							if list:
 								ls.append("%s: %s" % (Title[0], str.join(", ", list)))
 					if len(ls) >= 2:
-						answer = decodeHTML(str.join(chr(10), ls))
+						for ln in ls:
+							data = decodeHTML(ln)
+							lines = []
+							for line in data.splitlines():
+								line = line.strip()
+								if line:
+									lines.append(line)
+							li = ls.index(ln)
+							if li == desc:
+								lines.append(chr(10))
+								lines.insert(0, chr(10))
+							ls[li] = str.join(chr(10), lines)
+						answer = str.join(chr(10), ls)
 					else:
 						answer = AllwebAnsBase[1]
 				else:
@@ -477,45 +490,45 @@ def command_currency(ltype, source, body, disp):
 		Answer(answer, ltype, source, disp)
 
 def command_jquote(ltype, source, body, disp):
-	if body:
-		if isNumber(body):
-			Numb = int(body)
-			if Numb > 0:
-				Req = Web("http://jabber-quotes.ru/id%d" % Numb)
-			else:
-				Req = Web("http://jabber-quotes.ru/new")
-			try:
-				data = Req.get_page(UserAgent)
-			except:
-				answer = AllwebAnsBase[0]
-			else:
-				data = data.decode("cp1251")
-				data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
-				if data:
-					ls = chr(10)*3
-					answer = (ls[0] + decodeHTML(data))
-					while answer.count(ls):
-						answer = answer.replace(ls, ls[:2])
-				else:
-					answer = AllwebAnsBase[5]
-		else:
-			answer = AnsBase[30]
+	if body and isNumber(body):
+		Req = Web("http://jabber-quotes.ru/api/read/?id=%d" % int(body))
 	else:
-		Req = Web("http://jabber-quotes.ru/random")
-		try:
-			data = Req.get_page(UserAgent)
-		except:
-			answer = AllwebAnsBase[0]
+		Req = Web("http://jabber-quotes.ru/api/read/?id=random")
+	try:
+		data = Req.get_page(UserAgent)
+	except:
+		answer = AllwebAnsBase[0]
+	else:
+		data = data.decode("utf-8")
+		comp = compile__("<id>(\d+?)</id>\s+?<author>(.+?)</author>\s+?<quote>(.+?)</quote>", 16)
+		data = comp.search(data)
+		if data:
+			Numb, Name, Quote = data.groups()
+			lt = chr(10)*3
+			answer = decodeHTML("Quote: #%s | by %s\n%s" % (Numb, Name, Quote))
+			while answer.count(lt):
+				answer = answer.replace(lt, lt[:2])
 		else:
-			data = data.decode("cp1251")
-			data = get_text(data, "<a href=/id\d+?>", "</blockquote>")
-			if data:
-				ls = chr(10)*3
-				answer = (ls[0] + decodeHTML(data))
-				while answer.count(ls):
-					answer = answer.replace(ls, ls[:2])
-			else:
-				answer = AllwebAnsBase[1]
+			answer = AllwebAnsBase[1]
+	Answer(answer, ltype, source, disp)
+
+def command_chuck(ltype, source, body, disp):
+	if body and isNumber(body):
+		Req = Web("http://chucknorrisfacts.ru/quote/%d" % int(body))
+	else:
+		Req = Web("http://chucknorrisfacts.ru/random")
+	try:
+		data = Req.get_page(UserAgent)
+	except:
+		answer = AllwebAnsBase[0]
+	else:
+		data = data.decode("cp1251")
+		comp = compile__("<a href=/quote/(\d+?)>.+?<blockquote>(.+?)</blockquote>", 16)
+		data = comp.search(data)
+		if data:
+			answer = decodeHTML("Fact: #%s\n%s" % data.groups())
+		else:
+			answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
 
 def command_gismeteo(ltype, source, body, disp):
@@ -599,15 +612,16 @@ command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
 
 if DefLANG in ("RU", "UA"):
 
-	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote, command_gismeteo])
+	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote, command_chuck, command_gismeteo])
 	expansions[exp_name].ls.extend(["Currency_desc"])
 
 	command_handler(command_kino, {"RU": "кино", "EN": "kino"}, 2, exp_name)
 	command_handler(command_currency, {"RU": "валюты", "EN": "currency"}, 2, exp_name)
 	command_handler(command_jquote, {"RU": "цитата", "EN": "jquote"}, 2, exp_name)
+	command_handler(command_chuck, {"RU": "чак", "EN": "chuck"}, 2, exp_name)
 	command_handler(command_gismeteo, {"RU": "погода", "EN": "gismeteo"}, 2, exp_name)
 else:
-	del command_kino, command_currency, command_jquote, command_gismeteo
+	del command_kino, command_currency, command_jquote, command_chuck, command_gismeteo
 
 command_handler(command_imdb, {"RU": "imdb", "EN": "imdb"}, 2, exp_name)
 command_handler(command_python, {"RU": "питон", "EN": "python"}, 2, exp_name)
