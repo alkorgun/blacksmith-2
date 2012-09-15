@@ -267,10 +267,16 @@ ChatsFile = dynamic % ("chats.db")
 (BsMark, BsVer, BsRev) = (2, 24, 0)
 
 if os.access(SvnCache, os.R_OK):
-	BsRev = open(SvnCache).readlines()[3].strip()
+	Cache = open(SvnCache).readlines()
+	if len(Cache) >= 4:
+		BsRev = Cache[3].strip()
+		if BsRev.isdigit():
+			BsRev = int(BsRev)
+		else:
+			BsRev = 0
 
 ProdName = "BlackSmith mark.%d" % (BsMark)
-ProdVer = "%d (r.%s)" % (BsVer, BsRev)
+ProdVer = "%d (r.%d)" % (BsVer, BsRev)
 Caps = "http://blacksmith-2.googlecode.com/svn/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
 FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
@@ -1148,9 +1154,9 @@ def Size2Text(Size):
 			return str.join(chr(32), ext)
 
 def enumerated_list(list):
-	ls, Mumb = [], itypes.Number()
+	ls, Numb = [], itypes.Number()
 	for line in list:
-		ls.append(AnsBase[12] % (Mumb.plus(), line))
+		ls.append(AnsBase[12] % (Numb.plus(), line))
 	return str.join(chr(10), ls)
 
 isNumber = lambda objt: (None if exec_(int, (objt,)) is None else True)

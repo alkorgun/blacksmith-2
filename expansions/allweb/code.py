@@ -531,6 +531,24 @@ def command_chuck(ltype, source, body, disp):
 			answer = AllwebAnsBase[1]
 	Answer(answer, ltype, source, disp)
 
+def command_ithappens(ltype, source, body, disp):
+	if body and isNumber(body):
+		Req = Web("http://ithappens.ru/story/%d" % int(body))
+	else:
+		Req = Web("http://ithappens.ru/random")
+	try:
+		data = Req.get_page(UserAgent)
+	except:
+		answer = AllwebAnsBase[0]
+	else:
+		data = data.decode("cp1251")
+		data = get_text(data, "<div class=\"text\">", "</p>")
+		if data:
+			answer = decodeHTML(sub_desc(data, {"<p class=\"date\">": chr(32)}))
+		else:
+			answer = AllwebAnsBase[1]
+	Answer(answer, ltype, source, disp)
+
 def command_gismeteo(ltype, source, body, disp):
 	if body:
 		ls = body.split()
@@ -612,16 +630,17 @@ command_handler(command_google, {"RU": "гугл", "EN": "google"}, 2, exp_name)
 
 if DefLANG in ("RU", "UA"):
 
-	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote, command_chuck, command_gismeteo])
+	expansions[exp_name].funcs_add([command_kino, command_currency, command_jquote, command_chuck, command_ithappens, command_gismeteo])
 	expansions[exp_name].ls.extend(["Currency_desc"])
 
 	command_handler(command_kino, {"RU": "кино", "EN": "kino"}, 2, exp_name)
 	command_handler(command_currency, {"RU": "валюты", "EN": "currency"}, 2, exp_name)
 	command_handler(command_jquote, {"RU": "цитата", "EN": "jquote"}, 2, exp_name)
 	command_handler(command_chuck, {"RU": "чак", "EN": "chuck"}, 2, exp_name)
+	command_handler(command_ithappens, {"RU": "ит", "EN": "ithappens"}, 2, exp_name)
 	command_handler(command_gismeteo, {"RU": "погода", "EN": "gismeteo"}, 2, exp_name)
 else:
-	del command_kino, command_currency, command_jquote, command_chuck, command_gismeteo
+	del command_kino, command_currency, command_jquote, command_chuck, command_ithappens, command_gismeteo
 
 command_handler(command_imdb, {"RU": "imdb", "EN": "imdb"}, 2, exp_name)
 command_handler(command_python, {"RU": "питон", "EN": "python"}, 2, exp_name)
