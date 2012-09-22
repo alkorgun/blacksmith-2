@@ -4,10 +4,10 @@ UserAgents = {
 	"RU": "ru-RU",
 	"UA": "ua-UA",
 	"EN": "en-US"
-			}
+				}
 
 if DefLANG in ("RU", "UA"):
-	AllwebAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Не могу получить доступ к странице.", # 0
 		"Проблемы с разметкой...", # 1
 		"Твоих запросов нет в базе.", # 2
@@ -57,7 +57,7 @@ if DefLANG in ("RU", "UA"):
 		"ZAR": "Южноафриканский рэнд"
 					}
 else:
-	AllwebAnsBase = (
+	AnsBase_temp = (
 		"No access to the page.", # 0
 		"Trouble with the marking...", # 1
 		"There are no your requests in cache.", # 2

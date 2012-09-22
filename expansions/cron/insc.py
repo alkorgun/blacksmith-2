@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	CronAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Ты просил выполнить «%s».", # 0
 		"Нет задания с ID'ом «%d».", # 1
 		"Слишком быстро и часто. (при количестве циклов большем 4х - тайм-аут должен превышать 4 минуты)", # 2
@@ -14,7 +14,7 @@ if DefLANG in ("RU", "UA"):
 		"Дата/Время введены некорректно." # 9
 					)])
 else:
-	CronAnsBase = (
+	AnsBase_temp = (
 		"You asked to execute '%s'.", # 0
 		"There is no task with ID '%d'.", # 1
 		"Too quickly and often. (when the number of cycles greater than 4 - timeout must exceed 4 minutes)", # 2

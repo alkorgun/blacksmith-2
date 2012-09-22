@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	BsendAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"чистка конференции...", # 0
 		"Всё круто, я в отличной форме! (0 ошибок)", # 1
 		"Бoeц %s тяжело ранен, но я ещё повоюю! (%d ошибок)", # 2
@@ -14,7 +14,7 @@ if DefLANG in ("RU", "UA"):
 		"Чистка итак в процессе!" # 9
 					)])
 else:
-	BsendAnsBase = (
+	AnsBase_temp = (
 		"cleaning conference...", # 0
 		"I am okay! (0 errors)", # 1
 		"Private %s is seriously injured, but I have the rotation! (%d errors)", # 2

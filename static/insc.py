@@ -33,7 +33,7 @@ if DefLANG in ("RU", "UA"):
 		"Клиент «%s» упал!", # 28
 		"JID «%s» используется в другом клиенте! (отключаю его)", # 29
 		"это не число" # 30
-				)])
+					)])
 else:
 	AnsBase = (
 		"This command is available only in conferences", # 0
@@ -67,4 +67,4 @@ else:
 		"Client '%s' falled!", # 28
 		"JID '%s' used in another client! (I have to disconnect it)", # 29
 		"This is not a number" # 30
-				)
+					)

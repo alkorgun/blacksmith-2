@@ -1,73 +1,78 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "interpreter" # /code.py v.x6
-#  Id: 04~4a
+exp_name = "interpreter" # /code.py v.x7
+#  Id: 04~5b
 #  Code © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Code © (2007) by Als [Als@exploit.in]
-#  Code © (2009-2011) by WitcherGeralt [WitcherGeralt@rocketmail.com]
+#  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
-def command_eval(ltype, source, body, disp):
-	if body:
-		try:
-			answer = UnicodeType(eval(UnicodeType(body)))
-		except:
-			answer = "%s - %s" % exc_info()
-	else:
-		answer = AnsBase[1]
-	Answer(answer, ltype, source, disp)
+class expansion_temp(expansion):
 
-def command_exec(ltype, source, body, disp):
-	if body:
-		if chr(10) in body and body[-1] != chr(10):
-			body += chr(10)
-		answer = AnsBase[4]
-		try:
-			exec(UnicodeType(body), globals())
-		except:
-			answer = "%s - %s" % exc_info()
-	else:
-		answer = AnsBase[1]
-	Answer(answer, ltype, source, disp)
+	def __init__(self, name):
+		expansion.__init__(self, name)
 
-def command_sh(ltype, source, body, disp):
-	if body:
-		if oSlist[1]:
-			command = sys_cmds[6] % (body.encode("utf-8"))
+	def command_eval(self, ltype, source, body, disp):
+		if body:
+			try:
+				answer = UnicodeType(eval(UnicodeType(body)))
+			except:
+				answer = "%s - %s" % exc_info()
 		else:
-			command = body.encode("cp1251")
-		answer = get_pipe(command)
-		if answer in ["", None]:
-			answer = AnsBase[4]
-	else:
-		answer = AnsBase[1]
-	Answer(answer, ltype, source, disp)
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
 
-def command_calc(ltype, source, body, disp):
-	if body:
-		if not body.count(chr(42)*2) and 32 >= len(body):
-			comp = compile__("([0-9]|[\+\-\(\/\*\)\%\^\.])")
-			expr = (not comp.sub("", body).strip())
-			if expr:
-				try:
-					answer = UnicodeType(eval(body))
-				except ZeroDivisionError:
-					answer = "+∞".decode("utf-8")
-				except:
+	def command_exec(self, ltype, source, body, disp):
+		if body:
+			if chr(10) in body and body[-1] != chr(10):
+				body += chr(10)
+			answer = AnsBase[4]
+			try:
+				exec(UnicodeType(body), globals())
+			except:
+				answer = "%s - %s" % exc_info()
+		else:
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
+
+	def command_sh(self, ltype, source, body, disp):
+		if body:
+			if oSlist[1]:
+				command = sys_cmds[6] % (body.encode("utf-8"))
+			else:
+				command = body.encode("cp1251")
+			answer = get_pipe(command)
+			if answer in ["", None]:
+				answer = AnsBase[4]
+		else:
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
+
+	def command_calc(self, ltype, source, body, disp):
+		if body:
+			if not body.count(chr(42)*2) and 32 >= len(body):
+				comp = compile__("([0-9]|[\+\-\(\/\*\)\%\^\.])")
+				expr = (not comp.sub("", body).strip())
+				if expr:
+					try:
+						answer = UnicodeType(eval(body))
+					except ZeroDivisionError:
+						answer = "+∞".decode("utf-8")
+					except:
+						answer = AnsBase[2]
+				else:
 					answer = AnsBase[2]
 			else:
 				answer = AnsBase[2]
 		else:
-			answer = AnsBase[2]
-	else:
-		answer = AnsBase[1]
-	Answer(answer, ltype, source, disp)
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
 
-expansions[exp_name].funcs_add([command_eval, command_exec, command_sh, command_calc])
-
-command_handler(command_eval, {"RU": "eval", "EN": "eval"}, 8, exp_name)
-command_handler(command_exec, {"RU": "exec", "EN": "exec"}, 8, exp_name)
-command_handler(command_sh, {"RU": "sh", "EN": "sh"}, 8, exp_name)
-command_handler(command_calc, {"RU": "калк", "EN": "calc"}, 2, exp_name)
+	commands = (
+		(command_eval, "eval", 8,),
+		(command_exec, "exec", 8,),
+		(command_sh, "sh", 8,),
+		(command_calc, "calc", 2,)
+					)

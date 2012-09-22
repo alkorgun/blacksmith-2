@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	SheriffAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"слишком длинный ник. (%d - предел)", # 0
 		"запрещённый ник.", # 1
 		"пробелы по краям ников - запрещены.", # 2
@@ -50,7 +50,7 @@ if DefLANG in ("RU", "UA"):
 		"это не сервер" # 36
 					)])
 else:
-	SheriffAnsBase = (
+	AnsBase_temp = (
 		"too long nickname. (%d - limit)", # 0
 		"forbidden nickname.", # 1
 		"spaces at the edges of nicknames - forbidden.", # 2

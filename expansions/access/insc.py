@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	AccAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Твой доступ = %s", # 0
 		"Доступ «%s» = %s", # 1
 		"На «%s» нет информации.", # 2
@@ -15,7 +15,7 @@ if DefLANG in ("RU", "UA"):
 		"Не могу дать доступ «%s»." # 10
 					)])
 else:
-	AccAnsBase = (
+	AnsBase_temp = (
 		"Your access = %s", # 0
 		"%s's access = %s", # 1
 		"I have not information about '%s'.", # 2

@@ -1,0 +1,8 @@
+xmpp ping statistics
+pstat (nick/jid)
+*/pstat
+bot would show your statistics
+*/pstat Dude
+bot would show Dude's statistics
+*/pstat dude@jabr.com
+bot would show the statistics of dude@jabr.com

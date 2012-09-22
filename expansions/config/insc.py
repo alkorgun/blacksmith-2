@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	ConfAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Изменённые пункты: %s", # 0
 		"Очевидно параметры неверны.", # 1
 		"Настройки:\n", # 2
@@ -16,7 +16,7 @@ if DefLANG in ("RU", "UA"):
 		"«%s» нет в списке клиентов." # 11
 					)])
 else:
-	ConfAnsBase = (
+	AnsBase_temp = (
 		"Changed options: %s", # 0
 		"Parameters are incorrect.", # 1
 		"Config:\n", # 2

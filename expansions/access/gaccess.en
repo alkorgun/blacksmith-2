@@ -1,0 +1,6 @@
+bot sets global access
+gaccess [!/access] [jid/nick]
+*/gaccess 6 Obi-Wan Kenobi
+bot would set access level 6 for Obi-Wan Kenobi
+*/gaccess ! obi-wan_kenobi@jab.net
+bot would remove obi-wan_kenobi@jab.net from global access list

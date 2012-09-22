@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	HelpAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Команда «%s» находится в плагине -» %s", # 0
 		"Доступ к команде «%s» - %d", # 1
 		"\n%s\nСинтаксис:\n»»» %s", # 2
@@ -22,7 +22,7 @@ if DefLANG in ("RU", "UA"):
 		"Файл со справкой повреждён!" # 17
 					)])
 else:
-	HelpAnsBase = (
+	AnsBase_temp = (
 		"Command '%s' located in expansion %s", # 0
 		"%s's access - %d", # 1
 		"\n%s\nSyntax:\n*** %s", # 2

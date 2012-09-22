@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	InfoAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Сегодня здесь было %s юзеров:%s\n+ ещё %s досихпор здесь.", # 0
 		"Сегодня при мне ещё никто не выходил, все кто был досихпор здесь.", # 1
 		"При мне заходило %s юзеров:\n%s", # 2
@@ -15,7 +15,7 @@ if DefLANG in ("RU", "UA"):
 		"Не знаю." # 10
 					)])
 else:
-	InfoAnsBase = (
+	AnsBase_temp = (
 		"Today there were %s visitors here:%s\n+ %s are still here.", # 0
 		"Today when I was still nobody came, everyone who was - are still here.", # 1
 		"When I was still there were %s visitors here:\n%s", # 2

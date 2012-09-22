@@ -1,25 +1,28 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "apocalypse" # /code.py v.x1
-#  Id: 0~1a
+exp_name = "apocalypse" # /code.py v.x2
+#  Id: 0~2b
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
-def command_apocalypse(ltype, source, body, disp):
-	Time = time.gmtime()
-	t1 = (356 - Time.tm_yday)
-	if not t1:
-		answer = "We all gonna die today!"
-	elif t1 == 1:
-		answer = "Tomorrow will be the doomday!"
-	elif t1 < 0 or Time.tm_year != 2012:
-		answer = "We must be already dead..."
-	else:
-		answer = "There are %d days left to the Apocalypse." % (t1)
-	Answer(answer, ltype, source, disp)
+class expansion_temp(expansion):
 
-expansions[exp_name].funcs_add([command_apocalypse])
+	def __init__(self, name):
+		expansion.__init__(self, name)
 
-command_handler(command_apocalypse, {"RU": "апокалипсис", "EN": "apocalypse"}, 1, exp_name)
+	def command_apocalypse(self, ltype, source, body, disp):
+		Time = time.gmtime()
+		t1 = (356 - Time.tm_yday)
+		if not t1:
+			answer = "We all gonna die today!"
+		elif t1 == 1:
+			answer = "Tomorrow will be the doomsday!"
+		elif t1 < 0 or Time.tm_year != 2012:
+			answer = "We must be already dead..."
+		else:
+			answer = "There are %d days left to the Apocalypse." % (t1)
+		Answer(answer, ltype, source, disp)
+
+	commands = ((command_apocalypse, "apocalypse", 1,),)

@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	ControlAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Внимание! %s (%s) загнал меня в -» '%s'", # 0
 		"\nПричина: %s", # 1
 		"Ага я зашел в -» '%s'", # 2
@@ -22,7 +22,7 @@ if DefLANG in ("RU", "UA"):
 		"«%s» нет в списке клиентов." # 17
 					)])
 else:
-	ControlAnsBase = (
+	AnsBase_temp = (
 		"Attention! %s (%s) sent me in to -> '%s'", # 0
 		"\nReason: %s", # 1
 		"I have joined -> '%s'", # 2

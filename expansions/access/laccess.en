@@ -1,0 +1,6 @@
+bot sets local access
+laccess [!/access] [jid/nick]
+*/laccess 6 Obi-Wan Kenobi
+bot would set local access with level 6 for Obi-Wan Kenobi
+*/laccess ! obi-wan_kenobi@jab.net
+bot would remove obi-wan_kenobi@jab.net from local access list

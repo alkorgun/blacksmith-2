@@ -4,7 +4,7 @@
 # BlackSmith's core mark.2
 # BlackSmith.py
 
-# Code © (2010-2011) by WitcherGeralt (alkorgun@gmail.com)
+# Code © (2010-2012) by WitcherGeralt (alkorgun@gmail.com)
 
 # imports
 
@@ -44,7 +44,7 @@ sys_cmds = [
 	"TASKKILL /PID %d /T /f", # 4
 	"Ver", # 5
 	'sh -c "%s" 2>&1' # 6
-			]
+				]
 
 Types = [
 	"chat", # 0
@@ -70,7 +70,7 @@ Types = [
 	"nick", # 20
 	"can't start new thread", # 21
 	"request" # 22
-		]
+				]
 
 AflRoles = [
 	"affiliation", # 0
@@ -83,14 +83,14 @@ AflRoles = [
 	"visitor", # 7
 	"participant", # 8
 	"moderator" # 9
-			]
+				]
 
 sList = [
 	"chat", # готов поболтать
 	"away", # отошел
 	"xa", # не беспокоить
 	"dnd" # недоступен
-		]
+				]
 
 aDesc = {
 	"owner": 3,
@@ -98,14 +98,14 @@ aDesc = {
 	"admin": 2,
 	"participant": 1,
 	"member": 1
-		}
+				}
 
 sCodesDesc = {
 	"301": "has-been-banned", # 0
 	"303": "nick-changed", # 1
 	"307": "has-been-kicked", # 2
 	"407": "members-only" # 3
-			}
+				}
 
 sCodes = sorted(sCodesDesc.keys())
 
@@ -124,7 +124,7 @@ eCodesDesc = {
 	"501": "feature-not-implemented", # 11
 	"503": "service-unavailable", # 12
 	"504": "remote-server-timeout" # 13
-			}
+				}
 
 eCodes = sorted(eCodesDesc.keys())
 
@@ -135,7 +135,7 @@ Features = [
 	xmpp.NS_URN_TIME, # 3
 	xmpp.NS_LAST, # 4
 	xmpp.NS_DISCO_INFO # 5
-			]
+				]
 
 aFeatures = Features + [
 	xmpp.NS_DISCO_ITEMS,
@@ -144,7 +144,7 @@ aFeatures = Features + [
 	xmpp.NS_ROSTER,
 	xmpp.NS_DATA,
 	xmpp.NS_RECEIPTS
-			]
+				]
 
 IsJID = compile__(".+?@\w+?\.\w+?", 32)
 
@@ -153,7 +153,7 @@ VarCache = {
 	"alive": True,
 	"errors": [],
 	"action": "# %s %s &" % (os.path.split(sys.executable)[1], BsCore)
-			}
+				}
 
 Info = {
 	"cmd": itypes.Number(),		"sess": time.time(),
@@ -162,7 +162,7 @@ Info = {
 	"prs": itypes.Number(),		"iq": itypes.Number(),
 	"errors": itypes.Number(),
 	"omsg": itypes.Number(),	"outiq": itypes.Number()
-		}
+				}
 
 # frienly handlers
 
@@ -252,19 +252,19 @@ else:
 
 # Global Names
 
-dynamic = "current/%s"
 static = "static/%s"
-PlugsDir = "expansions"
-SvnCache = ".svn/entries"
+dynamic = "current/%s"
+ExpsDir = "expansions"
 FeilDir = "feillog"
 PidFile = "sessions.db"
 GenCrash = "dispatcher.crash"
+SvnCache = ".svn/entries"
 GenInscFile = static % ("insc.py")
 GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 24, 0)
+(BsMark, BsVer, BsRev) = (2, 26, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -276,7 +276,7 @@ if os.access(SvnCache, os.R_OK):
 			BsRev = 0
 
 ProdName = "BlackSmith mark.%d" % (BsMark)
-ProdVer = "%d (r.%d)" % (BsVer, BsRev)
+ProdVer = "%d (r.%s)" % (BsVer, BsRev)
 Caps = "http://blacksmith-2.googlecode.com/svn/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
 FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
@@ -355,9 +355,8 @@ Handlers = {
 	"00si": [],
 	"01si": [], "02si": [],
 	"03si": [], "04si": []
-			}
+				}
 
-Sequeque = iThr.Semaphore(len(InstansesDesc.keys())*15)
 Sequence = iThr.Semaphore()
 
 # call & execut Threads & handlers
@@ -375,8 +374,8 @@ def execute_handler(handler_instance, list = (), command = None):
 		lytic_crashlog(handler_instance, command)
 
 def call_sfunctions(ls, list = ()):
-	for handler in Handlers[ls]:
-		execute_handler(handler, list)
+	for inst in Handlers[ls]:
+		execute_handler(inst, list)
 
 def composeTimer(cors, handler, Name = False, list = (), command = None):
 	if not Name:
@@ -419,25 +418,35 @@ def sThread_Run(Thr, handler, command = None):
 	except:
 		lytic_crashlog(sThread_Run, command)
 
-def sThread(name, handler, list = (), command = None):
-	with Sequeque:
-		sThread_Run(composeThr(handler, name, list, command), handler, command)
+def sThread(name, inst, list = (), command = None):
+	sThread_Run(composeThr(inst, name, list, command), inst, command)
 
 def call_efunctions(ls, list = ()):
-	for handler in Handlers[ls]:
-		sThread(ls, handler, list)
+	for inst in Handlers[ls]:
+		sThread(ls, inst, list)
 
 # exceptions, register handlers & commands
 
 class expansion(object):
 
-	def __init__(self, object):
-		self.name = object
-		self.path = "%s/%s" % (PlugsDir, self.name)
+	commands, handlers = (), ()
+
+	def __init__(self, name):
+		self.name = name
+		self.path = "%s/%s" % (ExpsDir, self.name)
 		self.file = "%s/code.py" % (self.path)
 		self.isExp = os.path.isfile(self.file)
 		self.insc = "%s/insc.py" % (self.path)
-		self.desc, self.cmds, self.ls = {}, [], []
+		self.cmds = []
+		self.desc = {}
+
+	def initialize_exp(self):
+		expansions[self.name] = (self)
+		for ls in self.commands:
+			command_handler(self, *ls)
+		for inst, ls in self.handlers:
+			self.handler_register(getattr(self, inst.func_name), ls)
+		self.AnsBase = AnsBase_temp
 
 	def dels(self, full = False):
 		while self.cmds:
@@ -445,10 +454,8 @@ class expansion(object):
 			if Cmds.has_key(cmd):
 				Cmds[cmd].off()
 		self.funcs_del()
-		while self.ls:
-			Name = self.ls.pop()
-			if globals().has_key(Name):
-				del globals()[Name]
+		self.commands = ()
+		self.handlers = ()
 		if full and expansions.has_key(self.name):
 			del expansions[self.name]
 
@@ -458,12 +465,12 @@ class expansion(object):
 
 	def funcs_del(self, handler = False):
 
-		def del_(handler, ls):
+		def Del(inst, ls):
 			if ls == "03si":
-				execute_handler(handler)
-			Handler_del(ls, handler)
-			list = (self.desc[ls])
-			list.remove(handler)
+				execute_handler(inst)
+			self.inst_del(ls, inst)
+			list = self.desc[ls]
+			list.remove(inst)
 			if not list:
 				del self.desc[ls]
 
@@ -471,69 +478,63 @@ class expansion(object):
 			for ls, list in self.desc.items():
 				for inst in list:
 					if inst == handler:
-						handler = del_(handler, ls)
+						handler = Del(inst, ls)
 						break
 				if not handler:
 					break
 		else:
 			for ls, list in self.desc.items():
-				for handler in list:
-					del_(handler, ls)
+				for inst in list:
+					Del(inst, ls)
 
 	def initialize_all(self):
 		for ls in sorted(self.desc.keys()):
 			if not (ls.endswith("si") and self.desc.has_key(ls)):
 				continue
-			for handler in self.desc[ls]:
+			for inst in self.desc[ls]:
 				if ls in ("00si", "02si"):
-					execute_handler(handler)
+					execute_handler(inst)
 				elif ls == "01si":
 					for conf in Chats.keys():
-						execute_handler(handler, (conf,))
+						execute_handler(inst, (conf,))
 
-	def func_add(self, ls, handler):
+	def func_add(self, ls, inst):
 		self.ls_add(ls)
-		self.desc[ls].append(handler)
-
-	def funcs_add(self, handlers):
-		for handler in handlers:
-			self.ls.append(handler.func_name)
+		self.desc[ls].append(inst)
 
 	def load(self):
 		try:
 			execfile(self.file, globals())
 		except:
-			loaded = (self.name, None, exc_info())
+			result = (self.name, None, exc_info())
 		else:
-			loaded = (self.name, True, ())
-		return loaded
+			result = (self.name, True, ())
+		return result
 
 	def load_insc(self):
 		if os.path.isfile(self.insc):
 			execfile(self.insc, globals())
 
-def Handler_add(ls, handler):
-	if handler not in Handlers[ls]:
-		Handlers[ls].append(handler)
+	def inst_add(self, ls, inst):
+		if inst not in Handlers[ls]:
+			Handlers[ls].append(inst)
 
-def Handler_del(ls, handler):
-	if handler in Handlers[ls]:
-		Handlers[ls].remove(handler)
+	def inst_del(self, ls, inst):
+		if inst in Handlers[ls]:
+			Handlers[ls].remove(inst)
+
+	def handler_register(self, inst, ls):
+		Name = inst.func_name
+		for instance in Handlers[ls]:
+			if Name == instance.func_name:
+				self.inst_del(ls, instance)
+		self.inst_add(ls, inst)
+		self.func_add(ls, inst)
 
 def expansion_register(name):
 	if expansions.has_key(name):
 		expansions[name].dels()
-	else:
-		expansions[name] = expansion(name)
 	expansions[name].load_insc()
-
-def handler_register(handler, ls, name):
-	iname = handler.func_name
-	for instance in Handlers[ls]:
-		if iname == instance.func_name:
-			Handlers[ls].remove(instance)
-	Handler_add(ls, handler)
-	expansions[name].func_add(ls, handler)
 
 class Command(object):
 
@@ -562,7 +563,7 @@ class Command(object):
 		if enough_access(source[1], source[2], self.access):
 			if self.isAvalable and self.handler:
 				Info["cmd"].plus()
-				sThread("command", self.handler, (ltype, source, body, disp), self.name)
+				sThread("command", self.handler, (self.exp, ltype, source, body, disp), self.name)
 				self.numb.plus()
 				source = get_source(source[1], source[2])
 				if source and source not in self.desc:
@@ -572,20 +573,24 @@ class Command(object):
 		else:
 			Answer(AnsBase[10], ltype, source, disp)
 
-def command_handler(handler, commands, access, name, pfx = True):
-	if DefLANG in commands.keys():
-		help = "%s/%s/%s.%s" % (PlugsDir, name, commands["EN"], DefLANG.lower())
-		command = commands[DefLANG].decode("utf-8")
+def command_handler(exp_link, handler, name, access, pfx = True):
+	Path = os.path.join(ExpsDir, exp_link.name, name)
+	try:
+		commands = eval(get_file("%s.name" % Path).decode("utf-8"))
+	except:
+		commands = {}
+	if commands.has_key(DefLANG):
+		name = commands[DefLANG].decode("utf-8")
+		help = "%s.%s" % (Path, DefLANG.lower())
 	else:
-		help = "%s/%s/%s.en" % (PlugsDir, name, commands["EN"])
-		command = commands["EN"]
-	if Cmds.has_key(command):
-		Cmds[command].reload(handler, access, help, name)
+		help = "%s.en" % (Path)
+	if Cmds.has_key(name):
+		Cmds[name].reload(handler, access, help, exp_link)
 	else:
-		Cmds[command] = Command(handler, command, access, help, name)
-	if not pfx and command not in sCmds:
-		sCmds.append(command)
-	expansions[name].cmds.append(command)
+		Cmds[name] = Command(handler, name, access, help, exp_link)
+	if not pfx and name not in sCmds:
+		sCmds.append(name)
+	expansions[exp_link.name].cmds.append(name)
 
 # Chats, Users & other
 
@@ -966,7 +971,7 @@ def sAttrs(stanza):
 	return (source, instance.lower(),
 					stype, resource)
 
-GetRole = lambda node: (str(node.getAffiliation()), str(node.getRole()))
+GetRole = lambda Node: (str(Node.getAffiliation()), str(Node.getRole()))
 
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
@@ -1005,7 +1010,7 @@ def cat_file(filename, data, otp = "wb"):
 # Crashlogs
 
 def Dispatch_fail():
-	crashfile = open(GenCrash, "a")
+	crashfile = open(GenCrash, "ab")
 	exc_info_(crashfile)
 	crashfile.close()
 
@@ -1046,18 +1051,21 @@ def lytic_crashlog(handler, command = None):
 
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
-	for PlugDir in os.listdir(PlugsDir):
-		if (".svn") == (PlugDir) or not os.path.isdir(os.path.join(PlugsDir, PlugDir)):
+	for ExpDir in os.listdir(ExpsDir):
+		if (".svn") == (ExpDir) or not os.path.isdir(os.path.join(ExpsDir, ExpDir)):
 			continue
-		exp = expansion(PlugDir)
+		expansions[ExpDir] = exp = expansion(ExpDir)
 		if exp.isExp:
-			loaded = exp.load()
-			if loaded[1]:
-				Print("%s - successfully loaded!" % (loaded[0]), color3)
+			rslt = exp.load()
+			if rslt[1]:
+				exp = expansion_temp(ExpDir)
+				exp.initialize_exp()
+				Print("%s - successfully loaded!" % (rslt[0]), color3)
 			else:
 				exp.dels(True)
-				Print("Can't load - %s!%s" % (loaded[0], "\n\t* %s: %s") % (loaded[2]), color2)
+				Print("Can't load - %s!%s" % (rslt[0], "\n\t* %s: %s") % (rslt[2]), color2)
 		else:
+			exp.dels(True)
 			Print("%s - isn't an expansion!" % (exp.name), color2)
 
 def get_pipe(command):

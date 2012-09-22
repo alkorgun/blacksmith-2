@@ -1,7 +1,7 @@
 # coding: utf-8
 
 if DefLANG in ("RU", "UA"):
-	GameAnsBase = tuple([line.decode("utf-8") for line in (
+	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Ничья.", # 0
 		"%s\n\t»» Я победил!", # 2
 		"%s\n\t»» Ты победил." # 3
@@ -18,7 +18,7 @@ if DefLANG in ("RU", "UA"):
 		"Бумага компрометирует Спока.", # 7
 		"Спок испаряет камень.", # 8
 		"Камень ломает ножницы." # 9
-				)])
+					)])
 
 	GameChrLS = tuple([Char.decode("utf-8") for Char in (
 		"камень", # 0
@@ -26,9 +26,9 @@ if DefLANG in ("RU", "UA"):
 		"бумага", # 2
 		"ящерица", # 3
 		"спок" # 4
-				)])
+					)])
 else:
-	GameAnsBase = (
+	AnsBase_temp = (
 		"Draw.", # 1
 		"%s\n\t>> I won!", # 2
 		"%s\n\t>> You won." # 3
@@ -45,7 +45,7 @@ else:
 		"Paper disproves Spock.", # 7
 		"Spock vaporizes rock.", # 8
 		"Rock crushes scissors." # 9
-				)
+					)
 
 	GameChrLS = (
 		"rock", # 0
@@ -53,4 +53,4 @@ else:
 		"paper", # 2
 		"lizard", # 3
 		"spock" # 4
-				)
+					)
