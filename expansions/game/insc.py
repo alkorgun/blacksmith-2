@@ -27,6 +27,8 @@ if DefLANG in ("RU", "UA"):
 		"ящерица", # 3
 		"спок" # 4
 					)])
+	
+	del Char, Rule
 else:
 	AnsBase_temp = (
 		"Draw.", # 1
