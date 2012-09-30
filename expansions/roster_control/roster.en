@@ -1,0 +1,10 @@
+roster controller
+roster (bot's jid/jid's number) ([+/-] [jid] (nick) (admin))
+*/roster
+bot would show the enumerated list of it's roster users
+*/roster some@jid.com + qwerty@xmpp.ru Qwerty admin
+bot would add "qwerty@xmpp.ru" in to the group "Admins" with nick "Qwerty"
+*/roster 1 + qwerty@xmpp.ru
+bot would add "qwerty@xmpp.ru" in to the group "Users"
+*/roster 1 - qwerty@xmpp.ru
+bot would remove "qwerty@xmpp.ru" from the roster

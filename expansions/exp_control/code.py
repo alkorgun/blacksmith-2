@@ -137,29 +137,29 @@ class expansion_temp(expansion):
 
 	def command_states(self, ltype, source, body, disp):
 		if body:
-			list_ = body.split()
-			cmd = (list_.pop(0)).lower()
-			if Cmds.has_key(cmd):
-				if list_:
-					body = (list_.pop(0)).lower()
-					if body in ("off", "выкл".decode("utf-8")):
-						if Cmds[cmd].isAvalable:
-							if Cmds[cmd].handler:
-								Cmds[cmd].isAvalable = False
+			ls = body.split()
+			command = (ls.pop(0)).lower()
+			if Cmds.has_key(command):
+				if ls:
+					body = (ls.pop(0)).lower()
+					if body in ("on", "вкл".decode("utf-8")):
+						if not Cmds[command].isAvalable:
+							if Cmds[command].handler:
+								Cmds[command].isAvalable = True
 								answer = AnsBase[4]
 							else:
-								answer = AnsBase[19] % (cmd)
+								answer = AnsBase[19] % (command)
 						else:
-							answer = self.AnsBase[16] % (cmd)
-					elif body in ("on", "вкл".decode("utf-8")):
-						if not Cmds[cmd].isAvalable:
-							if Cmds[cmd].handler:
-								Cmds[cmd].isAvalable = True
+							answer = self.AnsBase[16] % (command)
+					elif body in ("off", "выкл".decode("utf-8")):
+						if Cmds[command].isAvalable:
+							if Cmds[command].handler:
+								Cmds[command].isAvalable = False
 								answer = AnsBase[4]
 							else:
-								answer = AnsBase[19] % (cmd)
+								answer = AnsBase[19] % (command)
 						else:
-							answer = self.AnsBase[17] % (cmd)
+							answer = self.AnsBase[17] % (command)
 					else:
 						answer = AnsBase[2]
 				else:

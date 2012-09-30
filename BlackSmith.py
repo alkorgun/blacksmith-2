@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 26, 0)
+(BsMark, BsVer, BsRev) = (2, 27, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -1396,7 +1396,9 @@ def Xmpp_Message_Cb(disp, stanza):
 	if stanza.getTimestamp():
 		xmpp_raise()
 	isConf = Chats.has_key(instance)
-	if not isConf:
+	if not isConf and not enough_access(instance, nick, 7):
+		if not Roster["on"]:
+			xmpp_raise()
 		CheckFlood(disp)
 	if not Mserve and isConf and Chats[instance].isModer is False:
 		xmpp_raise()

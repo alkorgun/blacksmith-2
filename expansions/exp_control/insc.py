@@ -18,8 +18,8 @@ if DefLANG in ("RU", "UA"):
 		"%s написан некорректно. Загрузка отменена.", # 13
 		"Этой функции нет в списке зарегистрированных.\n## Список зареганных: %s", # 14
 		"В %s нет зарегистрированных функций.", # 15
-		"Команда «%s» итак отключена.", # 16
-		"Команда «%s» итак включена." # 17
+		"Команда «%s» итак включена.", # 16
+		"Команда «%s» итак отключена." # 17
 					)])
 else:
 	AnsBase_temp = (
@@ -39,6 +39,6 @@ else:
 		"%s was coded incorrectly. Loading aborted.", # 13
 		"This func. isn't registred.\n## Function list: %s", # 14
 		"There is no registred functions in %s", # 15
-		"Command '%s' is off.", # 16
-		"Command '%s' is on." # 17
+		"Command '%s' is on.", # 16
+		"Command '%s' is off." # 17
 					)
