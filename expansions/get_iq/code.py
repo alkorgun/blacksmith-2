@@ -159,7 +159,7 @@ class expansion_temp(expansion):
 		def get_req(body):
 			afls = ("owner", "admin", "member", "outcast")
 			if DefLANG in ("RU", "UA"):
-				alsRU = (afl.decode("utf-8") for afl in ("овнер", "админ", "мембер", "бан"))
+				alsRU = [afl.decode("utf-8") for afl in ("овнер", "админ", "мембер", "бан")]
 				for afl in alsRU:
 					if body.count(afl):
 						return afls[alsRU.index(afl)]

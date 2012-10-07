@@ -3,7 +3,7 @@
 #  BlackSmith mark.2
 exp_name = "allweb" # /code.py v.x14
 #  Id: 25~14b
-#  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
+#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -49,7 +49,7 @@ class expansion_temp(expansion):
 		if data.count("&"):
 
 			def e_sb(co, edefs = self.edefs):
-				co = co.groups()[0]
+				co = co.group(1)
 				if co.startswith("#"):
 					if chr(120) == co[1].lower():
 						Char, c06 = co[2:], 16
@@ -277,11 +277,11 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[0]
 				else:
-					list = get_text(data, '<div id="main">', "</div>")
+					list = get_text(data
 					if list:
-						comp = compile__('<td align="center">%s((?:\d+\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
+						comp = compile__('<td align="center">%s((?:\d\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
 										'(.+?)</a>(.+?)</font></td><td align="right">%s(.+?)</font>' \
-										'</td>' % (('<font face="Arial, Helvetica, sans-serif" size="-1">',)*3), 16)
+										'</td>' % (('<font face="Arial, Helvetica, sans-serif" size="-1">',)*3), 16).findall(Web(get_text("http://www.imdb.com/chart/top").get_page(), '<div id="main">', "</div>"))
 						list = comp.findall(list)
 					if list:
 						Number = itypes.Number()
@@ -561,7 +561,7 @@ class expansion_temp(expansion):
 			ls = body.split()
 			Numb = ls.pop(0)
 			if ls and isNumber(Numb):
-				City = body[(body.find(Numb) + len(Numb) + 1):].strip()
+				City = body[(body.find(Numb) + len(Numb)):].strip()
 				Numb = int(Numb)
 			else:
 				City = body

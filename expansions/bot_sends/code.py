@@ -73,7 +73,7 @@ class expansion_temp(expansion):
 				if isSource(sTo):
 					conf = (sTo.split(chr(47)))[0].lower()
 					if Chats.has_key(conf) or not conf.count("@conf"):
-						Msend(sTo, self.AnsBase[5] % (source[2], body[(body.find(sTo) + (len(sTo) + 1)):].strip()))
+						Msend(sTo, self.AnsBase[5] % (source[2], body[(body.find(sTo) + len(sTo)):].strip()))
 						answer = AnsBase[4]
 					else:
 						answer = AnsBase[8]

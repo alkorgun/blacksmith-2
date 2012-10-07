@@ -18,9 +18,9 @@ class expansion_temp(expansion):
 		source_ = get_source(source[1], source[2])
 		if source_:
 			if body:
-				list_ = body.split()
-				x = (list_.pop(0)).lower()
-				if x in ("clear", "чисть".decode("utf-8")):
+				ls = body.split()
+				mode = (ls.pop(0)).lower()
+				if mode in ("clear", "чисть".decode("utf-8")):
 					with database(self.NoteFile) as db:
 						db("select * from note where jid=?", (source_,))
 						db_desc = db.fetchone()
@@ -30,8 +30,8 @@ class expansion_temp(expansion):
 							answer = AnsBase[4]
 						else:
 							answer = self.AnsBase[0]
-				elif list_:
-					if x == "+":
+				elif ls:
+					if mode == "+":
 						body = body[2:].lstrip()
 						if len(body) <= 512:
 							date = strTime(local = False)
@@ -55,8 +55,8 @@ class expansion_temp(expansion):
 									answer = AnsBase[4]
 						else:
 							answer = self.AnsBase[1]
-					elif x in ("-", "*"):
-						Numb = list_.pop(0)
+					elif mode in ("-", "*"):
+						Numb = ls.pop(0)
 						if isNumber(Numb):
 							Numb = int(Numb)
 							if Numb in xrange(1, 17):
@@ -64,7 +64,7 @@ class expansion_temp(expansion):
 									db("select * from note where jid=?", (source_,))
 									db_desc = db.fetchone()
 									if db_desc:
-										if x == "*":
+										if mode == "*":
 											if db_desc[Numb]:
 												answer = db_desc[Numb]
 											else:

@@ -67,7 +67,7 @@ class expansion_temp(expansion):
 		if Cmds.has_key(cmd):
 			if enough_access(source[1], source[2], Cmds[cmd].access):
 				if ls:
-					body = body[((body.lower()).find(cmd) + (len(cmd) + 1)):].strip()
+					body = body[((body.lower()).find(cmd) + len(cmd)):].strip()
 				else:
 					body = ""
 				if 1024 >= len(body):

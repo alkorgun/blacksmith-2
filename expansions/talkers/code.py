@@ -19,10 +19,10 @@ class expansion_temp(expansion):
 	def command_talkers(self, ltype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				list_ = body.split()
-				if len(list_) >= 2:
-					a1 = (list_.pop(0)).lower()
-					a2 = body[((body.lower()).find(a1) + (len(a1) + 1)):].strip()
+				ls = body.split()
+				if len(ls) >= 2:
+					a1 = (ls.pop(0)).lower()
+					a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 					if a1 in ("top", "топ".decode("utf-8")):
 						if a2 in ("local", "локальный".decode("utf-8")):
 							filename = cefile(chat_file(source[1], self.TalkersFile))
@@ -95,7 +95,7 @@ class expansion_temp(expansion):
 							if Chats[source[1]].isHere(a2):
 								source_ = get_source(source[1], a2)
 							else:
-								source_ = (list_.pop(0)).lower()
+								source_ = (ls.pop(0)).lower()
 								if not isSource(source_):
 									source_ = None
 							if source_:
@@ -153,7 +153,7 @@ class expansion_temp(expansion):
 							if Chats[source[1]].isHere(a2):
 								source_ = get_source(source[1], a2)
 							else:
-								source_ = (list_.pop(0)).lower()
+								source_ = (ls.pop(0)).lower()
 								if not isSource(source_):
 									source_ = None
 							if source_:

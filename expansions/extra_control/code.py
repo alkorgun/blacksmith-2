@@ -39,7 +39,7 @@ class expansion_temp(expansion):
 					if type2:
 						cmd = (ls.pop(0)).lower()
 						if ls:
-							body = body[((body.lower()).find(cmd) + (len(cmd) + 1)):].strip()
+							body = body[((body.lower()).find(cmd) + len(cmd)):].strip()
 						else:
 							body = ""
 						if 1024 >= len(body):
@@ -80,7 +80,7 @@ class expansion_temp(expansion):
 				cmd = (ls.pop(0)).lower()
 				if Cmds.has_key(cmd):
 					if ls:
-						body = body[((body.lower()).find(cmd) + (len(cmd) + 1)):].strip()
+						body = body[((body.lower()).find(cmd) + len(cmd)):].strip()
 					else:
 						body = ""
 					Cmds[cmd].execute(Types[0], source, body, disp)

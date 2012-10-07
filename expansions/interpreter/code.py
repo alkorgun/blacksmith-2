@@ -1,11 +1,11 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "interpreter" # /code.py v.x7
-#  Id: 04~5b
+exp_name = "interpreter" # /code.py v.x8
+#  Id: 04~6b
 #  Code © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Code © (2007) by Als [Als@exploit.in]
-#  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
+#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -18,6 +18,8 @@ class expansion_temp(expansion):
 		if body:
 			try:
 				answer = UnicodeType(eval(UnicodeType(body)))
+				if not answer.strip():
+					answer = "None (%s)" % (answer)
 			except:
 				answer = "%s - %s" % exc_info()
 		else:
@@ -26,13 +28,14 @@ class expansion_temp(expansion):
 
 	def command_exec(self, ltype, source, body, disp):
 		if body:
-			if chr(10) in body and body[-1] != chr(10):
+			if not body.endswith(chr(10)):
 				body += chr(10)
-			answer = AnsBase[4]
 			try:
 				exec(UnicodeType(body), globals())
 			except:
 				answer = "%s - %s" % exc_info()
+			else:
+				answer = AnsBase[4]
 		else:
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
@@ -44,7 +47,7 @@ class expansion_temp(expansion):
 			else:
 				command = body.encode("cp1251")
 			answer = get_pipe(command)
-			if answer in ["", None]:
+			if not answer.strip():
 				answer = AnsBase[4]
 		else:
 			answer = AnsBase[1]

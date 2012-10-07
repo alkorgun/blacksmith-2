@@ -105,7 +105,7 @@ class expansion_temp(expansion):
 	def command_expunload(self, ltype, source, body, disp):
 		if body:
 			body = body.split()
-			exp_name = (list_.pop(0)).lower()
+			exp_name = (body.pop(0)).lower()
 			if expansions.has_key(exp_name):
 				if body:
 					handler, Name = None, body.pop(0)

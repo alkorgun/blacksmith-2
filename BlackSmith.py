@@ -164,7 +164,7 @@ Info = {
 	"omsg": itypes.Number(),	"outiq": itypes.Number()
 				}
 
-# frienly handlers
+# Helpfull functions
 
 class SelfExc(Exception):
 	pass
@@ -250,7 +250,7 @@ if not sys.stdin.isatty():
 else:
 	stdout = sys.stdout
 
-# Global Names
+# Important Variables
 
 static = "static/%s"
 dynamic = "current/%s"
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 27, 0)
+(BsMark, BsVer, BsRev) = (2, 28, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -371,7 +371,7 @@ def execute_handler(handler_instance, list = (), command = None):
 	except SelfExc:
 		pass
 	except:
-		lytic_crashlog(handler_instance, command)
+		collectExc(handler_instance, command)
 
 def call_sfunctions(ls, list = ()):
 	for inst in Handlers[ls]:
@@ -397,7 +397,7 @@ def Try_Thr(Thr, Number = 0):
 	except iThr.ThrFail:
 		Try_Thr(Thr, (Number + 1))
 	except:
-		lytic_crashlog(Thr.start)
+		collectExc(Thr.start)
 
 def sThread_Run(Thr, handler, command = None):
 	try:
@@ -412,11 +412,11 @@ def sThread_Run(Thr, handler, command = None):
 				except KeyboardInterrupt:
 					raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 				except:
-					lytic_crashlog(handler, command)
+					collectExc(handler, command)
 		else:
-			lytic_crashlog(sThread_Run, command)
+			collectExc(sThread_Run, command)
 	except:
-		lytic_crashlog(sThread_Run, command)
+		collectExc(sThread_Run, command)
 
 def sThread(name, inst, list = (), command = None):
 	sThread_Run(composeThr(inst, name, list, command), inst, command)
@@ -592,7 +592,7 @@ def command_handler(exp_link, handler, name, access, pfx = True):
 		sCmds.append(name)
 	expansions[exp_link.name].cmds.append(name)
 
-# Chats, Users & other
+# Chats, Users & Other
 
 class sUser:
 
@@ -953,7 +953,7 @@ def Sender(disp, stanza):
 	except SelfExc:
 		pass
 	except:
-		lytic_crashlog(Sender)
+		collectExc(Sender)
 
 sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = Types[4], status = data))
 
@@ -976,7 +976,7 @@ GetRole = lambda Node: (str(Node.getAffiliation()), str(Node.getRole()))
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
 
-# file work handlers
+# Connect With FS
 
 chat_file = lambda chat, name: dynamic % ("%s/%s") % (chat, name)
 
@@ -1009,22 +1009,22 @@ def cat_file(filename, data, otp = "wb"):
 
 # Crashlogs
 
-def Dispatch_fail():
+def collectDFail():
 	crashfile = open(GenCrash, "ab")
 	exc_info_(crashfile)
 	crashfile.close()
 
-def lytic_crashlog(handler, command = None):
-	Number, handler, error_body = (len(VarCache["errors"]) + 1), handler.func_name, get_exc()
+def collectExc(instance, command = None):
+	Number, instance, error_body = (len(VarCache["errors"]) + 1), instance.func_name, get_exc()
 	VarCache["errors"].append(error_body)
 	if GetExc and online(Gen_disp):
 		if command:
-			exc = AnsBase[13] % (command, handler)
+			exception = AnsBase[13] % (command, instance)
 		else:
-			exc = AnsBase[14] % (handler)
-		delivery(AnsBase[15] % (exc))
+			exception = AnsBase[14] % (instance)
+		delivery(AnsBase[15] % exception)
 	else:
-		Print("\n\nError: can't execut '%s'!" % (handler), color2)
+		Print("\n\nError: can't execut '%s'!" % (instance), color2)
 	filename = "%s/error[%d]%s.crash" % (FeilDir, (Info["cfw"]._int() + 1), strTime("[%H.%M.%S][%d.%m.%Y]"))
 	try:
 		if not os.path.exists(FeilDir):
@@ -1047,7 +1047,7 @@ def lytic_crashlog(handler, command = None):
 		else:
 			Print(*try_body(error_body, color2))
 
-# Other handlers
+# Other functions
 
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
@@ -1070,9 +1070,8 @@ def load_expansions():
 
 def get_pipe(command):
 	try:
-		pipe = os.popen(command)
-		data = pipe.read()
-		pipe.close()
+		with os.popen(command) as pipe:
+			data = pipe.read()
 		if oSlist[0]:
 			data = data.decode("cp866")
 	except:
@@ -1415,7 +1414,7 @@ def Xmpp_Message_Cb(disp, stanza):
 	stype = stanza.getType()
 	if stype == Types[7]:
 		ecode = stanza.getErrorCode()
-		if ecode in [eCodes[10], eCodes[7]]:
+		if ecode in (eCodes[10], eCodes[7]):
 			if ecode == eCodes[7]:
 				if not isConf:
 					xmpp_raise()
@@ -1437,7 +1436,8 @@ def Xmpp_Message_Cb(disp, stanza):
 			break
 	if not cbody:
 		xmpp_raise()
-	command = cbody.split()[0].lower()
+	cbody = cbody.split(None, 1)
+	command = (cbody.pop(0)).lower()
 	if not isToBs and isConf and Chats[instance].cPref and command not in sCmds:
 		if Chats[instance].cPref == command[:1]:
 			command = command[1:]
@@ -1448,15 +1448,15 @@ def Xmpp_Message_Cb(disp, stanza):
 	if isConf and command in Chats[instance].oCmds:
 		xmpp_raise()
 	if Cmds.has_key(command):
-		VarCache["action"] = AnsBase[27] % (command.upper())
-		if cbody.count(chr(32)):
-			Parameters = cbody[(cbody.find(chr(32)) + 1):].strip()
 		VarCache["idle"] = time.time()
+		VarCache["action"] = AnsBase[27] % (command.upper())
+		if cbody:
+			Parameters = (cbody.pop(0)).strip()
 		Cmds[command].execute(stype, (source, instance, nick), Parameters, disp)
 	else:
 		call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
 
-# Connecting Clients & Dispatching
+# Connecting & Dispatching
 
 def connect_client(source, InstanceAttrs):
 	(server, cport, host, user, code) = InstanceAttrs
@@ -1571,7 +1571,7 @@ def Dispatch_handler(disp):
 		except xmpp.StreamError:
 			pass
 		except:
-			Dispatch_fail()
+			collectDFail()
 			if Info["errors"].plus() >= len(Clients.keys())*8:
 				sys_exit("Dispatch Errors!")
 
@@ -1622,7 +1622,7 @@ if __name__ == "__main__":
 	except KeyboardInterrupt:
 		sys_exit("Interrupt (Ctrl+C)")
 	except:
-		lytic_crashlog(load_mark2)
+		collectExc(load_mark2)
 		sys_exit("Critical Feil!")
 
 # The End is Near =>
