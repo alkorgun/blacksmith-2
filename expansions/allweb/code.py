@@ -277,7 +277,7 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[0]
 				else:
-					list = get_text(data
+					list = get_text(data, '<div id="main">', "</div>")
 					if list:
 						comp = compile__('<td align="center">%s((?:\d\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
 										'(.+?)</a>(.+?)</font></td><td align="right">%s(.+?)</font>' \
