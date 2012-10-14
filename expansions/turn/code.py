@@ -19,23 +19,23 @@ class expansion_temp(expansion):
 
 	def command_turn(self, ltype, source, body, disp):
 		
-		def Turn(self, conf, body):
+		def Turn(conf, body):
 			desc = {}
-			for nick in Chats[conf].get_nicks():
-				if Chats[conf].isHereTS(nick):
-					for x in (["%s%s" % (nick, Key) for Key in [":",",",">"]] + [nick]):
-						if body.count(x):
+			for Nick in Chats[conf].get_nicks():
+				if Chats[conf].isHereTS(Nick):
+					for app in (["%s%s" % (Nick, Key) for Key in (":",",",">")] + [Nick]):
+						if body.count(app):
 							Numb = "*%s*" % str(len(desc.keys()) + 1)
-							desc[Numb] = x
-							body = body.replace(x, Numb)
-			Turned = ""
-			for x in body:
-				if x in self.TableEN:
-					Turned += self.TableRU[self.TableEN.index(x)]
-				elif x in self.TableRU:
-					Turned += self.TableEN[self.TableRU.index(x)]
+							desc[Numb] = app
+							body = body.replace(app, Numb)
+			Turned = str()
+			for smb in body:
+				if smb in self.TableEN:
+					Turned += self.TableRU[self.TableEN.index(smb)]
+				elif smb in self.TableRU:
+					Turned += self.TableEN[self.TableRU.index(smb)]
 				else:
-					Turned += x
+					Turned += smb
 			return sub_desc(Turned, desc)
 		
 		if Chats.has_key(source[1]):
@@ -45,7 +45,7 @@ class expansion_temp(expansion):
 				source_ = get_source(source[1], source[2])
 				if source_ and self.TurnBase[source[1]].has_key(source_):
 					(Time, body) = self.TurnBase[source[1]].pop(source_)
-					body = "Turn\->\n[%s] <%s>: %s" % (Time, source[2], Turn(self, source[1], body))
+					body = "Turn\->\n[%s] <%s>: %s" % (Time, source[2], Turn(source[1], body))
 					Msend(source[1], body, disp)
 				else:
 					answer = AnsBase[7]

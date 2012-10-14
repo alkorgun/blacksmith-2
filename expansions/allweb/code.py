@@ -48,7 +48,7 @@ class expansion_temp(expansion):
 	def sub_ehtmls(self, data):
 		if data.count("&"):
 
-			def e_sb(co, edefs = self.edefs):
+			def e_sb(co):
 				co = co.group(1)
 				if co.startswith("#"):
 					if chr(120) == co[1].lower():
@@ -60,9 +60,9 @@ class expansion_temp(expansion):
 						assert (-1 < Numb < 65535)
 						Char = unichr(Numb)
 					except:
-						Char = edefs.get(Char, "&%s;" % co)
+						Char = self.edefs.get(Char, "&%s;" % co)
 				else:
-					Char = edefs.get(co, "&%s;" % co)
+					Char = self.edefs.get(co, "&%s;" % co)
 				return Char
 
 			data = self.compile_ehtmls.sub(e_sb, data)
@@ -281,7 +281,7 @@ class expansion_temp(expansion):
 					if list:
 						comp = compile__('<td align="center">%s((?:\d\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
 										'(.+?)</a>(.+?)</font></td><td align="right">%s(.+?)</font>' \
-										'</td>' % (('<font face="Arial, Helvetica, sans-serif" size="-1">',)*3), 16).findall(Web(get_text("http://www.imdb.com/chart/top").get_page(), '<div id="main">', "</div>"))
+										'</td>' % (('<font face="Arial, Helvetica, sans-serif" size="-1">',)*3), 16)
 						list = comp.findall(list)
 					if list:
 						Number = itypes.Number()

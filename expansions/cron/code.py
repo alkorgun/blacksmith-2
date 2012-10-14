@@ -18,7 +18,7 @@ class expansion_temp(expansion):
 
 	def def_cron(self):
 
-		def exe_cron(self, command, instance, ls, repeat = ()):
+		def exe_cron(command, instance, ls, repeat = ()):
 			inst = get_source(ls[1][1], ls[1][2])
 			if inst == instance or (not inst or not instance):
 				gt = time.mktime(time.gmtime())
@@ -39,7 +39,7 @@ class expansion_temp(expansion):
 			for id, (date, ls) in self.CronDesc.items():
 				if Time > date:
 					if Cmds.has_key(ls[0]):
-						sThread("command(cron)", exe_cron, (self,).__add__(ls))
+						sThread("command(cron)", exe_cron, ls)
 					del self.CronDesc[id]
 
 	def getDate(self, ls, sft, sftime = "%H:%M:%S (%d.%m.%Y)"):
@@ -62,7 +62,7 @@ class expansion_temp(expansion):
 							ls[0] += 1
 		return time.strftime(sftime, time.struct_time(ls))
 
-	def add_cron(self, disp, ls, body, Te, source, ltype, gt, answer, repeat, **ext_):
+	def add_cron(self, disp, ls, body, Te, source, ltype, gt, answer, repeat, **etc):
 		cmd = (ls.pop(0)).lower()
 		if Cmds.has_key(cmd):
 			if enough_access(source[1], source[2], Cmds[cmd].access):
@@ -121,7 +121,7 @@ class expansion_temp(expansion):
 								for x in xrange(1, Tr):
 									t_ls.append(t_ls[-1] + Te)
 								ltls = len(t_ls)
-								t_ls = enumerated_list([self.getDate(list(gt), Tx) for Tx in t_ls[:8]])
+								t_ls = enumerated_list([self.getDate(list(gt), dt) for dt in t_ls[:8]])
 								if ltls > 8:
 									t_ls += self.AnsBase[3] % (ltls - 8)
 								answer = self.AnsBase[4] % (t_ls)

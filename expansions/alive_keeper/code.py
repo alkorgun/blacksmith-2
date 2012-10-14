@@ -14,8 +14,8 @@ class expansion_temp(expansion):
 
 	def alive_keeper(self):
 
-		def alive_keeper_answer(disp, answer):
-			if answer:
+		def alive_keeper_answer(disp, stanza):
+			if stanza:
 				Clients[get_disp(disp)].aKeeper = itypes.Number()
 
 		while VarCache["alive"]:

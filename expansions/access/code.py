@@ -82,7 +82,7 @@ class expansion_temp(expansion):
 
 	def command_set_access(self, ltype, source, body, disp):
 
-		def set_access(self, instance, access = None):
+		def set_access(instance, access = None):
 			if access != None:
 				Galist[instance] = access
 			else:
@@ -113,14 +113,14 @@ class expansion_temp(expansion):
 					access = body.pop(0)
 					if access == "!":
 						if Galist.has_key(instance):
-							set_access(self, instance)
+							set_access(instance)
 							answer = AnsBase[4]
 						else:
 							answer = self.AnsBase[6] % (Nick)
 					elif isNumber(access):
 						access = int(access)
 						if access in xrange(-1, 9):
-							set_access(self, instance, access)
+							set_access(instance, access)
 							answer = AnsBase[4]
 						else:
 							answer = self.AnsBase[7]
@@ -136,7 +136,7 @@ class expansion_temp(expansion):
 
 	def command_set_local_access(self, ltype, source, body, disp):
 
-		def set_access(self, conf, instance, access = None):
+		def set_access(conf, instance, access = None):
 			if access != None:
 				Chats[conf].alist[instance] = access
 			else:
@@ -166,7 +166,7 @@ class expansion_temp(expansion):
 						access = body.pop(0)
 						if access == "!":
 							if Chats[source[1]].alist.has_key(instance):
-								set_access(self, source[1], instance)
+								set_access(source[1], instance)
 								answer = AnsBase[4]
 							else:
 								answer = self.AnsBase[6] % (Nick)
@@ -174,7 +174,7 @@ class expansion_temp(expansion):
 							if isNumber(access):
 								access = int(access)
 								if access in xrange(7):
-									set_access(self, source[1], instance, access)
+									set_access(source[1], instance, access)
 									answer = AnsBase[4]
 								else:
 									answer = self.AnsBase[8]

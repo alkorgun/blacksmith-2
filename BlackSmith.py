@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 28, 0)
+(BsMark, BsVer, BsRev) = (2, 29, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -740,12 +740,12 @@ class sConf:
 		else:
 			delivery(self.name)
 
-	def iq_sender(self, x, y, afrls, role, text = str(), source = ()):
+	def iq_sender(self, attr, data, afrls, role, text = str(), source = ()):
 		stanza = xmpp.Iq(to = self.name, typ = Types[9])
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(Types[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)
-		arole = query.addChild("item", {x: y, afrls: role})
+		arole = query.addChild("item", {attr: data, afrls: role})
 		if text:
 			arole.setTagData("reason", text)
 		stanza.addChild(node = query)
@@ -976,7 +976,7 @@ GetRole = lambda Node: (str(Node.getAffiliation()), str(Node.getRole()))
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
 
-# Connect With FS
+# Connect with FS
 
 chat_file = lambda chat, name: dynamic % ("%s/%s") % (chat, name)
 
@@ -997,14 +997,12 @@ def del_file(filename):
 	exec_(os.remove, (cefile(filename),))
 
 def get_file(filename):
-	path = cefile(filename)
-	with open(path, "r") as fp:
+	with open(cefile(filename), "r") as fp:
 		return fp.read()
 
 def cat_file(filename, data, otp = "wb"):
-	path = cefile(filename)
 	with Sequence:
-		with open(path, otp) as fp:
+		with open(cefile(filename), otp) as fp:
 			fp.write(data)
 
 # Crashlogs
@@ -1082,8 +1080,7 @@ class Web:
 
 	import urllib as One, urllib2 as Two
 
-	Opener = One.FancyURLopener()
-	Opener_2 = Two.build_opener()
+	Opener = Two.build_opener()
 
 	def __init__(self, link, data = [], headers = {}):
 		self.link = link
@@ -1099,16 +1096,50 @@ class Web:
 	def add_header(self, name, header):
 		self.headers[name] = header
 
-	def get_page(self, header = ()):
+	def open(self, header = ()):
 		dest = self.Two.Request(self.link)
 		if header:
 			self.add_header(*header)
 		if self.headers:
 			for header, desc in self.headers.iteritems():
 				dest.add_header(header, desc)
-		site = self.Opener_2.open(dest)
-		data = site.read()
-		return data
+		return self.Opener.open(dest)
+
+	def download(self, filename = None, feedback = None, header = ()):
+		fp = self.open(header)
+		info = fp.info()
+		if not filename:
+			if info.has_key("Content-Disposition"):
+				disp = info.get("Content-Disposition")
+				comp = compile__("filename=[\"']?(.+?)[\"']?")
+				disp = comp.search(disp)
+				if disp:
+					filename = disp.decode("utf-8")
+		if not filename:
+			filename = self.One.unquote_plus(fp.url.split("/")[-1].split("?")[0].replace("%25", "%"))
+			if not filename:
+				raise SelfExc("can't get filename")
+		blockSize = 8192
+		blockNumb = 0
+		read = 0
+		size = info.get("Content-Length", -1)
+		if isNumber(size):
+			size = int(size)
+		with open(filename.encode("utf-8"), "wb") as dfp:
+			while VarCache["alive"]:
+				if feedback:
+					exec_(feedback, (blockNumb, blockSize, size))
+				data = fp.read(blockSize)
+				if not data:
+					break
+				dfp.write(data)
+				blockNumb += 1
+				read += len(data)
+		if size >= 0 and read < size:
+			raise SelfExc("file is corrupt, lost %d bytes" % (size - read))
+		return (filename, info, size)
+
+	get_page = lambda self, header = (): self.open(header).read()
 
 def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
 	comp = compile__("%s(%s?)%s" % (s0, s1, s2), 16)
@@ -1429,15 +1460,15 @@ def Xmpp_Message_Cb(disp, stanza):
 			answer.setID(stanza.getID())
 			Sender(disp, answer)
 		stype = Types[0]
-	cbody, isToBs, Parameters = body, (stype == Types[0]), ""
-	for x in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
-		if cbody.startswith(x):
-			cbody, isToBs = cbody[len(x):].lstrip(), True
+	copy, isToBs = body, (stype == Types[0])
+	for app in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
+		if copy.startswith(app):
+			copy, isToBs = copy[len(app):].lstrip(), True
 			break
-	if not cbody:
+	if not copy:
 		xmpp_raise()
-	cbody = cbody.split(None, 1)
-	command = (cbody.pop(0)).lower()
+	copy = copy.split(None, 1)
+	command = (copy.pop(0)).lower()
 	if not isToBs and isConf and Chats[instance].cPref and command not in sCmds:
 		if Chats[instance].cPref == command[:1]:
 			command = command[1:]
@@ -1449,9 +1480,8 @@ def Xmpp_Message_Cb(disp, stanza):
 		xmpp_raise()
 	if Cmds.has_key(command):
 		VarCache["idle"] = time.time()
-		VarCache["action"] = AnsBase[27] % (command.upper())
-		if cbody:
-			Parameters = (cbody.pop(0)).strip()
+		VarCache["action"] = AnsBase[27] % command.upper()
+		Parameters = ((copy.pop(0)).rstrip() if copy else "")
 		Cmds[command].execute(stype, (source, instance, nick), Parameters, disp)
 	else:
 		call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
