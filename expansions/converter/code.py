@@ -214,7 +214,7 @@ class expansion_temp(expansion):
 						answer = AnsBase[30]
 				elif not ls:
 					data = get_file(self.file).decode("utf-8")
-					data = get_text(data, '\t\t"%s"\:\s{' % (Desc), '},')
+					data = get_text(data, '\t\t"%s"\:\s\{' % (Desc), '\},')
 					if data:
 						comp = compile__('\t\t\t"(.+?)"\:.+?,\s+?\#\s(.+?)\n', 16)
 						list = comp.findall(data)

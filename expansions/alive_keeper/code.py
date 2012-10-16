@@ -88,7 +88,7 @@ class expansion_temp(expansion):
 		Name2 = self.conf_alive_keeper.func_name
 		for Thr in iThr.enumerate():
 			ThrName = Thr._Thread__name
-			if ThrName.startswith(Name1) or ThrName.startswith(Name2):
+			if ThrName.startswith((Name1, Name2)):
 				Thr.kill()
 		composeThr(self.alive_keeper, Name1).start()
 		composeThr(self.conf_alive_keeper, Name2).start()
