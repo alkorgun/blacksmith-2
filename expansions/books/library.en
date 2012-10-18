@@ -1,0 +1,22 @@
+library control
+library [[add] [book's_name]/[[fb2] [path]]]/[[edit] [book's_id] [[info] [author/year/genre/cycle/number/annotation/link/name] [clear/parametres]]/[[page] [[add] [text]]/[[delete] [before/only/after] [page_number]]/[[page_number] [text]]]]/[[delete] [book's_id]]
+*/library add The Hobbit
+bot would create empty blank for book with name "The Hobbit"
+*/library add fb2 /home/books/The_Hobbit.fb2
+bot would import "The Hobbit" from fb2
+*/library edit The_Two_Towers info number 2
+bot would set the book's number in cycle
+*/library edit The_Two_Towers info link http://example.com/book.html
+bot would add the link to the book's information
+*/library edit Star_Wars page add A long time ago, in a galaxy far far away...
+bot would create the new page with the specified text
+*/library edit Star_Wars page delete before 10
+bot would delete pages before 10th page (10th page would become the first)
+*/library edit Star_Wars page delete after 10
+bot would delete pages after 10th page (10th page would become the last)
+*/library edit Star_Wars page delete only 10
+bot would delete 10th page (11th page would become 10th)
+*/library edit Star_Wars page 10 It is a period of civil war. Rebel spaceships...
+bot would rewrite 10th page with the specified text
+*/library delete Harry_Potter
+bot would remove the book with such ID from the library

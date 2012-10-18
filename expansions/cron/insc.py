@@ -8,7 +8,7 @@ if DefLANG in ("RU", "UA"):
 		"\n+ ещё %d раз.", # 3
 		"Выполню в:\n%s", # 4
 		"Тайм-аут не может быть меньше минуты и больше 48 дней.", # 5
-		"Выполню в %s", # 6
+		"Выполню в %s.", # 6
 		"Нет запланированных заданий.", # 7
 		"\n[№][ID][Команда][Deadline]\n%s", # 8
 		"Дата/Время введены некорректно." # 9
@@ -21,7 +21,7 @@ else:
 		"\n+ %d more times.", # 3
 		"It will be executed at:\n%s", # 4
 		"The timeout can't be less than 60 seconds and more than 48 days.", # 5
-		"It will be executed at %s", # 6
+		"It will be executed at %s.", # 6
 		"There are no tasks.", # 7
 		"\n[#][ID][Command][Deadline]\n%s", # 8
 		"Date/Time are incorrect." # 9

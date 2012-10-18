@@ -164,7 +164,7 @@ Info = {
 	"omsg": itypes.Number(),	"outiq": itypes.Number()
 				}
 
-# Helpfull functions
+# Helpful functions
 
 class SelfExc(Exception):
 	pass
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 29, 0)
+(BsMark, BsVer, BsRev) = (2, 30, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -279,7 +279,7 @@ ProdName = "BlackSmith mark.%d" % (BsMark)
 ProdVer = "%d (r.%s)" % (BsVer, BsRev)
 Caps = "http://blacksmith-2.googlecode.com/svn/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
-FullName = "HellDev's %s CoreVer.%s (%s)" % (ProdName, ProdVer, Caps)
+FullName = "HellDev's %s Ver.%s (%s)" % (ProdName, ProdVer, Caps)
 
 BotOs, BsPid = os.name, os.getpid()
 
@@ -359,7 +359,7 @@ Handlers = {
 
 Sequence = iThr.Semaphore()
 
-# call & execut Threads & handlers
+# call & execute Threads & handlers
 
 def execute_handler(handler_instance, list = (), command = None):
 	try:

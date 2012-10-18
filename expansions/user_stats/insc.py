@@ -5,18 +5,18 @@ if DefLANG in ("RU", "UA"):
 		"\nВсего входов - %d\nВремя последнего входа - %s\nПоследняя роль - %s", # 0
 		"\nВремя последнего выхода - %s\nПричина выхода - %s", # 1
 		"\nНики: %s", # 2
-		"нет статистики", # 3
-		"«%s» сидит здесь - %s", # 4
-		"ты провёл здесь - %s", # 5
-		"здесь нет такого юзера" # 6
+		"Нет статистики.", # 3
+		"«%s» сидит здесь - %s.", # 4
+		"Ты провёл здесь - %s.", # 5
+		"Здесь нет такого юзера." # 6
 					)])
 else:
 	AnsBase_temp = (
 		"\nTotal joins - %d\nLast join time - %s\nLast role - %s", # 0
 		"\nLast leave time - %s\nExit reason - %s", # 1
 		"\nNicks: %s", # 2
-		"no statistics", # 3
-		"'%s' spent here - %s", # 4
-		"You spent here - %s", # 5
-		"No sutch user here" # 6
+		"No statistics.", # 3
+		"'%s' spent here - %s.", # 4
+		"You spent here - %s.", # 5
+		"No such user here." # 6
 					)

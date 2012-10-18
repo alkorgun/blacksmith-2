@@ -81,7 +81,7 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[9] % (body)
 					else:
-						answer = self.AnsBase[10] % (", ".join(cPrefs))
+						answer = self.AnsBase[10] % ("', '".join(cPrefs))
 				else:
 					answer = AnsBase[10]
 			elif Chats[source[1]].cPref:

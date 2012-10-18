@@ -25,7 +25,7 @@ class expansion_temp(expansion):
 		if body:
 			ls = body.split()
 			conf = (ls.pop(0)).lower()
-			if conf.count("@.") and conf.count(".") >= 2:
+			if conf.count("@") and conf.count(".") >= 2:
 				if not Chats.has_key(conf):
 					confname = dynamic % (conf)
 					if not check_nosimbols(confname):
