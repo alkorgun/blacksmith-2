@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "talkers" # /code.py v.x4
-#  Id: 14~3b
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+exp_name = "talkers" # /code.py v.x5
+#  Id: 14~4b
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -22,14 +22,20 @@ class expansion_temp(expansion):
 				ls = body.split()
 				if len(ls) >= 2:
 					a1 = (ls.pop(0)).lower()
-					a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 					if a1 in ("top", "топ".decode("utf-8")):
+						a2 = (ls.pop(0)).lower()
+						if ls and isNumber(ls[0]):
+							Number = int(ls.pop(0))
+							if Number > 256:
+								Number = 256
+						else:
+							Number = 0
 						if a2 in ("local", "локальный".decode("utf-8")):
 							filename = cefile(chat_file(source[1], self.TalkersFile))
 							with self.TalkersDesc[source[1]]:
 								with database(filename) as db:
 									db("select * from talkers order by -msgs")
-									db_desc = db.fetchmany(10)
+									db_desc = db.fetchmany(Number if Number > 0 else 10)
 							if db_desc:
 								answer, Numb = self.AnsBase[0], itypes.Number()
 								for x in db_desc:
@@ -43,7 +49,7 @@ class expansion_temp(expansion):
 								with self.TalkersDesc[conf]:
 									with database(filename) as db:
 										db("select * from talkers order by -msgs")
-										db_desc = db.fetchmany(99)
+										db_desc = db.fetchmany(256)
 								for x in db_desc:
 									if Glob_dbs.has_key(x[0]):
 										Glob_dbs[x[0]][2] += x[2]
@@ -51,7 +57,7 @@ class expansion_temp(expansion):
 									else:
 										Glob_dbs[x[0]] = list(x)
 							if Glob_dbs:
-								Top_list = []
+								Top_list, limit = [], (Number if Number > 0 else 20)
 								for x, y in Glob_dbs.items():
 									Top_list.append([y[2], y[3], y[1]])
 								del Glob_dbs
@@ -60,13 +66,14 @@ class expansion_temp(expansion):
 								Top_list.reverse()
 								for x in Top_list:
 									answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
-									if Numb._int() >= 20:
+									if Numb._int() >= limit:
 										break
 							else:
 								answer = self.AnsBase[1]
 						else:
 							answer = AnsBase[2]
 					elif a1 in ("global", "глобальный".decode("utf-8")):
+						a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 
 						def get_talker_stat(source_):
 							x, y = 0, 0
@@ -130,6 +137,7 @@ class expansion_temp(expansion):
 								else:
 									answer = self.AnsBase[1]
 					elif a1 in ("local", "локальный".decode("utf-8")):
+						a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 
 						def get_talker_stat(source_, conf):
 							filename = cefile(chat_file(conf, self.TalkersFile))

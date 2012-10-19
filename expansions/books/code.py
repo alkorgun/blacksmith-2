@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "books" # /code.py v.x4 alpha
-#  Id: 29~4b
+exp_name = "books" # /code.py v.x5 alpha
+#  Id: 29~5b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -75,6 +75,8 @@ class expansion_temp(expansion):
 				raise SelfExc("A book with the same name is already in the libraly!")
 
 	def getID(self, Name):
+		while Name.startswith(("1","2","3","4","5","6","7","8","9","0")):
+			Name = Name[1:]
 		Name = sub_desc(Name, ((chr(95), chr(32)),)).lower()
 		Name = sub_desc(Name, CharCase[3]).strip()
 		Name = sub_desc(Name, (chr(32), chr(10), chr(13), chr(9)), chr(95))

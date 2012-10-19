@@ -17,8 +17,8 @@ class expansion_temp(expansion):
 			if ChatsAttrs[source[1]]["dirt"]:
 				ChatsAttrs[source[1]]["dirt"] = None
 				if ltype == Types[1]:
-					s1_buckup = Chats[source[1]].state
-					s2_buckup = Chats[source[1]].status
+					s1_backup = Chats[source[1]].state
+					s2_backup = Chats[source[1]].status
 					Chats[source[1]].change_status(sList[2], self.AnsBase[0])
 				zero = xmpp.Message(to = source[1], typ = Types[1])
 				for Numb in xrange(24):
@@ -28,7 +28,7 @@ class expansion_temp(expansion):
 					if (Numb != 23):
 						time.sleep(1.4)
 				if ltype == Types[1]:
-					Chats[source[1]].change_status(s1_buckup, s2_buckup)
+					Chats[source[1]].change_status(s1_backup, s2_backup)
 				ChatsAttrs[source[1]]["dirt"] = True
 			else:
 				answer = self.AnsBase[9]
