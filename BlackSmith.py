@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 30, 0)
+(BsMark, BsVer, BsRev) = (2, 31, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -352,7 +352,7 @@ Handlers = {
 	"03eh": [], "04eh": [],
 	"05eh": [], "06eh": [],
 	"07eh": [], "08eh": [],
-	"00si": [],
+	"09eh": [], "00si": [],
 	"01si": [], "02si": [],
 	"03si": [], "04si": []
 				}
@@ -475,7 +475,7 @@ class expansion(object):
 				del self.desc[ls]
 
 		if handler:
-			for ls, list in self.desc.items():
+			for ls, list in sorted(self.desc.items()):
 				for inst in list:
 					if inst == handler:
 						handler = Del(inst, ls)
@@ -483,7 +483,7 @@ class expansion(object):
 				if not handler:
 					break
 		else:
-			for ls, list in self.desc.items():
+			for ls, list in sorted(self.desc.items()):
 				for inst in list:
 					Del(inst, ls)
 
@@ -1022,7 +1022,7 @@ def collectExc(instance, command = None):
 			exception = AnsBase[14] % (instance)
 		delivery(AnsBase[15] % exception)
 	else:
-		Print("\n\nError: can't execut '%s'!" % (instance), color2)
+		Print("\n\nError: can't execute '%s'!" % (instance), color2)
 	filename = "%s/error[%d]%s.crash" % (FeilDir, (Info["cfw"]._int() + 1), strTime("[%H.%M.%S][%d.%m.%Y]"))
 	try:
 		if not os.path.exists(FeilDir):
@@ -1252,7 +1252,7 @@ def join_chats():
 			Chats[conf].load_all()
 			if Clients.has_key(Chats[conf].disp):
 				Chats[conf].join()
-				Print("\n%s joined %s" % (Chats[conf].disp, conf), color3)
+				Print("\n%s joined %s;" % (Chats[conf].disp, conf), color3)
 			else:
 				Print("\nI'll join %s then %s would be connected..." % (conf, Chats[conf].disp), color1)
 	else:
@@ -1435,56 +1435,60 @@ def Xmpp_Message_Cb(disp, stanza):
 	BotNick = (DefNick if not isConf else Chats[instance].nick)
 	if nick == BotNick:
 		xmpp_raise()
+	Subject = stanza.getSubject()
 	body = stanza.getBody()
 	if body:
 		body = body.strip()
+	elif Subject:
+		body = Subject.strip()
 	if not body:
 		xmpp_raise()
 	if len(body) > IncLimit:
 		body = "%s[...] %d symbols limit." % (body[:IncLimit].strip(), IncLimit)
-	stype = stanza.getType()
 	if stype == Types[7]:
-		ecode = stanza.getErrorCode()
-		if ecode in (eCodes[10], eCodes[7]):
-			if ecode == eCodes[7]:
+		code = stanza.getErrorCode()
+		if code in (eCodes[10], eCodes[7]):
+			if code == eCodes[7]:
 				if not isConf:
 					xmpp_raise()
 				Chats[instance].join()
 				time.sleep(0.6)
 			Msend(source, body)
 		xmpp_raise()
-	if stype != Types[1]:
-		if (stanza.getTag(Types[22])):
-			answer = xmpp.Message(source)
-			answer.setTag(Types[11], namespace = xmpp.NS_RECEIPTS)
-			answer.setID(stanza.getID())
-			Sender(disp, answer)
-		stype = Types[0]
-	copy, isToBs = body, (stype == Types[0])
-	for app in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
-		if copy.startswith(app):
-			copy, isToBs = copy[len(app):].lstrip(), True
-			break
-	if not copy:
-		xmpp_raise()
-	copy = copy.split(None, 1)
-	command = (copy.pop(0)).lower()
-	if not isToBs and isConf and Chats[instance].cPref and command not in sCmds:
-		if Chats[instance].cPref == command[:1]:
-			command = command[1:]
-		else:
-			command = False
-	elif isToBs and not Cmds.has_key(command) and (command[:1] in cPrefs):
-		command = command[1:]
-	if isConf and command in Chats[instance].oCmds:
-		xmpp_raise()
-	if Cmds.has_key(command):
-		VarCache["idle"] = time.time()
-		VarCache["action"] = AnsBase[27] % command.upper()
-		Parameters = ((copy.pop(0)).rstrip() if copy else "")
-		Cmds[command].execute(stype, (source, instance, nick), Parameters, disp)
+	if Subject:
+		call_efunctions("09eh", (instance, nick, Subject, body, disp,))
 	else:
-		call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
+		Copy, isToBs = body, (stype == Types[0])
+		if stype != Types[1]:
+			if (stanza.getTag(Types[22])):
+				answer = xmpp.Message(source)
+				answer.setTag(Types[11], namespace = xmpp.NS_RECEIPTS)
+				answer.setID(stanza.getID())
+				Sender(disp, answer)
+			stype = Types[0]
+		for app in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
+			if Copy.startswith(app):
+				Copy, isToBs = Copy[len(app):].lstrip(), True
+				break
+		if not Copy:
+			xmpp_raise()
+		Copy = Copy.split(None, 1)
+		command = (Copy.pop(0)).lower()
+		if not isToBs and isConf and Chats[instance].cPref and command not in sCmds:
+			if Chats[instance].cPref == command[:1]:
+				command = command[1:]
+			else:
+				command = False
+		elif isToBs and not Cmds.has_key(command) and command.startswith(cPrefs):
+			command = command[1:]
+		if isConf and command in Chats[instance].oCmds:
+			xmpp_raise()
+		if Cmds.has_key(command):
+			VarCache["idle"] = time.time()
+			VarCache["action"] = AnsBase[27] % command.upper()
+			Cmds[command].execute(stype, (source, instance, nick), ((Copy.pop(0)).rstrip() if Copy else ""), disp)
+		else:
+			call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
 
 # Connecting & Dispatching
 

@@ -57,25 +57,25 @@ class expansion_temp(expansion):
 				ls = []
 				Numb = itypes.Number()
 				Number = itypes.Number()
-				lTotal = itypes.Number()
+#				lTotal = itypes.Number()
 				for line in body.splitlines():
 					line = line.strip()
 					ls.append(line)
 					if Number.plus(len(line)) >= 2048:
 						db("insert into %s values (?,?)" % (a2), (Numb.plus(), str.join(chr(10), ls)))
-						lTotal.plus(Number._int())
+#						lTotal.plus(Number._int())
 						ls = []
 						Number = itypes.Number()
 				if ls:
-					lTotal.plus(Number._int())
+#					lTotal.plus(Number._int())
 					db("insert into %s values (?,?)" % (a2), (Numb.plus(), str.join(chr(10), ls)))
 				db.commit()
-				raise SelfExc("Done. ID - '%s', total pages: %s" % (a2, lTotal._str()))
+				raise SelfExc("Done. ID - '%s', total pages: %s" % (a2, Numb._str()))
 			else:
 				raise SelfExc("A book with the same name is already in the libraly!")
 
 	def getID(self, Name):
-		while Name.startswith(("1","2","3","4","5","6","7","8","9","0")):
+		while Name.startswith(tuple("1234567890")):
 			Name = Name[1:]
 		Name = sub_desc(Name, ((chr(95), chr(32)),)).lower()
 		Name = sub_desc(Name, CharCase[3]).strip()
