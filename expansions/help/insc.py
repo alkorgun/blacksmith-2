@@ -25,7 +25,7 @@ else:
 	AnsBase_temp = (
 		"Command '%s' is located in expansion %s", # 0
 		"%s's access - %d.", # 1
-		"\n%s\nSyntax:\n*** %s", # 2
+		"\n%s\nSyntax:\n>>> %s", # 2
 		"\nExamples:", # 3
 		"Help-file for this command isn't exist...", # 4
 		"Type 'commands' to get the complete list of commands, type 'help [command]', to know how it works.", # 5

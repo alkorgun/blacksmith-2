@@ -255,7 +255,7 @@ class expansion_temp(expansion):
 		Answer(answer, ltype, source, disp)
 
 	kinoHeaders = {
-		"Host": "www.kinopoisk.ru",
+		"Host": "m.kinopoisk.ru",
 		"Accept": "text/html",
 		"Accept-Charset": "cp1251",
 		"Accept-Language": "ru"
@@ -274,7 +274,9 @@ class expansion_temp(expansion):
 						limit = 5
 				else:
 					limit = None
-				Req = Web("http://www.kinopoisk.ru/level/20/", headers = self.kinoHeaders)
+				kinoHeaders = self.kinoHeaders.copy()
+				kinoHeaders["Host"] = "www.kinopoisk.ru"
+				Req = Web("http://www.kinopoisk.ru/level/20/", headers = kinoHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError, exc:
@@ -307,7 +309,7 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[1]
 			elif isNumber(body):
-				Req = Web("http://m.kinopoisk.ru/movie/%s" % (body), headers = self.kinoHeaders)
+				Req = Web("http://m.kinopoisk.ru/movie/%s" % (body), headers = self.kinoHeaders.copy())
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError, exc:
@@ -331,10 +333,10 @@ class expansion_temp(expansion):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[5]
-			else:
+			elif ls:
 				Req = (body if chr(42) != c1st else body[2:].strip())
 				Req = Req.encode("cp1251")
-				Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req), headers = self.kinoHeaders)
+				Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req), headers = self.kinoHeaders.copy())
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError, exc:
@@ -355,6 +357,8 @@ class expansion_temp(expansion):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[5]
+			else:
+				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
@@ -458,7 +462,7 @@ class expansion_temp(expansion):
 							answer = self.AnsBase[1]
 					else:
 						answer = self.AnsBase[1]
-			else:
+			elif ls:
 				Req = (body if chr(42) != c1st else body[2:].strip())
 				Req = Req.encode("utf-8")
 				Req = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", Req)], self.IMDbHeaders)
@@ -481,6 +485,8 @@ class expansion_temp(expansion):
 						answer = str.join(chr(10), ls)
 					else:
 						answer = self.AnsBase[5]
+			else:
+				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
@@ -806,6 +812,62 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
+	def command_yandex_market(self, ltype, source, body, disp):
+		if body:
+			ls = body.split()
+			c1st = (ls.pop(0)).lower()
+			if isNumber(c1st):
+				if ls:
+					c2st = ls.pop(0)
+					if isNumber(c2st):
+						Req = Web("http://m.market.yandex.ru/spec.xml?hid=%d&modelid=%d" % (int(c1st), int(c2st)))
+						try:
+							data = Req.get_page(self.UserAgent_Moz)
+						except Web.Two.HTTPError, exc:
+							answer = str(exc)
+						except:
+							answer = self.AnsBase[0]
+						else:
+							data = data.decode("utf-8")
+							data = get_text(data, "<h2 class=\"b-subtitle\">", "</div>")
+							if data:
+								answer = self.decodeHTML(sub_desc(data, (chr(10), ("<li>", chr(10)), ("<h2 class=\"b-subtitle\">", chr(10)*2), ("</h2>", chr(10)))))
+							else:
+								answer = self.AnsBase[5]
+					else:
+						answer = AnsBase[30]
+				else:
+					answer = AnsBase[2]
+			elif ls:
+				Req = (body if chr(42) != c1st else body[2:].strip())
+				Req = Req.encode("utf-8")
+				Req = Web("http://m.market.yandex.ru/search.xml?", [("nopreciser", "1"), ("text", Req)])
+				try:
+					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
+				except:
+					answer = self.AnsBase[0]
+				else:
+					data = data.decode("utf-8")
+					comp = compile__("<a href=\"http://m\.market\.yandex\.ru/model\.xml\?hid=(\d+?)&amp;modelid=(\d+?)&amp;show-uid=\d+?\">(.+?)</a>", 16)
+					list = comp.findall(data)
+					if list:
+						Number = itypes.Number()
+						ls = ["\n[#] [Model Name] (hid & modelid)"]
+						for hid, modelid, name in list:
+							if not name.startswith("<img"):
+								ls.append("%d) %s (%s %s)" % (Number.plus(), self.sub_ehtmls(name), hid, modelid))
+						answer = str.join(chr(10), ls)
+					else:
+						answer = self.AnsBase[5]
+			else:
+				answer = AnsBase[2]
+		else:
+			answer = AnsBase[1]
+		if locals().has_key(Types[12]):
+			Answer(answer, ltype, source, disp)
+
 	commands = (
 		(command_jc, "jc", 2,),
 		(command_google, "google", 2,),
@@ -822,7 +884,8 @@ class expansion_temp(expansion):
 			(command_currency, "currency", 2,),
 			(command_jquote, "jquote", 2,),
 			(command_ithappens, "ithappens", 2,),
-			(command_gismeteo, "gismeteo", 2,)
+			(command_gismeteo, "gismeteo", 2,),
+			(command_yandex_market, "market", 2,)
 						))
 		Currency_desc = Currency_desc
 	else:
