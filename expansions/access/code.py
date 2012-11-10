@@ -55,7 +55,7 @@ class expansion_temp(expansion):
 			answer, Numb = self.AnsBase[5], itypes.Number()
 			for x in list:
 				answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
-			Msend(source[0], answer, disp)
+			Message(source[0], answer, disp)
 		else:
 			Answer(self.AnsBase[3], ltype, source, disp)
 
@@ -72,7 +72,7 @@ class expansion_temp(expansion):
 				answer, Numb = self.AnsBase[5], itypes.Number()
 				for x in list:
 					answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
-				Msend(source[0], answer, disp)
+				Message(source[0], answer, disp)
 			else:
 				answer = self.AnsBase[4]
 		else:

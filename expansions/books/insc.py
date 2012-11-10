@@ -29,11 +29,11 @@ else:
 		"I can't find your bookmark, because I don't know your JID.", # 5
 		"The last page is %d.", # 6
 		"The book is empty.", # 7
-		"There are %d books in library.", # 8
+		"There are %d books in the library.", # 8
 		"File is not exist.", # 9
 		"Already in.", # 10
 		"Added with id='%s'.", # 11
-		"No such data field in base.", # 12
+		"No such data field in the base.", # 12
 		"Incorrect page number.", # 13
 		"No such page.", # 14
 		"Incorrect name." # 15

@@ -24,5 +24,5 @@ else:
 		"It will be executed at %s.", # 6
 		"There are no tasks.", # 7
 		"\n[#][ID][Command][Deadline]\n%s", # 8
-		"Date/Time are incorrect." # 9
+		"Date/Time is incorrect." # 9
 					)

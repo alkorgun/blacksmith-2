@@ -59,7 +59,7 @@ class expansion_temp(expansion):
 		else:
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], self.get_config(GenCon, self.AnsBase[2]), disp)
+			Message(source[0], self.get_config(GenCon, self.AnsBase[2]), disp)
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source, disp)
 
@@ -102,7 +102,7 @@ class expansion_temp(expansion):
 							for conf in Chats.keys():
 								if Chats[conf].disp == Name:
 									if online(Name):
-										Msend(conf, self.AnsBase[4], Name)
+										Message(conf, self.AnsBase[4], Name)
 										time.sleep(0.2)
 									Chats[conf].leave(self.AnsBase[5])
 									Chats[conf].disp = IdleClient()
@@ -225,7 +225,7 @@ class expansion_temp(expansion):
 		else:
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], self.get_config(ConDisp, self.AnsBase[2]), disp)
+			Message(source[0], self.get_config(ConDisp, self.AnsBase[2]), disp)
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source)
 

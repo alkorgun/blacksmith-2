@@ -12,8 +12,8 @@ if DefLANG in ("RU", "UA"):
 					)])
 else:
 	AnsBase_temp = (
-		"\nTotal joins - %d\nLast join time - %s\nLast role - %s", # 0
-		"\nLast leave time - %s\nExit reason - %s", # 1
+		"\nTotal joins - %d\nThe Last join-time - %s\nThe last role - %s", # 0
+		"\nThe last leave-time - %s\nExit reason - %s", # 1
 		"\nNicks: %s", # 2
 		"No statistics.", # 3
 		"'%s' spent here - %s.", # 4

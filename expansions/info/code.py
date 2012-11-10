@@ -21,7 +21,7 @@ class expansion_temp(expansion):
 			list += "\n%d) %s - %s - %s" % (Numb.plus(), disp_, str(connect), alive)
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
-		Msend(source[0], list, disp)
+		Message(source[0], list, disp)
 
 	def command_inchat(self, ltype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -58,7 +58,7 @@ class expansion_temp(expansion):
 					list += "\n%d) %s" % (Numb.plus(), x)
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], list, disp)
+			Message(source[0], list, disp)
 		else:
 			Answer(AnsBase[0], ltype, source, disp)
 
@@ -78,7 +78,7 @@ class expansion_temp(expansion):
 		if Numb._int():
 			if ltype == Types[1]:
 				Answer(AnsBase[11], ltype, source, disp)
-			Msend(source[0], answer, disp)
+			Message(source[0], answer, disp)
 		else:
 			Answer(self.AnsBase[6], ltype, source, disp)
 
@@ -105,7 +105,7 @@ class expansion_temp(expansion):
 				if Numb._int():
 					if ltype == Types[1]:
 						Answer(AnsBase[11], ltype, source, disp)
-					Msend(source[0], self.AnsBase[0] % (Numb._str(), list, Numb2._str()), disp)
+					Message(source[0], self.AnsBase[0] % (Numb._str(), list, Numb2._str()), disp)
 				else:
 					Answer(self.AnsBase[1], ltype, source, disp)
 			elif Var in ("dates", "даты".decode("utf-8")):
@@ -115,12 +115,12 @@ class expansion_temp(expansion):
 					list += "\n%d. %s\t\t%s" % (Numb.plus(), nick.nick, nick.date[2])
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
-				Msend(source[0], self.AnsBase[2] % (Numb._str(), list), disp)
+				Message(source[0], self.AnsBase[2] % (Numb._str(), list), disp)
 			elif Var in ("list", "лист".decode("utf-8")):
 				ls = sorted(Chats[source[1]].get_nicks())
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
-				Msend(source[0], self.AnsBase[2] % (str(len(ls)), ", ".join(ls)), disp)
+				Message(source[0], self.AnsBase[2] % (str(len(ls)), ", ".join(ls)), disp)
 			else:
 				list = str()
 				Numb = itypes.Number()
@@ -136,7 +136,7 @@ class expansion_temp(expansion):
 				if Numb._int():
 					if ltype == Types[1]:
 						Answer(AnsBase[11], ltype, source, disp)
-					Msend(source[0], self.AnsBase[3] % (Numb._str(), list, Numb2._str()), disp)
+					Message(source[0], self.AnsBase[3] % (Numb._str(), list, Numb2._str()), disp)
 				else:
 					Answer(self.AnsBase[4], ltype, source, disp)
 		else:
@@ -158,7 +158,7 @@ class expansion_temp(expansion):
 			if Numb._int():
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
-				Msend(source[0], self.AnsBase[9] % (Numb._str(), list), disp)
+				Message(source[0], self.AnsBase[9] % (Numb._str(), list), disp)
 			else:
 				answer = self.AnsBase[10]
 		else:

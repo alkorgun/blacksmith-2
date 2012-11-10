@@ -26,7 +26,7 @@ class expansion_temp(expansion):
 					Clients[disp].aKeeper = itypes.Number()
 				if Clients[disp].aKeeper._int() >= 3:
 					Clients[disp].aKeeper = itypes.Number()
-					ThrName = "%s%s" % (Types[13], disp)
+					ThrName = (Types[13] + disp)
 					if ThrName in ThrIds:
 						for Thr in iThr.enumerate():
 							if Thr._Thread__name == ThrName:

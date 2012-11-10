@@ -24,7 +24,7 @@ class expansion_temp(expansion):
 						exc = "%s" % (exc)
 						if ltype == Types[1]:
 							Answer(AnsBase[11], ltype, source, disp)
-						Msend(source[0], exc, disp)
+						Message(source[0], exc, disp)
 					except:
 						answer = self.AnsBase[20]
 				else:

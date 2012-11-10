@@ -10,7 +10,7 @@
 
 from types import NoneType, UnicodeType, InstanceType
 from traceback import print_exc as exc_info__
-from random import shuffle, randint, choice
+from random import shuffle, randrange, choice
 from re import compile as compile__
 
 import sys, os, gc, time, ConfigParser
@@ -146,7 +146,7 @@ aFeatures = Features + [
 	xmpp.NS_RECEIPTS
 				]
 
-IsJID = compile__(".+?@\w+?\.\w+?", 32)
+IsJID = compile__(".+?@[\w-]+?\.[\w-]+?", 32)
 
 VarCache = {
 	"idle": 0.24,
@@ -255,7 +255,7 @@ else:
 static = "static/%s"
 dynamic = "current/%s"
 ExpsDir = "expansions"
-FeilDir = "feillog"
+FailDir = "exceptions"
 PidFile = "sessions.db"
 GenCrash = "dispatcher.crash"
 SvnCache = ".svn/entries"
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 31, 0)
+(BsMark, BsVer, BsRev) = (2, 32, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -320,7 +320,7 @@ try:
 			Disp, Instance = client_config(ConDisp, Block)
 			InstansesDesc[Disp] = Instance
 except:
-	Exit("\n\nOne of config files is corrupted!", 1, 30)
+	Exit("\n\nOne of the configuration files is corrupted!", 1, 30)
 
 del Instance
 
@@ -329,7 +329,7 @@ MaxMemory = (32768 if (MaxMemory and MaxMemory <= 32768) else MaxMemory)
 try:
 	execfile(GenInscFile)
 except:
-	Exit("\n\nError: inscript is damaged!", 1, 30)
+	Exit("\n\nError: general inscript is damaged!", 1, 30)
 
 if oSlist[0]:
 	os.system(sys_cmds[2])
@@ -339,7 +339,7 @@ if oSlist[0]:
 
 expansions = {}
 Cmds = {}
-cPrefs = ("!","@","#",".","*")
+cPrefs = ("!", "@", "#", ".", "*")
 sCmds = []
 Chats = {}
 Flood = {}
@@ -594,7 +594,7 @@ def command_handler(exp_link, handler, name, access, pfx = True):
 
 # Chats, Users & Other
 
-class sUser:
+class sUser(object):
 
 	def __init__(self, nick, role, source, access = None):
 		self.nick = nick
@@ -615,7 +615,7 @@ class sUser:
 	def calc_acc(self):
 		self.access = (aDesc.get(self.role[0], 0) + aDesc.get(self.role[1], 0))
 
-class sConf:
+class sConf(object):
 
 	def __init__(self, name, disp, code = None, cPref = None, nick = DefNick, added = False):
 		self.name = name
@@ -740,7 +740,7 @@ class sConf:
 		else:
 			delivery(self.name)
 
-	def iq_sender(self, attr, data, afrls, role, text = str(), source = ()):
+	def iq_sender(self, attr, data, afrls, role, text = str(), handler = None):
 		stanza = xmpp.Iq(to = self.name, typ = Types[9])
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(Types[18])
@@ -749,37 +749,41 @@ class sConf:
 		if text:
 			arole.setTagData("reason", text)
 		stanza.addChild(node = query)
-		if not source:
+		if not handler:
 			self.csend(stanza)
 		else:
-			CallForResponse(self.disp, stanza, Handle_Answer, {"source": source})
+			handler, kdesc = handler
+			if not handler:
+				handler = HandleResponse
+				kdesc = {"source": kdesc}
+			CallForResponse(self.disp, stanza, handler, kdesc)
 
-	def outcast(self, jid, text = str(), source = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[1], text, source)
+	def outcast(self, jid, text = str(), handler = ()):
+		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[1], text, handler)
 
-	def none(self, jid, text = str(), source = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[2], text, source)
+	def none(self, jid, text = str(), handler = ()):
+		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[2], text, handler)
 
-	def member(self, jid, text = str(), source = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[3], text, source)
+	def member(self, jid, text = str(), handler = ()):
+		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[3], text, handler)
 
-	def admin(self, jid, text = str(), source = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[4], text, source)
+	def admin(self, jid, text = str(), handler = ()):
+		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[4], text, handler)
 
-	def owner(self, jid, text = str(), source = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[5], text, source)
+	def owner(self, jid, text = str(), handler = ()):
+		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[5], text, handler)
 
-	def kick(self, nick, text = str(), source = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[2], text, source)
+	def kick(self, nick, text = str(), handler = ()):
+		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[2], text, handler)
 
-	def visitor(self, nick, text = str(), source = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[7], text, source)
+	def visitor(self, nick, text = str(), handler = ()):
+		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[7], text, handler)
 
-	def participant(self, nick, text = str(), source = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[8], text, source)
+	def participant(self, nick, text = str(), handler = ()):
+		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[8], text, handler)
 
-	def moder(self, nick, text = str(), source = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[9], text, source)
+	def moder(self, nick, text = str(), handler = ()):
+		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[9], text, handler)
 
 def get_source(source, nick):
 	if Chats.has_key(source):
@@ -822,7 +826,7 @@ def delivery(body):
 	except:
 		exc_info_()
 
-def Msend(instance, body, disp = None):
+def Message(instance, body, disp = None):
 	body = object_encode(body)
 	if Chats.has_key(instance):
 		ltype = Types[1]
@@ -858,9 +862,9 @@ def Answer(body, ltyp, source, disp = None):
 	body = object_encode(body)
 	if ltyp == Types[1]:
 		body = "%s: %s" % (source[2], body)
-		Msend(source[1], body, disp)
+		Message(source[1], body, disp)
 	elif ltyp == Types[0]:
-		Msend(source[0], body, disp)
+		Message(source[0], body, disp)
 
 def CheckFlood(disp):
 	disp = get_disp(disp)
@@ -934,7 +938,7 @@ def ResponseChecker(disp, stanza):
 		sThread(handler.func_name, exec_bsExp, (handler, disp, stanza, keywords))
 		xmpp_raise()
 
-def Handle_Answer(disp, stanza, source):
+def HandleResponse(disp, stanza, source):
 	if xmpp.isResultNode(stanza):
 		Answer(AnsBase[4], source[0], source[1], disp)
 	else:
@@ -1023,10 +1027,10 @@ def collectExc(instance, command = None):
 		delivery(AnsBase[15] % exception)
 	else:
 		Print("\n\nError: can't execute '%s'!" % (instance), color2)
-	filename = "%s/error[%d]%s.crash" % (FeilDir, (Info["cfw"]._int() + 1), strTime("[%H.%M.%S][%d.%m.%Y]"))
+	filename = "%s/error[%d]%s.crash" % (FailDir, (Info["cfw"]._int() + 1), strTime("[%H.%M.%S][%d.%m.%Y]"))
 	try:
-		if not os.path.exists(FeilDir):
-			os.mkdir(FeilDir, 0755)
+		if not os.path.exists(FailDir):
+			os.mkdir(FailDir, 0755)
 		crashfile = open(filename, "wb")
 		Info["cfw"].plus()
 		exc_info_(crashfile)
@@ -1037,7 +1041,7 @@ def collectExc(instance, command = None):
 			else:
 				delivery(AnsBase[17] % (Number, filename))
 		else:
-			Print("\n\nCrash file --> %s\nError number --> %d" % (filename, Number), color2)
+			Print("\n\nCrash file --> %s\nError's number --> %d" % (filename, Number), color2)
 	except:
 		exc_info_()
 		if GetExc and online(Gen_disp):
@@ -1076,7 +1080,7 @@ def get_pipe(command):
 		data = "(...)"
 	return data
 
-class Web:
+class Web(object):
 
 	import urllib as One, urllib2 as Two
 
@@ -1197,9 +1201,9 @@ def enumerated_list(list):
 		ls.append(AnsBase[12] % (Numb.plus(), line))
 	return str.join(chr(10), ls)
 
-isNumber = lambda objt: (None if exec_(int, (objt,)) is None else True)
+isNumber = lambda obj: (None if exec_(int, (obj,)) is None else True)
 
-isSource = lambda data: IsJID.match(data)
+isSource = lambda jid: IsJID.match(jid)
 
 def calculate(Numb = int()):
 	if oSlist[0]:
@@ -1207,7 +1211,7 @@ def calculate(Numb = int()):
 		if len(lines) >= 3:
 			list = lines[3].split()
 			if len(list) >= 6:
-				Numb = "%s%s" % (list[4], list[5])
+				Numb = (list[4] + list[5])
 	else:
 		lines = get_pipe(sys_cmds[0] % (BsPid)).splitlines()
 		if len(lines) >= 2:
@@ -1256,7 +1260,7 @@ def join_chats():
 			else:
 				Print("\nI'll join %s then %s would be connected..." % (conf, Chats[conf].disp), color1)
 	else:
-		Print("\n\nError: unable to create chatrooms list file!", color2)
+		Print("\n\nError: unable to create the conferences-list file!", color2)
 
 # Presence Handler
 
@@ -1310,7 +1314,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 					Chats[conf].isModer = False
 					if not Mserve:
 						Chats[conf].change_status(AnsBase[23], sList[2])
-						Msend(conf, AnsBase[24], disp)
+						Message(conf, AnsBase[24], disp)
 						xmpp_raise()
 				elif not Mserve:
 					xmpp_raise()
@@ -1453,7 +1457,7 @@ def Xmpp_Message_Cb(disp, stanza):
 					xmpp_raise()
 				Chats[instance].join()
 				time.sleep(0.6)
-			Msend(source, body)
+			Message(source, body)
 		xmpp_raise()
 	if Subject:
 		call_efunctions("09eh", (instance, nick, Subject, body, disp,))
@@ -1466,7 +1470,7 @@ def Xmpp_Message_Cb(disp, stanza):
 				answer.setID(stanza.getID())
 				Sender(disp, answer)
 			stype = Types[0]
-		for app in ["%s%s" % (BotNick, Key) for Key in (":",",",">")]:
+		for app in [(BotNick + Key) for Key in (":", ",", ">")]:
 			if Copy.startswith(app):
 				Copy, isToBs = Copy[len(app):].lstrip(), True
 				break
@@ -1503,12 +1507,12 @@ def connect_client(source, InstanceAttrs):
 	if ConType:
 		ConType = ConType.upper()
 		if ConTls and ConType != "TLS":
-			Print("\n'%s' was connected, but connection isn't secure." % (source), color1)
+			Print("\n'%s' was connected, but a connection isn't secure." % (source), color1)
 		else:
 			Print("\n'%s' was successfully connected!" % (source), color3)
 		Print("\n'%s' using - '%s'" % (source, ConType), color4)
 	else:
-		Print("\n'%s' can't connect to '%s' (Port: %s). I will retry later..." % (source, server.upper(), str(cport)), color2)
+		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
 		return (False, False)
 	Print("\n'%s' authenticating..." % (source), color4)
 	try:
@@ -1523,7 +1527,7 @@ def connect_client(source, InstanceAttrs):
 		if Auth == "sasl":
 			Print("\n'%s' was successfully authenticated!" % (source), color3)
 		else:
-			Print("\n'%s' was authenticated, but old auth method was used...", color1)
+			Print("\n'%s' was authenticated, but old auth method is used...", color1)
 	else:
 		eBody = str(disp.lastErr)
 		eCode = str(disp.lastErrCode)
@@ -1562,7 +1566,7 @@ def connect_clients():
 		if not conn[0]:
 			if conn[1] and conn[1] == eCodes[2]:
 				continue
-			composeTimer(60, connectAndDispatch, "%s%s" % (Types[13], Inctance), (Inctance,)).start()
+			composeTimer(60, connectAndDispatch, (Types[13] + Inctance), (Inctance,)).start()
 
 def Reverse_disp(disp, chats_ = True):
 	Iters = itypes.Number()
@@ -1624,7 +1628,7 @@ def load_mark2():
 	Print("\n\n%s is ready to serve!\n\n" % (ProdName), color3)
 	call_sfunctions("02si")
 	for disp in Clients.keys():
-		ThrName = "%s%s" % (Types[13], disp)
+		ThrName = (Types[13] + disp)
 		if ThrName not in iThr.ThrNames():
 			composeThr(Dispatch_handler, ThrName, (disp,)).start()
 	while VarCache["alive"]:
@@ -1634,7 +1638,7 @@ def load_mark2():
 			if Name.startswith(Types[13]):
 				Cls.plus()
 		if 0 is Cls._int():
-			sys_exit("All clients was fallen!")
+			sys_exit("All of the clients now fallen!")
 		sys.exc_clear()
 		gc.collect()
 		if MaxMemory and MaxMemory <= calculate():
@@ -1657,6 +1661,6 @@ if __name__ == "__main__":
 		sys_exit("Interrupt (Ctrl+C)")
 	except:
 		collectExc(load_mark2)
-		sys_exit("Critical Feil!")
+		sys_exit("Critical Fail!")
 
 # The End is Near =>

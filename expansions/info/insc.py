@@ -17,14 +17,14 @@ if DefLANG in ("RU", "UA"):
 else:
 	AnsBase_temp = (
 		"Today there were %s visitors here:%s\n+ %s are still here.", # 0
-		"Today when I was still nobody came, everyone who was - are still here.", # 1
-		"When I was still there were %s visitors here:\n%s", # 2
+		"Today, when I was still, nobody came, everyone who was - are still here.", # 1
+		"When I was still, there were %s visitors here:\n%s", # 2
 		"There were %s visitors here:%s\n+ %s are still here.", # 3
-		"При мне ещё никто не выходил, все кто был досихпор здесь.", # 4
+		"Nobody leaved, all users are steel here.", # 4
 		"[#] [Chat/Nick] [Jid] [Prefix] [Users] [Admin]", # 5
 		"The list of conferences is empty.", # 6
 		"[#][Client][Connected][isActive]", # 7
-		"List of users:", # 8
+		"Users-list:", # 8
 		"Total %s similar users:%s", # 9
 		"No result." # 10
 					)

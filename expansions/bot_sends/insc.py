@@ -18,8 +18,8 @@ else:
 		"cleaning conference...", # 0
 		"I am okay! (0 errors)", # 1
 		"Private %s is seriously injured, but I have the rotation! (%d errors)", # 2
-		"I am dead man, brother, escape, I will delay them... (%d errors)", # 3
-		"At these addresses, I can not send messages.", # 4
+		"I am a dead man, brother, you should escape, I'll delay them... (%d errors)", # 3
+		"At these target, I can't send messages.", # 4
 		"Message from %s:\n%s", # 5
 		"'%s' is here now.", # 6
 		"Unknown target.", # 7

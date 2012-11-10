@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x14
-#  Id: 25~14b
+exp_name = "allweb" # /code.py v.x15
+#  Id: 25~15b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -85,6 +85,8 @@ class expansion_temp(expansion):
 			Req = Web("http://jc.jabber.ru/search.html?", [("search", cName.encode("utf-8"))])
 			try:
 				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
 			else:
@@ -105,12 +107,17 @@ class expansion_temp(expansion):
 
 	gCache = []
 
+	sMark = 1
+	tMark = 2
+
 	def command_google(self, ltype, source, body, disp):
 		if body:
 			if (chr(42) != body):
 				Req = Web("http://ajax.googleapis.com/ajax/services/search/web?", [("v", "1.0"), ("q", body.encode("utf-8"))])
 				try:
 					data = Req.get_page(self.UserAgent)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -119,9 +126,11 @@ class expansion_temp(expansion):
 					except:
 						answer = self.AnsBase[1]
 					else:
-						data = data.get("responseData", {"results": []})
-						list = data.get("results", [])
-						if list:
+						try:
+							list = data["responseData"]["results"]
+						except KeyError:
+							answer = self.AnsBase[5]
+						else:
 							desc = list.pop(0)
 							ls = []
 							ls.append(desc.get("title", ""))
@@ -132,23 +141,21 @@ class expansion_temp(expansion):
 								source_ = get_source(source[1], source[2])
 								if source_:
 									for ls in self.gCache:
-										if ls[0] == source_:
+										if ls[:2] == (source_, self.sMark):
 											self.gCache.pop(self.gCache.index(ls))
 											break
-									Numb = (len(Clients.keys())*4)
+									Numb = (len(Clients.keys())*8)
 									while len(self.gCache) >= Numb:
 										self.gCache.pop(0)
-									self.gCache.append((source_, list))
+									self.gCache.append((source_, self.sMark, list))
 									answer += self.AnsBase[4] % len(list)
-						else:
-							answer = self.AnsBase[5]
 			else:
 				source_ = get_source(source[1], source[2])
 				if source_:
 					list = []
 					for ls in self.gCache:
-						if ls[0] == source_:
-							list = self.gCache.pop(self.gCache.index(ls))[1]
+						if ls[:2] == (source_, self.sMark):
+							list = self.gCache.pop(self.gCache.index(ls))[2]
 							break
 					if list:
 						desc = list.pop(0)
@@ -158,7 +165,7 @@ class expansion_temp(expansion):
 						ls.append(desc.get("unescapedUrl", ""))
 						answer = self.decodeHTML(str.join(chr(10), ls))
 						if list:
-							self.gCache.append((source_, list))
+							self.gCache.append((source_, self.sMark, list))
 							answer += self.AnsBase[4] % len(list)
 					else:
 						answer = self.AnsBase[2]
@@ -168,11 +175,98 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
+	def command_google_translate(self, ltype, source, body, disp):
+		if body:
+			if (chr(42) != body):
+				body = body.split(None, 2)
+				if len(body) == 3:
+					lang0, langX, body = body
+					if langX in LangMap and (lang0 in LangMap or lang0 == "auto"):
+						desc = (("client", "bs-2"),
+								("sl", lang0),
+								("tl", langX),
+								("text", body.encode("utf-8")))
+						Req = Web("http://translate.google.com/translate_a/t?", desc, {"Accept-Charset": "utf-8"})
+						try:
+							data = Req.get_page(self.UserAgent_Moz)
+						except Web.Two.HTTPError, exc:
+							answer = str(exc)
+						except:
+							answer = self.AnsBase[0]
+						else:
+							try:
+								data = self.json.loads(data)
+							except:
+								answer = self.AnsBase[1]
+							else:
+								try:
+									body = data["sentences"][0]["trans"]
+								except LookupError:
+									answer = self.AnsBase[1]
+								else:
+									if lang0 == "auto":
+										try:
+											lang0 = data["src"]
+										except KeyError:
+											pass
+									answer = "%s -> %s:\n%s" % (lang0, langX, body)
+									try:
+										list = data["dict"][0]["terms"]
+									except LookupError:
+										pass
+									else:
+										source_ = get_source(source[1], source[2])
+										if source_:
+											if body in list:
+												list.pop(list.index(body))
+											if list:
+												for ls in self.gCache:
+													if ls[:2] == (source_, self.tMark):
+														self.gCache.pop(self.gCache.index(ls))
+														break
+												Numb = (len(Clients.keys())*8)
+												while len(self.gCache) >= Numb:
+													self.gCache.pop(0)
+												self.gCache.append((source_, self.tMark, list))
+												answer += self.AnsBase[7] % len(list)
+					else:
+						answer = self.AnsBase[6]
+				else:
+					answer = AnsBase[2]
+			else:
+				source_ = get_source(source[1], source[2])
+				if source_:
+					list = []
+					for ls in self.gCache:
+						if ls[:2] == (source_, self.tMark):
+							list = self.gCache.pop(self.gCache.index(ls))[2]
+							break
+					if list:
+						answer = self.decodeHTML(list.pop(0))
+						if list:
+							self.gCache.append((source_, self.tMark, list))
+							answer += self.AnsBase[7] % len(list)
+					else:
+						answer = self.AnsBase[2]
+				else:
+					answer = self.AnsBase[3]
+		else:
+			answer = self.AnsBase[8] + str.join(chr(10), ["%s - %s" % (k, l) for k, l in sorted(LangMap.items())])
+		Answer(answer, ltype, source, disp)
+
+	kinoHeaders = {
+		"Host": "www.kinopoisk.ru",
+		"Accept": "text/html",
+		"Accept-Charset": "cp1251",
+		"Accept-Language": "ru"
+					}
+
+	C3oP = "СЗоР"
+
 	def command_kino(self, ltype, source, body, disp):
 		if body:
 			ls = body.split()
 			c1st = (ls.pop(0)).lower()
-			c3op = "СЗоР"
 			if c1st in ("top250", "топ250".decode("utf-8")):
 				if ls:
 					limit = exec_(int, (ls.pop(0),))
@@ -180,9 +274,11 @@ class expansion_temp(expansion):
 						limit = 5
 				else:
 					limit = None
-				Req = Web("http://www.kinopoisk.ru/level/20/")
+				Req = Web("http://www.kinopoisk.ru/level/20/", headers = self.kinoHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -203,17 +299,19 @@ class expansion_temp(expansion):
 							if ltype == Types[1]:
 								Answer(AnsBase[11], ltype, source, disp)
 							Top250 = str.join(chr(10), ls)
-							Msend(source[0], Top250, disp)
+							Message(source[0], Top250, disp)
 						else:
 							answer = str.join(chr(10), ls)
-					elif data.count(c3op):
+					elif data.count(self.C3oP):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[1]
 			elif isNumber(body):
-				Req = Web("http://m.kinopoisk.ru/movie/%s" % (body))
+				Req = Web("http://m.kinopoisk.ru/movie/%s" % (body), headers = self.kinoHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -229,16 +327,18 @@ class expansion_temp(expansion):
 									line = "{1}{0}".format(line[1:], line[0].upper())
 								ls.append(line)
 						answer = str.join(chr(10), ls)
-					elif data.count(c3op):
+					elif data.count(self.C3oP):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[5]
 			else:
 				Req = (body if chr(42) != c1st else body[2:].strip())
 				Req = Req.encode("cp1251")
-				Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req))
+				Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req), headers = self.kinoHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -251,7 +351,7 @@ class expansion_temp(expansion):
 						for Numb, Name in list:
 							ls.append("%d) %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Numb))
 						answer = str.join(chr(10), ls)
-					elif data.count(c3op):
+					elif data.count(self.C3oP):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[5]
@@ -259,6 +359,8 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source, disp)
+
+	IMDbHeaders = {"Accept-Language": "%s,en" % DefLANG.lower()}
 
 	def command_imdb(self, ltype, source, body, disp):
 		if body:
@@ -271,9 +373,11 @@ class expansion_temp(expansion):
 						limit = 5
 				else:
 					limit = None
-				Req = Web("http://www.imdb.com/chart/top")
+				Req = Web("http://www.imdb.com/chart/top", headers = self.IMDbHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -294,15 +398,17 @@ class expansion_temp(expansion):
 							if ltype == Types[1]:
 								Answer(AnsBase[11], ltype, source, disp)
 							Top250 = str.join(chr(10), ls)
-							Msend(source[0], Top250, disp)
+							Message(source[0], Top250, disp)
 						else:
 							answer = str.join(chr(10), ls)
 					else:
 						answer = self.AnsBase[1]
 			elif isNumber(body):
-				Req = Web("http://www.imdb.com/title/tt%s/" % (body))
+				Req = Web("http://www.imdb.com/title/tt%s/" % (body), headers = self.IMDbHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -323,7 +429,7 @@ class expansion_temp(expansion):
 						if Numb:
 							if UsrV:
 								Numb = "%s (Votes: %s)" % (Numb, UsrV)
-							ls.append("Raiting: %s" % Numb)
+							ls.append("Rating: %s" % Numb)
 						Ttls = (("Director", "\s*Director:\s*"),
 								("Stars", "\s*Stars:\s*"),
 								("Writers", "\s*Writers:\s*"), ("Writer", "\s*Writer:\s*"))
@@ -355,9 +461,11 @@ class expansion_temp(expansion):
 			else:
 				Req = (body if chr(42) != c1st else body[2:].strip())
 				Req = Req.encode("utf-8")
-				Req = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", Req)])
+				Req = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", Req)], self.IMDbHeaders)
 				try:
 					data = Req.get_page(self.UserAgent_Moz)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -382,6 +490,8 @@ class expansion_temp(expansion):
 		Req = Web("http://python.org/")
 		try:
 			data = Req.get_page(self.UserAgent)
+		except Web.Two.HTTPError, exc:
+			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
 		else:
@@ -397,6 +507,91 @@ class expansion_temp(expansion):
 			else:
 				answer = self.AnsBase[1]
 		Answer(answer, ltype, source, disp)
+
+	if DefLANG in ("RU", "UA"):
+
+		def command_chuck(self, ltype, source, body, disp):
+			if body and isNumber(body):
+				Req = Web("http://chucknorrisfacts.ru/quote/%d" % int(body))
+			else:
+				Req = Web("http://chucknorrisfacts.ru/random")
+			try:
+				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
+			except:
+				answer = self.AnsBase[0]
+			else:
+				data = data.decode("cp1251")
+				comp = compile__("<a href=/quote/(\d+?)>.+?<blockquote>(.+?)</blockquote>", 16)
+				data = comp.search(data)
+				if data:
+					answer = self.decodeHTML("Fact: #%s\n%s" % data.groups())
+				else:
+					answer = self.AnsBase[1]
+			Answer(answer, ltype, source, disp)
+
+		def command_bash(self, ltype, source, body, disp):
+			if body and isNumber(body):
+				Req = Web("http://bash.im/quote/%d" % int(body))
+			else:
+				Req = Web("http://bash.im/random")
+			try:
+				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
+			except:
+				answer = self.AnsBase[0]
+			else:
+				data = data.decode("cp1251")
+				comp = compile__('<span id="v\d+?" class="rating">(.+?)</span>(?:.|\s)+?<a href="/quote/\d+?" class="id">#(\d+?)</a>\s*?</div>\s+?<div class="text">(.+?)</div>', 16)
+				data = comp.search(data)
+				if data:
+					answer = self.decodeHTML("#{1} +[{0}]-\n{2}".format(*data.groups()))
+				else:
+					answer = self.AnsBase[1]
+			Answer(answer, ltype, source, disp)
+
+	else:
+
+		def command_chuck(self, ltype, source, body, disp):
+			Req = Web("http://www.chucknorrisfacts.com/all-chuck-norris-facts?page=%d" % randrange(974)) # 04:12 09.11.2012 by UTC number of pages was 974
+			try:
+				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
+			except:
+				answer = self.AnsBase[0]
+			else:
+				data = data.decode("utf-8")
+				comp = compile__("<span class=\"field-content\"><a.*?>(.+?)</a></span>", 16)
+				list = comp.findall(data)
+				if list:
+					answer = self.decodeHTML(choice(list))
+				else:
+					answer = self.AnsBase[1]
+			Answer(answer, ltype, source, disp)
+
+		def command_bash(self, ltype, source, body, disp):
+			if body and isNumber(body):
+				Req = Web("http://bash.org/?%d" % int(body))
+			else:
+				Req = Web("http://bash.org/?random")
+			try:
+				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
+			except:
+				answer = self.AnsBase[0]
+			else:
+				data = data.decode("iso-8859-1")
+				comp = compile__('<b>#(\d+?)</b></a>\s<a.*?>\+</a>\((.+?)\)<a.*?>-</a>\s<a.*?>\[X\]</a></p><p class="qt">(.+?)</p>', 16)
+				data = comp.search(data)
+				if data:
+					answer = self.decodeHTML("#%s +[%s]-\n%s" % data.groups())
+				else:
+					answer = self.AnsBase[1]
+			Answer(answer, ltype, source, disp)
 
 	def command_currency(self, ltype, source, body, disp):
 		if body:
@@ -415,7 +610,7 @@ class expansion_temp(expansion):
 				if ltype == Types[1]:
 					Answer(AnsBase[11], ltype, source, disp)
 				Curls = ["\->"] + ["%s: %s" % desc for desc in sorted(self.Currency_desc.items())]
-				Msend(source[0], str.join(chr(10), Curls), disp)
+				Message(source[0], str.join(chr(10), Curls), disp)
 			elif Code in ("calc", "перевести".decode("utf-8")):
 				if len(ls) >= 2:
 					Number = ls.pop(0)
@@ -428,6 +623,8 @@ class expansion_temp(expansion):
 							Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 							try:
 								data = Req.get_page(self.UserAgent)
+							except Web.Two.HTTPError, exc:
+								answer = str(exc)
 							except:
 								answer = self.AnsBase[0]
 							else:
@@ -458,6 +655,8 @@ class expansion_temp(expansion):
 					Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 					try:
 						data = Req.get_page(self.UserAgent)
+					except Web.Two.HTTPError, exc:
+						answer = str(exc)
 					except:
 						answer = self.AnsBase[0]
 					else:
@@ -477,6 +676,8 @@ class expansion_temp(expansion):
 			Req = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 			try:
 				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
 			else:
@@ -490,7 +691,7 @@ class expansion_temp(expansion):
 					if ltype == Types[1]:
 						Answer(AnsBase[11], ltype, source, disp)
 					Curls = str.join(chr(10), ls)
-					Msend(source[0], Curls, disp)
+					Message(source[0], Curls, disp)
 				else:
 					answer = self.AnsBase[1]
 		if locals().has_key(Types[12]):
@@ -503,6 +704,8 @@ class expansion_temp(expansion):
 			Req = Web("http://jabber-quotes.ru/api/read/?id=random")
 		try:
 			data = Req.get_page(self.UserAgent)
+		except Web.Two.HTTPError, exc:
+			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
 		else:
@@ -519,25 +722,6 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
-	def command_chuck(self, ltype, source, body, disp):
-		if body and isNumber(body):
-			Req = Web("http://chucknorrisfacts.ru/quote/%d" % int(body))
-		else:
-			Req = Web("http://chucknorrisfacts.ru/random")
-		try:
-			data = Req.get_page(self.UserAgent)
-		except:
-			answer = self.AnsBase[0]
-		else:
-			data = data.decode("cp1251")
-			comp = compile__("<a href=/quote/(\d+?)>.+?<blockquote>(.+?)</blockquote>", 16)
-			data = comp.search(data)
-			if data:
-				answer = self.decodeHTML("Fact: #%s\n%s" % data.groups())
-			else:
-				answer = self.AnsBase[1]
-		Answer(answer, ltype, source, disp)
-
 	def command_ithappens(self, ltype, source, body, disp):
 		if body and isNumber(body):
 			Req = Web("http://ithappens.ru/story/%d" % int(body))
@@ -545,6 +729,8 @@ class expansion_temp(expansion):
 			Req = Web("http://ithappens.ru/random")
 		try:
 			data = Req.get_page(self.UserAgent)
+		except Web.Two.HTTPError, exc:
+			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
 		else:
@@ -570,6 +756,8 @@ class expansion_temp(expansion):
 				Req = Web("http://m.gismeteo.ru/citysearch/by_name/?", [("gis_search", City.encode("utf-8"))])
 				try:
 					data = Req.get_page(self.UserAgent)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 				else:
@@ -581,6 +769,8 @@ class expansion_temp(expansion):
 						Req = Web("http://m.gismeteo.ru/weather/%s/" % data)
 						try:
 							data = Req.get_page(self.UserAgent)
+						except Web.Two.HTTPError, exc:
+							answer = str(exc)
 						except:
 							answer = self.AnsBase[0]
 						else:
@@ -619,8 +809,11 @@ class expansion_temp(expansion):
 	commands = (
 		(command_jc, "jc", 2,),
 		(command_google, "google", 2,),
+		(command_google_translate, "tr", 2,),
 		(command_imdb, "imdb", 2,),
-		(command_python, "python", 2,)
+		(command_python, "python", 2,),
+		(command_chuck, "chuck", 2,),
+		(command_bash, "bash", 2,)
 					)
 
 	if DefLANG in ("RU", "UA"):
@@ -628,13 +821,12 @@ class expansion_temp(expansion):
 			(command_kino, "kino", 2,),
 			(command_currency, "currency", 2,),
 			(command_jquote, "jquote", 2,),
-			(command_chuck, "chuck", 2,),
 			(command_ithappens, "ithappens", 2,),
 			(command_gismeteo, "gismeteo", 2,)
 						))
 		Currency_desc = Currency_desc
 	else:
-		del command_kino, command_currency, command_jquote, command_chuck, command_ithappens, command_gismeteo
+		del kinoHeaders, C3oP, command_kino, command_currency, command_jquote, command_ithappens, command_gismeteo
 
 if DefLANG in ("RU", "UA"):
 	del Currency_desc

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sheriff" # /code.py v.x5
-#  Id: 15~3a
+exp_name = "sheriff" # /code.py v.x6
+#  Id: 15~4a
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -21,7 +21,7 @@ class expansion_temp(expansion):
 
 	Federal_Jail, Antiwipe = {}, {}
 
-	class rUser:
+	class rUser(object):
 
 		def __init__(self):
 			self.devoice = 0
@@ -192,16 +192,12 @@ class expansion_temp(expansion):
 			access = 2
 		return (loy, access)
 
+	compile_link = compile__("(?:http[s]?|ftp|svn)://[^\s'\"<>]+", 64)
+	compile_chat = compile__("[^\s]+?@(?:conference|muc|chat|room)\.[\w-]+?\.[\w-]+", 64)
+
 	def tiser_checker(self, body):
 		body = body.lower()
-		c1, c2 = 0, 0
-		for dkey in ("@", "conf", "ence"):
-			if body.count(dkey):
-				c1 += 1
-		for dkey in ("http", "//", "www"):
-			if body.count(dkey):
-				c2 += 1
-		if c1 == 3 or c2 > 1:
+		if self.compile_link.search(body) or self.compile_chat.search(body):
 			return True
 		return False
 
@@ -225,14 +221,14 @@ class expansion_temp(expansion):
 
 		def nick_checker(conf, nick):
 			nick = nick.lower()
-			for dkey in ("%s", "%d", "%i", "%f"):
+			for dkey in ("%s", "%r", "%d", "%i", "%f", "/"):
 				if nick.count(dkey):
 					return True
 			nick = nick.split()[0]
-			if nick in Cmds.keys():
+			if Cmds.has_key(nick):
 				return True
 			if Chats[conf].cPref and nick.startswith(Chats[conf].cPref):
-				if nick[1:] in Cmds.keys():
+				if Cmds.has_key(nick[1:]):
 					return True
 			return False
 
@@ -259,7 +255,7 @@ class expansion_temp(expansion):
 				elif prisoner.offenses == 3:
 					Chats[source[1]].visitor(source[2], "%s: %s" % (get_self_nick(source[1]), body))
 					prisoner.SetDevoice()
-					Msend(source[0], self.AnsBase[16] % (body, ChatsAttrs[source[1]]["laws"]["dtime"]), disp)
+					Message(source[0], self.AnsBase[16] % (body, ChatsAttrs[source[1]]["laws"]["dtime"]), disp)
 					raise iThr.ThrKill("exit")
 				else:
 					prisoner.SetDevoice()
@@ -293,12 +289,12 @@ class expansion_temp(expansion):
 								if prisoner.vakey == body.lower():
 									prisoner.Autenticated()
 									Chats[source[1]].participant(source[2], self.AnsBase[20] % get_self_nick(source[1]))
-									Msend(source[0], self.AnsBase[21], disp)
+									Message(source[0], self.AnsBase[21], disp)
 								elif prisoner.vnumb.plus() >= 3:
 									prisoner.vnumb = itypes.Number()
 									self.spesial_kick(source[1], source[2], self.AnsBase[22])
 								else:
-									Msend(source[0], self.AnsBase[23], disp)
+									Message(source[0], self.AnsBase[23], disp)
 								raise iThr.ThrKill("exit")
 						list = getattr(prisoner, "msdates")
 						if len(list) >= 4:
@@ -406,7 +402,7 @@ class expansion_temp(expansion):
 						eTime = prisoner.GetDevoice()
 						if (eTime < ChatsAttrs[conf]["laws"]["dtime"]):
 							Chats[conf].visitor(nick, self.AnsBase[11] % get_self_nick(conf))
-							Msend("%s/%s" % (conf, nick), self.AnsBase[14] % Time2Text(ChatsAttrs[conf]["laws"]["dtime"] - eTime), disp)
+							Message("%s/%s" % (conf, nick), self.AnsBase[14] % Time2Text(ChatsAttrs[conf]["laws"]["dtime"] - eTime), disp)
 						else:
 							prisoner.devoice = 0
 				else:
@@ -421,7 +417,7 @@ class expansion_temp(expansion):
 						ques = choice(self.AnsBase[19].splitlines())
 						ques = ques.split(chr(124), 1)
 						prisoner.vakey = (ques[1].strip()).lower()
-						Msend("%s/%s" % (conf, nick), self.AnsBase[18] % (ques[0].strip()), disp)
+						Message("%s/%s" % (conf, nick), self.AnsBase[18] % (ques[0].strip()), disp)
 						del ques
 				list = getattr(prisoner, "prdates")
 				if len(list) >= 4:

@@ -102,7 +102,7 @@ class expansion_temp(expansion):
 		answer += self.AnsBase[16] % (access)
 		if ltype == Types[1]:
 			Answer(AnsBase[11], ltype, source, disp)
-		Msend(source[0], answer, disp)
+		Message(source[0], answer, disp)
 
 	commands = (
 		(command_location, "location", 1,),

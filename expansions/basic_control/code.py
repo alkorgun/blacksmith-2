@@ -69,7 +69,7 @@ class expansion_temp(expansion):
 						Chats[conf].join()
 						self.Chat_check(conf)
 						if Chats.has_key(conf) and Chats[conf].IamHere:
-							Msend(conf, self.AnsBase[7] % (ProdName, source[2]), disp_)
+							Message(conf, self.AnsBase[7] % (ProdName, source[2]), disp_)
 							answer = self.AnsBase[2] % (conf)
 						else:
 							answer = self.AnsBase[3] % (conf)
@@ -118,7 +118,7 @@ class expansion_temp(expansion):
 				if GodName != source_:
 					delivery(self.AnsBase[4] % (source[2], source_, conf))
 				info = self.AnsBase[9] % (source[2])
-				Msend(conf, info, Chats[conf].disp)
+				Message(conf, info, Chats[conf].disp)
 				time.sleep(2)
 				Chats[conf].full_leave(info)
 				if conf != source[1]:
@@ -169,7 +169,7 @@ class expansion_temp(expansion):
 		if body:
 			exit_desclr += self.AnsBase[1] % (body)
 		for conf in Chats.keys():
-			Msend(conf, exit_desclr, Chats[conf].disp)
+			Message(conf, exit_desclr, Chats[conf].disp)
 		time.sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
@@ -184,7 +184,7 @@ class expansion_temp(expansion):
 		if body:
 			exit_desclr += self.AnsBase[1] % (body)
 		for conf in Chats.keys():
-			Msend(conf, exit_desclr, Chats[conf].disp)
+			Message(conf, exit_desclr, Chats[conf].disp)
 		time.sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()

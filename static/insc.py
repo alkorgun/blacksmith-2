@@ -36,22 +36,22 @@ if DefLANG in ("RU", "UA"):
 					)])
 else:
 	AnsBase = (
-		"This command is available only in conferences.", # 0
+		"This command is available only in the conferences.", # 0
 		"This command implies arguments using.", # 1
 		"Invalid syntax.", # 2
-		"There is not '%s' in chats list.", # 3
+		"There is no '%s' in the chats-list.", # 3
 		"Done.", # 4
 		"Parameters should be shorter.", # 5
-		"Such command isn't exists.", # 6
+		"Such command isn't exist.", # 6
 		"I can't.", # 7
-		"There is not such conference in my list.", # 8
-		"Type specified is incorrect.", # 9
+		"There is no such conference in my list.", # 8
+		"Type is invalid.", # 9
 		"You need to access higher.", # 10
-		"You should to look in to your private.", # 11
+		"You should look into private.", # 11
 		"# %d. - %s", # 12
 		"command '%s' (%s)", # 13
 		"prosess '%s'", # 14
-		"When execut %s --> error was happend!", # 15
+		"When execut %s --> error happend!", # 15
 		"Type --> 'excinfo %d' to show error (crashfile --> %s)", # 16
 		"Type --> 'excinfo %d' or 'sh cat %s' to show error", # 17
 		"%s[...]\n\n** %d symbols limit! Type 'more' to show rest of the text.", # 18
@@ -59,12 +59,12 @@ else:
 		"Error %s (%s) - conference: '%s'.", # 20
 		"Error %s (%s), full exit from '%s'.", # 21
 		"Error %s (%s), I leaved '%s'.", # 22
-		"Service without admin affilation is unavalable!", # 23
-		"I Disable all functions until I'll become an admin!", # 24
+		"The service without admin's affilation is unavalable!", # 23
+		"I disable all functions until I'll become an admin!", # 24
 		"Obtaining rights...", # 25
 		"sCode '%s' in %s (%s). Full leave!", # 26
-		"Type HELP to know more (last action - %s)", # 27
-		"Client '%s' falled!", # 28
+		"Type 'HELP' to know more (the last action - %s)", # 27
+		"Client '%s' fell!", # 28
 		"JID '%s' used in another client! (I have to disconnect it)", # 29
 		"This is not a number." # 30
 					)

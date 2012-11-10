@@ -36,9 +36,9 @@ else:
 		"I came out from -> '%s'", # 10
 		"Restart by command from %s", # 11
 		"Shutdown by command from %s", # 12
-		"I added this conference in to chat-list and I'll retry to join it. If you not sure that this server exists - you should to type leave command.", # 13
+		"I added this conference in to chats-list and I'll retry to join it. If you not sure that this server exists - you should to type leave-command.", # 13
 		"I can't. Client which assigned to this conference - currently offline.", # 14
-		"Unable to create directory, probably '%s' contains invalid characters. Accordingly, I can't serve this conference.", # 15
+		"Unable to create a directory, probably '%s' contains an invalid characters. Accordingly, I can't serve this conference.", # 15
 		"The system can not allocate resources to another client.", # 16
-		"'%s' not in clients list." # 17
+		"'%s' not in the clients-list." # 17
 					)

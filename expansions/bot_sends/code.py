@@ -50,7 +50,7 @@ class expansion_temp(expansion):
 	def command_sendall(self, ltype, source, body, disp):
 		if body:
 			for conf in Chats.keys():
-				Msend(conf, self.AnsBase[5] % (source[2], body))
+				Message(conf, self.AnsBase[5] % (source[2], body))
 			answer = AnsBase[4]
 		else:
 			answer = AnsBase[1]
@@ -61,7 +61,7 @@ class expansion_temp(expansion):
 			if Chats[source[1]].more:
 				body = "[&&] %s" % (Chats[source[1]].more)
 				Chats[source[1]].more = ""
-				Msend(source[1], body, disp)
+				Message(source[1], body, disp)
 		else:
 			Answer(AnsBase[0], ltype, source, disp)
 
@@ -73,7 +73,7 @@ class expansion_temp(expansion):
 				if isSource(sTo):
 					conf = (sTo.split(chr(47)))[0].lower()
 					if Chats.has_key(conf) or not conf.count("@conf"):
-						Msend(sTo, self.AnsBase[5] % (source[2], body[(body.find(sTo) + len(sTo)):].strip()))
+						Message(sTo, self.AnsBase[5] % (source[2], body[(body.find(sTo) + len(sTo)):].strip()))
 						answer = AnsBase[4]
 					else:
 						answer = AnsBase[8]
@@ -100,9 +100,9 @@ class expansion_temp(expansion):
 	def command_say(self, ltype, source, body, disp):
 		if body:
 			if ConfLimit >= len(body):
-				Msend(source[1], body, disp)
+				Message(source[1], body, disp)
 			else:
-				Msend(source[1], body[:ConfLimit], disp)
+				Message(source[1], body[:ConfLimit], disp)
 		else:
 			Answer(AnsBase[1], ltype, source, disp)
 

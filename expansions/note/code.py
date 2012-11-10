@@ -102,7 +102,7 @@ class expansion_temp(expansion):
 							Notes = (self.AnsBase[6] % (Notes))
 							if ltype == Types[1]:
 								Answer(AnsBase[11], ltype, source, disp)
-							Msend(source[0], Notes, disp)
+							Message(source[0], Notes, disp)
 						else:
 							db("delete from note where jid=?", (source_,))
 							db.commit()

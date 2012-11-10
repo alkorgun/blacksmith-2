@@ -21,12 +21,12 @@ else:
 		"Parameters are incorrect.", # 1
 		"Config:\n", # 2
 		"Config is empty.", # 3
-		"Attention! Current jid deleting, now. I'll rejoin with new.", # 4
+		"Attention! Current jid deleting now. I'll rejoin with new.", # 4
 		"jid change", # 5
-		"'%s' - my main JID, now.", # 6
+		"'%s' - my main JID now.", # 6
 		"Forbidden!", # 7
 		"The system can not allocate resources to another client.", # 8
 		"No connection.", # 9
 		"This jid is already in list.", # 10
-		"'%s' not in clients list." # 11
+		"'%s' not in clients-list." # 11
 					)

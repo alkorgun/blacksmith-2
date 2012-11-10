@@ -18,11 +18,11 @@ else:
 	AnsBase_temp = (
 		"Your access = %s", # 0
 		"%s's access = %s", # 1
-		"I have not information about '%s'.", # 2
+		"I have no information about '%s'.", # 2
 		"No global accesses.", # 3
 		"No local accesses.", # 4
 		"Access list:\n", # 5
-		"So, '%s' has not access.", # 6
+		"So, '%s' has no access.", # 6
 		"You can't give access < -1 & > 8.", # 7
 		"You can't give local access < 0 & > 6.", # 8
 		"'%s' has global access.", # 9

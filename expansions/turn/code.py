@@ -23,7 +23,7 @@ class expansion_temp(expansion):
 			desc = {}
 			for Nick in Chats[conf].get_nicks():
 				if Chats[conf].isHereTS(Nick):
-					for app in (["%s%s" % (Nick, Key) for Key in (":",",",">")] + [Nick]):
+					for app in (["%s%s" % (Nick, Key) for Key in (":", ",", ">")] + [Nick]):
 						if body.count(app):
 							Numb = "*%s*" % str(len(desc.keys()) + 1)
 							desc[Numb] = app
@@ -40,13 +40,13 @@ class expansion_temp(expansion):
 		
 		if Chats.has_key(source[1]):
 			if body:
-				answer = "*\ %s" % Turn(source[1], body)
+				answer = "Turn\->\n" + Turn(source[1], body)
 			else:
 				source_ = get_source(source[1], source[2])
 				if source_ and self.TurnBase[source[1]].has_key(source_):
 					(Time, body) = self.TurnBase[source[1]].pop(source_)
 					body = "Turn\->\n[%s] <%s>: %s" % (Time, source[2], Turn(source[1], body))
-					Msend(source[1], body, disp)
+					Message(source[1], body, disp)
 				else:
 					answer = AnsBase[7]
 		else:

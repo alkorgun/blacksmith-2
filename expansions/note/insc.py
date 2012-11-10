@@ -22,5 +22,5 @@ else:
 		"This line is empty.", # 5
 		"Your notes:%s", # 6
 		"Recorded in line - %s.", # 7
-		"This line is alredy empty." # 8
+		"This line is already empty." # 8
 					)

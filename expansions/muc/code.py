@@ -52,7 +52,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].outcast(jid, text, (ltype, source))
+							Chats[source[1]].outcast(jid, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -91,7 +91,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].none(jid, text, (ltype, source))
+							Chats[source[1]].none(jid, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -130,7 +130,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].member(jid, text, (ltype, source))
+							Chats[source[1]].member(jid, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -169,7 +169,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].admin(jid, text, (ltype, source))
+							Chats[source[1]].admin(jid, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -208,7 +208,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].owner(jid, text, (ltype, source))
+							Chats[source[1]].owner(jid, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -246,7 +246,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].kick(nick, text, (ltype, source))
+							Chats[source[1]].kick(nick, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -284,7 +284,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].visitor(nick, text, (ltype, source))
+							Chats[source[1]].visitor(nick, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -321,7 +321,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].participant(nick, text, (ltype, source))
+							Chats[source[1]].participant(nick, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -358,7 +358,7 @@ class expansion_temp(expansion):
 								text = "%s: %s" % (source[2], (body.pop(0)).strip())
 							else:
 								text = "%s/%s" % (get_self_nick(source[1]), source[2])
-							Chats[source[1]].moder(nick, text, (ltype, source))
+							Chats[source[1]].moder(nick, text, (None, (ltype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -371,6 +371,30 @@ class expansion_temp(expansion):
 			answer = AnsBase[0]
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source, disp)
+
+	PerfDesc = {"done": 0, "fail": 0}
+
+	def HandleFB(self, disp, stanza, desc):
+		if xmpp.isResultNode(stanza):
+			desc["done"] += 1
+		else:
+			desc["fail"] += 1
+
+	def calcPerformance(self, desc):
+		cl = len(Chats.keys())
+		for x in xrange(60):
+			time.sleep(0.2)
+			if cl <= sum(desc.values()):
+				break
+		sl = sum(desc.values())
+		if cl > sl:
+			desc["none"] = (cl - sl)
+			answer = self.AnsBase[2] %  desc
+		elif desc["fail"]:
+			answer = self.AnsBase[3] %  desc
+		else:
+			answer = self.AnsBase[4]
+		return answer
 
 	def command_fullban(self, ltype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -391,9 +415,10 @@ class expansion_temp(expansion):
 						text = "%s: %s" % (source[2], (body.pop(0)).strip())
 					else:
 						text = "%s/%s" % (get_self_nick(source[1]), source[2])
+					desc = self.PerfDesc.copy()
 					for conf in Chats.keys():
-						Chats[conf].outcast(jid, text)
-					answer = AnsBase[4]
+						Chats[conf].outcast(jid, text, (self.HandleFB, {"desc": desc}))
+					answer = self.calcPerformance(desc)
 				else:
 					answer = AnsBase[7]
 			else:
@@ -417,9 +442,10 @@ class expansion_temp(expansion):
 				else:
 					jid = None
 				if jid:
+					desc = self.PerfDesc.copy()
 					for conf in Chats.keys():
-						Chats[conf].none(jid)
-					answer = AnsBase[4]
+						Chats[conf].none(jid, handler = (self.HandleFB, {"desc": desc}))
+					answer = self.calcPerformance(desc)
 				else:
 					answer = AnsBase[7]
 			else:

@@ -71,9 +71,7 @@ class expansion_temp(expansion):
 		else:
 			source_ = get_source(source[1], source[2])
 		if source_ and self.PingStat.has_key(source_):
-			Number = 0.0
-			for x in self.PingStat[source_]:
-				Number += x
+			Number = float(sum(self.PingStat[source_]))
 			len_ = len(self.PingStat[source_])
 			max_ = max(self.PingStat[source_])
 			min_ = min(self.PingStat[source_])
@@ -196,30 +194,27 @@ class expansion_temp(expansion):
 
 	def answer_afls(self, disp, stanza, ltype, source, Numb):
 		if xmpp.isResultNode(stanza):
-			list = stanza.getChildren()
-			if list:
-				Number, answer = itypes.Number(), str()
-				for child in list[0].getChildren():
-					if child and child != "None":
-						jid = child.getAttr("jid")
+			Number, answer = itypes.Number(), str()
+			for node in stanza.getChildren():
+				for node in node.getChildren():
+					if node and node != "None":
+						jid = node.getAttr("jid")
 						if jid:
 							if Numb and Numb <= Number._int():
 								Number.plus()
 							else:
 								answer += "\n%d) %s" % (Number.plus(), jid)
-								signature = child.getTagData("reason")
+								signature = node.getTagData("reason")
 								if signature:
 									answer += " [%s]" % (signature)
-				if answer:
-					if Numb and Numb < Number._int():
-						answer += "\n...\nTotal: %s items." % (Number._str())
-					Msend(source[0], answer, disp)
-					if ltype == Types[1]:
-						answer = AnsBase[11]
-					else:
-						del answer
+			if answer:
+				if Numb and Numb < Number._int():
+					answer += "\n...\nTotal: %s items." % (Number._str())
+				Message(source[0], answer, disp)
+				if ltype == Types[1]:
+					answer = AnsBase[11]
 				else:
-					answer = self.AnsBase[6]
+					del answer
 			else:
 				answer = self.AnsBase[6]
 		else:

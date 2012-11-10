@@ -38,12 +38,12 @@ if DefLANG in ("RU", "UA"):
 		"\nКонфигурация cлужбы безопасности:\nЗапрет пробелов на концах ника: ", # 24
 		"включена", # 25
 		"отключена", # 26
-		"\nМаксимальная длинна ника: %d\nЗащита от вайпа: ", # 27
+		"\nМаксимальная длина ника: %d\nЗащита от вайпа: ", # 27
 		"\nНомер кика за которым следует бан: %d\nАвторизация: ", # 28
 		"\nЛояльность: %d\nАнтиреклама: ", # 29
 		"\nВремя девойса (в секундах): %d\nАнтимат: ", # 30
-		"\nМаксимальная длинна сообщения: %d\nАнтикапс: ", # 31
-		"\nМаксимальная длинна презенса: %d\nРежим Спарты: ", # 32
+		"\nМаксимальная длина сообщения: %d\nАнтикапс: ", # 31
+		"\nМаксимальная длина презенса: %d\nРежим Спарты: ", # 32
 		"бляд/ блят/ бля / блять / плять /хуй/ ибал/ ебал/ хуи/хуител/хуя/ хую/ хуе/ ахуе/ охуе/хуев/ хер /хер/ пох / нах /писд/пизд/рizd/ пздц / еб/ епана / епать / ипать / выепать / ибаш/ уеб/проеб/праеб/приеб/съеб/взъеб/взьеб/въеб/вьеб/выебан/перееб/недоеб/долбоеб/долбаеб/ ниибац/ неебац/ неебат/ ниибат/ пидар/ рidаr/ пидар/ пидор/педор/пидор/пидарас/пидараз/ педар/педри/пидри/ заеп/ заип/ заеб/ебучий/ебучка /епучий/епучка / заиба/заебан/заебис/ выеб/выебан/ поеб/ наеб/ наеб/сьеб/взьеб/вьеб/ гандон/ гондон/пахуи/похуис/ манда /мандав/залупа/ залупог", # 33
 		"Сервер в белом списке.", # 34
 		"Сервера нет в дополнительном белом списке.", # 35
@@ -65,7 +65,7 @@ else:
 		"%s: intruder.", # 11
 		"%s: antiwipe.", # 12
 		"presence flood.", # 13
-		"Ooops! You earned devoice. Left %s.", # 14
+		"Ooops! You have earned devoice. Left %s.", # 14
 		"flood.", # 15
 		"%s devoice in to %d seconds.", # 16
 		"%s verification.", # 17
@@ -90,9 +90,9 @@ else:
 		"\nMax nickname length: %d\nAntiwipe: ", # 27
 		"\nNumber of the kick, after that ban follows: %d\nVerification: ", # 28
 		"\nLoyalty: %d\nAntiаdvertising: ", # 29
-		"\nDevoice time (seconds): %d\nAntiobscene: ", # 30
-		"\nMaximum message length: %d\nAnticaps: ", # 31
-		"\nMaximum presence length: %d\nSparta mode: ", # 32
+		"\nDevoice-time (seconds): %d\nAntiobscene: ", # 30
+		"\nMaximum length of message: %d\nAnticaps: ", # 31
+		"\nMaximum length of presence: %d\nSparta mode: ", # 32
 		" fuck / shit /motherfucker/unclefucker/ bitch / faggot / cock / cunt ", # 33
 		"Server already in the white list.", # 34
 		"Server not in extra white list.", # 35

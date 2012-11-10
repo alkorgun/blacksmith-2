@@ -12,7 +12,7 @@ if DefLANG in ("RU", "UA"):
 		"\n# Обслуживаю %d конференций", # 7
 		"\n# Зафиксировано %d пользователей", # 8
 		"", # 9
-		"\n# Произошло %d ошибок и %s Dispatch Errors", # 10
+		"\n# Произошло %d ошибок и %s Dispatch-Errors", # 10
 		"\n# Записей crash логов %s", # 11
 		"\n# Создано %s тредов, %d из них активно", # 12
 		"\n# Потрачено %.2f секунд процессора", # 13
@@ -28,9 +28,9 @@ if DefLANG in ("RU", "UA"):
 					)])
 else:
 	AnsBase_temp = (
-		"\n*// Session statistics (Pid: %d):", # 0
-		"\n# Bot uptime %s", # 1
-		"\n# Last working set %s", # 2
+		"\n*// Session's statistics (Pid: %d):", # 0
+		"\n# Bot's uptime %s", # 1
+		"\n# The last working set %s", # 2
 		"\n# Obtained %s messages", # 3
 		"\n# Completed %s commands", # 4
 		"\n# Processed %s presences & %s iq-request", # 5
@@ -38,13 +38,13 @@ else:
 		"\n# Serve %d conferences", # 7
 		"\n# Fixed %d users", # 8
 		"", # 9
-		"\n# Happened %d exceptions & %s Dispatch Errors", # 10
+		"\n# Happened %d exceptions & %s Dispatch-Errors", # 10
 		"\n# Wrote crash logs %s", # 11
 		"\n# Created %s threads, %d is now active", # 12
 		"\n# Used %.2f processor seconds", # 13
 		"\n# Used %s megabyte RAM", # 14
 		"\nBot's uptime: %s.", # 15
-		"\nLast working set: %s.\nReloads (%s):\n%s.", # 16
+		"\nThe last working set: %s.\nReloads (%s):\n%s.", # 16
 		" - Working without restarts!", # 17
 		"\nCommand '%s' usage statistics:\nTotal used - %s times (%d users).", # 18
 		"\n[#][Command][Used][Users used]", # 19

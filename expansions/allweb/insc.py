@@ -14,9 +14,32 @@ if DefLANG in ("RU", "UA"):
 		"Не вижу твоего JID'а, поэтому не могу найти твоих запросов в базе.", # 3
 		"\n\n** Ещё %d результатов (командуй «гугл *»).", # 4
 		"Ничего не найдено...", # 5
+		"Этот язык не поддерживается.", # 6
+		"\n\n** Ещё %d вариантов перевода (командуй «перевод *»).", # 7
+		"Поддерживаемые языки:\n", # 8
 		"\n* Погода предоставлена Gismeteo.ru", # -2
 		"Запрос блокирован Кинопоиском." # -1
 					)])
+
+	LangMap = {
+		"af": "Африкаанс",		"ar": "Арабский",		"be": "Белорусский",
+		"bg": "Болгарский",		"ca": "Каталанский",	"cs": "Чешский",
+		"cy": "Валлийский",		"da": "Датский",		"de": "Немецкий",
+		"el": "Греческий",		"en": "Английский",		"es": "Испанский",
+		"et": "Эстонский",		"fa": "Персидский",		"fi": "Финский",
+		"fr": "Французский",	"ga": "Ирландский",		"gl": "Галисийский",
+		"hi": "Хинди",			"hr": "Хорватский",		"hu": "Венгерский",
+		"id": "Индонезийский",	"is": "Исландский",		"it": "Итальянский",
+		"iw": "Иврит",			"ja": "Японский",		"ko": "Корейский",
+		"la": "Латынь",			"lt": "Литовский",		"lv": "Латышский",
+		"mk": "Македонский",	"mt": "Мальтийский",	"nl": "Голландский",
+		"no": "Норвежский",		"pl": "Польский",		"pt": "Португальский",
+		"ro": "Румынский",		"ru": "Русский",		"sk": "Словацкий",
+		"sl": "Словенский",		"sq": "Албанский",		"sr": "Сербский",
+		"sv": "Шведский",		"sw": "Суахили",		"th": "Тайский",
+		"tl": "Тагальский",		"tr": "Турецкий",		"uk": "Украинский",
+		"vi": "Вьетнамский",	"yi": "Идиш",			"zh-CN": "Китайский"
+					}
 
 	Currency_desc = {
 		"AMD": "Армянский драм",
@@ -60,8 +83,31 @@ else:
 	AnsBase_temp = (
 		"No access to the page.", # 0
 		"Trouble with the marking...", # 1
-		"There are no your requests in cache.", # 2
-		"I can't find your requests in cache, because I don't know your JID.", # 3
+		"There are no your requests in the cache.", # 2
+		"I can't find your requests in the cache, because I don't know your JID.", # 3
 		'\n\n** There are %d another results (type "google *").', # 4
-		"No result..." # 5
+		"No result...", # 5
+		"This language is not supported.", # 6
+		'\n\n** There are %d another translations (type "tr *").', # 7
+		"Supported languages:\n" # 8
 					)
+
+	LangMap = {
+		"af": "Afrikaans",		"ar": "Arabic",			"be": "Byelorussian",
+		"bg": "Bulgarian",		"ca": "Catalan",		"cs": "Czech",
+		"cy": "Welsh",			"da": "Danish",			"de": "German",
+		"el": "Greek",			"en": "English",		"es": "Spanish",
+		"et": "Estonian",		"fa": "Persian",		"fi": "Finnish",
+		"fr": "French",			"ga": "Irish",			"gl": "Galician",
+		"hi": "Hindi",			"hr": "Croatian",		"hu": "Hungarian",
+		"id": "Indonesian",		"is": "Icelandic",		"it": "Italian",
+		"iw": "Hebrew",			"ja": "Japanese",		"ko": "Korean",
+		"la": "Latin",			"lt": "Lithuanian",		"lv": "Latvian",
+		"mk": "Macedonian",		"mt": "Maltese",		"nl": "Dutch",
+		"no": "Norwegian",		"pl": "Polish",			"pt": "Portuguese",
+		"ro": "Romanian",		"ru": "Russian",		"sk": "Slovak",
+		"sl": "Slovenian",		"sq": "Albanian",		"sr": "Serbian",
+		"sv": "Swedish",		"sw": "Swahili",		"th": "Thai",
+		"tl": "Tagalog",		"tr": "Turkish",		"uk": "Ukrainian",
+		"vi": "Vietnamese",		"yi": "Yiddish",		"zh-CN": "Chinese"
+				}

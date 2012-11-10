@@ -1,0 +1,10 @@
+google translate
+tr (lang_from/auto/*) (lang_to) (text)
+*/tr
+bot would show supported languages
+*/tr en ru hello world
+bot would translate "hello world" to russian
+*/tr auto ru hello world
+lang_from would detected automatically
+*/tr *
+bot would show next translation

@@ -175,7 +175,7 @@ class expansion_temp(expansion):
 								ls.append("Link: %s" % (link))
 							if Annt:
 								ls.append("Annotation:\n\t%s" % (Annt))
-							ls.append("\nAdded by: %s (Last Up.: %s)" % (Nick, Date))
+							ls.append("\nAdded by: %s (The Last Upd.: %s)" % (Nick, Date))
 							answer = str.join(chr(10), ls)
 						else:
 							answer = self.AnsBase[3]
@@ -224,7 +224,7 @@ class expansion_temp(expansion):
 							if data:
 								if ltype == Types[1]:
 									answer = AnsBase[11]
-								Msend(source[0], data[0], disp)
+								Message(source[0], data[0], disp)
 								if jid:
 									with database(self.ReadersFile) as db:
 										db("select * from readers where jid=?", (jid,))
