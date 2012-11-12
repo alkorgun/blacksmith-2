@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 32, 0)
+(BsMark, BsVer, BsRev) = (2, 33, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -1080,7 +1080,7 @@ def get_pipe(command):
 		data = "(...)"
 	return data
 
-class Web(object):
+class Web:
 
 	import urllib as One, urllib2 as Two
 
@@ -1109,9 +1109,14 @@ class Web(object):
 				dest.add_header(header, desc)
 		return self.Opener.open(dest)
 
-	def download(self, filename = None, feedback = None, header = ()):
+	def download(self, filename = None, folder = None, feedback = None, header = ()):
 		fp = self.open(header)
 		info = fp.info()
+		size = info.get("Content-Length", -1)
+		if isNumber(size):
+			size = int(size)
+		else:
+			raise SelfExc("server gives no info about file size")
 		if not filename:
 			if info.has_key("Content-Disposition"):
 				disp = info.get("Content-Disposition")
@@ -1123,16 +1128,17 @@ class Web(object):
 			filename = self.One.unquote_plus(fp.url.split("/")[-1].split("?")[0].replace("%25", "%"))
 			if not filename:
 				raise SelfExc("can't get filename")
+		if folder:
+			filename = os.path.join(folder, filename)
+		if AsciiSys:
+			filename = filename.encode("utf-8")
 		blockSize = 8192
 		blockNumb = 0
 		read = 0
-		size = info.get("Content-Length", -1)
-		if isNumber(size):
-			size = int(size)
-		with open(filename.encode("utf-8"), "wb") as dfp:
+		with open(filename, "wb") as dfp:
 			while VarCache["alive"]:
 				if feedback:
-					exec_(feedback, (blockNumb, blockSize, size))
+					exec_(feedback, (info, blockNumb, blockSize, size))
 				data = fp.read(blockSize)
 				if not data:
 					break
@@ -1141,6 +1147,8 @@ class Web(object):
 				read += len(data)
 		if size >= 0 and read < size:
 			raise SelfExc("file is corrupt, lost %d bytes" % (size - read))
+		if AsciiSys:
+			filename = filename.decode("utf-8")
 		return (filename, info, size)
 
 	get_page = lambda self, header = (): self.open(header).read()

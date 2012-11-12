@@ -1,6 +1,6 @@
 google search
 google [text/*]
-*/google
+*/google blah blah
 bot would show 1st search result
 */google *
 bot would show next result

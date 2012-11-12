@@ -22,7 +22,7 @@ class expansion_temp(expansion):
 			"minute": 525960.0, # Минута
 			"second": 31557600.0, # Секунда
 						},
-		"information": { # Информация
+		"info": { # Информация
 			"bit": 1.0, # Бит !# Base
 			"kbit": 9.765625e-04, # 2^10
 			"mbit": 9.53674316406e-07, # 2^20
@@ -217,7 +217,7 @@ class expansion_temp(expansion):
 					data = get_text(data, '\t\t"%s"\:\s\{' % (Desc), '\},')
 					if data:
 						comp = compile__('\t\t\t"(.+?)"\:.+?,\s+?\#\s(.+?)\n', 16)
-						list = comp.findall(data)
+						list = comp.findall("\n%s\n" % data)
 						if list:
 							ls = [Desc + ":"]
 							for data in list:

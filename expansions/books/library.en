@@ -7,7 +7,7 @@ bot would import "The Hobbit" from .fb2
 */library edit The_Two_Towers info number 2
 bot would set the book's number in cycle
 */library edit The_Two_Towers info link http://example.com/book.html
-bot would add the link to the book's information
+bot would add the link to the book's info
 */library edit Star_Wars page add A long time ago, in a galaxy far far away...
 bot would create the new page with the specified text
 */library edit Star_Wars page delete before 10

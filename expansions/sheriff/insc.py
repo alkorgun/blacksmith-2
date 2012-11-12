@@ -21,16 +21,16 @@ if DefLANG in ("RU", "UA"):
 		"%s лишение голоса на %d секунд.", # 16
 		"%s авторизация.", # 17
 		"Чтобы получить голос %s, у тебя три попытки.", # 18
-		"""	напиши: «сезам откройся» (без кавычек)	|	сезам откройся
-			напиши: «я не бот» (без кавычек)		|	я не бот
-			напиши: вторую букву русского алфавита	|	б
-			напиши: шестую букву русского алфавита	|	е
-			реши: семь + 121 = ? (ответ числом)		|	128
-			реши: три + 253 = ? (ответ числом)		|	256
-			напиши: столицу Испании					|	Мадрид
-			напиши: столицу России					|	Москва
-			напиши: столицу Франции					|	Париж
-			напиши: столицу Италии					|	Рим			""", # 19
+		"напиши: «сезам откройся» (без кавычек)		|	сезам откройся\n"
+		"напиши: «я не бот» (без кавычек)			|	я не бот\n"
+		"напиши: вторую букву русского алфавита		|	б\n"
+		"напиши: шестую букву русского алфавита		|	е\n"
+		"реши: семь + 121 = ? (ответ числом)		|	128\n"
+		"реши: три + 253 = ? (ответ числом)			|	256\n"
+		"напиши: столицу Испании					|	Мадрид\n"
+		"напиши: столицу России						|	Москва\n"
+		"напиши: столицу Франции					|	Париж\n"
+		"напиши: столицу Италии						|	Рим", # 19
 		"%s: авторизация пройдена.", # 20
 		"Тест пройден!", # 21
 		"%s: не прошел авторизацию.", # 22
@@ -70,16 +70,16 @@ else:
 		"%s devoice in to %d seconds.", # 16
 		"%s verification.", # 17
 		"To get the voice %s, you have three attempts.", # 18
-		"""	type: 'codename 47' (without quotes)	|	codename 47
-			type: 'I am not a bot' (without quotes)	|	I am not a bot
-			type: second symbol of English alphabet	|	б
-			type: sixth symbol of English alphabet	|	е
-			type answer: seven + 127 = ? (integer)	|	128
-			type answer: three + 253 = ? (integer)	|	256
-			type: capital of Enland					|	London
-			type: capital of USA					|	Washington
-			type: capital of France					|	Paris
-			type: capital of Russia					|	Moscow			""", # 19
+		"type: 'codename 47' (without quotes)		|	codename 47\n"
+		"type: 'I am not a bot' (without quotes)	|	I am not a bot\n"
+		"type: second symbol of English alphabet	|	б\n"
+		"type: sixth symbol of English alphabet		|	е\n"
+		"type answer: seven + 127 = ? (integer)		|	128\n"
+		"type answer: three + 253 = ? (integer)		|	256\n"
+		"type: capital of Enland					|	London\n"
+		"type: capital of USA						|	Washington\n"
+		"type: capital of France					|	Paris\n"
+		"type: capital of Russia					|	Moscow", # 19
 		"%s: verification passed.", # 20
 		"Test passed!", # 21
 		"%s: verification missed.", # 22
@@ -93,7 +93,7 @@ else:
 		"\nDevoice-time (seconds): %d\nAntiobscene: ", # 30
 		"\nMaximum length of message: %d\nAnticaps: ", # 31
 		"\nMaximum length of presence: %d\nSparta mode: ", # 32
-		" fuck / shit /motherfucker/unclefucker/ bitch / faggot / cock / cunt ", # 33
+		" fuck / shit / bitch / faggot / cock / cunt ", # 33
 		"Server already in the white list.", # 34
 		"Server not in extra white list.", # 35
 		"This is not a server." # 36

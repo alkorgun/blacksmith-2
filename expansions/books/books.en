@@ -13,7 +13,7 @@ bot would show the list of sf_fantasy books
 */books show cycle The Black Company
 bot would show the list of books of "The Black Company" cycle
 */books info A Dance With Dragons
-bot would show information about "A Dance With Dragons"
+bot would show info about "A Dance With Dragons"
 */books read
 bot would send you the last page of the last book, which you read
 */books read Call of Cthulhu

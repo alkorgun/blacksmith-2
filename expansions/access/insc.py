@@ -18,7 +18,7 @@ else:
 	AnsBase_temp = (
 		"Your access = %s", # 0
 		"%s's access = %s", # 1
-		"I have no information about '%s'.", # 2
+		"I have no info about '%s'.", # 2
 		"No global accesses.", # 3
 		"No local accesses.", # 4
 		"Access list:\n", # 5

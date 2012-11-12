@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x15
-#  Id: 25~15b
+exp_name = "allweb" # /code.py v.x17
+#  Id: 25~17b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -514,6 +514,83 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
+	def command_url_shorten(self, ltype, source, body, disp):
+		if body:
+			Req = Web("http://is.gd/create.php?", [("format", "json"), ("url", body.encode("utf-8"))])
+			try:
+				data = Req.get_page(self.UserAgent)
+			except Web.Two.HTTPError, exc:
+				answer = str(exc)
+			except:
+				answer = self.AnsBase[0]
+			else:
+				try:
+					data = self.json.loads(data)
+				except:
+					answer = self.AnsBase[1]
+				else:
+					try:
+						answer = data["shorturl"]
+					except KeyError:
+						try:
+							answer = data["errormessage"]
+						except KeyError:
+							answer = self.AnsBase[5]
+		else:
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
+
+	def download_process(self, info, blockNumb, blockSize, size):
+		if not blockNumb:
+			Print("\n")
+			Print(info, color4)
+		else:
+			done = (blockNumb * blockSize)
+			if done >= size:
+				Print("Done.", color3)
+			else:
+				Print("loaded - %.2f%s" % ((done / (float(size) / 100)), chr(37)), color4)
+
+	def command_download(self, ltype, source, body, disp):
+		if body:
+			body = body.split()
+			if len(body) == 1:
+				link = body.pop()
+				folder = None
+				filename = None
+			elif len(body) == 2:
+				link, folder = body
+				filename = None
+			else:
+				link, folder, filename = body[:3]
+			if folder:
+				if AsciiSys:
+					folder = folder.encode("utf-8")
+				if not os.path.isdir(folder):
+					try:
+						os.makedirs(folder)
+					except:
+						link = None
+				if AsciiSys:
+					folder = folder.decode("utf-8")
+			if link:
+				Req = Web(link)
+				try:
+					data = Req.download(filename, folder, self.download_process, self.UserAgent)
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
+				except SelfExc:
+					answer = exc_info()[1]
+				except:
+					answer = self.AnsBase[0]
+				else:
+					answer = "Done.\nPath: %s\nSize: %s" % (data[0], Size2Text(data[2]))
+			else:
+				answer = AnsBase[2]
+		else:
+			answer = AnsBase[1]
+		Answer(answer, ltype, source, disp)
+
 	if DefLANG in ("RU", "UA"):
 
 		def command_chuck(self, ltype, source, body, disp):
@@ -532,7 +609,7 @@ class expansion_temp(expansion):
 				comp = compile__("<a href=/quote/(\d+?)>.+?<blockquote>(.+?)</blockquote>", 16)
 				data = comp.search(data)
 				if data:
-					answer = self.decodeHTML("Fact: #%s\n%s" % data.groups())
+					answer = self.decodeHTML("#%s\n%s" % data.groups())
 				else:
 					answer = self.AnsBase[1]
 			Answer(answer, ltype, source, disp)
@@ -874,6 +951,8 @@ class expansion_temp(expansion):
 		(command_google_translate, "tr", 2,),
 		(command_imdb, "imdb", 2,),
 		(command_python, "python", 2,),
+		(command_url_shorten, "shorten", 2,),
+		(command_download, "download", 2,),
 		(command_chuck, "chuck", 2,),
 		(command_bash, "bash", 2,)
 					)

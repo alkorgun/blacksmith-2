@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sheriff" # /code.py v.x6
-#  Id: 15~4a
+exp_name = "sheriff" # /code.py v.x7
+#  Id: 15~5a
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -201,9 +201,13 @@ class expansion_temp(expansion):
 			return True
 		return False
 
+	Obscene = None
+
 	def obscene_checker(self, body):
+		if not self.Obscene:
+			self.Obscene = self.AnsBase[33].split(chr(47))
 		body = " %s " % body.lower()
-		for dkey in self.AnsBase[33].split(chr(47)):
+		for dkey in self.Obscene:
 			if body.count(dkey):
 				return True
 		return False
@@ -391,6 +395,8 @@ class expansion_temp(expansion):
 								Chats[conf].outcast(inst, self.AnsBase[12] % (BsNick))
 							raise iThr.ThrKill("exit")
 
+	Questions = []
+
 	def Security_04eh(self, conf, nick, source_, role, stanza, disp):
 		if source_ and nick != get_self_nick(conf):
 			access = get_access(conf, nick)
@@ -414,11 +420,14 @@ class expansion_temp(expansion):
 				if ChatsAttrs[conf]["laws"]["verif"] and access < 2 and AflRoles[2] == role[0]:
 					if not prisoner.verif and not prisoner.devoice:
 						Chats[conf].visitor(nick, self.AnsBase[17] % get_self_nick(conf))
-						ques = choice(self.AnsBase[19].splitlines())
-						ques = ques.split(chr(124), 1)
-						prisoner.vakey = (ques[1].strip()).lower()
-						Message("%s/%s" % (conf, nick), self.AnsBase[18] % (ques[0].strip()), disp)
-						del ques
+						if not self.Questions:
+							for qu in self.AnsBase[19].splitlines():
+								qu, an = qu.split(chr(124), 1)
+								self.Questions.append((qu.strip(), an.strip().lower()))
+						qu, an = choice(self.Questions)
+						prisoner.vakey = an
+						Message("%s/%s" % (conf, nick), self.AnsBase[18] % (qu), disp)
+						del qu, an
 				list = getattr(prisoner, "prdates")
 				if len(list) >= 4:
 					if (list[-1] - list[0]) <= 10:

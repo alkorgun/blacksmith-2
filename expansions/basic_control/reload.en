@@ -1,6 +1,8 @@
 bot reloads
-reload (reason)
+reload (reason/silent)
 */reload
 bot would reload
+*/reload silent
+bot would reload silently
 */reload diagnostics
 bot would reload with status "diagnostics"

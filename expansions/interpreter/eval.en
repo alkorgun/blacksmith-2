@@ -3,4 +3,4 @@ eval [code]
 */eval get_file(PidFile)
 bot would read PID.txt and show it's content
 */eval ["1", "2"]*3
-answer would be -» ['1', '2', '1', '2', '1', '2']
+answer would be -> ['1', '2', '1', '2', '1', '2']

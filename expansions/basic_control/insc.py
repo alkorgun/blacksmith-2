@@ -3,7 +3,7 @@
 if DefLANG in ("RU", "UA"):
 	AnsBase_temp = tuple([line.decode("utf-8") for line in (
 		"Внимание! %s (%s) загнал меня в -» '%s'", # 0
-		"\nПричина: %s", # 1
+		"\n\tПричина: %s", # 1
 		"Ага я зашел в -» '%s'", # 2
 		"Не смог зайти в -» '%s'", # 3
 		"АХТУНГ! %s (%s) выгнал меня из -» '%s'", # 4
@@ -24,7 +24,7 @@ if DefLANG in ("RU", "UA"):
 else:
 	AnsBase_temp = (
 		"Attention! %s (%s) sent me in to -> '%s'", # 0
-		"\nReason: %s", # 1
+		"\n\tReason: %s", # 1
 		"I have joined -> '%s'", # 2
 		"I can't join -> '%s'", # 3
 		"Attention! %s (%s) ordered me to leave -> '%s'", # 4

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "basic_control" # /code.py v.x9
-#  Id: 06~3b
+exp_name = "basic_control" # /code.py v.x10
+#  Id: 06~4b
 #  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -166,10 +166,11 @@ class expansion_temp(expansion):
 
 	def command_reload(self, ltype, source, body, disp):
 		exit_desclr = self.AnsBase[11] % (source[2])
-		if body:
-			exit_desclr += self.AnsBase[1] % (body)
-		for conf in Chats.keys():
-			Message(conf, exit_desclr, Chats[conf].disp)
+		if body not in ("silent", "тихо".decode("utf-8")):
+			if body:
+				exit_desclr += self.AnsBase[1] % (body)
+			for conf in Chats.keys():
+				Message(conf, exit_desclr, Chats[conf].disp)
 		time.sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
@@ -180,11 +181,12 @@ class expansion_temp(expansion):
 		Exit("\n\nRestart command...", 0, 15)
 
 	def command_exit(self, ltype, source, body, disp):
-		exit_desclr = self.AnsBase[12] % (source[2])
-		if body:
-			exit_desclr += self.AnsBase[1] % (body)
-		for conf in Chats.keys():
-			Message(conf, exit_desclr, Chats[conf].disp)
+		exit_desclr = self.AnsBase[11] % (source[2])
+		if body not in ("silent", "тихо".decode("utf-8")):
+			if body:
+				exit_desclr += self.AnsBase[1] % (body)
+			for conf in Chats.keys():
+				Message(conf, exit_desclr, Chats[conf].disp)
 		time.sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
