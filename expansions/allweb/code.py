@@ -563,6 +563,8 @@ class expansion_temp(expansion):
 				filename = None
 			else:
 				link, folder, filename = body[:3]
+			if not enough_access(source[1], source[2], 8):
+				folder = "Downloads"
 			if folder:
 				if AsciiSys:
 					folder = folder.encode("utf-8")
@@ -952,7 +954,7 @@ class expansion_temp(expansion):
 		(command_imdb, "imdb", 2,),
 		(command_python, "python", 2,),
 		(command_url_shorten, "shorten", 2,),
-		(command_download, "download", 2,),
+		(command_download, "download", 7,),
 		(command_chuck, "chuck", 2,),
 		(command_bash, "bash", 2,)
 					)
