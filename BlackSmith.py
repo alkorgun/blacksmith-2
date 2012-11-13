@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 33, 0)
+(BsMark, BsVer, BsRev) = (2, 34, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -1109,7 +1109,7 @@ class Web:
 				dest.add_header(header, desc)
 		return self.Opener.open(dest)
 
-	def download(self, filename = None, folder = None, feedback = None, header = ()):
+	def download(self, filename = None, folder = None, handler = None, fb = None, header = ()):
 		fp = self.open(header)
 		info = fp.info()
 		size = info.get("Content-Length", -1)
@@ -1137,8 +1137,8 @@ class Web:
 		read = 0
 		with open(filename, "wb") as dfp:
 			while VarCache["alive"]:
-				if feedback:
-					exec_(feedback, (info, blockNumb, blockSize, size))
+				if handler:
+					execute_handler(handler, (info, blockNumb, blockSize, size, fb))
 				data = fp.read(blockSize)
 				if not data:
 					break

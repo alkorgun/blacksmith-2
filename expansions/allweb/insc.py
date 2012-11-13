@@ -8,7 +8,7 @@ UserAgents = {
 
 if DefLANG in ("RU", "UA"):
 	AnsBase_temp = tuple([line.decode("utf-8") for line in (
-		"Не могу получить доступ к странице.", # 0
+		"Не могу получить доступ к ресурсу.", # 0
 		"Проблемы с разметкой...", # 1
 		"Твоих запросов нет в базе.", # 2
 		"Не вижу твоего JID'а, поэтому не могу найти твоих запросов в базе.", # 3
@@ -17,6 +17,9 @@ if DefLANG in ("RU", "UA"):
 		"Этот язык не поддерживается.", # 6
 		"\n\n** Ещё %d вариантов перевода (командуй «перевод *»).", # 7
 		"Поддерживаемые языки:\n", # 8
+		"Завершено - {0}%", # 9
+		"Начинается загрузка. Это может занять несколько минут...", # 10
+		"Сейчас я занят другой загрузкой. Попробуй позже.", # 11
 		"\n* Погода предоставлена Gismeteo.ru", # -2
 		"Запрос блокирован Кинопоиском." # -1
 					)])
@@ -81,7 +84,7 @@ if DefLANG in ("RU", "UA"):
 					}
 else:
 	AnsBase_temp = (
-		"No access to the page.", # 0
+		"No access to the resource.", # 0
 		"Trouble with the marking...", # 1
 		"There are no your requests in the cache.", # 2
 		"I can't find your requests in the cache, because I don't know your JID.", # 3
@@ -89,7 +92,10 @@ else:
 		"No result...", # 5
 		"This language is not supported.", # 6
 		'\n\n** There are %d another translations (type "tr *").', # 7
-		"Supported languages:\n" # 8
+		"Supported languages:\n", # 8
+		"loaded - {0}%", # 9
+		"Download can take several minutes...", # 10
+		"Now I'm busy with another load. Try again later." # 11
 					)
 
 	LangMap = {

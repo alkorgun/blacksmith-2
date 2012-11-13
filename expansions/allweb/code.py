@@ -333,32 +333,33 @@ class expansion_temp(expansion):
 						answer = self.AnsBase[-1]
 					else:
 						answer = self.AnsBase[5]
-			elif ls:
-				Req = (body if chr(42) != c1st else body[2:].strip())
-				Req = Req.encode("cp1251")
-				Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req), headers = self.kinoHeaders.copy())
-				try:
-					data = Req.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
-					answer = str(exc)
-				except:
-					answer = self.AnsBase[0]
-				else:
-					data = data.decode("cp1251")
-					comp = compile__("<a href=\"http://m.kinopoisk.ru/movie/(\d+?)/\">(.+?)</a>")
-					list = comp.findall(data)
-					if list:
-						Number = itypes.Number()
-						ls = ["\n[#] [Name, Year] (#id)"]
-						for Numb, Name in list:
-							ls.append("%d) %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Numb))
-						answer = str.join(chr(10), ls)
-					elif data.count(self.C3oP):
-						answer = self.AnsBase[-1]
-					else:
-						answer = self.AnsBase[5]
 			else:
-				answer = AnsBase[2]
+				Req = (body if chr(42) != c1st else body[2:].strip())
+				if Req:
+					Req = Req.encode("cp1251")
+					Req = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(Req), headers = self.kinoHeaders.copy())
+					try:
+						data = Req.get_page(self.UserAgent_Moz)
+					except Web.Two.HTTPError, exc:
+						answer = str(exc)
+					except:
+						answer = self.AnsBase[0]
+					else:
+						data = data.decode("cp1251")
+						comp = compile__("<a href=\"http://m.kinopoisk.ru/movie/(\d+?)/\">(.+?)</a>")
+						list = comp.findall(data)
+						if list:
+							Number = itypes.Number()
+							ls = ["\n[#] [Name, Year] (#id)"]
+							for Numb, Name in list:
+								ls.append("%d) %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Numb))
+							answer = str.join(chr(10), ls)
+						elif data.count(self.C3oP):
+							answer = self.AnsBase[-1]
+						else:
+							answer = self.AnsBase[5]
+				else:
+					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
@@ -462,31 +463,32 @@ class expansion_temp(expansion):
 							answer = self.AnsBase[1]
 					else:
 						answer = self.AnsBase[1]
-			elif ls:
-				Req = (body if chr(42) != c1st else body[2:].strip())
-				Req = Req.encode("utf-8")
-				Req = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", Req)], self.IMDbHeaders)
-				try:
-					data = Req.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
-					answer = str(exc)
-				except:
-					answer = self.AnsBase[0]
-				else:
-					list = get_text(data, "<table>", "</table>")
-					if list:
-						comp = compile__("/find-title-\d+?/title_.+?/images/b.gif\?link=/title/tt(\d+?)/';\">(.+?)</a> (.+?)<", 16)
-						list = comp.findall(list)
-					if list:
-						Number = itypes.Number()
-						ls = ["\n[#] [Name, Year] (#id)"]
-						for Numb, Name, Year in list:
-							ls.append("%d) %s %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Year.strip(), Numb))
-						answer = str.join(chr(10), ls)
-					else:
-						answer = self.AnsBase[5]
 			else:
-				answer = AnsBase[2]
+				Req = (body if chr(42) != c1st else body[2:].strip())
+				if Req:
+					Req = Req.encode("utf-8")
+					Req = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", Req)], self.IMDbHeaders)
+					try:
+						data = Req.get_page(self.UserAgent_Moz)
+					except Web.Two.HTTPError, exc:
+						answer = str(exc)
+					except:
+						answer = self.AnsBase[0]
+					else:
+						list = get_text(data, "<table>", "</table>")
+						if list:
+							comp = compile__("/find-title-\d+?/title_.+?/images/b.gif\?link=/title/tt(\d+?)/';\">(.+?)</a> (.+?)<", 16)
+							list = comp.findall(list)
+						if list:
+							Number = itypes.Number()
+							ls = ["\n[#] [Name, Year] (#id)"]
+							for Numb, Name, Year in list:
+								ls.append("%d) %s %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Year.strip(), Numb))
+							answer = str.join(chr(10), ls)
+						else:
+							answer = self.AnsBase[5]
+				else:
+					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
@@ -540,59 +542,85 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
-	def download_process(self, info, blockNumb, blockSize, size):
+	downloadLock = iThr.allocate_lock()
+
+	def download_process(self, info, blockNumb, blockSize, size, fb):
 		if not blockNumb:
 			Print("\n")
-			Print(info, color4)
-		else:
-			done = (blockNumb * blockSize)
-			if done >= size:
+			Print(str(info), color3)
+		elif size >= blockSize:
+			fb[3] += blockSize
+			if not fb[4]:
+				fb[4] = (size / 100)
+				if fb[4] in (0, 1):
+					fb[4] = 2
+				else:
+					residue = fb[4] % blockSize
+					if fb[4] == residue:
+						fb[4] = 2
+						while fb[4] < residue:
+							fb[4] *= 2
+					elif residue:
+						fb[4] -= residue
+			if fb[3] >= size:
 				Print("Done.", color3)
-			else:
-				Print("loaded - %.2f%s" % ((done / (float(size) / 100)), chr(37)), color4)
+			elif not fb[3] % fb[4]:
+				Pcts = fb[3] / fb[4]
+				if Pcts == 100:
+					Pcts = 99.95
+				Print("loaded - {0}%".format(Pcts), color4)
+				Time = time.time()
+				if Time - fb[1] >= 30:
+					fb[1] = Time
+					Message(fb[0], self.AnsBase[9].format(Pcts), fb[2])
 
 	def command_download(self, ltype, source, body, disp):
 		if body:
-			body = body.split()
-			if len(body) == 1:
-				link = body.pop()
-				folder = None
-				filename = None
-			elif len(body) == 2:
-				link, folder = body
-				filename = None
+			if not self.downloadLock.locked():
+				with self.downloadLock:
+					body = body.split()
+					if len(body) == 1:
+						link = body.pop()
+						folder = None
+						filename = None
+					elif len(body) == 2:
+						link, folder = body
+						filename = None
+					else:
+						link, folder, filename = body[:3]
+					if not enough_access(source[1], source[2], 8):
+						folder = "Downloads"
+					if filename:
+						ls = os.path.split(filename)
+						if len(ls) > 1:
+							filename = ls[-1]
+					if folder:
+						if AsciiSys:
+							folder = folder.encode("utf-8")
+						if not os.path.isdir(folder):
+							try:
+								os.makedirs(folder)
+							except:
+								link = None
+						if AsciiSys:
+							folder = folder.decode("utf-8")
+					if link:
+						Message(source[0], self.AnsBase[10], disp)
+						Req = Web(link)
+						try:
+							data = Req.download(filename, folder, self.download_process, [source[0], time.time(), disp, 0, 0], self.UserAgent)
+						except Web.Two.HTTPError, exc:
+							answer = str(exc)
+						except SelfExc:
+							answer = exc_info()[1]
+						except:
+							answer = self.AnsBase[0]
+						else:
+							answer = "Done.\nPath: %s\nSize: %s" % (data[0], Size2Text(data[2]))
+					else:
+						answer = AnsBase[2]
 			else:
-				link, folder, filename = body[:3]
-			if not enough_access(source[1], source[2], 8):
-				folder = "Downloads"
-			if filename:
-				ls = os.path.split(filename)
-				if len(ls) > 1:
-					filename = ls[-1]
-			if folder:
-				if AsciiSys:
-					folder = folder.encode("utf-8")
-				if not os.path.isdir(folder):
-					try:
-						os.makedirs(folder)
-					except:
-						link = None
-				if AsciiSys:
-					folder = folder.decode("utf-8")
-			if link:
-				Req = Web(link)
-				try:
-					data = Req.download(filename, folder, self.download_process, self.UserAgent)
-				except Web.Two.HTTPError, exc:
-					answer = str(exc)
-				except SelfExc:
-					answer = exc_info()[1]
-				except:
-					answer = self.AnsBase[0]
-				else:
-					answer = "Done.\nPath: %s\nSize: %s" % (data[0], Size2Text(data[2]))
-			else:
-				answer = AnsBase[2]
+				answer = self.AnsBase[11]
 		else:
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
@@ -921,31 +949,32 @@ class expansion_temp(expansion):
 						answer = AnsBase[30]
 				else:
 					answer = AnsBase[2]
-			elif ls:
-				Req = (body if chr(42) != c1st else body[2:].strip())
-				Req = Req.encode("utf-8")
-				Req = Web("http://m.market.yandex.ru/search.xml?", [("nopreciser", "1"), ("text", Req)])
-				try:
-					data = Req.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
-					answer = str(exc)
-				except:
-					answer = self.AnsBase[0]
-				else:
-					data = data.decode("utf-8")
-					comp = compile__("<a href=\"http://m\.market\.yandex\.ru/model\.xml\?hid=(\d+?)&amp;modelid=(\d+?)&amp;show-uid=\d+?\">(.+?)</a>", 16)
-					list = comp.findall(data)
-					if list:
-						Number = itypes.Number()
-						ls = ["\n[#] [Model Name] (hid & modelid)"]
-						for hid, modelid, name in list:
-							if not name.startswith("<img"):
-								ls.append("%d) %s (%s %s)" % (Number.plus(), self.sub_ehtmls(name), hid, modelid))
-						answer = str.join(chr(10), ls)
-					else:
-						answer = self.AnsBase[5]
 			else:
-				answer = AnsBase[2]
+				Req = (body if chr(42) != c1st else body[2:].strip())
+				if Req:
+					Req = Req.encode("utf-8")
+					Req = Web("http://m.market.yandex.ru/search.xml?", [("nopreciser", "1"), ("text", Req)])
+					try:
+						data = Req.get_page(self.UserAgent_Moz)
+					except Web.Two.HTTPError, exc:
+						answer = str(exc)
+					except:
+						answer = self.AnsBase[0]
+					else:
+						data = data.decode("utf-8")
+						comp = compile__("<a href=\"http://m\.market\.yandex\.ru/model\.xml\?hid=(\d+?)&amp;modelid=(\d+?)&amp;show-uid=\d+?\">(.+?)</a>", 16)
+						list = comp.findall(data)
+						if list:
+							Number = itypes.Number()
+							ls = ["\n[#] [Model Name] (hid & modelid)"]
+							for hid, modelid, name in list:
+								if not name.startswith("<img"):
+									ls.append("%d) %s (%s %s)" % (Number.plus(), self.sub_ehtmls(name), hid, modelid))
+							answer = str.join(chr(10), ls)
+						else:
+							answer = self.AnsBase[5]
+				else:
+					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if locals().has_key(Types[12]):
