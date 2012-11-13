@@ -364,7 +364,7 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source, disp)
 
-	IMDbHeaders = {"Accept-Language": "%s,en" % DefLANG.lower()}
+	IMDbHeaders = {"Accept-Language": "%s,en" % UserAgents.get(DefLANG, "en-US")}
 
 	def command_imdb(self, ltype, source, body, disp):
 		if body:
@@ -565,6 +565,10 @@ class expansion_temp(expansion):
 				link, folder, filename = body[:3]
 			if not enough_access(source[1], source[2], 8):
 				folder = "Downloads"
+			if filename:
+				ls = os.path.split(filename)
+				if len(ls) > 1:
+					filename = ls[-1]
 			if folder:
 				if AsciiSys:
 					folder = folder.encode("utf-8")
@@ -897,9 +901,9 @@ class expansion_temp(expansion):
 			c1st = (ls.pop(0)).lower()
 			if isNumber(c1st):
 				if ls:
-					c2st = ls.pop(0)
-					if isNumber(c2st):
-						Req = Web("http://m.market.yandex.ru/spec.xml?hid=%d&modelid=%d" % (int(c1st), int(c2st)))
+					c2nd = ls.pop(0)
+					if isNumber(c2nd):
+						Req = Web("http://m.market.yandex.ru/spec.xml?hid=%d&modelid=%d" % (int(c1st), int(c2nd)))
 						try:
 							data = Req.get_page(self.UserAgent_Moz)
 						except Web.Two.HTTPError, exc:

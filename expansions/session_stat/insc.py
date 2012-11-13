@@ -33,8 +33,8 @@ else:
 		"\n# The last working set %s", # 2
 		"\n# Obtained %s messages", # 3
 		"\n# Completed %s commands", # 4
-		"\n# Processed %s presences & %s iq-request", # 5
-		"\n# Sent %s messages & %s iq-request", # 6
+		"\n# Processed %s presences & %s iq-requests", # 5
+		"\n# Sent %s messages & %s iq-requests", # 6
 		"\n# Serve %d conferences", # 7
 		"\n# Fixed %d users", # 8
 		"", # 9
