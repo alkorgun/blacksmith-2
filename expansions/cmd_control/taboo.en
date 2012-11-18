@@ -1,0 +1,8 @@
+control of the prohibition on the commands in the conference
+taboo (command)
+*/taboo
+bot would show the list of forbidden commands
+*/taboo bash
+bot would forbid command "bash"
+*/taboo bash
+bot would allow command "bash"

@@ -32,7 +32,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -71,7 +71,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -110,7 +110,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -149,7 +149,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -188,7 +188,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -227,7 +227,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -265,7 +265,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -303,7 +303,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
@@ -340,7 +340,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer:
 					Lock, BsNick = False, get_self_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (AflRoles[5],))[0] == AflRoles[5]:
+					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:

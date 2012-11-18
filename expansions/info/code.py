@@ -32,11 +32,11 @@ class expansion_temp(expansion):
 					text = nick.nick
 					if acc and nick.source:
 						text += " (%s)" % (nick.source)
-					if nick.role[0] == AflRoles[5]:
+					if nick.role[0] == aRoles[5]:
 						owners.append(text)
-					elif nick.role[0] == AflRoles[4]:
+					elif nick.role[0] == aRoles[4]:
 						admins.append(text)
-					elif nick.role[0] == AflRoles[3]:
+					elif nick.role[0] == aRoles[3]:
 						members.append(text)
 					else:
 						none.append(text)

@@ -1,4 +1,4 @@
-commands controller
+controller of the commands
 command [command] [on/off]
 */command talkers off
 bot would disable command "talkers"

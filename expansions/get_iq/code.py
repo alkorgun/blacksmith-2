@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "get_iq" # /code.py v.x4
-#  Id: 13~3b
+exp_name = "get_iq" # /code.py v.x5
+#  Id: 13~4b
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -57,6 +57,7 @@ class expansion_temp(expansion):
 				xname = x.getName()
 				if xname == "name":
 					Name = x.getData()
+					break
 			answer = self.AnsBase[1] % (Name, str(answer))
 		else:
 			answer = self.AnsBase[2]
@@ -152,39 +153,73 @@ class expansion_temp(expansion):
 			answer = self.AnsBase[6]
 		Answer(answer, ltype, source, disp)
 
-	def command_afls(self, ltype, source, body, disp):
+	affs = ("owner", "admin", "member", "outcast")
+
+	def command_aflist(self, ltype, source, body, disp):
 
 		def get_req(body):
-			afls = ("owner", "admin", "member", "outcast")
 			if DefLANG in ("RU", "UA"):
-				alsRU = [afl.decode("utf-8") for afl in ("овнер", "админ", "мембер", "бан")]
-				for afl in alsRU:
-					if body.count(afl):
-						return afls[alsRU.index(afl)]
-			return (body if afls.count(body) else None)
+				affsRU = ["овнер", "админ", "мембер", "бан"]
+				for name in affsRU:
+					if body.count(name.decode("utf-8")):
+						return self.affs[affsRU.index(name)]
+			return (body if self.affs.count(body) else None)
 
 		if Chats.has_key(source[1]):
 			if body:
-				list = body.split()
-				body = get_req((list.pop(0)).lower())
-				if body:
-					Numb = 0
-					if list:
-						if isNumber(list[0]):
-							x = int(list.pop(0))
-							if x < 20:
-								Numb = 20
-							else:
-								Numb = x
-					iq = xmpp.Iq(to = source[1], typ = Types[10])
-					query = xmpp.Node(Types[18])
-					query.setNamespace(xmpp.NS_MUC_ADMIN)
-					query.addChild("item", {AflRoles[0]: body})
-					iq.addChild(node = query)
-					iq.setID("Bs-i%d" % Info["outiq"].plus())
-					CallForResponse(disp, iq, self.answer_afls, {"ltype": ltype, "source": source, "Numb": Numb})
+				ls = body.split()
+				body = (ls.pop(0)).lower()
+				if body in ("search", "искать".decode("utf-8")):
+					if ls:
+						data = (ls.pop(0)).lower()
+						desc = {}
+						for name in self.affs:
+							iq = xmpp.Iq(to = source[1], typ = Types[10])
+							query = xmpp.Node(Types[18])
+							query.setNamespace(xmpp.NS_MUC_ADMIN)
+							query.addChild("item", {aRoles[0]: name})
+							iq.addChild(node = query)
+							iq.setID("Bs-i%d" % Info["outiq"].plus())
+							CallForResponse(disp, iq, self.answer_aflist_search, {"desc": desc, "name": name, "data": data})
+						for x in xrange(60):
+							time.sleep(0.2)
+							if len(desc.keys()) == 4:
+								break
+						Number = itypes.Number()
+						ls = []
+						for name, matches in desc.iteritems():
+							if matches:
+								ls.append(name.capitalize() + "s:")
+								for jid in matches:
+									ls.append("%d) %s" % (Number.plus(), jid))
+						if ls:
+							Message(source[0], str.join(chr(10), ls), disp)
+							if ltype == Types[1]:
+								answer = AnsBase[11]
+						else:
+							answer = self.AnsBase[9]
+					else:
+						answer = AnsBase[2]
 				else:
-					answer = AnsBase[2]
+					body = get_req(body)
+					if body:
+						Numb = 0
+						if ls:
+							if isNumber(ls[0]):
+								x = int(ls.pop(0))
+								if x < 20:
+									Numb = 20
+								else:
+									Numb = x
+						iq = xmpp.Iq(to = source[1], typ = Types[10])
+						query = xmpp.Node(Types[18])
+						query.setNamespace(xmpp.NS_MUC_ADMIN)
+						query.addChild("item", {aRoles[0]: body})
+						iq.addChild(node = query)
+						iq.setID("Bs-i%d" % Info["outiq"].plus())
+						CallForResponse(disp, iq, self.answer_aflist, {"ltype": ltype, "source": source, "Numb": Numb})
+					else:
+						answer = AnsBase[2]
 			else:
 				answer = AnsBase[1]
 		else:
@@ -192,7 +227,18 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[12]):
 			Answer(answer, ltype, source, disp)
 
-	def answer_afls(self, disp, stanza, ltype, source, Numb):
+	def answer_aflist_search(self, disp, stanza, desc, name, data):
+		if xmpp.isResultNode(stanza):
+			matches = []
+			for node in stanza.getChildren():
+				for node in node.getChildren():
+					if node and node != "None":
+						jid = node.getAttr("jid")
+						if jid and jid.count(data):
+							matches.append(jid)
+			desc[name] = matches
+
+	def answer_aflist(self, disp, stanza, ltype, source, Numb):
 		if xmpp.isResultNode(stanza):
 			Number, answer = itypes.Number(), str()
 			for node in stanza.getChildren():
@@ -228,5 +274,5 @@ class expansion_temp(expansion):
 		(command_version, "version", 1,),
 		(command_uptime, "uptime", 1,),
 		(command_idle, "idle", 1,),
-		(command_afls, "list", 4,)
+		(command_aflist, "list", 4,)
 					)

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x17
-#  Id: 25~17b
+exp_name = "allweb" # /code.py v.x18
+#  Id: 25~18b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -128,10 +128,10 @@ class expansion_temp(expansion):
 					else:
 						try:
 							list = data["responseData"]["results"]
-						except KeyError:
+							desc = list.pop(0)
+						except LookupError:
 							answer = self.AnsBase[5]
 						else:
-							desc = list.pop(0)
 							ls = []
 							ls.append(desc.get("title", ""))
 							ls.append(desc.get("content", ""))
@@ -537,7 +537,7 @@ class expansion_temp(expansion):
 						try:
 							answer = data["errormessage"]
 						except KeyError:
-							answer = self.AnsBase[5]
+							answer = self.AnsBase[1]
 		else:
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
@@ -612,7 +612,7 @@ class expansion_temp(expansion):
 						except Web.Two.HTTPError, exc:
 							answer = str(exc)
 						except SelfExc:
-							answer = exc_info()[1]
+							answer = "Error! %s." % exc_info()[1].capitalize()
 						except:
 							answer = self.AnsBase[0]
 						else:

@@ -344,7 +344,7 @@ class expansion_temp(expansion):
 	GoodServers__ = lambda self, conf: (self.GoodServers + ChatsAttrs[conf]["laws"]["list"] + [self.get_server(conf, True)])
 
 	def check_wipe(self, conf, nick, role, inst):
-		if role == AflRoles[2]:
+		if role == aRoles[2]:
 			BsNick = get_self_nick(conf)
 			if ChatsAttrs[conf]["laws"]["sparta"]:
 				jid = self.get_server(inst)
@@ -372,7 +372,7 @@ class expansion_temp(expansion):
 									ls = []
 									for sUser in Chats[conf].get_users():
 										if sUser.source and sUser.ishere:
-											if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
+											if sUser.nick != BsNick and sUser.role[0] == aRoles[2]:
 												if jid == self.get_server(sUser.source):
 													if self.Federal_Jail[conf].has_key(sUser.source):
 														if not self.Federal_Jail[conf][sUser.source].verif:
@@ -384,7 +384,7 @@ class expansion_temp(expansion):
 								else:
 									for sUser in Chats[conf].get_users():
 										if sUser.source and sUser.ishere:
-											if sUser.nick != BsNick and sUser.role[0] == AflRoles[2]:
+											if sUser.nick != BsNick and sUser.role[0] == aRoles[2]:
 												if jid == self.get_server(sUser.source):
 													if self.Federal_Jail[conf].has_key(sUser.source):
 														if not self.Federal_Jail[conf][sUser.source].verif:
@@ -417,7 +417,7 @@ class expansion_temp(expansion):
 					prisoner.Autenticated()
 				self.check_wipe(conf, nick, role[0], source_)
 				self.check_nick(conf, nick)
-				if ChatsAttrs[conf]["laws"]["verif"] and access < 2 and AflRoles[2] == role[0]:
+				if ChatsAttrs[conf]["laws"]["verif"] and access < 2 and aRoles[2] == role[0]:
 					if not prisoner.verif and not prisoner.devoice:
 						Chats[conf].visitor(nick, self.AnsBase[17] % get_self_nick(conf))
 						if not self.Questions:

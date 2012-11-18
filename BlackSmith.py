@@ -72,7 +72,7 @@ Types = [
 	"request" # 22
 				]
 
-AflRoles = [
+aRoles = (
 	"affiliation", # 0
 	"outcast", # 1
 	"none", # 2
@@ -83,14 +83,14 @@ AflRoles = [
 	"visitor", # 7
 	"participant", # 8
 	"moderator" # 9
-				]
+				)
 
-sList = [
+sList = (
 	"chat", # готов поболтать
 	"away", # отошел
 	"xa", # не беспокоить
 	"dnd" # недоступен
-				]
+				)
 
 aDesc = {
 	"owner": 3,
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 34, 0)
+(BsMark, BsVer, BsRev) = (2, 35, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -759,31 +759,31 @@ class sConf(object):
 			CallForResponse(self.disp, stanza, handler, kdesc)
 
 	def outcast(self, jid, text = str(), handler = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[1], text, handler)
+		self.iq_sender(Types[19], jid, aRoles[0], aRoles[1], text, handler)
 
 	def none(self, jid, text = str(), handler = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[2], text, handler)
+		self.iq_sender(Types[19], jid, aRoles[0], aRoles[2], text, handler)
 
 	def member(self, jid, text = str(), handler = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[3], text, handler)
+		self.iq_sender(Types[19], jid, aRoles[0], aRoles[3], text, handler)
 
 	def admin(self, jid, text = str(), handler = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[4], text, handler)
+		self.iq_sender(Types[19], jid, aRoles[0], aRoles[4], text, handler)
 
 	def owner(self, jid, text = str(), handler = ()):
-		self.iq_sender(Types[19], jid, AflRoles[0], AflRoles[5], text, handler)
+		self.iq_sender(Types[19], jid, aRoles[0], aRoles[5], text, handler)
 
 	def kick(self, nick, text = str(), handler = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[2], text, handler)
+		self.iq_sender(Types[20], nick, aRoles[6], aRoles[2], text, handler)
 
 	def visitor(self, nick, text = str(), handler = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[7], text, handler)
+		self.iq_sender(Types[20], nick, aRoles[6], aRoles[7], text, handler)
 
 	def participant(self, nick, text = str(), handler = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[8], text, handler)
+		self.iq_sender(Types[20], nick, aRoles[6], aRoles[8], text, handler)
 
 	def moder(self, nick, text = str(), handler = ()):
-		self.iq_sender(Types[20], nick, AflRoles[6], AflRoles[9], text, handler)
+		self.iq_sender(Types[20], nick, aRoles[6], aRoles[9], text, handler)
 
 def get_source(source, nick):
 	if Chats.has_key(source):
@@ -1116,14 +1116,14 @@ class Web:
 		if isNumber(size):
 			size = int(size)
 		else:
-			raise SelfExc("server gives no info about file size")
+			raise SelfExc("no info about file size")
 		if not filename:
 			if info.has_key("Content-Disposition"):
 				disp = info.get("Content-Disposition")
-				comp = compile__("filename=[\"']?(.+?)[\"']?")
+				comp = compile__("filename=[\"']+?(.+?)[\"']+?")
 				disp = comp.search(disp)
 				if disp:
-					filename = disp.decode("utf-8")
+					filename = (disp.group(1)).decode("utf-8")
 		if not filename:
 			filename = self.One.unquote_plus(fp.url.split("/")[-1].split("?")[0].replace("%25", "%"))
 			if not filename:
@@ -1209,7 +1209,7 @@ def enumerated_list(list):
 		ls.append(AnsBase[12] % (Numb.plus(), line))
 	return str.join(chr(10), ls)
 
-isNumber = lambda obj: (None if exec_(int, (obj,)) is None else True)
+isNumber = lambda obj: (not exec_(int, (obj,)) is None)
 
 isSource = lambda jid: IsJID.match(jid)
 

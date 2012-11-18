@@ -10,7 +10,8 @@ if DefLANG in ("RU", "UA"):
 		"«%s» - сейчас нет в чате.", # 5
 		"Нет ответа.", # 6
 		"Время работы «%s» - %s.", # 7
-		"Послеедняя активность «%s» - %s назад." # 8
+		"Послеедняя активность «%s» - %s назад.", # 8
+		"Нет cовпадений." # 9
 					)])
 else:
 	AnsBase_temp = (
@@ -22,5 +23,6 @@ else:
 		"«%s» - isn't here now.", # 5
 		"No answer.", # 6
 		"%s's uptime is %s.", # 7
-		"%s's last activity was %s ago." # 8
+		"%s's last activity was %s ago.", # 8
+		"No matches." # 9
 					)

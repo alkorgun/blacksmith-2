@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "converter" # /code.py v.x3
-#  Id: 31~2b
+exp_name = "converter" # /code.py v.x4
+#  Id: 31~3b
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -199,19 +199,20 @@ class expansion_temp(expansion):
 			Desc = (ls.pop(0)).lower()
 			if self.CrDesc.has_key(Desc):
 				if len(ls) == 3:
-					Numb = (ls.pop(0)).lower()
-					if isNumber(Numb):
+					try:
+						Number = float(ls.pop(0))
+					except ValueError:
+						answer = AnsBase[30]
+					else:
 						Type = (ls.pop(0)).lower()
 						ToType = (ls.pop(0)).lower()
 						if self.CrDesc[Desc].has_key(Type) and self.CrDesc[Desc].has_key(ToType):
 							if Desc == "temperature":
-								answer = str(self.ConvertTemp(float(Numb), Type, ToType))
+								answer = str(self.ConvertTemp(Number, Type, ToType))
 							else:
-								answer = str(self.Convert(Desc, float(Numb), Type, ToType))
+								answer = str(self.Convert(Desc, Number, Type, ToType))
 						else:
 							answer = self.AnsBase[0]
-					else:
-						answer = AnsBase[30]
 				elif not ls:
 					data = get_file(self.file).decode("utf-8")
 					data = get_text(data, '\t\t"%s"\:\s\{' % (Desc), '\},')
