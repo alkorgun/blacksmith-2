@@ -93,8 +93,10 @@ class expansion_temp(expansion):
 		if cmds.has_key(1):
 			answer += self.AnsBase[15] % (lcmds[1]._str(), ", ".join(cmds[1]))
 		access = get_access(source[1], source[2])
-		if access >= 8:
-			access = "%d (BOSS)" % (access)
+		if access > 8:
+			access = "%d (Gandalf)" % (access)
+		elif access == 8:
+			access = "8 (God)"
 		elif access == 7:
 			access = "7 (Chief)"
 		else:

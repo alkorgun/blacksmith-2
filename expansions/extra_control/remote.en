@@ -1,7 +1,7 @@
 executes the specified command remotely
-remote ([conference/conf. number in list] [chat/private] [command] (parameters))
+remote ([conference/chats's_number_in_list] [chat/private] [command] (parameters))
 */remote witcher@conference.jabber.ru private clean
-executes the command like as would you set it while in "witcher@conference.jabber.ru", and send the results to you in private 
+executes the command like as would you set it while in "witcher@conference.jabber.ru", and send the results to you in private
 */remote 1 chat ping EdenPowers
 executes the command in the room from the list at number 1, and report the results in to this conference
 */remote

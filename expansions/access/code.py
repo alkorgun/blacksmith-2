@@ -18,8 +18,10 @@ class expansion_temp(expansion):
 	def command_get_access(self, ltype, source, body, disp):
 
 		def get_acc(access):
-			if access >= 8:
-				access = "%d (BOSS)" % (access)
+			if access > 8:
+				access = "%d (Gandalf)" % (access)
+			elif access == 8:
+				access = "8 (God)"
 			elif access == 7:
 				access = "7 (Chief)"
 			else:

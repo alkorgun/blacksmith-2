@@ -36,13 +36,13 @@ else:
 		"\n# Processed %s presences & %s iq-requests", # 5
 		"\n# Sent %s messages & %s iq-requests", # 6
 		"\n# Serve %d conferences", # 7
-		"\n# Fixed %d users", # 8
+		"\n# Counted %d users", # 8
 		"", # 9
 		"\n# Happened %d exceptions & %s Dispatch-Errors", # 10
-		"\n# Wrote crash logs %s", # 11
+		"\n# Wrote %s crash logs", # 11
 		"\n# Created %s threads, %d is now active", # 12
-		"\n# Used %.2f processor seconds", # 13
-		"\n# Used %s megabyte RAM", # 14
+		"\n# Used %.2f processor's seconds", # 13
+		"\n# Used %s megabytes RAM", # 14
 		"\nBot's uptime: %s.", # 15
 		"\nThe last working set: %s.\nReloads (%s):\n%s.", # 16
 		" - Working without restarts!", # 17

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x7
-#  Id: 09~7b
+exp_name = "exp_control" # /code.py v.x8
+#  Id: 09~8b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -61,7 +61,7 @@ class expansion_temp(expansion):
 
 	def command_expload(self, ltype, source, body, disp):
 		if body:
-			exp_name = body.lower()
+			exp_name = body.strip("\\/").lower()
 			if check_nosimbols(exp_name):
 				if expansions.has_key(exp_name):
 					if os.path.isfile(expansions[exp_name].file):

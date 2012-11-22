@@ -1,0 +1,4 @@
+executes sequence of 2-4 commands (users with access more than 7 can use more than 4 commands)
+turbo [[command] (parameters)] [&&] [[command] (parameters)]
+*/turbo ping User#1 && ping User#2 && ping User#3 && ping
+bot would 'ping' you and three users

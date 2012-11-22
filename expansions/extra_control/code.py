@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "extra_control" # /code.py v.x7
-#  Id: 01~5b
-#  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
+exp_name = "extra_control" # /code.py v.x8
+#  Id: 01~6b
+#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -12,12 +12,42 @@ class expansion_temp(expansion):
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
+	sep = chr(38)*2
+
+	def command_turbo(self, ltype, source, body, disp):
+		if body:
+			if self.sep in body:
+				ls = body.split(self.sep)
+				lslen = len(ls) - 1
+				if lslen < 4 or enough_access(source[1], source[2], 7):
+					for numb, body in enumerate(ls):
+						body = body.split(None, 1)
+						cmd = (body.pop(0)).lower()
+						if Cmds.has_key(cmd):
+							if body:
+								body = body[0]
+							else:
+								body = ""
+							Cmds[cmd].execute(ltype, source, body, disp)
+							if numb not in (0, lslen):
+								time.sleep(2)
+						else:
+							answer = AnsBase[6]
+				else:
+					answer = AnsBase[10]
+			else:
+				answer = AnsBase[2]
+		else:
+			answer = AnsBase[1]
+		if locals().has_key(Types[12]):
+			Answer(answer, ltype, source, disp)
+
 	def command_remote(self, ltype, source, body, disp):
 		confs = sorted(Chats.keys())
 		if body:
-			ls = body.split()
-			if len(ls) >= 3:
-				x = (ls.pop(0)).lower()
+			body = body.split(None, 3)
+			if len(body) >= 3:
+				x = (body.pop(0)).lower()
 				if x in confs:
 					conf = x
 				elif isNumber(x):
@@ -29,7 +59,7 @@ class expansion_temp(expansion):
 				else:
 					conf = False
 				if conf:
-					itype = (ls.pop(0)).lower()
+					itype = (body.pop(0)).lower()
 					if itype in (Types[14], Types[0]):
 						type2 = Types[1]
 					elif itype in (Types[15], Types[6]):
@@ -37,12 +67,12 @@ class expansion_temp(expansion):
 					else:
 						type2 = False
 					if type2:
-						cmd = (ls.pop(0)).lower()
-						if ls:
-							body = body[((body.lower()).find(cmd) + len(cmd)):].strip()
+						cmd = (body.pop(0)).lower()
+						if body:
+							body = body[0]
 						else:
 							body = ""
-						if 1024 >= len(body):
+						if 2048 >= len(body):
 							if Cmds.has_key(cmd):
 								inst = Cmds[cmd]
 								if inst.isAvalable and inst.handler:
@@ -57,7 +87,7 @@ class expansion_temp(expansion):
 									if source and source not in inst.desc:
 										inst.desc.append(source)
 								else:
-									Answer(AnsBase[19] % (inst.name), ltype, source, disp)
+									answer = AnsBase[19] % (inst.name)
 							else:
 								answer = AnsBase[6]
 						else:
@@ -76,11 +106,11 @@ class expansion_temp(expansion):
 	def command_private(self, ltype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				ls = body.split()
-				cmd = (ls.pop(0)).lower()
+				body = body.split(None, 1)
+				cmd = (body.pop(0)).lower()
 				if Cmds.has_key(cmd):
-					if ls:
-						body = body[((body.lower()).find(cmd) + len(cmd)):].strip()
+					if body:
+						body = body[0]
 					else:
 						body = ""
 					Cmds[cmd].execute(Types[0], source, body, disp)
@@ -94,6 +124,7 @@ class expansion_temp(expansion):
 			Answer(answer, ltype, source, disp)
 
 	commands = (
+		(command_turbo, "turbo", 1,),
 		(command_remote, "remote", 8,),
 		(command_private, "private", 1,)
 					)
