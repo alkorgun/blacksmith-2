@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x6
-#  Id: 09~6b
+exp_name = "exp_control" # /code.py v.x7
+#  Id: 09~7b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -135,26 +135,27 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)
 
-	def command_states(self, ltype, source, body, disp):
+	def command_tumbler(self, ltype, source, body, disp):
 		if body:
 			ls = body.split()
 			command = (ls.pop(0)).lower()
 			if Cmds.has_key(command):
+				obj = Cmds.get(command)
 				if ls:
 					body = (ls.pop(0)).lower()
 					if body in ("on", "вкл".decode("utf-8")):
-						if not Cmds[command].isAvalable:
-							if Cmds[command].handler:
-								Cmds[command].isAvalable = True
+						if not obj.isAvalable:
+							if obj.handler:
+								obj.isAvalable = True
 								answer = AnsBase[4]
 							else:
 								answer = AnsBase[19] % (command)
 						else:
 							answer = self.AnsBase[16] % (command)
 					elif body in ("off", "выкл".decode("utf-8")):
-						if Cmds[command].isAvalable:
-							if Cmds[command].handler:
-								Cmds[command].isAvalable = False
+						if obj.isAvalable:
+							if obj.handler:
+								obj.isAvalable = False
 								answer = AnsBase[4]
 							else:
 								answer = AnsBase[19] % (command)
@@ -163,16 +164,20 @@ class expansion_temp(expansion):
 					else:
 						answer = AnsBase[2]
 				else:
-					answer = AnsBase[2]
+					answer = self.AnsBase[16 if obj.isAvalable else 17] % (command)
 			else:
 				answer = AnsBase[6]
 		else:
-			answer = AnsBase[1]
+			oCmds = [cmd for cmd, obj in Cmds.iteritems() if not obj.isAvalable]
+			if oCmds:
+				answer = ", ".join(oCmds)
+			else:
+				answer = self.AnsBase[18]
 		Answer(answer, ltype, source, disp)
 
 	commands = (
 		(command_expinfo, "expinfo", 7,),
 		(command_expload, "expload", 8,),
 		(command_expunload, "expunload", 8,),
-		(command_states, "command", 8,)
+		(command_tumbler, "tumbler", 8,)
 					)

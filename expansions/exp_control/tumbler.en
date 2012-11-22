@@ -1,0 +1,10 @@
+controller of the commands
+tumbler (command) (on/off)
+*/tumbler
+bot would show the list of disabled commands
+*/tumbler talkers
+bot would show the state of command "talkers"
+*/tumbler talkers off
+bot would disable command "talkers"
+*/tumbler talkers on
+bot would turn on command

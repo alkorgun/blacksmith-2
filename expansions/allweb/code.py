@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "allweb" # /code.py v.x18
-#  Id: 25~18b
+exp_name = "allweb" # /code.py v.x20
+#  Id: 25~20b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -90,6 +90,7 @@ class expansion_temp(expansion):
 			except:
 				answer = self.AnsBase[0]
 			else:
+				data = data.decode("utf-8")
 				comp = compile__("<li>((?:.|\s)+?)</li>", 16)
 				list = comp.findall(data)
 				if list:
@@ -386,6 +387,7 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[0]
 				else:
+					data = data.decode("utf-8")
 					list = get_text(data, '<div id="main">', "</div>")
 					if list:
 						comp = compile__('<td align="center">%s((?:\d\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
@@ -417,7 +419,8 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[0]
 				else:
-					Name = get_text(data, '<h1 class="header" itemprop="name">', "<span>")
+					data = data.decode("utf-8")
+					Name = get_text(data, '<h1 class="header" itemprop="name">', "<span.*?>")
 					if Name:
 						ls = ["\->"]
 						Year = get_text(data, '<a href="/year/\d+?/">', "</a>", "\d+")
@@ -427,38 +430,22 @@ class expansion_temp(expansion):
 							ls.append(Name)
 						desc = get_text(data, '<p itemprop="description">', "</p>")
 						if desc:
-							ls.append(desc)
-							desc = ls.index(desc)
-						Numb = get_text(data, '<span itemprop="ratingValue">', "</span>")
-						UsrV = get_text(data, '<span itemprop="ratingCount">', "</span>")
-						if Numb:
-							if UsrV:
-								Numb = "%s (Votes: %s)" % (Numb, UsrV)
-							ls.append("Rating: %s" % Numb)
-						Ttls = (("Director", "\s*Director:\s*"),
-								("Stars", "\s*Stars:\s*"),
-								("Writers", "\s*Writers:\s*"), ("Writer", "\s*Writer:\s*"))
-						for Title in Ttls:
-							list = get_text(data, '<h4 class="inline">%s</h4>' % Title[1], "</div>")
+							ls.append(unichr(171) + self.decodeHTML(desc).strip() + unichr(187))
+						for Title in ("Director", "Star", "Writer"):
+							list = get_text(data, "<h4 class=\"inline\">\s*?%s[s]?:\s*?</h4>" % Title, "(?:<span>|</div>)")
 							if list:
 								comp = compile__(">(.+?)</a>")
 								list = comp.findall(list)
 								if list:
-									ls.append("%s: %s" % (Title[0], str.join(", ", list)))
+									ls.append("%ss: %s" % (Title, str.join(", ", list)))
+						rValue = get_text(data, '<span itemprop="ratingValue">', "</span>")
+						if rValue:
+							rCount = get_text(data, '<span itemprop="ratingCount">', "</span>")
+							if rCount:
+								rValue = "%s (Votes: %s)" % (rValue, rCount)
+							ls.append("Rating: %s" % rValue)
 						if len(ls) >= 2:
-							for ln in ls:
-								data = self.decodeHTML(ln)
-								lines = []
-								for line in data.splitlines():
-									line = line.strip()
-									if line:
-										lines.append(line)
-								li = ls.index(ln)
-								if li == desc:
-									lines.append(chr(10))
-									lines.insert(0, chr(10))
-								ls[li] = str.join(chr(10), lines)
-							answer = str.join(chr(10), ls)
+							answer = self.decodeHTML(str.join(chr(10), ls))
 						else:
 							answer = self.AnsBase[1]
 					else:
@@ -475,6 +462,7 @@ class expansion_temp(expansion):
 					except:
 						answer = self.AnsBase[0]
 					else:
+						data = data.decode("utf-8")
 						list = get_text(data, "<table>", "</table>")
 						if list:
 							comp = compile__("/find-title-\d+?/title_.+?/images/b.gif\?link=/title/tt(\d+?)/';\">(.+?)</a> (.+?)<", 16)
@@ -977,8 +965,7 @@ class expansion_temp(expansion):
 					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		Answer(answer, ltype, source, disp)
 
 	commands = (
 		(command_jc, "jc", 2,),

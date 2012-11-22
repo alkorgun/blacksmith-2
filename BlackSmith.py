@@ -1116,7 +1116,7 @@ class Web:
 		if isNumber(size):
 			size = int(size)
 		else:
-			raise SelfExc("no info about file size")
+			raise SelfExc("no info about file's size")
 		if not filename:
 			if info.has_key("Content-Disposition"):
 				disp = info.get("Content-Disposition")

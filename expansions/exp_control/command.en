@@ -1,6 +1,0 @@
-controller of the commands
-command [command] [on/off]
-*/command talkers off
-bot would disable command "talkers"
-*/command talkers on
-bot would turn on command

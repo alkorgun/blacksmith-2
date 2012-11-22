@@ -12,10 +12,10 @@ class expansion_temp(expansion):
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	GoodServers = ["jabber.ru", "xmpp.ru", "jabbers.ru", "xmpps.ru", "talkonaut.com", "jabber.org", "gtalk.com", "gmail.com", "jabberon.ru", "gajim.org", "jabbrik.ru", "worldskynet.net", "qip.ru", "blackfishka.ru", "ya.ru"]
+	GoodServers = ["jabber.ru", "xmpp.ru", "jabbers.ru", "xmpps.ru", "jabber.org", "xmpp.org", "gmail.com", "jabberon.ru", "talkonaut.com", "gajim.org", "jabbrik.ru", "qip.ru", "blackfishka.ru", "helldev.net", "ya.ru", "jabberworld.net"]
 
 	if (DefLANG != "RU"):
-		GoodServers += ["jabber.com", "xmpp.com", "jabber.uk", "jabber.co.uk", "jabberworld.net"]
+		GoodServers += ["jabber.com", "xmpp.com", "jabber.co.uk", "xmpp.co.uk"]
 
 	LawsFile = "laws.db"
 

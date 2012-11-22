@@ -229,18 +229,21 @@ class expansion_temp(expansion):
 
 	def answer_aflist_search(self, disp, stanza, desc, name, data):
 		if xmpp.isResultNode(stanza):
-			matches = []
+			count = []
 			for node in stanza.getChildren():
 				for node in node.getChildren():
 					if node and node != "None":
 						jid = node.getAttr("jid")
 						if jid and jid.count(data):
-							matches.append(jid)
-			desc[name] = matches
+							signature = node.getTagData("reason")
+							if signature:
+								jid = "%s (%s)" % (jid, signature)
+							count.append(jid)
+			desc[name] = count
 
 	def answer_aflist(self, disp, stanza, ltype, source, Numb):
 		if xmpp.isResultNode(stanza):
-			Number, answer = itypes.Number(), str()
+			ls, Number = [], itypes.Number()
 			for node in stanza.getChildren():
 				for node in node.getChildren():
 					if node and node != "None":
@@ -249,18 +252,16 @@ class expansion_temp(expansion):
 							if Numb and Numb <= Number._int():
 								Number.plus()
 							else:
-								answer += "\n%d) %s" % (Number.plus(), jid)
 								signature = node.getTagData("reason")
 								if signature:
-									answer += " [%s]" % (signature)
-			if answer:
+									jid = "%s (%s)" % (jid, signature)
+								ls.append("%d) %s" % (Number.plus(), jid))
+			if ls:
 				if Numb and Numb < Number._int():
-					answer += "\n...\nTotal: %s items." % (Number._str())
-				Message(source[0], answer, disp)
+					ls.append("...\nTotal: %s items." % (Number._str()))
+				Message(source[0], str.join(chr(10), ls), disp)
 				if ltype == Types[1]:
 					answer = AnsBase[11]
-				else:
-					del answer
 			else:
 				answer = self.AnsBase[6]
 		else:
