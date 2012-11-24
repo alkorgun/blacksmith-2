@@ -1,4 +1,4 @@
-watch/read library content
+shows library content
 books ([show] (names)/([author/genre/cycle] [parameters]))/([info] [book's_name])/([read] ((page_number) [book's_name])/(next))
 */books
 bot would show books count

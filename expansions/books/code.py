@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "books" # /code.py v.x5 alpha
-#  Id: 29~5b
+exp_name = "books" # /code.py v.x6 alpha
+#  Id: 29~6b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -16,7 +16,7 @@ class expansion_temp(expansion):
 
 	BooksFile, ReadersFile = dynamic % ("books.db"), dynamic % ("readers.db")
 
-	def importFB2(self, path):
+	def importFB2(self, path, nick):
 		book = get_file(path)
 		book_enc = self.fb2.get_enc(book)
 		if not book_enc:
@@ -36,7 +36,7 @@ class expansion_temp(expansion):
 			db("select * from books where id=?", (a2,))
 			db_desc = db.fetchone()
 			if not db_desc:
-				db("insert into books (id, name, nick, date) values (?,?,?,?)", (a2, Name, "WitcherGeralt", time.asctime()))
+				db("insert into books (id, name, nick, date) values (?,?,?,?)", (a2, Name, nick, time.asctime()))
 				if author:
 					db("update books set author=? where id=?", (author, a2))
 				if date:
@@ -175,7 +175,7 @@ class expansion_temp(expansion):
 								ls.append("Link: %s" % (link))
 							if Annt:
 								ls.append("Annotation:\n\t%s" % (Annt))
-							ls.append("\nAdded by: %s (The Last Upd.: %s)" % (Nick, Date))
+							ls.append("\nAdded by %s (The Last Upd. %s)" % (Nick, Date))
 							answer = str.join(chr(10), ls)
 						else:
 							answer = self.AnsBase[3]
@@ -265,16 +265,16 @@ class expansion_temp(expansion):
 					if a2 in ("file", "fb2", "файл".decode("utf-8")):
 						if list:
 							Path = body[((body.lower()).find(a2) + len(a2)):].strip()
-							try:
-								exists = os.path.isfile(Path)
-							except:
-								exists = False
-							if exists:
+							if AsciiSys:
+								Path = Path.encode("utf-8")
+							if os.path.isfile(Path):
 								try:
-									self.importFB2(Path)
+									self.importFB2(Path, source[2].strip())
 								except SelfExc:
 									answer = exc_info()[1]
 								except:
+									if AsciiSys:
+										Path = Path.decode("utf-8")
 									collectExc(self.importFB2, "library add fb2 %s" % Path)
 									answer = AnsBase[7]
 							else:

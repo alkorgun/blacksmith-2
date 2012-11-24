@@ -98,15 +98,15 @@ class expansion_temp(expansion):
 
 	def command_status(self, ltype, source, body, disp):
 		if body:
-			list = body.split(None, 2)
-			if len(list) == 3:
-				state = list[1].lower()
+			body = body.split(None, 2)
+			if len(body) == 3:
+				state = (body.pop(1)).lower()
 				if self.StatusDesc.has_key(state):
 					state = sList[self.StatusDesc[state]]
 				if state in sList:
-					chat = list[0].lower()
-					status = list[2].strip()
+					chat, status = body
 					body = "%s|%s" % (state, status)
+					chat = chat.lower()
 					if chat in ("everywhere", "везде".decode("utf-8")):
 						for conf in Chats.keys():
 							Chats[conf].change_status(state, status)

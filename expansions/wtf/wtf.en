@@ -1,0 +1,10 @@
+shows wtf-base content
+wtf (definition's_name/all/search) (search_key)
+*/wtf
+bot would show definitions count
+*/wtf bot
+bot would show definition of "bot" (if it exists in the bases)
+*/wtf all
+bot would show all names of the definitions
+*/wtf search porn
+bot would search "porn" in the bases

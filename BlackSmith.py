@@ -1203,11 +1203,7 @@ def Size2Text(Size):
 		if not (ls and Size):
 			return str.join(chr(32), ext)
 
-def enumerated_list(list):
-	ls, Numb = [], itypes.Number()
-	for line in list:
-		ls.append(AnsBase[12] % (Numb.plus(), line))
-	return str.join(chr(10), ls)
+enumerated_list = lambda ls: str.join(chr(10), ["%d) %s" % (numb, line) for numb, line in enumerate(ls, 1)])
 
 isNumber = lambda obj: (not exec_(int, (obj,)) is None)
 
@@ -1498,7 +1494,7 @@ def Xmpp_Message_Cb(disp, stanza):
 		if Cmds.has_key(command):
 			VarCache["idle"] = time.time()
 			VarCache["action"] = AnsBase[27] % command.upper()
-			Cmds[command].execute(stype, (source, instance, nick), ((Copy.pop(0)).rstrip() if Copy else ""), disp)
+			Cmds[command].execute(stype, (source, instance, nick), (Copy.pop() if Copy else ""), disp)
 		else:
 			call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
 
