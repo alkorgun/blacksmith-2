@@ -17,7 +17,7 @@ class expansion_temp(expansion):
 		while Chats.has_key(conf):
 			if Chats[conf].IamHere != None:
 				break
-			time.sleep(.4)
+			sleep(0.4)
 			if Numb.plus() >= 50:
 				break
 
@@ -73,7 +73,7 @@ class expansion_temp(expansion):
 							answer = self.AnsBase[2] % (conf)
 						else:
 							answer = self.AnsBase[3] % (conf)
-							time.sleep(3.6)
+							sleep(3.6)
 							if ejoinTimerName(conf) in iThr.ThrNames():
 								answer += self.AnsBase[13]
 					else:
@@ -94,7 +94,7 @@ class expansion_temp(expansion):
 		if Chats.has_key(conf):
 			if online(Chats[conf].disp):
 				Chats[conf].leave(self.AnsBase[8] % (source[2]))
-				time.sleep(2)
+				sleep(2)
 				Chats[conf].join()
 				self.Chat_check(conf)
 				if Chats.has_key(conf) and Chats[conf].IamHere:
@@ -119,7 +119,7 @@ class expansion_temp(expansion):
 					delivery(self.AnsBase[4] % (source[2], source_, conf))
 				info = self.AnsBase[9] % (source[2])
 				Message(conf, info, Chats[conf].disp)
-				time.sleep(2)
+				sleep(2)
 				Chats[conf].full_leave(info)
 				if conf != source[1]:
 					answer = self.AnsBase[10] % (conf)
@@ -171,7 +171,7 @@ class expansion_temp(expansion):
 				exit_desclr += self.AnsBase[1] % (body)
 			for conf in Chats.keys():
 				Message(conf, exit_desclr, Chats[conf].disp)
-		time.sleep(6)
+		sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
 		for disp in Clients.keys():
@@ -187,7 +187,7 @@ class expansion_temp(expansion):
 				exit_desclr += self.AnsBase[1] % (body)
 			for conf in Chats.keys():
 				Message(conf, exit_desclr, Chats[conf].disp)
-		time.sleep(6)
+		sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
 		for disp in Clients.keys():

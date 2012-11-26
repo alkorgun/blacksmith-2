@@ -26,7 +26,7 @@ class expansion_temp(expansion):
 						raise SelfExc("exit")
 					Sender(disp, zero); Info["omsg"].plus()
 					if (Numb != 23):
-						time.sleep(1.4)
+						sleep(1.4)
 				if ltype == Types[1]:
 					Chats[source[1]].change_status(s1_backup, s2_backup)
 				ChatsAttrs[source[1]]["dirt"] = True

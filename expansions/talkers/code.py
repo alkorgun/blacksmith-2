@@ -75,7 +75,7 @@ class expansion_temp(expansion):
 					elif a1 in ("global", "глобальный".decode("utf-8")):
 						a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 
-						def get_talker_stat(source_):
+						def get_talker_stats(source_):
 							x, y = 0, 0
 							for conf in Chats.keys():
 								filename = cefile(chat_file(conf, self.TalkersFile))
@@ -95,7 +95,7 @@ class expansion_temp(expansion):
 						if a2 in ("mine", "мой".decode("utf-8")):
 							source_ = get_source(source[1], source[2])
 							if source_:
-								answer = get_talker_stat(source_)
+								answer = get_talker_stats(source_)
 							else:
 								answer = self.AnsBase[1]
 						else:
@@ -106,7 +106,7 @@ class expansion_temp(expansion):
 								if not isSource(source_):
 									source_ = None
 							if source_:
-								answer = get_talker_stat(source_)
+								answer = get_talker_stats(source_)
 							else:
 								Glob_dbs = {}
 								for conf in Chats.keys():
@@ -139,7 +139,7 @@ class expansion_temp(expansion):
 					elif a1 in ("local", "локальный".decode("utf-8")):
 						a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 
-						def get_talker_stat(source_, conf):
+						def get_talker_stats(source_, conf):
 							filename = cefile(chat_file(conf, self.TalkersFile))
 							with self.TalkersDesc[conf]:
 								with database(filename) as db:
@@ -154,7 +154,7 @@ class expansion_temp(expansion):
 						if a2 in ("mine", "мой".decode("utf-8")):
 							source_ = get_source(source[1], source[2])
 							if source_:
-								answer = get_talker_stat(source_, source[1])
+								answer = get_talker_stats(source_, source[1])
 							else:
 								answer = self.AnsBase[1]
 						else:
@@ -165,7 +165,7 @@ class expansion_temp(expansion):
 								if not isSource(source_):
 									source_ = None
 							if source_:
-								answer = get_talker_stat(source_, source[1])
+								answer = get_talker_stats(source_, source[1])
 							else:
 								filename = cefile(chat_file(source[1], self.TalkersFile))
 								with self.TalkersDesc[source[1]]:

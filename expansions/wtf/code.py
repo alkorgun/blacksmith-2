@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "wtf" # /code.py v.x1
-#  Id: 28~1b
+exp_name = "wtf" # /code.py v.x2
+#  Id: 28~2b
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -139,22 +139,25 @@ class expansion_temp(expansion):
 						answer = AnsBase[2]
 				else:
 					answer = AnsBase[10]
-			elif self.sep in body:
-				ls = body.split(self.sep, 1)
-				name, data = ls
-				name, data = (name.rstrip()).lower(), data.lstrip()
-				if name and len(name) <= 64:
-					with database(self.Base) as db:
-						db("select date from wtf where name=?", (name,))
-						date = db.fetchone()
-					if date and data:
-						answer = self.AnsBase[9] % (name)
+			elif Chats.has_key(source[1]):
+				if self.sep in body:
+					ls = body.split(self.sep, 1)
+					name, data = ls
+					name, data = (name.rstrip()).lower(), data.lstrip()
+					if name and len(name) <= 64:
+						with database(self.Base) as db:
+							db("select date from wtf where name=?", (name,))
+							date = db.fetchone()
+						if date and data:
+							answer = self.AnsBase[9] % (name)
+						else:
+							answer = self.addDef(cefile(chat_file(source[1], self.ChatBase)), name, data, source[2])
 					else:
-						answer = self.addDef(cefile(chat_file(source[1], self.ChatBase)), name, data, source[2])
+						answer = AnsBase[2]
 				else:
 					answer = AnsBase[2]
 			else:
-				answer = AnsBase[2]
+				answer = self.AnsBase[10]
 		else:
 			answer = AnsBase[1]
 		Answer(answer, ltype, source, disp)

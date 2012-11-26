@@ -1,0 +1,8 @@
+xmpp vCard
+vcard (nick/jid)
+*/vcard
+bot would show your vCard
+*/vcard Dude
+bot would show Dude's vCard
+*/vcard dude@jabr.com
+bot would show vCard of dude@jabr.com

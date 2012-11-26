@@ -383,7 +383,7 @@ class expansion_temp(expansion):
 	def calcPerformance(self, desc):
 		cl = len(Chats.keys())
 		for x in xrange(60):
-			time.sleep(0.2)
+			sleep(0.2)
 			if cl <= sum(desc.values()):
 				break
 		sl = sum(desc.values())

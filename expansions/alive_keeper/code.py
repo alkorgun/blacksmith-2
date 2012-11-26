@@ -19,7 +19,7 @@ class expansion_temp(expansion):
 				Clients[get_disp(disp)].aKeeper = itypes.Number()
 
 		while VarCache["alive"]:
-			time.sleep(360)
+			sleep(360)
 			ThrIds = iThr.ThrNames()
 			for disp in Clients.keys():
 				if not hasattr(Clients[disp], "aKeeper"):
@@ -57,7 +57,7 @@ class expansion_temp(expansion):
 					Chats[conf].aKeeper = itypes.Number()
 
 		while VarCache["alive"]:
-			time.sleep(360)
+			sleep(360)
 			ThrIds = iThr.ThrNames()
 			for conf in Chats.keys():
 				if not (online(Chats[conf].disp) and Chats[conf].IamHere):

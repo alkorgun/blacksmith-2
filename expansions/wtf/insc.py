@@ -12,6 +12,7 @@ if DefLANG in ("RU", "UA"):
 		"Всего %d определений в глобальной базе.", # 7
 		"Всего %d определений в базе %s.", # 8
 		"Определение «%s» уже есть в глобальной базе.", # 9
+		"Не существует локальной базы для ростера.", # 10
 		"\->\n" # -1
 					)])
 else:
@@ -26,5 +27,6 @@ else:
 		"There are %d definitions in the global base.", # 7
 		"There are %d definitions in the base of %s.", # 8
 		"'%s' is already in the global base.", # 9
+		"There is no local base for the roster.", # 10
 		"\->\n" # -1
 					)

@@ -1,0 +1,6 @@
+statistics of jabber servers
+servstat (server)
+*/servstat
+bot would show statistics of it's current jid's server
+*/servstat jabr.com
+bot would show statistics of jabr.com

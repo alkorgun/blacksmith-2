@@ -179,7 +179,7 @@ def exc_info_(fp = None):
 	except:
 		pass
 
-database = (itypes.Database)
+sleep, database = time.sleep, itypes.Database
 
 def get_exc():
 	try:
@@ -215,7 +215,7 @@ def Print(text, color = False):
 
 def try_sleep(slp):
 	try:
-		time.sleep(slp)
+		sleep(slp)
 	except KeyboardInterrupt:
 		os._exit(0)
 	except:
@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 35, 0)
+(BsMark, BsVer, BsRev) = (2, 36, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -446,7 +446,10 @@ class expansion(object):
 			command_handler(self, *ls)
 		for inst, ls in self.handlers:
 			self.handler_register(getattr(self, inst.func_name), ls)
-		self.AnsBase = AnsBase_temp
+		try:
+			self.AnsBase = AnsBase_temp
+		except NameError:
+			pass
 
 	def dels(self, full = False):
 		while self.cmds:
@@ -853,7 +856,7 @@ def Message(instance, body, disp = None):
 				Info["omsg"].plus()
 				Sender(disp, xmpp.Message(instance, text, ltype))
 				body = body[PrivLimit:].strip()
-				time.sleep(2)
+				sleep(2)
 			body = "[%d/%s] %s" % (col.plus(), all, body)
 	Info["omsg"].plus()
 	Sender(disp, xmpp.Message(instance, body.strip(), ltype))
@@ -1053,7 +1056,7 @@ def collectExc(instance, command = None):
 
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
-	for ExpDir in os.listdir(ExpsDir):
+	for ExpDir in sorted(os.listdir(ExpsDir)):
 		if (".svn") == (ExpDir) or not os.path.isdir(os.path.join(ExpsDir, ExpDir)):
 			continue
 		expansions[ExpDir] = exp = expansion(ExpDir)
@@ -1223,21 +1226,23 @@ def calculate(Numb = int()):
 	return (int() if not isNumber(Numb) else int(Numb))
 
 def check_copies():
-	try:
-		if not os.path.isfile(PidFile):
-			raise SelfExc()
+	Cache = Base = {"PID": BsPid, "up": Info["sess"], "alls": []}
+	if os.path.isfile(PidFile):
 		try:
 			Cache = eval(get_file(PidFile))
 		except:
-			del_file(PidFile); raise SelfExc()
-		if BsPid == Cache["PID"]:
-			Cache["alls"].append(strTime())
-		elif oSlist[0]:
-			get_pipe(sys_cmds[4] % (Cache["PID"])); raise SelfExc()
+			del_file(PidFile)
+			Cache = Base
 		else:
-			os.kill(Cache["PID"], 9); raise SelfExc()
-	except:
-		Cache = {"PID": BsPid, "up": Info["sess"], "alls": []}
+			try:
+				if BsPid == Cache["PID"]:
+					Cache["alls"].append(strTime())
+				elif oSlist[0]:
+					get_pipe(sys_cmds[4] % (Cache["PID"])); raise SelfExc()
+				else:
+					os.kill(Cache["PID"], 9); raise SelfExc()
+			except:
+				Cache = Base
 	exec_(cat_file, (PidFile, str(Cache)))
 	del Cache["PID"]; Info.update(Cache)
 
@@ -1326,7 +1331,7 @@ def Xmpp_Presence_Cb(disp, stanza):
 				if Chats[conf].nick == nick and aDesc.get(Role[0], 0) >= 2:
 					Chats[conf].isModer = True
 					Chats[conf].leave(AnsBase[25])
-					time.sleep(.4)
+					sleep(0.4)
 					Chats[conf].join()
 				xmpp_raise()
 			else:
@@ -1378,7 +1383,7 @@ def Xmpp_Iq_Cb(disp, stanza):
 			Name = (stanza.getTag(Types[16]) or stanza.getTag(Types[17]))
 			if Name:
 				Name = Name.getNamespace()
-		if Features.count(Name):
+		if Name in Features:
 			answer = stanza.buildReply(Types[8])
 			if Name == Features[5]:
 				query = answer.getTag(Types[18])
@@ -1399,20 +1404,18 @@ def Xmpp_Iq_Cb(disp, stanza):
 				if oSlist[0]:
 					os_name = get_pipe(sys_cmds[5]).strip()
 				elif oSlist[1]:
-					os_name = os.uname()[0]
+					os_name = "{0} {2:.16} [{4}]".format(*os.uname())
 				else:
 					os_name = "Os[%s]" % (BotOs)
 				query.setTagData("os", "%s / PyVer[%s]" % (os_name, PyVer))
 			elif Name == Features[2]:
 				query = answer.getTag(Types[18])
-				utc = strTime("%Y%m%dT%H:%M:%S", False)
+				query.setTagData("utc", strTime("%Y%m%dT%H:%M:%S", False))
 				tz = strTime("%Z")
 				if oSlist[0]:
 					tz = tz.decode("cp1251")
-				dis = strTime("%a, %d %b %Y %H:%M:%S UTC")
-				query.setTagData("utc", utc)
 				query.setTagData("tz", tz)
-				query.setTagData("display", dis)
+				query.setTagData("display", time.asctime())
 			elif Name == Features[3]:
 				query = answer.addChild(Types[17], {}, [], Features[3])
 				query.setTagData("utc", strTime("%Y-%m-%dT%H:%M:%SZ", False))
@@ -1460,7 +1463,7 @@ def Xmpp_Message_Cb(disp, stanza):
 				if not isConf:
 					xmpp_raise()
 				Chats[instance].join()
-				time.sleep(0.6)
+				sleep(0.6)
 			Message(source, body)
 		xmpp_raise()
 	if Subject:
@@ -1494,7 +1497,7 @@ def Xmpp_Message_Cb(disp, stanza):
 		if Cmds.has_key(command):
 			VarCache["idle"] = time.time()
 			VarCache["action"] = AnsBase[27] % command.upper()
-			Cmds[command].execute(stype, (source, instance, nick), (Copy.pop() if Copy else ""), disp)
+			Cmds[command].execute(stype, (source, instance, nick), (Copy[0] if Copy else ""), disp)
 		else:
 			call_efunctions("01eh", (stanza, isConf, stype, (source, instance, nick), body, isToBs, disp,))
 
@@ -1505,9 +1508,16 @@ def connect_client(source, InstanceAttrs):
 	disp = xmpp.Client(host, cport, None)
 	Print("\n\n'%s' connecting..." % (source), color4)
 	if ConTls:
-		ConType = disp.connect((server, cport), None, None, False)
+		ConType = (None, False)
 	else:
-		ConType = disp.connect((server, cport), None, False, True)
+		ConType = (False, True)
+	try:
+		ConType = disp.connect((server, cport), None, *ConType)
+	except KeyboardInterrupt:
+		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
+	except:
+		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
+		return (False, False)
 	if ConType:
 		ConType = ConType.upper()
 		if ConTls and ConType != "TLS":
@@ -1556,7 +1566,7 @@ def connect_client(source, InstanceAttrs):
 
 def connectAndDispatch(disp):
 	if Reverse_disp(disp, False):
-		time.sleep(60)
+		sleep(60)
 		for conf in Chats.keys():
 			if disp == Chats[conf].disp:
 				Chats[conf].join()
@@ -1582,7 +1592,7 @@ def Reverse_disp(disp, chats_ = True):
 						Chats[conf].join()
 			return True
 		else:
-			time.sleep(60)
+			sleep(60)
 
 def Dispatch_handler(disp):
 	ZeroCycles = itypes.Number()
@@ -1625,8 +1635,8 @@ def load_mark2():
 	load_expansions()
 	call_sfunctions("00si")
 	connect_clients()
-	while len(Clients.keys()) is 0:
-		pass
+	while len(Clients.keys()) == 0:
+		sleep(0.02)
 	Print("\n\nYahoo! I am online!", color3)
 	join_chats()
 	Print("\n\n%s is ready to serve!\n\n" % (ProdName), color3)
@@ -1636,12 +1646,12 @@ def load_mark2():
 		if ThrName not in iThr.ThrNames():
 			composeThr(Dispatch_handler, ThrName, (disp,)).start()
 	while VarCache["alive"]:
-		time.sleep(180)
+		sleep(180)
 		Cls = itypes.Number()
 		for Name in iThr.ThrNames():
 			if Name.startswith(Types[13]):
 				Cls.plus()
-		if 0 is Cls._int():
+		if Cls._int() == 0:
 			sys_exit("All of the clients now fallen!")
 		sys.exc_clear()
 		gc.collect()

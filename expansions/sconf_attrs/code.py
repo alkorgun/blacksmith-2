@@ -27,7 +27,7 @@ class expansion_temp(expansion):
 							Chats[conf].leave(self.AnsBase[3])
 							Chats[conf].disp = disp_
 							Chats[conf].save()
-							time.sleep(0.6)
+							sleep(0.6)
 							Chats[conf].join()
 							if conf == source[1]:
 								disp = disp_

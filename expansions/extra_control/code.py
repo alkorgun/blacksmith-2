@@ -30,7 +30,7 @@ class expansion_temp(expansion):
 								body = ""
 							Cmds[cmd].execute(ltype, source, body, disp)
 							if numb not in (0, lslen):
-								time.sleep(2)
+								sleep(2)
 						else:
 							answer = AnsBase[6]
 				else:

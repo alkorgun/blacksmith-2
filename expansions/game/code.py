@@ -43,7 +43,7 @@ class expansion_temp(expansion):
 			if self.GameDesc.has_key(Char):
 				Char_2 = choice(self.GameDesc.keys())
 				Answer(Char_2, ltype, source, disp)
-				time.sleep(3.2)
+				sleep(3.2)
 				if Char == Char_2:
 					answer = self.AnsBase[0]
 				elif self.GameDesc[Char_2].has_key(Char):

@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "user_stats" # /code.py v.x5
-#  Id: 17~4b
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+exp_name = "user_stats" # /code.py v.x6
+#  Id: 17~5b
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -12,9 +12,9 @@ class expansion_temp(expansion):
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	UstatFile = "jstat.db"
+	UstatsFile = "jstat.db"
 
-	UstatDesc = {}
+	UstatsDesc = {}
 
 	def command_user_stats(self, ltype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -22,8 +22,8 @@ class expansion_temp(expansion):
 				body = get_source(source[1], source[2])
 			elif Chats[source[1]].isHere(body):
 				body = get_source(source[1], body)
-			filename = cefile(chat_file(source[1], self.UstatFile))
-			with self.UstatDesc[source[1]]:
+			filename = cefile(chat_file(source[1], self.UstatsFile))
+			with self.UstatsDesc[source[1]]:
 				with database(filename) as db:
 					db("select * from stat where jid=?", (body,))
 					db_desc = db.fetchone()
@@ -56,8 +56,8 @@ class expansion_temp(expansion):
 
 	def calc_stat_04eh(self, conf, nick, instance, role, stanza, disp):
 		if instance and nick != get_self_nick(conf):
-			date, filename = strTime(local = False), cefile(chat_file(conf, self.UstatFile))
-			with self.UstatDesc[conf]:
+			date, filename = strTime(local = False), cefile(chat_file(conf, self.UstatsFile))
+			with self.UstatsDesc[conf]:
 				with database(filename) as db:
 					db("select * from stat where jid=?", (instance,))
 					db_desc = db.fetchone()
@@ -82,8 +82,8 @@ class expansion_temp(expansion):
 					sbody = "banned:(%s)" % (sbody)
 				elif scode == sCodes[2]:
 					sbody = "kicked:(%s)" % (sbody)
-				date, filename = strTime(local = False), cefile(chat_file(conf, self.UstatFile))
-				with self.UstatDesc[conf]:
+				date, filename = strTime(local = False), cefile(chat_file(conf, self.UstatsFile))
+				with self.UstatsDesc[conf]:
 					with database(filename) as db:
 						db("select * from stat where jid=?", (source_,))
 						db_desc = db.fetchone()
@@ -95,8 +95,8 @@ class expansion_temp(expansion):
 		if nick != get_self_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				filename = cefile(chat_file(conf, self.UstatFile))
-				with self.UstatDesc[conf]:
+				filename = cefile(chat_file(conf, self.UstatsFile))
+				with self.UstatsDesc[conf]:
 					with database(filename) as db:
 						db("select * from stat where jid=?", (source_,))
 						db_desc = db.fetchone()
@@ -108,8 +108,8 @@ class expansion_temp(expansion):
 		if nick != get_self_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				filename = cefile(chat_file(conf, self.UstatFile))
-				with self.UstatDesc[conf]:
+				filename = cefile(chat_file(conf, self.UstatsFile))
+				with self.UstatsDesc[conf]:
 					with database(filename) as db:
 						db("select * from stat where jid=?", (source_,))
 						db_desc = db.fetchone()
@@ -120,15 +120,15 @@ class expansion_temp(expansion):
 								db.commit()
 
 	def init_stat_base(self, conf):
-		filename = cefile(chat_file(conf, self.UstatFile))
+		filename = cefile(chat_file(conf, self.UstatsFile))
 		if not os.path.isfile(filename):
 			with database(filename) as db:
 				db("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
 				db.commit()
-		self.UstatDesc[conf] = iThr.Semaphore()
+		self.UstatsDesc[conf] = iThr.Semaphore()
 
 	def edit_stat_desc(self, conf):
-		del self.UstatDesc[conf]
+		del self.UstatsDesc[conf]
 
 	commands = (
 		(command_user_stats, "userstat", 2,),

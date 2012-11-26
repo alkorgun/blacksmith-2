@@ -1,24 +1,24 @@
 
-This is BlackSmith mark.2 xmpp bot (Second generation of BlackSmith)
+This is BlackSmith mark.2 xmpp bot (the second generation of BlackSmith)
 
 To use Black-2 you will need:
 
 1. OS: *nix or Microsoft Windows (FreeBSD amd64 recommended)
 2. Python 2.6 or higher (Python 3+ isn't required)
 3. Python's sqlite lib. (Py-Sqlite3)
-4. Subversion (or Tortoise SVN client for Windows)
+4. Subversion (or TortoiseSVN for Windows)
 
 Installation:
 
-1) Type in console (*nix):
+1) Type to the console (*nix):
 svn checkout http://blacksmith-2.googlecode.com/svn/trunk/ Black-2
 
-2) Rename config_.ini to config.ini (static/) and fill it
+2) Rename config_.ini to config.ini (./static/) and fill it
 
-3) Same actions with static/clients_.ini (optional)
+3) The same actions with ./static/clients_.ini (optional)
 
-That is all! You can run BlackSmith.py
+That is all! You can run -> BlackSmith.py
 
-Offial GoogleCode page: http://code.google.com/p/blacksmith-2/
+Official GoogleCode page: http://code.google.com/p/blacksmith-2/
 
-Offial Jabber Conference: Witcher@conference.jabber.ru
+Official Jabber Conference: Witcher@conference.jabber.ru

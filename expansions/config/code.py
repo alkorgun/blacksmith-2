@@ -103,11 +103,11 @@ class expansion_temp(expansion):
 								if Chats[conf].disp == Name:
 									if online(Name):
 										Message(conf, self.AnsBase[4], Name)
-										time.sleep(0.2)
+										sleep(0.2)
 									Chats[conf].leave(self.AnsBase[5])
 									Chats[conf].disp = IdleClient()
 									Chats[conf].save()
-									time.sleep(0.6)
+									sleep(0.6)
 									Chats[conf].join()
 							if online(Name):
 								try:

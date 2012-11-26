@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "books" # /code.py v.x6 alpha
-#  Id: 29~6b
+exp_name = "books" # /code.py v.x7 beta
+#  Id: 29~7b
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
@@ -129,6 +129,8 @@ class expansion_temp(expansion):
 									if db_desc:
 										ls, Numb = [a3 + ":"], itypes.Number()
 										for seq1, seq2, Name in db_desc:
+											if not seq2:
+												seq2 = 0
 											ls.append("%d) %s #%d - %s" % (Numb.plus(), seq1, seq2, Name))
 										answer = str.join(chr(10), ls)
 									else:

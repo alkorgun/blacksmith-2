@@ -11,7 +11,8 @@ if DefLANG in ("RU", "UA"):
 		"Нет ответа.", # 6
 		"Время работы «%s» - %s.", # 7
 		"Послеедняя активность «%s» - %s назад.", # 8
-		"Нет cовпадений." # 9
+		"Нет cовпадений.", # 9
+		"Вкард не заполнен." # 10
 					)])
 else:
 	AnsBase_temp = (
@@ -24,5 +25,6 @@ else:
 		"No answer.", # 6
 		"%s's uptime is %s.", # 7
 		"%s's last activity was %s ago.", # 8
-		"No matches." # 9
+		"No matches.", # 9
+		"The vCard is empty." # 10
 					)

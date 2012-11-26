@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "session_stat" # /code.py v.x5
-#  Id: 10~3b
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+exp_name = "session_stats" # /code.py v.x6
+#  Id: 10~4b
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 expansion_register(exp_name)
 
@@ -21,7 +21,7 @@ class expansion_temp(expansion):
 						exc = VarCache["errors"][Number]
 						if oSlist[0]:
 							exc = exc.decode("cp1251")
-						exc = "%s" % (exc)
+						exc = str(exc)
 						if ltype == Types[1]:
 							Answer(AnsBase[11], ltype, source, disp)
 						Message(source[0], exc, disp)
@@ -69,31 +69,25 @@ class expansion_temp(expansion):
 			answer += self.AnsBase[14] % str(round(float(Number) / 1024, 3))
 		Answer(answer, ltype, source, disp)
 
-	def command_stat(self, ltype, source, body, disp):
+	def command_stats(self, ltype, source, body, disp):
 		if body:
-			x = body.lower()
-			if x in Cmds.keys():
-				answer = self.AnsBase[18] % (x, Cmds[x].numb._str(), len(Cmds[x].desc))
+			cmd = body.lower()
+			if Cmds.has_key(cmd):
+				answer = self.AnsBase[18] % (cmd, Cmds[cmd].numb._str(), len(Cmds[cmd].desc))
 			else:
 				answer = AnsBase[6]
 		else:
-			list = []
-			for x in Cmds.values():
-				x_len = x.numb._int()
-				if x_len:
-					list.append((x_len, len(x.desc), x.name))
-			list.sort()
-			list.reverse()
-			answer, Numb = self.AnsBase[19], itypes.Number()
-			for x, y, z in list:
-				answer += "\n%s. %s - %d (%d)" % (Numb.plus(), z, x, y)
-				if Numb._int() >= 20:
-					break
+			ls = []
+			for cmd in Cmds.values():
+				used = cmd.numb._int()
+				if used:
+					ls.append((used, len(cmd.desc), cmd.name))
+			answer = self.AnsBase[19] + str.join(chr(10), ["%s. %s - %d (%d)" % (numb, name, used, desc) for numb, (used, desc, name) in enumerate(sorted(ls, reverse = True), 1)])
 		Answer(answer, ltype, source, disp)
 
 	commands = (
 		(command_exc_info, "excinfo", 8,),
 		(command_botup, "botup", 1,),
 		(command_session, "stat", 1,),
-		(command_stat, "comstat", 1,)
+		(command_stats, "comstat", 1,)
 					)

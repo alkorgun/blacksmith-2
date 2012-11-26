@@ -32,7 +32,7 @@ class expansion_temp(expansion):
 						self.CronDesc[self.CronCounter.plus()] = ((seconds + gt), (command, instance, ls, repeat))
 
 		while VarCache["alive"]:
-			time.sleep(2)
+			sleep(2)
 			if not expansions.has_key(self.name):
 				break
 			Time = time.mktime(time.gmtime())

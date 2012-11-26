@@ -331,7 +331,7 @@ class expansion_temp(expansion):
 						if self.Federal_Jail[conf].has_key(sUser.source):
 							del self.Federal_Jail[conf][sUser.source]
 			for source_ in list:
-				Chats[conf].none(source_); time.sleep(0.4)
+				Chats[conf].none(source_); sleep(0.4)
 
 	def get_server(self, source, state = 0):
 		At = chr(64)
@@ -423,7 +423,7 @@ class expansion_temp(expansion):
 						if not self.Questions:
 							for qu in self.AnsBase[19].splitlines():
 								qu, an = qu.split(chr(124), 1)
-								self.Questions.append((qu.strip(), an.strip().lower()))
+								self.Questions.append((qu.strip(), (an.strip()).lower()))
 						qu, an = choice(self.Questions)
 						prisoner.vakey = an
 						Message("%s/%s" % (conf, nick), self.AnsBase[18] % (qu), disp)
