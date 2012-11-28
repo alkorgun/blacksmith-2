@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "roster_control" # /code.py v.x3
-#  Id: 23~3b
+# exp_name = "roster_control" # /code.py v.x3
+#  Id: 23~3c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -14,7 +12,7 @@ class expansion_temp(expansion):
 
 	RosterFile = dynamic % ("roster.db")
 
-	def command_roster(self, ltype, source, body, disp):
+	def command_roster(self, stype, source, body, disp):
 		cls = sorted(Clients.keys())
 		if body:
 			ls = body.split()
@@ -99,9 +97,9 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[2]
 		else:
 			answer = enumerated_list(cls)
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_roster_state(self, ltype, source, body, disp):
+	def command_roster_state(self, stype, source, body, disp):
 		if body:
 			body = (body.split())[0].lower()
 			if body in ("on", "1", "вкл".decode("utf-8")):
@@ -122,7 +120,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = (self.AnsBase[3] if Roster["on"] else self.AnsBase[4])
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def init_roster_state(self):
 		if initialize_file(self.RosterFile, str(True)):

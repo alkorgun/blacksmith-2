@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "converter" # /code.py v.x4
-#  Id: 31~3b
+# exp_name = "converter" # /code.py v.x4
+#  Id: 31~3c
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -193,7 +191,7 @@ class expansion_temp(expansion):
 
 	Convert = lambda self, Desc, Numb, Type, ToType: (self.CrDesc[Desc][ToType]*(Numb / self.CrDesc[Desc][Type]))
 
-	def command_convert(self, ltype, source, body, disp):
+	def command_convert(self, stype, source, body, disp):
 		if body:
 			ls = body.split()
 			Desc = (ls.pop(0)).lower()
@@ -237,6 +235,6 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[2]
 		else:
 			answer = ", ".join(sorted(self.CrDesc.keys()))
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	commands = ((command_convert, "convert", 2,),)

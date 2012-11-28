@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "talkers" # /code.py v.x5
-#  Id: 14~4b
+# exp_name = "talkers" # /code.py v.x5
+#  Id: 14~4c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -16,7 +14,7 @@ class expansion_temp(expansion):
 
 	TalkersDesc = {}
 
-	def command_talkers(self, ltype, source, body, disp):
+	def command_talkers(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
 				ls = body.split()
@@ -187,10 +185,10 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def calculate_talkers(self, stanza, isConf, ltype, source, body, isToBs, disp):
-		if isConf and ltype == Types[1] and source[2]:
+	def calculate_talkers(self, stanza, isConf, stype, source, body, isToBs, disp):
+		if isConf and stype == Types[1] and source[2]:
 			source_ = get_source(source[1], source[2])
 			if source_:
 				nick = source[2].strip()

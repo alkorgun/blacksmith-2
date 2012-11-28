@@ -1,18 +1,16 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "basic_control" # /code.py v.x10
-#  Id: 06~4b
-#  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
+# exp_name = "basic_control" # /code.py v.x11
+#  Id: 06~5c
+#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def Chat_check(self, conf):
+	def Check(self, conf):
 		Numb = itypes.Number()
 		while Chats.has_key(conf):
 			if Chats[conf].IamHere != None:
@@ -21,7 +19,7 @@ class expansion_temp(expansion):
 			if Numb.plus() >= 50:
 				break
 
-	def command_join(self, ltype, source, body, disp):
+	def command_join(self, stype, source, body, disp):
 		if body:
 			ls = body.split()
 			conf = (ls.pop(0)).lower()
@@ -67,7 +65,7 @@ class expansion_temp(expansion):
 						Chats[conf] = sConf(conf, disp_, codename, cPref, nick)
 						Chats[conf].load_all()
 						Chats[conf].join()
-						self.Chat_check(conf)
+						self.Check(conf)
 						if Chats.has_key(conf) and Chats[conf].IamHere:
 							Message(conf, self.AnsBase[7] % (ProdName, source[2]), disp_)
 							answer = self.AnsBase[2] % (conf)
@@ -84,9 +82,9 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[6] % (conf)
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_rejoin(self, ltype, source, body, disp):
+	def command_rejoin(self, stype, source, body, disp):
 		if body:
 			conf = body.split()[0].lower()
 		else:
@@ -105,9 +103,9 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[14]
 		else:
 			answer = AnsBase[8]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_leave(self, ltype, source, body, disp):
+	def command_leave(self, stype, source, body, disp):
 		if body:
 			conf = body.split()[0].lower()
 		else:
@@ -127,16 +125,16 @@ class expansion_temp(expansion):
 				answer = AnsBase[8]
 		else:
 			answer = AnsBase[10]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_reconnect(self, ltype, source, body, disp):
+	def command_reconnect(self, stype, source, body, disp):
 		if body:
 			Name = body.split()[0].lower()
 		else:
 			Name = get_disp(disp)
 		if InstansesDesc.has_key(Name):
-			ThrName = "%s%s" % (Types[13], Name)
+			ThrName = "%s-%s" % (Types[13], Name)
 			if Clients.has_key(Name):
 				ThrIds = iThr.ThrNames()
 				if ThrName in ThrIds:
@@ -150,27 +148,27 @@ class expansion_temp(expansion):
 						pass
 			if connect_client(Name, InstansesDesc[Name])[0]:
 				try:
-					Try_Thr(composeThr(Dispatch_handler, ThrName, (Name,)), -1)
+					Try_Thr(composeThr(DispatchHandler, ThrName, (Name,)), -1)
 				except RuntimeError:
 					answer = self.AnsBase[16]
 				else:
-					for conf in Chats.keys():
-						if Name == Chats[conf].disp:
-							Chats[conf].join()
+					for conf in Chats.itervalues():
+						if Name == conf.disp:
+							conf.join()
 					answer = AnsBase[4]
 			else:
 				answer = AnsBase[7]
 		else:
 			answer = self.AnsBase[17] % (Name)
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_reload(self, ltype, source, body, disp):
+	def command_reload(self, stype, source, body, disp):
 		exit_desclr = self.AnsBase[11] % (source[2])
 		if body not in ("silent", "тихо".decode("utf-8")):
 			if body:
 				exit_desclr += self.AnsBase[1] % (body)
-			for conf in Chats.keys():
-				Message(conf, exit_desclr, Chats[conf].disp)
+			for conf in Chats.itervalues():
+				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()
@@ -180,13 +178,13 @@ class expansion_temp(expansion):
 		call_sfunctions("03si")
 		Exit("\n\nRestart command...", 0, 15)
 
-	def command_exit(self, ltype, source, body, disp):
+	def command_exit(self, stype, source, body, disp):
 		exit_desclr = self.AnsBase[11] % (source[2])
 		if body not in ("silent", "тихо".decode("utf-8")):
 			if body:
 				exit_desclr += self.AnsBase[1] % (body)
-			for conf in Chats.keys():
-				Message(conf, exit_desclr, Chats[conf].disp)
+			for conf in Chats.itervalues():
+				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
 		iThr.Threads_kill()

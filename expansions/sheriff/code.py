@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sheriff" # /code.py v.x7
-#  Id: 15~5a
+# exp_name = "sheriff" # /code.py v.x7
+#  Id: 15~5c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -53,7 +51,7 @@ class expansion_temp(expansion):
 		def addMsTime(self):
 			self.msdates.append(time.time())
 
-	def command_order(self, ltype, source, body, disp):
+	def command_order(self, stype, source, body, disp):
 
 		def change_cfg(conf, Name, mode):
 			if mode in ("on", "1", "вкл".decode("utf-8")):
@@ -180,10 +178,10 @@ class expansion_temp(expansion):
 					answer += self.AnsBase[26][:-1]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def spesial_kick(self, conf, nick, text):
-		Chats[conf].kick(nick, "%s: %s" % (get_self_nick(conf), text))
+		Chats[conf].kick(nick, "%s: %s" % (get_nick(conf), text))
 		raise iThr.ThrKill("exit")
 
 	def sheriffs_loyalty(self, conf):
@@ -248,16 +246,16 @@ class expansion_temp(expansion):
 				if self.obscene_checker(nick):
 					self.spesial_kick(conf, nick, self.AnsBase[3])
 
-	def sheriff_set(self, ltype, source, source_, access, loyalty, body, disp):
+	def sheriff_set(self, stype, source, source_, access, loyalty, body, disp):
 		if access <= loyalty:
 			prisoner = self.Federal_Jail[source[1]].get(source_)
 			if prisoner:
 				prisoner.offenses += 1
 				if prisoner.offenses in (1, 2):
-					Answer(body, ltype, source, disp)
+					Answer(body, stype, source, disp)
 					raise iThr.ThrKill("exit")
 				elif prisoner.offenses == 3:
-					Chats[source[1]].visitor(source[2], "%s: %s" % (get_self_nick(source[1]), body))
+					Chats[source[1]].visitor(source[2], "%s: %s" % (get_nick(source[1]), body))
 					prisoner.SetDevoice()
 					Message(source[0], self.AnsBase[16] % (body, ChatsAttrs[source[1]]["laws"]["dtime"]), disp)
 					raise iThr.ThrKill("exit")
@@ -267,10 +265,10 @@ class expansion_temp(expansion):
 			else:
 				self.spesial_kick(source[1], source[2], body)
 		else:
-			Answer(body, ltype, source, disp)
+			Answer(body, stype, source, disp)
 			raise iThr.ThrKill("exit")
 
-	def Security_01eh(self, stanza, isConf, ltype, source, body, isToBs, disp):
+	def Security_01eh(self, stanza, isConf, stype, source, body, isToBs, disp):
 		if isConf and source[2] and Chats[source[1]].isModer:
 			source_ = get_source(source[1], source[2])
 			if source_:
@@ -286,13 +284,13 @@ class expansion_temp(expansion):
 										prisoner.SetDevoice()
 									self.spesial_kick(source[1], source[2], self.AnsBase[4])
 								else:
-									Answer(self.AnsBase[4], ltype, source, disp)
+									Answer(self.AnsBase[4], stype, source, disp)
 								raise iThr.ThrKill("exit")
 						if ChatsAttrs[source[1]]["laws"]["verif"]:
-							if access < 2 and prisoner.vakey and ltype == Types[0]:
+							if access < 2 and prisoner.vakey and stype == Types[0]:
 								if prisoner.vakey == body.lower():
 									prisoner.Autenticated()
-									Chats[source[1]].participant(source[2], self.AnsBase[20] % get_self_nick(source[1]))
+									Chats[source[1]].participant(source[2], self.AnsBase[20] % get_nick(source[1]))
 									Message(source[0], self.AnsBase[21], disp)
 								elif prisoner.vnumb.plus() >= 3:
 									prisoner.vnumb = itypes.Number()
@@ -309,16 +307,16 @@ class expansion_temp(expansion):
 							else:
 								prisoner.msdates.pop(0)
 						del list
-					if ltype == Types[1]:
+					if stype == Types[1]:
 						if ChatsAttrs[source[1]]["laws"]["obscene"]:
 							if self.obscene_checker(body):
-								self.sheriff_set(ltype, source, source_, access, loyalty[1], self.AnsBase[5], disp)
+								self.sheriff_set(stype, source, source_, access, loyalty[1], self.AnsBase[5], disp)
 						if ChatsAttrs[source[1]]["laws"]["len"]:
 							if len(body) > ChatsAttrs[source[1]]["laws"]["len"]:
-								self.sheriff_set(ltype, source, source_, access, loyalty[1], self.AnsBase[6], disp)
+								self.sheriff_set(stype, source, source_, access, loyalty[1], self.AnsBase[6], disp)
 						if ChatsAttrs[source[1]]["laws"]["lower"]:
 							if self.lower_checker(source[1], body):
-								self.sheriff_set(ltype, source, source_, access, loyalty[1], self.AnsBase[7], disp)
+								self.sheriff_set(stype, source, source_, access, loyalty[1], self.AnsBase[7], disp)
 
 	def AwipeClear(self, conf, list):
 		if Chats.has_key(conf):
@@ -345,7 +343,7 @@ class expansion_temp(expansion):
 
 	def check_wipe(self, conf, nick, role, inst):
 		if role == aRoles[2]:
-			BsNick = get_self_nick(conf)
+			BsNick = get_nick(conf)
 			if ChatsAttrs[conf]["laws"]["sparta"]:
 				jid = self.get_server(inst)
 				if jid not in self.GoodServers__(conf):
@@ -398,7 +396,7 @@ class expansion_temp(expansion):
 	Questions = []
 
 	def Security_04eh(self, conf, nick, source_, role, stanza, disp):
-		if source_ and nick != get_self_nick(conf):
+		if source_ and nick != get_nick(conf):
 			access = get_access(conf, nick)
 			if access <= self.sheriffs_loyalty(conf)[1]:
 				prisoner = self.Federal_Jail[conf].get(source_)
@@ -407,7 +405,7 @@ class expansion_temp(expansion):
 					if prisoner.devoice:
 						eTime = prisoner.GetDevoice()
 						if (eTime < ChatsAttrs[conf]["laws"]["dtime"]):
-							Chats[conf].visitor(nick, self.AnsBase[11] % get_self_nick(conf))
+							Chats[conf].visitor(nick, self.AnsBase[11] % get_nick(conf))
 							Message("%s/%s" % (conf, nick), self.AnsBase[14] % Time2Text(ChatsAttrs[conf]["laws"]["dtime"] - eTime), disp)
 						else:
 							prisoner.devoice = 0
@@ -419,7 +417,7 @@ class expansion_temp(expansion):
 				self.check_nick(conf, nick)
 				if ChatsAttrs[conf]["laws"]["verif"] and access < 2 and aRoles[2] == role[0]:
 					if not prisoner.verif and not prisoner.devoice:
-						Chats[conf].visitor(nick, self.AnsBase[17] % get_self_nick(conf))
+						Chats[conf].visitor(nick, self.AnsBase[17] % get_nick(conf))
 						if not self.Questions:
 							for qu in self.AnsBase[19].splitlines():
 								qu, an = qu.split(chr(124), 1)
@@ -449,7 +447,7 @@ class expansion_temp(expansion):
 							self.spesial_kick(conf, nick, self.AnsBase[9])
 
 	def Security_05eh(self, conf, nick, sbody, scode, disp):
-		if nick != get_self_nick(conf):
+		if nick != get_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
 				prisoner = self.Federal_Jail[conf].get(source_)
@@ -461,10 +459,10 @@ class expansion_temp(expansion):
 						if scode == sCodes[2] and prisoner.kicks.plus() >= ChatsAttrs[conf]["laws"]["aban"]:
 							if ChatsAttrs[conf]["laws"]["aban"]:
 								del self.Federal_Jail[conf][source_]
-								Chats[conf].outcast(source_, self.AnsBase[10] % (get_self_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
+								Chats[conf].outcast(source_, self.AnsBase[10] % (get_nick(conf), ChatsAttrs[conf]["laws"]["aban"]))
 
 	def Security_06eh(self, conf, old_nick, nick, disp):
-		if nick != get_self_nick(conf) and Chats[conf].isModer:
+		if nick != get_nick(conf) and Chats[conf].isModer:
 			sUser = Chats[conf].get_user(nick)
 			if getattr(sUser, "source", 0):
 				prisoner = self.Federal_Jail[conf].get(sUser.source)
@@ -481,7 +479,7 @@ class expansion_temp(expansion):
 							prisoner.prdates.pop(0)
 
 	def Security_07eh(self, conf, nick, role, disp):
-		if nick != get_self_nick(conf):
+		if nick != get_nick(conf):
 			sUser = Chats[conf].get_user(nick)
 			if getattr(sUser, "source", 0):
 				prisoner = ((sUser.access <= self.sheriffs_loyalty(conf)[1]) and Chats[conf].isModer)
@@ -492,7 +490,7 @@ class expansion_temp(expansion):
 					self.Federal_Jail[conf][sUser.source] = self.rUser()
 
 	def Security_08eh(self, conf, nick, stanza, disp):
-		if nick != get_self_nick(conf) and Chats[conf].isModer:
+		if nick != get_nick(conf) and Chats[conf].isModer:
 			source_ = get_source(conf, nick)
 			if source_:
 				prisoner = self.Federal_Jail[conf].get(source_)

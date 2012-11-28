@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "wtf" # /code.py v.x2
-#  Id: 28~2b
+# exp_name = "wtf" # /code.py v.x2
+#  Id: 28~2c
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -15,7 +13,7 @@ class expansion_temp(expansion):
 	Base = dynamic % ("wtf.db")
 	ChatBase = "wtf.db"
 
-	def command_wtf(self, ltype, source, body, disp):
+	def command_wtf(self, stype, source, body, disp):
 		if body:
 			ls = body.split(None, 1)
 			ar = (ls.pop(0)).lower()
@@ -98,7 +96,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[-1] + str.join(chr(10), ls)
 			else:
 				answer = self.AnsBase[2]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	sep = chr(61)
 
@@ -121,7 +119,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[6] % (name)
 		return answer
 
-	def command_def(self, ltype, source, body, disp):
+	def command_def(self, stype, source, body, disp):
 		if body:
 			ls = body.split(None, 1)
 			ar = (ls.pop(0)).lower()
@@ -160,7 +158,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[10]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def init_wtf_base(self):
 		if not os.path.isfile(self.Base):

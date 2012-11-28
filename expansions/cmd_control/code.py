@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "cmd_control" # /code.py v.x1
-#  Id: 32~1b
+# exp_name = "cmd_control" # /code.py v.x1
+#  Id: 32~1c
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -14,7 +12,7 @@ class expansion_temp(expansion):
 
 	TabooFile = "taboo.db"
 
-	def command_taboo(self, ltype, source, body, disp):
+	def command_taboo(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			oCmds = Chats[source[1]].oCmds
 			if body:
@@ -45,7 +43,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[3]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def init_taboo(self, conf):
 		filename = chat_file(conf, self.TabooFile)

@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "note" # /code.py v.x5
-#  Id: 22~4b
+# exp_name = "note" # /code.py v.x5
+#  Id: 22~4c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -14,7 +12,7 @@ class expansion_temp(expansion):
 
 	NoteFile = dynamic % ("notepad.db")
 
-	def command_note(self, ltype, source, body, disp):
+	def command_note(self, stype, source, body, disp):
 		source_ = get_source(source[1], source[2])
 		if source_:
 			if body:
@@ -34,7 +32,7 @@ class expansion_temp(expansion):
 					if mode == "+":
 						body = body[2:].lstrip()
 						if len(body) <= 512:
-							date = strTime(local = False)
+							date = strfTime(local = False)
 							with database(self.NoteFile) as db:
 								db("select * from note where jid=?", (source_,))
 								db_desc = db.fetchone()
@@ -100,8 +98,8 @@ class expansion_temp(expansion):
 							Numb.plus()
 						if Notes:
 							Notes = (self.AnsBase[6] % (Notes))
-							if ltype == Types[1]:
-								Answer(AnsBase[11], ltype, source, disp)
+							if stype == Types[1]:
+								Answer(AnsBase[11], stype, source, disp)
 							Message(source[0], Notes, disp)
 						else:
 							db("delete from note where jid=?", (source_,))
@@ -111,8 +109,8 @@ class expansion_temp(expansion):
 						answer = self.AnsBase[0]
 		else:
 			answer = self.AnsBase[2]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 	def init_note_file(self):
 		if not os.path.isfile(self.NoteFile):

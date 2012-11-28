@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "game" # /code.py v.x2
-#  Id: 26~2b
+# exp_name = "game" # /code.py v.x2
+#  Id: 26~2c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -37,12 +35,12 @@ class expansion_temp(expansion):
 
 	GameRules = GameRules
 
-	def command_game(self, ltype, source, Char, disp):
+	def command_game(self, stype, source, Char, disp):
 		if Char:
 			Char = Char.lower()
-			if self.GameDesc.has_key(Char):
+			if Char in self.GameDesc:
 				Char_2 = choice(self.GameDesc.keys())
-				Answer(Char_2, ltype, source, disp)
+				Answer(Char_2, stype, source, disp)
 				sleep(3.2)
 				if Char == Char_2:
 					answer = self.AnsBase[0]
@@ -54,7 +52,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = str.join(chr(10), self.GameRules)
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	commands = ((command_game, "game", 2,),)
 

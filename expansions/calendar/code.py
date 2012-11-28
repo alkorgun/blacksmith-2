@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "calendar" # /code.py v.x3
-#  Id: 24~3b
+# exp_name = "calendar" # /code.py v.x3
+#  Id: 24~3c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -14,7 +12,7 @@ class expansion_temp(expansion):
 
 	import calendar
 
-	def command_calendar(self, ltype, source, body, disp):
+	def command_calendar(self, stype, source, body, disp):
 		date = time.gmtime()
 		y, z = 0, 0
 		if body:
@@ -33,6 +31,6 @@ class expansion_temp(expansion):
 		clndr = ((self.calendar.month(y, z)).strip()).splitlines()
 		Ans_2 = clndr.pop(0)
 		Ans_3 = "\n*\t".join(clndr)
-		Answer(Ans_1 % (Ans_2, Ans_3, time.asctime(date)), ltype, source, disp)
+		Answer(Ans_1 % (Ans_2, Ans_3, time.asctime(date)), stype, source, disp)
 
 	commands = ((command_calendar, "calendar", 1,),)

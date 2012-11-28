@@ -1,20 +1,18 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "interpreter" # /code.py v.x8
-#  Id: 04~6b
+# exp_name = "interpreter" # /code.py v.x8
+#  Id: 04~6c
 #  Code © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Code © (2007) by Als [Als@exploit.in]
 #  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def command_eval(self, ltype, source, body, disp):
+	def command_eval(self, stype, source, body, disp):
 		if body:
 			try:
 				answer = UnicodeType(eval(UnicodeType(body)))
@@ -24,9 +22,9 @@ class expansion_temp(expansion):
 				answer = "%s - %s" % exc_info()
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_exec(self, ltype, source, body, disp):
+	def command_exec(self, stype, source, body, disp):
 		if body:
 			if not body.endswith(chr(10)):
 				body += chr(10)
@@ -38,9 +36,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[4]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_sh(self, ltype, source, body, disp):
+	def command_sh(self, stype, source, body, disp):
 		if body:
 			if oSlist[1]:
 				command = sys_cmds[6] % (body.encode("utf-8"))
@@ -51,9 +49,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[4]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_calc(self, ltype, source, body, disp):
+	def command_calc(self, stype, source, body, disp):
 		if body:
 			if not body.count(chr(42)*2) and 32 >= len(body):
 				comp = compile__("([0-9]|[\+\-\(\/\*\)\%\^\.])")
@@ -71,7 +69,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	commands = (
 		(command_eval, "eval", 8,),

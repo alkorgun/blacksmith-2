@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "access" # /code.py v.x2
-#  Id: 20~2b
+# exp_name = "access" # /code.py v.x2
+#  Id: 20~2c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -15,7 +13,7 @@ class expansion_temp(expansion):
 	AccessFile = dynamic % ("access.db")
 	ChatAccessFile = "access.db"
 
-	def command_get_access(self, ltype, source, body, disp):
+	def command_get_access(self, stype, source, body, disp):
 
 		def get_acc(access):
 			if access > 8:
@@ -43,25 +41,25 @@ class expansion_temp(expansion):
 			answer = self.AnsBase[1] % (body, get_acc(Galist.get(body, 0)))
 		else:
 			answer = self.AnsBase[2] % (body)
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_get_galist(self, ltype, source, body, disp):
+	def command_get_galist(self, stype, source, body, disp):
 		if Galist:
 			list = []
 			for x, y in Galist.items():
 				list.append([y, x])
 			list.sort()
 			list.reverse()
-			if ltype == Types[1]:
-				Answer(AnsBase[11], ltype, source, disp)
+			if stype == Types[1]:
+				Answer(AnsBase[11], stype, source, disp)
 			answer, Numb = self.AnsBase[5], itypes.Number()
 			for x in list:
 				answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
 			Message(source[0], answer, disp)
 		else:
-			Answer(self.AnsBase[3], ltype, source, disp)
+			Answer(self.AnsBase[3], stype, source, disp)
 
-	def command_get_lalist(self, ltype, source, body, disp):
+	def command_get_lalist(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if Chats[source[1]].alist:
 				list = []
@@ -69,8 +67,8 @@ class expansion_temp(expansion):
 					list.append([y, x])
 				list.sort()
 				list.reverse()
-				if ltype == Types[1]:
-					Answer(AnsBase[11], ltype, source, disp)
+				if stype == Types[1]:
+					Answer(AnsBase[11], stype, source, disp)
 				answer, Numb = self.AnsBase[5], itypes.Number()
 				for x in list:
 					answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
@@ -79,10 +77,10 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[4]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_set_access(self, ltype, source, body, disp):
+	def command_set_access(self, stype, source, body, disp):
 
 		def set_access(instance, access = None):
 			if access != None:
@@ -134,9 +132,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_set_local_access(self, ltype, source, body, disp):
+	def command_set_local_access(self, stype, source, body, disp):
 
 		def set_access(conf, instance, access = None):
 			if access != None:
@@ -192,7 +190,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def load_acclist(self):
 		if initialize_file(self.AccessFile):

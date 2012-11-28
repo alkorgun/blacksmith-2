@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "turn" # /code.py v.x2
-#  Id: 21~2b
+# exp_name = "turn" # /code.py v.x2
+#  Id: 21~2c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -17,7 +15,7 @@ class expansion_temp(expansion):
 
 	TurnBase = {}
 
-	def command_turn(self, ltype, source, body, disp):
+	def command_turn(self, stype, source, body, disp):
 		
 		def Turn(conf, body):
 			desc = {}
@@ -51,14 +49,14 @@ class expansion_temp(expansion):
 					answer = AnsBase[7]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def collect_turnable(self, stanza, isConf, ltype, source, body, isToBs, disp):
-		if isConf and ltype == Types[1] and source[2]:
+	def collect_turnable(self, stanza, isConf, stype, source, body, isToBs, disp):
+		if isConf and stype == Types[1] and source[2]:
 			source_ = get_source(source[1], source[2])
 			if source_:
-				self.TurnBase[source[1]][source_] = (strTime("%H:%M:%S", False), body)
+				self.TurnBase[source[1]][source_] = (strfTime("%H:%M:%S", False), body)
 
 	def init_Turn_Base(self, conf):
 		self.TurnBase[conf] = {}

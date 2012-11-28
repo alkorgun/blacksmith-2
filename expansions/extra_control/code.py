@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "extra_control" # /code.py v.x8
-#  Id: 01~6b
+# exp_name = "extra_control" # /code.py v.x9
+#  Id: 01~7c
 #  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -14,13 +12,14 @@ class expansion_temp(expansion):
 
 	sep = chr(38)*2
 
-	def command_turbo(self, ltype, source, body, disp):
+	def command_turbo(self, stype, source, body, disp):
 		if body:
 			if self.sep in body:
 				ls = body.split(self.sep)
 				lslen = len(ls) - 1
 				if lslen < 4 or enough_access(source[1], source[2], 7):
 					for numb, body in enumerate(ls):
+						body = body.strip()
 						body = body.split(None, 1)
 						cmd = (body.pop(0)).lower()
 						if Cmds.has_key(cmd):
@@ -28,7 +27,7 @@ class expansion_temp(expansion):
 								body = body[0]
 							else:
 								body = ""
-							Cmds[cmd].execute(ltype, source, body, disp)
+							Cmds[cmd].execute(stype, source, body, disp)
 							if numb not in (0, lslen):
 								sleep(2)
 						else:
@@ -39,10 +38,10 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_remote(self, ltype, source, body, disp):
+	def command_remote(self, stype, source, body, disp):
 		confs = sorted(Chats.keys())
 		if body:
 			body = body.split(None, 3)
@@ -60,9 +59,9 @@ class expansion_temp(expansion):
 					conf = False
 				if conf:
 					itype = (body.pop(0)).lower()
-					if itype in (Types[14], Types[0]):
+					if itype in ("chat", "чат".decode("utf-8")):
 						type2 = Types[1]
-					elif itype in (Types[15], Types[6]):
+					elif itype in ("private", "приват".decode("utf-8")):
 						type2 = Types[0]
 					else:
 						type2 = False
@@ -100,10 +99,10 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = enumerated_list(confs)
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_private(self, ltype, source, body, disp):
+	def command_private(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
 				body = body.split(None, 1)
@@ -120,8 +119,8 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 	commands = (
 		(command_turbo, "turbo", 1,),

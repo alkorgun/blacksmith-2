@@ -1,18 +1,16 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "sconf_attrs" # /code.py v.x4
-#  Id: 07~3b
+# exp_name = "sconf_attrs" # /code.py v.x4
+#  Id: 07~3c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def command_redisp(self, ltype, source, body, disp):
+	def command_redisp(self, stype, source, body, disp):
 		body = body.split()
 		if len(body) >= 1:
 			disp_ = (body.pop(0)).lower()
@@ -42,9 +40,9 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[2] % (disp_)
 		else:
 			answer = AnsBase[2]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_botnick(self, ltype, source, body, disp):
+	def command_botnick(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
 				Nick = sub_desc(body, [(chr(32), chr(95)), chr(10), chr(13), chr(9)]).strip()
@@ -59,9 +57,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_prefix(self, ltype, source, body, disp):
+	def command_prefix(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
 				if enough_access(source[1], source[2], 6):
@@ -90,13 +88,13 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[12]
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	StatusDesc = {"чат".decode("utf-8"): 0, "ушел".decode("utf-8"): 1, "нет".decode("utf-8"): 2, "занят".decode("utf-8"): 3}
 
 	ChatStatus = "status.db"
 
-	def command_status(self, ltype, source, body, disp):
+	def command_status(self, stype, source, body, disp):
 		if body:
 			body = body.split(None, 2)
 			if len(body) == 3:
@@ -108,9 +106,9 @@ class expansion_temp(expansion):
 					body = "%s|%s" % (state, status)
 					chat = chat.lower()
 					if chat in ("everywhere", "везде".decode("utf-8")):
-						for conf in Chats.keys():
-							Chats[conf].change_status(state, status)
-							cat_file(chat_file(conf, self.ChatStatus), body)
+						for conf in Chats.itervalues():
+							conf.change_status(state, status)
+							cat_file(chat_file(conf.name, self.ChatStatus), body)
 						answer = AnsBase[4]
 					elif chat in ("here", "здесь".decode("utf-8")):
 						if Chats.has_key(source[1]):
@@ -131,9 +129,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_password(self, ltype, source, body, disp):
+	def command_password(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
 				if body in ("none", "нет".decode("utf-8")):
@@ -145,7 +143,7 @@ class expansion_temp(expansion):
 				answer = str(Chats[source[1]].code)
 		else:
 			answer = AnsBase[0]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def load_status(self, conf):
 		filename = chat_file(conf, self.ChatStatus)

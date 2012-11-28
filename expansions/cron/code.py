@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "cron" # /code.py v.x4
-#  Id: 27~3a
+# exp_name = "cron" # /code.py v.x4
+#  Id: 27~3c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -62,7 +60,7 @@ class expansion_temp(expansion):
 							ls[0] += 1
 		return time.strftime(sftime, time.struct_time(ls))
 
-	def add_cron(self, disp, ls, body, Te, source, ltype, gt, answer, repeat, **etc):
+	def add_cron(self, disp, ls, body, Te, source, stype, gt, answer, repeat, **etc):
 		cmd = (ls.pop(0)).lower()
 		if Cmds.has_key(cmd):
 			if enough_access(source[1], source[2], Cmds[cmd].access):
@@ -73,7 +71,7 @@ class expansion_temp(expansion):
 				if 1024 >= len(body):
 					Time = time.mktime(gt)
 					instance = get_source(source[1], source[2])
-					self.CronDesc[self.CronCounter.plus()] = ((Te + Time), (cmd, instance, (ltype, source, body, get_disp(disp)), repeat))
+					self.CronDesc[self.CronCounter.plus()] = ((Te + Time), (cmd, instance, (stype, source, body, get_disp(disp)), repeat))
 					self.cdesc_save()
 				else:
 					answer = AnsBase[5]
@@ -83,7 +81,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[6]
 		return answer
 
-	def command_cron(self, ltype, source, body, disp):
+	def command_cron(self, stype, source, body, disp):
 		gt = time.gmtime()
 		if body:
 			ls = body.split()
@@ -166,7 +164,7 @@ class expansion_temp(expansion):
 											date[0] = int(Date.pop(0))
 								except:
 									answer = AnsBase[2]
-						if not locals().has_key(Types[12]):
+						if not locals().has_key(Types[6]):
 							try:
 								date = time.struct_time(date)
 							except:
@@ -215,7 +213,7 @@ class expansion_temp(expansion):
 					line = "%d (%s) [%s]" % (id, desc[0], self.getDate(list(gt), int(date - Te)))
 					ls.append(line)
 			answer = self.AnsBase[8] % enumerated_list(sorted(ls))
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def start_cron(self):
 		Name = self.def_cron.func_name
@@ -246,10 +244,10 @@ class expansion_temp(expansion):
 				if len(repeat) == 2:
 					seconds, repeats = repeat
 					repeat = (seconds, int(repeats))
-				ltype, source, body, disp = ls__
+				stype, source, body, disp = ls__
 				one, two, three = source
 				source = (str(one), two, three)
-				ls__ = (ltype, source, body, disp)
+				ls__ = (stype, source, body, disp)
 				ls = (command, instance, ls__, repeat)
 				cdesc[id] = (date, ls)
 			cat_file(self.CronFile, str((cdesc, int(self.CronCounter))))

@@ -1,25 +1,28 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "config" # /code.py v.x4
-#  Id: 19~3b
-#  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
+# exp_name = "config" # /code.py v.x5
+#  Id: 19~4c
+#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def get_config(self, config, ecfg = str()):
+	def get_config(self, config):
+		cfg = []
 		for s in config.sections():
-			ecfg += "[%s]\n" % (s.upper())
+			cfg.append("[%s]" % (s.upper()))
 			for (op, i) in config.items(s):
-				ecfg += "%s = %s\n" % (op.upper(), str(i))
-		return ecfg.strip()
+				cfg.append("%s = %s" % (op.upper(), str(i)))
+		return "\r\n".join(cfg)
 
-	def command_config(self, ltype, source, body, disp):
+	ops = ("memory", "incoming", "chat", "private", "tls", "mserve", "getexc", "status", "resource")
+
+	opsGeq = ("MaxMemory", "IncLimit", "ConfLimit", "PrivLimit", "ConTls", "Mserve", "GetExc", "DefStatus", "GenResource")
+
+	def command_config(self, stype, source, body, disp):
 		if body:
 			ConfigDesc = {}
 			for x in body.split():
@@ -31,39 +34,42 @@ class expansion_temp(expansion):
 				Name = Name.lower()
 				for Title in GenCon.sections():
 					if Name in GenCon.options(Title):
-						if Name in ("chat", "incoming", "memory", "private", "port"):
-							if isNumber(data):
-								data = str(int(data))
-							else:
+						if Name in self.ops[:4]:
+							if not isNumber(data):
 								continue
-						elif Name in ("tls", "getexc", "mserve"):
-							if data not in (str(True), str(False)):
+						elif Name in self.ops[4:-2]:
+							if data not in ("True", "False"):
 								continue
-						elif Name in ("status", "resource"):
+						elif Name in self.ops[-2:]:
 							data = sub_desc(data, {chr(95): chr(32)})
 						if not ConfigDesc.has_key(Title):
-							ConfigDesc[Title] = dict()
+							ConfigDesc[Title] = {}
 						ConfigDesc[Title][Name] = data
 			if ConfigDesc:
 				for Title in ConfigDesc.keys():
 					for (Name, data) in ConfigDesc[Title].items():
 						GenCon.set(Title, Name, data)
+						if Name not in self.ops[-2:]:
+							data = eval(data)
+							if Name == self.ops[0]:
+								data *= 1024
+								data = (32768 if (data and data <= 32768) else data)
+						globals()[self.opsGeq[self.ops.index(Name)]] = data
 				cat_file(GenConFile, self.get_config(GenCon))
-				list = []
+				ls = []
 				for Name in ConfigDesc.values():
-					list.extend(Name.keys())
-				list = [Name.upper() for Name in list]
-				answer = self.AnsBase[0] % (", ".join(list))
+					ls.extend(Name.keys())
+				answer = self.AnsBase[0] % (", ".join([Name.upper() for Name in ls]))
 			else:
 				answer = self.AnsBase[1]
 		else:
-			if ltype == Types[1]:
-				Answer(AnsBase[11], ltype, source, disp)
-			Message(source[0], self.get_config(GenCon, self.AnsBase[2]), disp)
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+			Message(source[0], self.AnsBase[2] + self.get_config(GenCon), disp)
+			if stype == Types[1]:
+				answer = AnsBase[11]
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_cls_config(self, ltype, source, body, disp):
+	def command_cls_config(self, stype, source, body, disp):
 		if body:
 			list = body.split()
 			if len(list) >= 2:
@@ -73,11 +79,11 @@ class expansion_temp(expansion):
 					if InstansesDesc.has_key(Name):
 						clients = Clients.keys()
 						if not Clients.has_key(Name) or len(clients) >= 2:
-							if Name == Gen_disp:
-								clients.remove(Gen_disp)
+							if Name == GenDisp:
+								clients.remove(GenDisp)
 								Gen = choice(clients)
 								delivery(self.AnsBase[6] % Gen)
-								globals()["Gen_disp"], Con = Gen, client_config(GenCon, "CLIENT")[1]
+								globals()["GenDisp"], Con = Gen, client_config(GenCon, "CLIENT")[1]
 								for x in ConDisp.sections():
 									z = client_config(ConDisp, x)
 									if Gen == z[0]:
@@ -94,21 +100,21 @@ class expansion_temp(expansion):
 										ConDisp.remove_section(x)
 							if Clients.has_key(Name):
 								ThrIds = iThr.ThrNames()
-								ThrName = "%s%s" % (Types[13], Name)
+								ThrName = "%s-%s" % (Types[13], Name)
 								if ThrName in ThrIds:
 									for Thr in iThr.enumerate():
 										if Thr._Thread__name == ThrName:
 											Thr.kill()
-							for conf in Chats.keys():
-								if Chats[conf].disp == Name:
+							for conf in Chats.itervalues():
+								if conf.disp == Name:
 									if online(Name):
-										Message(conf, self.AnsBase[4], Name)
+										Message(conf.name, self.AnsBase[4], Name)
 										sleep(0.2)
-									Chats[conf].leave(self.AnsBase[5])
-									Chats[conf].disp = IdleClient()
-									Chats[conf].save()
+									conf.leave(self.AnsBase[5])
+									conf.disp = IdleClient()
+									conf.save()
 									sleep(0.6)
-									Chats[conf].join()
+									conf.join()
 							if online(Name):
 								try:
 									Clients[Name].disconnect()
@@ -160,13 +166,13 @@ class expansion_temp(expansion):
 									InstansesDesc[Instance] = desc
 									cat_file(ConDispFile, self.get_config(ConDisp))
 									try:
-										Try_Thr(composeThr(Dispatch_handler, "%s%s" % (Types[13], Instance), (Instance,)), -1)
+										Try_Thr(composeThr(DispatchHandler, "%s-%s" % (Types[13], Instance), (Instance,)), -1)
 									except RuntimeError:
 										answer = self.AnsBase[8]
 									else:
-										for conf in Chats.keys():
-											if Instance == Chats[conf].disp:
-												Chats[conf].join()
+										for conf in Chats.itervalues():
+											if Instance == conf.disp:
+												conf.join()
 										answer = AnsBase[4]
 								else:
 									answer = self.AnsBase[9]
@@ -185,35 +191,18 @@ class expansion_temp(expansion):
 								if (list.pop(0)).lower() in ("set", "записать".decode("utf-8")):
 									changed = True
 						else:
-							code, symbols = "", "%s%s%s._+(!}{#)" % (CharCase[0], CharCase[1], CharCase[2])
+							code, symbols = "", "%s.%s_%s+(!}{#)" % (CharCase[0], CharCase[1], CharCase[2])
 							for x in xrange(24):
 								code += choice(symbols)
-						if not locals().has_key("changed"):
-							if Clients.has_key(Name):
-								try:
-									changed = xmpp.features.changePasswordTo(Clients[Name], code)
-								except:
-									changed = False
-							else:
-								changed = False
-						if changed:
-							if Name == Gen_disp:
-								GenCon.set("CLIENT", "pass", code)
-								cat_file(GenConFile, self.get_config(GenCon))
-							else:
-								for x in ConDisp.sections():
-									if Name == client_config(ConDisp, x)[0]:
-										ConDisp.set(x, "pass", code)
-										cat_file(ConDispFile, self.get_config(ConDisp))
-										break
-							serv = InstansesDesc[Name][0]
-							port = InstansesDesc[Name][1]
-							host = InstansesDesc[Name][2]
-							user = InstansesDesc[Name][3]
-							InstansesDesc[Name] = (serv, port, host, user, code)
-							answer = AnsBase[4]
+						if locals().has_key("changed"):
+							self.answer_register(self, disp, xmpp.Iq(typ = Types[8]), stype, source, code)
+						elif online(Name):
+							Disp = Clients[Name]
+							iq = xmpp.Iq(Types[9] , xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])
+							Info["outiq"].plus()
+							CallForResponse(Disp, iq, self.answer_register, {"stype": stype, "source": source, "code": code})
 						else:
-							answer = AnsBase[7]
+							answer = self.AnsBase[12]
 					else:
 						answer = self.AnsBase[11]
 				else:
@@ -223,11 +212,33 @@ class expansion_temp(expansion):
 		elif not len(ConDisp.sections()):
 			answer = self.AnsBase[3]
 		else:
-			if ltype == Types[1]:
-				Answer(AnsBase[11], ltype, source, disp)
-			Message(source[0], self.get_config(ConDisp, self.AnsBase[2]), disp)
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source)
+			Message(source[0], self.AnsBase[2] + self.get_config(ConDisp), disp)
+			if stype == Types[1]:
+				answer = AnsBase[11]
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source)
+
+	def answer_register(self, disp, stanza, stype, source, code):
+		if xmpp.isResultNode(stanza):
+			Name = get_disp(disp)
+			if Name == GenDisp:
+				GenCon.set("CLIENT", "pass", code)
+				cat_file(GenConFile, self.get_config(GenCon))
+			else:
+				for x in ConDisp.sections():
+					if Name == client_config(ConDisp, x)[0]:
+						ConDisp.set(x, "pass", code)
+						cat_file(ConDispFile, self.get_config(ConDisp))
+						break
+			serv = InstansesDesc[Name][0]
+			port = InstansesDesc[Name][1]
+			host = InstansesDesc[Name][2]
+			user = InstansesDesc[Name][3]
+			InstansesDesc[Name] = (serv, port, host, user, code)
+			answer = AnsBase[4]
+		else:
+			answer = AnsBase[7]
+		Answer(answer, stype, source, disp)
 
 	commands = (
 		(command_config, "config", 8,),

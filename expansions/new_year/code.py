@@ -1,18 +1,16 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "new_year" # /code.py v.x4
-#  Id: 02~3b
+# exp_name = "new_year" # /code.py v.x4
+#  Id: 02~3c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def command_new_year(self, ltype, source, body, disp):
+	def command_new_year(self, stype, source, body, disp):
 		list = ["Until the New Year (UTC) left:"]
 		Time = time.gmtime()
 		dr = lambda Numb: (Numb, ("s" if Numb >= 2 else ""))
@@ -31,6 +29,6 @@ class expansion_temp(expansion):
 			list.append("%d Second%s" % dr(t4))
 		if len(list) == 1:
 			list = ["Happy New Year!"]
-		Answer(str.join(chr(32), list), ltype, source, disp)
+		Answer(str.join(chr(32), list), stype, source, disp)
 
 	commands = ((command_new_year, "new_year", 1,),)

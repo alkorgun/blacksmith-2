@@ -1,19 +1,17 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "exp_control" # /code.py v.x8
-#  Id: 09~8b
+# exp_name = "exp_control" # /code.py v.x9
+#  Id: 09~9c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def command_expinfo(self, ltype, source, body, disp):
-		get_state = lambda filename: (self.AnsBase[1] if os.path.isfile(filename) else self.AnsBase[2])
+	def command_expinfo(self, stype, source, body, disp):
+		get_state = lambda filename: (self.AnsBase[1] if filename and os.path.isfile(filename) else self.AnsBase[2])
 		if body:
 			exp_name = body.lower()
 			if check_nosimbols(exp_name):
@@ -45,7 +43,7 @@ class expansion_temp(expansion):
 				answer += "\n%d) %s - %s - %s" % (Number.plus(), exp_name, code_file, insc_file)
 			elexps = []
 			for exp_name in sorted(os.listdir(ExpsDir)):
-				if (".svn") == (exp_name) or expansions.has_key(exp_name):
+				if (".svn" == exp_name) or expansions.has_key(exp_name):
 					continue
 				if os.path.isdir(os.path.join(ExpsDir, exp_name)):
 					exp = expansion(exp_name)
@@ -55,54 +53,48 @@ class expansion_temp(expansion):
 			elexps_len = len(elexps)
 			if elexps_len:
 				answer += self.AnsBase[9] % (elexps_len, chr(10).join(elexps))
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	ReloadSemaphore = iThr.Semaphore()
 
-	def command_expload(self, ltype, source, body, disp):
+	def command_expload(self, stype, source, body, disp):
 		if body:
 			exp_name = body.strip("\\/").lower()
 			if check_nosimbols(exp_name):
-				if expansions.has_key(exp_name):
-					if os.path.isfile(expansions[exp_name].file):
-						with self.ReloadSemaphore:
-							rslt = expansions[exp_name].load()
-							if rslt[1]:
-								exp = expansion_temp(exp_name)
+				exp = expansion(exp_name)
+				if exp.isExp:
+					backup = expansions.get(exp_name)
+					with self.ReloadSemaphore:
+						exp, exc = exp.load()
+						if exp:
+							try:
 								exp.initialize_exp()
-								exp.initialize_all()
-								answer = self.AnsBase[10] % (rslt[0])
-							else:
-								expansions[exp_name].dels(True)
-								answer = self.AnsBase[11] % (rslt[0], "\n\t* %s: %s") % (rslt[2])
-					else:
-						answer = self.AnsBase[12]
-				else:
-					expansions[exp_name] = exp = expansion(exp_name)
-					if exp.isExp:
-						with self.ReloadSemaphore:
-							rslt = exp.load()
-							if rslt[1] and expansions.has_key(exp_name):
-								exp = expansion_temp(exp_name)
-								exp.initialize_exp()
-								exp.initialize_all()
-								answer = self.AnsBase[10] % (rslt[0])
-							else:
+							except:
+								exc = exc_info()
 								exp.dels(True)
-								if rslt[2]:
-									answer = self.AnsBase[11] % (rslt[0], "\n\t* %s: %s") % (rslt[2])
-								else:
-									answer = self.AnsBase[13] % (rslt[0])
-					else:
-						exp.dels(True)
-						answer = self.AnsBase[7]
+								answer = self.AnsBase[11] % (exp_name, "\n\t* %s: %s" % exc)
+								if backup:
+									backup.initialize_exp()
+									backup.initialize_all()
+									answer += self.AnsBase[13]
+							else:
+								exp.initialize_all()
+								answer = self.AnsBase[10] % (exp_name)
+						else:
+							answer = self.AnsBase[11] % (exp_name, "\n\t* %s: %s" % exc)
+							if backup:
+								backup.initialize_exp()
+								backup.initialize_all()
+								answer += self.AnsBase[13]
+				else:
+					answer = self.AnsBase[7]
 			else:
 				answer = self.AnsBase[7]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_expunload(self, ltype, source, body, disp):
+	def command_expunload(self, stype, source, body, disp):
 		if body:
 			body = body.split()
 			exp_name = (body.pop(0)).lower()
@@ -133,29 +125,29 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[7]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_tumbler(self, ltype, source, body, disp):
+	def command_tumbler(self, stype, source, body, disp):
 		if body:
 			ls = body.split()
 			command = (ls.pop(0)).lower()
 			if Cmds.has_key(command):
-				obj = Cmds.get(command)
+				cmd = Cmds.get(command)
 				if ls:
 					body = (ls.pop(0)).lower()
 					if body in ("on", "вкл".decode("utf-8")):
-						if not obj.isAvalable:
-							if obj.handler:
-								obj.isAvalable = True
+						if not cmd.isAvalable:
+							if cmd.handler:
+								cmd.isAvalable = True
 								answer = AnsBase[4]
 							else:
 								answer = AnsBase[19] % (command)
 						else:
 							answer = self.AnsBase[16] % (command)
 					elif body in ("off", "выкл".decode("utf-8")):
-						if obj.isAvalable:
-							if obj.handler:
-								obj.isAvalable = False
+						if cmd.isAvalable:
+							if cmd.handler:
+								cmd.isAvalable = False
 								answer = AnsBase[4]
 							else:
 								answer = AnsBase[19] % (command)
@@ -164,16 +156,16 @@ class expansion_temp(expansion):
 					else:
 						answer = AnsBase[2]
 				else:
-					answer = self.AnsBase[16 if obj.isAvalable else 17] % (command)
+					answer = self.AnsBase[16 if cmd.isAvalable else 17] % (command)
 			else:
 				answer = AnsBase[6]
 		else:
-			oCmds = [cmd for cmd, obj in Cmds.iteritems() if not obj.isAvalable]
+			oCmds = [cmd_str for cmd_str, cmd in Cmds.iteritems() if not cmd.isAvalable]
 			if oCmds:
 				answer = ", ".join(oCmds)
 			else:
 				answer = self.AnsBase[18]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	commands = (
 		(command_expinfo, "expinfo", 7,),

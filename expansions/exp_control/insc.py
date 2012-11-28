@@ -15,7 +15,7 @@ if DefLANG in ("RU", "UA"):
 		"%s - успешно загружен!", # 10
 		"Не могу загрузить - %s!%s", # 11
 		"Какой-то гад удалил файл с кодом!", # 12
-		"%s написан некорректно. Загрузка отменена.", # 13
+		"\n\n** Загрузил последнюю рабочую версию плагина.", # 13
 		"Этой функции нет в списке зарегистрированных.\n## Список зареганных: %s", # 14
 		"В %s нет зарегистрированных функций.", # 15
 		"Команда «%s» включена.", # 16
@@ -32,13 +32,13 @@ else:
 		"\nHandlers: %s", # 5
 		"not loaded", # 6
 		"Also, this expansion isn't exist.", # 7
-		"\n[#][Name][codefile][langfile]", # 8
+		"\n[#][Name][code-file][lang-file]", # 8
 		"\n\n## Not loaded (%d) ->\n\n%s", # 9
 		"%s - successfully loaded!", # 10
 		"Can't load - %s!%s", # 11
 		"Somebody deleted code-file!", # 12
-		"%s was coded incorrectly. Loading aborted.", # 13
-		"This func. isn't registered.\n## Function list: %s", # 14
+		"\n\n** The last valid version of the expansion was loaded.", # 13
+		"This function isn't registered.\n## Functions-list: %s", # 14
 		"There is no registered functions in %s", # 15
 		"Command '%s' is on.", # 16
 		"Command '%s' is off.", # 17

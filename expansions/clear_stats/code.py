@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "clear_stats" # /code.py v.x4
-#  Id: 12~4b
+# exp_name = "clear_stats" # /code.py v.x4
+#  Id: 12~4c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 

@@ -13,7 +13,8 @@ if DefLANG in ("RU", "UA"):
 		"Система не может выделить ресурсы на ещё один клиент.", # 8
 		"Не коннектится.", # 9
 		"Этот jid уже есть в списках.", # 10
-		"«%s» нет в списке клиентов." # 11
+		"«%s» нет в списке клиентов.", # 11
+		"«%s» сейчас оффлайн." # 12
 					)])
 else:
 	AnsBase_temp = (
@@ -28,5 +29,6 @@ else:
 		"The system can not allocate resources to another client.", # 8
 		"No connection.", # 9
 		"This jid is already in list.", # 10
-		"'%s' not in clients-list." # 11
+		"'%s' not in clients-list.", # 11
+		"'%s' is offline." # 12
 					)

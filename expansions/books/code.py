@@ -1,11 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "books" # /code.py v.x7 beta
-#  Id: 29~7b
+# exp_name = "books" # /code.py v.x7 beta
+#  Id: 29~7c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
@@ -82,7 +80,7 @@ class expansion_temp(expansion):
 		Name = sub_desc(Name, (chr(32), chr(10), chr(13), chr(9)), chr(95))
 		return (Name if Name != "books" else None)
 
-	def command_get_books(self, ltype, source, body, disp):
+	def command_get_books(self, stype, source, body, disp):
 		if body:
 			list = body.split()
 			a1 = (list.pop(0)).lower()
@@ -224,7 +222,7 @@ class expansion_temp(expansion):
 							db("select data from %s where page=?" % (book), (page,))
 							data = db.fetchone()
 							if data:
-								if ltype == Types[1]:
+								if stype == Types[1]:
 									answer = AnsBase[11]
 								Message(source[0], data[0], disp)
 								if jid:
@@ -254,10 +252,10 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[8] % len(db_desc)
 			else:
 				answer = self.AnsBase[0]
-		if locals().has_key(Types[12]):
-			Answer(answer, ltype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
-	def command_set_books(self, ltype, source, body, disp):
+	def command_set_books(self, stype, source, body, disp):
 		if body:
 			list = body.split()
 			if len(list) >= 2:
@@ -457,7 +455,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def init_books_base(self):
 		if not os.path.isfile(self.BooksFile):

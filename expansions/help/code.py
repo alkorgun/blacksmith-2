@@ -1,18 +1,16 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-exp_name = "help" # /code.py v.x5
-#  Id: 03~2a
+# exp_name = "help" # /code.py v.x5
+#  Id: 03~2c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
-
-expansion_register(exp_name)
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	def command_location(self, ltype, source, body, disp):
+	def command_location(self, stype, source, body, disp):
 		if body:
 			command = body.lower()
 			if Cmds.has_key(command):
@@ -21,9 +19,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[6]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_comacc(self, ltype, source, body, disp):
+	def command_comacc(self, stype, source, body, disp):
 		if body:
 			command = body.lower()
 			if Cmds.has_key(command):
@@ -32,9 +30,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[6]
 		else:
 			answer = AnsBase[1]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_help(self, ltype, source, body, disp):
+	def command_help(self, stype, source, body, disp):
 		if body:
 			command = body.lower()
 			if Cmds.has_key(command):
@@ -59,9 +57,9 @@ class expansion_temp(expansion):
 				answer = AnsBase[6]
 		else:
 			answer = self.AnsBase[5]
-		Answer(answer, ltype, source, disp)
+		Answer(answer, stype, source, disp)
 
-	def command_commands(self, ltype, source, body, disp):
+	def command_commands(self, stype, source, body, disp):
 		answer = self.AnsBase[6] % (self.AnsBase[7] % (Chats[source[1]].cPref) if (Chats.has_key(source[1]) and Chats[source[1]].cPref) else ":")
 		cmds, lcmds = {}, {}
 		for x in xrange(1, 9):
@@ -102,8 +100,8 @@ class expansion_temp(expansion):
 		else:
 			access = str(access)
 		answer += self.AnsBase[16] % (access)
-		if ltype == Types[1]:
-			Answer(AnsBase[11], ltype, source, disp)
+		if stype == Types[1]:
+			Answer(AnsBase[11], stype, source, disp)
 		Message(source[0], answer, disp)
 
 	commands = (

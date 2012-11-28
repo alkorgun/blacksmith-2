@@ -1,6 +1,0 @@
-expansions and functions unloader
-unload [expansion] (function)
-*/unload talkers
-bot would unload expansion "talkers"
-*/unload talkers calculate_talkers
-bot would unload talkers calculator (unloader should use only uers with experience)
