@@ -3,7 +3,7 @@
 #  BlackSmith mark.2
 # exp_name = "alive_keeper" # /code.py v.x5
 #  Id: 16~5c
-#  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
+#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 

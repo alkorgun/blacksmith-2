@@ -1,0 +1,8 @@
+shows local time of the user
+time (nick/jid)
+*/time
+bot would show your time
+*/time Dude
+bot would show the time of Dude
+*/time dude@jabr.com
+bot would show the time of dude@jabr.com

@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "bot_sends" # /code.py v.x6
-#  Id: 18~5c
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "bot_sends" # /code.py v.x7
+#  Id: 18~6c
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -65,13 +65,13 @@ class expansion_temp(expansion):
 
 	def command_send(self, stype, source, body, disp):
 		if body:
-			list = body.split()
-			if len(list) >= 2:
-				sTo = list[0]
+			body = body.split(None, 1)
+			if len(body) == 2:
+				sTo, body = body
 				if isSource(sTo):
 					conf = (sTo.split(chr(47)))[0].lower()
 					if Chats.has_key(conf) or not conf.count("@conf"):
-						Message(sTo, self.AnsBase[5] % (source[2], body[(body.find(sTo) + len(sTo)):].strip()))
+						Message(sTo, self.AnsBase[5] % (source[2], body))
 						answer = AnsBase[4]
 					else:
 						answer = AnsBase[8]

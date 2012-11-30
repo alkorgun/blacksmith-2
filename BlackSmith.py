@@ -242,7 +242,7 @@ if not sys.stdin.isatty():
 	sys.stdout = stdout
 	sys.stderr = stdout
 	if eColors:
-		eColors = None
+		eColors = not eColors
 else:
 	stdout = sys.stdout
 
@@ -260,7 +260,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 37, 0)
+(BsMark, BsVer, BsRev) = (2, 38, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -849,11 +849,11 @@ def Message(inst, body, disp = None):
 	Sender(disp, xmpp.Message(inst, body.strip(), stype))
 
 def Answer(body, stype, source, disp = None):
-	body = object_encode(body)
-	if stype == Types[1]:
-		instance, body = source[1], "%s: %s" % (source[2], body)
-	else:
+	if stype == Types[0]:
 		instance = source[0]
+	else:
+		body = "%s: %s" % (source[2], object_encode(body))
+		instance = source[1]
 	Message(instance, body, disp)
 
 def CheckFlood(disp):
@@ -1396,6 +1396,13 @@ def XmppIqCB(disp, stanza):
 				else:
 					os_name = "Os[%s]" % (BotOs)
 				anode.setTagData("os", "%s / PyVer[%s]" % (os_name, PyVer))
+			elif Name == xmpp.NS_URN_TIME:
+				anode = answer.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
+				anode.setTagData("utc", strfTime("%Y-%m-%dT%H:%M:%SZ", False))
+				TimeZone = (time.altzone if time.daylight else time.timezone)
+				anode.setTagData("tzo", "%s%02d:%02d" % (((TimeZone < 0) and "+" or "-"),
+											abs(TimeZone) / 3600,
+											abs(TimeZone) / 60 % 60))
 			elif Name == xmpp.NS_TIME:
 				anode = answer.getTag(Types[18])
 				anode.setTagData("utc", strfTime("%Y%m%dT%H:%M:%S", False))
@@ -1404,13 +1411,6 @@ def XmppIqCB(disp, stanza):
 					tz = tz.decode("cp1251")
 				anode.setTagData("tz", tz)
 				anode.setTagData("display", time.asctime())
-			elif Name == xmpp.NS_URN_TIME:
-				anode = answer.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
-				anode.setTagData("utc", strfTime("%Y-%m-%dT%H:%M:%SZ", False))
-				TimeZone = (time.altzone if time.daylight else time.timezone)
-				anode.setTagData("tzo", "%s%02d:%02d" % (((TimeZone < 0) and "+" or "-"),
-											abs(TimeZone) / 3600,
-											abs(TimeZone) / 60 % 60))
 			Sender(disp, answer)
 			xmpp_raise()
 	call_efunctions("03eh", (stanza, disp,))

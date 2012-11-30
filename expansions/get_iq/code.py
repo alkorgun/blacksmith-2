@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x6
-#  Id: 13~5c
+# exp_name = "get_iq" # /code.py v.x7
+#  Id: 13~6c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -80,6 +80,88 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[4]
 		else:
 			answer = self.AnsBase[4]
+		Answer(answer, stype, source, disp)
+
+	def command_time(self, stype, source, instance, disp):
+		if instance:
+			if Chats.has_key(source[1]) and Chats[source[1]].isHere(instance):
+				if Chats[source[1]].isHereTS(instance):
+					instance = "%s/%s" % (source[1], instance)
+				else:
+					Answer(self.AnsBase[5] % (instance), stype, source, disp)
+					raise iThr.ThrKill("exit")
+		else:
+			instance = source[0]
+		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq.addChild(Types[18], namespace = xmpp.NS_URN_TIME)
+		iq.setID("Bs-i%d" % Info["outiq"].plus())
+		CallForResponse(disp, iq, self.answer_time0202, {"stype": stype, "source": source, "instance": instance})
+
+	def answer_time0202(self, disp, stanza, stype, source, instance):
+		if xmpp.isResultNode(stanza):
+			hours = None
+			for node in stanza.getChildren():
+				tzo = node.getTagData("tzo")
+				if tzo and tzo.startswith((chr(43), chr(45))):
+					try:
+						hours, minutes = tzo[1:].split(chr(58))
+						symbol = tzo[0]
+						hours, minutes = int(symbol + hours), int(symbol + minutes)
+					except:
+						pass
+					else:
+						break
+			if isinstance(hours, int):
+				plus = (symbol == chr(43))
+				date = list(time.gmtime())
+				days = (31, 31, (28 if (date[0] % 4) else 29), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+				date[4] += minutes
+				date[3] += hours
+				if date[4] >= 60:
+					date[4] -= 60
+					date[3] += 1
+				if date[3] >= 24:
+					date[3] -= 24
+					if plus:
+						date[2] += 1
+						if date[2] > days[date[1]]:
+							date[2] = 1
+							date[1] += 1
+							if date[1] > 12:
+								date[1] = 1
+								date[0] += 1
+					else:
+						date[2] -= 1
+						if not date[2]:
+							date[1] -= 1
+							date[2] = days[date[1]]
+							if not date[1]:
+								date[1] = 12
+								date[0] -= 1
+				try:
+					date = time.struct_time(date)
+				except:
+					answer = self.AnsBase[6]
+				else:
+					answer = time.strftime("%a %b %d %H:%M:%S %Y", date)
+			else:
+				answer = self.AnsBase[6]
+			Answer(answer, stype, source, disp)
+		else:
+			iq = xmpp.Iq(to = instance, typ = Types[10])
+			iq.addChild(Types[18], namespace = xmpp.NS_TIME)
+			iq.setID("Bs-i%d" % Info["outiq"].plus())
+			CallForResponse(disp, iq, self.answer_time0090, {"stype": stype, "source": source})
+
+	def answer_time0090(self, disp, stanza, stype, source):
+		if xmpp.isResultNode(stanza):
+			Time = None
+			for node in stanza.getQueryChildren():
+				if "display" == node.getName():
+					Time = node.getData()
+			answer = Time or self.AnsBase[6]
+		else:
+			answer = self.AnsBase[6]
 		Answer(answer, stype, source, disp)
 
 	def command_version(self, stype, source, instance, disp):
@@ -363,6 +445,7 @@ class expansion_temp(expansion):
 	commands = (
 		(command_ping, "ping", 1,),
 		(command_ping_stats, "pstat", 1,),
+		(command_time, "time", 1,),
 		(command_version, "version", 1,),
 		(command_vcard, "vcard", 2,),
 		(command_uptime, "uptime", 1,),

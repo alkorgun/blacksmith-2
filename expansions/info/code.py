@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "info" # /code.py v.x6
-#  Id: 11~5c
+# exp_name = "info" # /code.py v.x7
+#  Id: 11~6c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -13,7 +13,8 @@ class expansion_temp(expansion):
 	def command_online(self, stype, source, body, disp):
 		ls, ThrIds = self.AnsBase[7], iThr.ThrNames()
 		for numb, disp_ in enumerate(sorted(InstansesDesc.keys()), 1):
-			connect, alive = online(disp_), str("%s-%s" % (Types[13], disp_) in ThrIds)
+			alive = str("%s-%s" % (Types[13], disp_) in ThrIds)
+			connect = online(disp_)
 			if not connect:
 				connect = None
 			ls += "\n%d) %s - %s - %s" % (numb, disp_, str(connect), alive)
@@ -63,7 +64,7 @@ class expansion_temp(expansion):
 	def command_conflist(self, stype, source, body, disp):
 		ls, Numb, access = [], itypes.Number(), enough_access(source[1], source[2], 7)
 		for conf_str, conf in sorted(Chats.items()):
-			isModer = str(conf.isModer)
+			arole = getattr(conf.get_user(conf.nick), "role", None)
 			cName = conf_str.split("@")[0]
 			disp_ = (conf.disp if access else "***")
 			cPref = str(conf.cPref)
@@ -71,7 +72,7 @@ class expansion_temp(expansion):
 			for nick in conf.get_users():
 				if nick.ishere:
 					online.plus()
-			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online._str(), isModer))
+			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online._str(), ("%s/%s" % arole if arole else str(arole))))
 		if ls:
 			if stype == Types[1]:
 				Answer(AnsBase[11], stype, source, disp)
@@ -84,8 +85,6 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if body:
 				body = body.lower()
-			else:
-				body = "default"
 			if body in ("today", "сегодня".decode("utf-8")):
 				Number = itypes.Number()
 				Numb = itypes.Number()
@@ -102,22 +101,22 @@ class expansion_temp(expansion):
 						Numb.plus()
 				if Number._int():
 					if stype == Types[1]:
-						Answer(AnsBase[11], stype, source, disp)
+						answer = AnsBase[11]
 					Message(source[0], self.AnsBase[0] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
 				else:
-					Answer(self.AnsBase[1], stype, source, disp)
+					answer = self.AnsBase[1]
 			elif body in ("dates", "даты".decode("utf-8")):
 				Number = itypes.Number()
 				ls = []
 				for nick in Chats[source[1]].sorted_users():
 					ls.append("%d. %s\t\t%s" % (Number.plus(), nick.nick, nick.date[2]))
 				if stype == Types[1]:
-					Answer(AnsBase[11], stype, source, disp)
+					answer = AnsBase[11]
 				Message(source[0], self.AnsBase[2] % (Number._str(), str.join(chr(10))), disp)
 			elif body in ("list", "лист".decode("utf-8")):
 				ls = sorted(Chats[source[1]].get_nicks())
 				if stype == Types[1]:
-					Answer(AnsBase[11], stype, source, disp)
+					answer = AnsBase[11]
 				Message(source[0], self.AnsBase[2] % (str(len(ls)), ", ".join(ls)), disp)
 			else:
 				Number = itypes.Number()
@@ -133,30 +132,40 @@ class expansion_temp(expansion):
 						Numb.plus()
 				if Number._int():
 					if stype == Types[1]:
-						Answer(AnsBase[11], stype, source, disp)
+						answer = AnsBase[11]
 					Message(source[0], self.AnsBase[3] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
 				else:
-					Answer(self.AnsBase[4], stype, source, disp)
+					answer = self.AnsBase[4]
 		else:
-			Answer(AnsBase[0], stype, source, disp)
+			answer = AnsBase[0]
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
+
+	CharsCY = "етуоранкхсвм".decode("utf-8")
+	CharsLA = "etyopahkxcbm"
+
+	eqMap = tuple([(CharsCY[numb], char) for numb, char in enumerate(CharsLA)])
+
+	del CharsCY, CharsLA
 
 	def command_search(self, stype, source, body, disp):
 		if body:
-			ls, Numb, access = "", itypes.Number(), enough_access(source[1], source[2], 7)
+			ls, Numb, access = [], itypes.Number(), enough_access(source[1], source[2], 7)
+			body = sub_desc(body.lower(), self.eqMap)
 			for conf_str, conf in sorted(Chats.items()):
-				for nick in sorted(conf.get_nicks()):
-					if conf.isHereTS(nick):
-						jid = get_source(conf_str, nick)
-						if nick.count(body) or (jid and jid.count(body)):
-							ls += "\n%d) %s (%s)" % (Numb.plus(), nick, conf_str)
-							if jid and access:
-								ls += " [%s]" % (jid)
+				for user in conf.sorted_users():
+					if user.ishere:
+						if body in sub_desc(user.nick.lower(), self.eqMap) or (user.source and body in sub_desc(user.source, self.eqMap)):
+							if user.source and access:
+								ls.append("%d) %s (%s) [%s]" % (Numb.plus(), user.nick, conf_str, user.source))
+							else:
+								ls.append("%d) %s (%s)" % (Numb.plus(), user.nick, conf_str))
 							if Numb._int() >= 20:
 								break
 			if Numb._int():
 				if stype == Types[1]:
-					Answer(AnsBase[11], stype, source, disp)
-				Message(source[0], self.AnsBase[9] % (Numb._str(), ls), disp)
+					answer = AnsBase[11]
+				Message(source[0], self.AnsBase[9] % (Numb._str(), str.join(chr(10), ls)), disp)
 			else:
 				answer = self.AnsBase[10]
 		else:
