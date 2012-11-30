@@ -1,0 +1,10 @@
+xmpp disco
+disco [jid] (result's_number) (search_query)
+*/disco jabber.ru
+bot would show the list of services of jabber.ru
+*/disco conference.jabber.ru 10 witcher
+bot would search "witcher" on conference.jabber.ru & show up to 10 results (max 24 results in chat, max 256 in private, 16 default)
+*/disco conference.jabber.ru 20
+bot would show top 20 conferences with max users of jabber.ru
+*/disco example@conference.jabber.ru
+bot would show the list of online users of example@conference.jabber.ru

@@ -1,6 +1,6 @@
 affiliation lists
 list [owner/admin/member/outcast]/[[search] [text]]
 */list owner
-bot would show list of conference's owners
+bot would show the list of conference's owners
 */list search dude
 bot would search "dude" in chat's affiliation lists

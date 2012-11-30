@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x7
-#  Id: 13~6c
+# exp_name = "get_iq" # /code.py v.x8
+#  Id: 13~7c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -298,11 +298,11 @@ class expansion_temp(expansion):
 
 		def get_req(body):
 			if DefLANG in ("RU", "UA"):
-				affsRU = ["овнер", "админ", "мембер", "бан"]
-				for name in affsRU:
-					if body.count(name.decode("utf-8")):
-						return self.affs[affsRU.index(name)]
-			return (body if self.affs.count(body) else None)
+				for numb, name in enumerate(("овнер", "админ", "мембер", "бан")):
+					name = name.decode("utf-8")
+					if name in body:
+						return self.affs[numb]
+			return (body if body in self.affs else None)
 
 		if Chats.has_key(source[1]):
 			if body:
@@ -442,6 +442,98 @@ class expansion_temp(expansion):
 			answer = self.AnsBase[6]
 		Answer(answer, stype, source, disp)
 
+	XEPs.add(xmpp.NS_DISCO_ITEMS)
+
+	def command_disco(self, stype, source, body, disp):
+		if body:
+			desc = {"stype": stype, "source": source, "body": None, "limit": 16}
+			ls = body.split(None, 2)
+			server = (ls.pop(0)).lower()
+			if ls:
+				limit = ls.pop(0)
+				if isNumber(limit):
+					limit = int(limit)
+					if limit > 2:
+						if stype == Types[0]:
+							if limit > 256:
+								limit = 256
+						elif limit > 24:
+							limit = 24
+						desc["limit"] = limit
+					if ls:
+						desc["body"] = ls.pop(0)
+				else:
+					desc["body"] = body[len(server):].strip()
+			iq = xmpp.Iq(to = server, typ = Types[10])
+			iq.addChild(Types[18], namespace = xmpp.NS_DISCO_ITEMS)
+			iq.setID("Bs-i%d" % Info["outiq"].plus())
+			CallForResponse(disp, iq, self.answer_disco, desc)
+		else:
+			Answer(AnsBase[1], stype, source, disp)
+
+	compile_disco = compile__("^(.+?)\((\d+?)\)$", 16)
+
+	def answer_disco(self, disp, stanza, stype, source, body, limit):
+		if xmpp.isResultNode(stanza):
+			confs, ls = [], []
+			for node in stanza.getQueryChildren():
+				if node and node != "None":
+					jid = str(node.getAttr("jid"))
+					name = node.getAttr("name")
+					node = node.getAttr("node")
+					if name:
+						if body and not (body in jid or body in name):
+							continue
+						data = self.compile_disco.search(name)
+						if data:
+							name, numb = data.groups()
+							confs.append((int(numb), jid, name[:48].strip()))
+							continue
+						if node:
+							items = (jid, name[:48].strip(), node)
+						elif jid.endswith(name):
+							items = (name[:48].strip(),)
+						else:
+							items = (jid, name[:48].strip())
+					elif node:
+						if body and body not in jid:
+							continue
+						items = (jid, node)
+					else:
+						if body and body not in jid:
+							continue
+						items = (jid,)
+					ls.append(items)
+			if confs or ls:
+				confs.sort()
+				confs.reverse()
+				ls.sort()
+				number = itypes.Number()
+				result = []
+				for numb, jid, name in confs:
+					if number.plus() > limit:
+						break
+					result.append("%s (%d) [%s]" % (name, numb, jid))
+				for items in ls:
+					if number.plus() > limit:
+						break
+					ln = len(items)
+					if ln == 3:
+						result.append("%s - %s (%s)" % items)
+					elif ln == 2:
+						result.append("%s - %s" % items)
+					else:
+						result.append(items[0])
+				answer = "\->\n" + enumerated_list(result)
+				res_ln = len(ls) + len(confs)
+				if res_ln:
+					answer += self.AnsBase[11] % (res_ln)
+			else:
+				answer = self.AnsBase[4]
+		else:
+			answer = self.AnsBase[6]
+		Answer(answer, stype, source, disp)
+
 	commands = (
 		(command_ping, "ping", 1,),
 		(command_ping_stats, "pstat", 1,),
@@ -451,5 +543,6 @@ class expansion_temp(expansion):
 		(command_uptime, "uptime", 1,),
 		(command_idle, "idle", 1,),
 		(command_aflist, "list", 4,),
-		(command_server_stats, "servstat", 1,)
+		(command_server_stats, "servstat", 1,),
+		(command_disco, "disco", 2,)
 					)
