@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "books" # /code.py v.x7 beta
-#  Id: 29~7c
+# exp_name = "books" # /code.py v.x8
+#  Id: 29~8c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -91,13 +91,13 @@ class expansion_temp(expansion):
 						with database(self.BooksFile) as db:
 							db("select name from books order by name")
 							db_desc = db.fetchall()
-							if db_desc:
-								ls, Numb = ["Books:"], itypes.Number()
-								for Name in db_desc:
-									ls.append("%d) %s" % (Numb.plus(), Name[0]))
-								answer = str.join(chr(10), ls)
-							else:
-								answer = self.AnsBase[0]
+						if db_desc:
+							ls, Numb = ["Books:"], itypes.Number()
+							for Name in db_desc:
+								ls.append("%d) %s" % (Numb.plus(), Name[0]))
+							answer = str.join(chr(10), ls)
+						else:
+							answer = self.AnsBase[0]
 					else:
 						a0, ls = a2, "author;genre;seq1".split(";")
 						desc = {
@@ -110,29 +110,30 @@ class expansion_temp(expansion):
 							a2 = desc.get(a2, None)
 						if a2 in ls and list:
 							a3 = body[((body.lower()).find(a0) + len(a0)):].strip()
-							with database(self.BooksFile) as db:
-								if a2 in ("author", "genre"):
+							if a2 in ("author", "genre"):
+								with database(self.BooksFile) as db:
 									db("select name from books where %s like ? order by name" % (a2), (a3,))
 									db_desc = db.fetchall()
-									if db_desc:
-										ls, Numb = [a3 + ":"], itypes.Number()
-										for Name in db_desc:
-											ls.append("%d) %s" % (Numb.plus(), Name[0]))
-										answer = str.join(chr(10), ls)
-									else:
-										answer = self.AnsBase[1] % (a0)
+								if db_desc:
+									ls, Numb = [a3 + ":"], itypes.Number()
+									for Name in db_desc:
+										ls.append("%d) %s" % (Numb.plus(), Name[0]))
+									answer = str.join(chr(10), ls)
 								else:
+									answer = self.AnsBase[1] % (a0)
+							else:
+								with database(self.BooksFile) as db:
 									db("select seq1, seq2, name from books where seq1 like ? order by seq1, seq2", (a3,))
 									db_desc = db.fetchall()
-									if db_desc:
-										ls, Numb = [a3 + ":"], itypes.Number()
-										for seq1, seq2, Name in db_desc:
-											if not seq2:
-												seq2 = 0
-											ls.append("%d) %s #%d - %s" % (Numb.plus(), seq1, seq2, Name))
-										answer = str.join(chr(10), ls)
-									else:
-										answer = self.AnsBase[2]
+								if db_desc:
+									ls, Numb = [a3 + ":"], itypes.Number()
+									for seq1, seq2, Name in db_desc:
+										if not seq2:
+											seq2 = 0
+										ls.append("%d) %s #%d - %s" % (Numb.plus(), seq1, seq2, Name))
+									answer = str.join(chr(10), ls)
+								else:
+									answer = self.AnsBase[2]
 						else:
 							answer = AnsBase[2]
 				else:
@@ -190,11 +191,11 @@ class expansion_temp(expansion):
 							with database(self.ReadersFile) as db:
 								db("select book, page from readers where jid=?", (jid,))
 								data = db.fetchone()
-								if data:
-									book, page = data
-									page += 1
-								else:
-									answer = self.AnsBase[4]
+							if data:
+								book, page = data
+								page += 1
+							else:
+								answer = self.AnsBase[4]
 						else:
 							answer = self.AnsBase[5]
 					elif isNumber(a2):
@@ -203,17 +204,16 @@ class expansion_temp(expansion):
 					else:
 						book = self.getID(body[((body.lower()).find(a1) + len(a1)):])
 						page = 1
-				else:
-					if jid:
-						with database(self.ReadersFile) as db:
-							db("select book, page from readers where jid=?", (jid,))
-							data = db.fetchone()
-							if data:
-								book, page = data
-							else:
-								answer = self.AnsBase[4]
+				elif jid:
+					with database(self.ReadersFile) as db:
+						db("select book, page from readers where jid=?", (jid,))
+						data = db.fetchone()
+					if data:
+						book, page = data
 					else:
-						answer = self.AnsBase[5]
+						answer = self.AnsBase[4]
+				else:
+					answer = self.AnsBase[5]
 				if locals().has_key("book"):
 					with database(self.BooksFile) as db:
 						db("select * from books where id=?", (book,))
@@ -222,17 +222,7 @@ class expansion_temp(expansion):
 							db("select data from %s where page=?" % (book), (page,))
 							data = db.fetchone()
 							if data:
-								if stype == Types[1]:
-									answer = AnsBase[11]
-								Message(source[0], data[0], disp)
-								if jid:
-									with database(self.ReadersFile) as db:
-										db("select * from readers where jid=?", (jid,))
-										data = db.fetchone()
-										if data:
-											db("update readers set book=?, page=? where jid=?", (book, page, jid))
-										else:
-											db("insert into readers values (?,?,?)", (jid, book, page))
+								answer = data[0]
 							else:
 								db("select page from %s" % book)
 								lines = db.fetchall()
@@ -242,6 +232,18 @@ class expansion_temp(expansion):
 									answer = self.AnsBase[7]
 						else:
 							answer = self.AnsBase[3]
+						if data:
+							if jid:
+								with database(self.ReadersFile) as db:
+									db("select * from readers where jid=?", (jid,))
+									data = db.fetchone()
+									if data:
+										db("update readers set book=?, page=? where jid=?", (book, page, jid))
+									else:
+										db("insert into readers values (?,?,?)", (jid, book, page))
+							if stype == Types[1]:
+								Message(source[0], answer, disp)
+								answer = AnsBase[11]
 			else:
 				answer = AnsBase[2]
 		else:
@@ -252,8 +254,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[8] % len(db_desc)
 			else:
 				answer = self.AnsBase[0]
-		if locals().has_key(Types[6]):
-			Answer(answer, stype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def command_set_books(self, stype, source, body, disp):
 		if body:

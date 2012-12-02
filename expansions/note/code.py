@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "note" # /code.py v.x5
-#  Id: 22~4c
+# exp_name = "note" # /code.py v.x6
+#  Id: 22~5c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -93,8 +93,9 @@ class expansion_temp(expansion):
 						if numb and line:
 							notes.append("Line[%s] %s" % (numb, line))
 					if notes:
-						Message(source[0], self.AnsBase[6] + str.join(chr(10), notes), disp)
+						answer = self.AnsBase[6] + str.join(chr(10), notes)
 						if stype == Types[1]:
+							Message(source[0], answer, disp)
 							answer = AnsBase[11]
 					else:
 						with database(self.NoteFile) as db:
@@ -105,8 +106,7 @@ class expansion_temp(expansion):
 					answer = self.AnsBase[0]
 		else:
 			answer = self.AnsBase[2]
-		if locals().has_key(Types[6]):
-			Answer(answer, stype, source, disp)
+		Answer(answer, stype, source, disp)
 
 	def init_note_file(self):
 		if not os.path.isfile(self.NoteFile):
