@@ -87,26 +87,22 @@ class expansion_temp(expansion):
 				with database(self.NoteFile) as db:
 					db("select * from note where jid=?", (source_,))
 					db_desc = db.fetchone()
-					if db_desc:
-						Notes, Numb = str(), itypes.Number()
-						for line in db_desc:
-							if not Numb._int():
-								Numb.plus()
-								continue
-							if line:
-								Notes += "\nLine[%s] %s" % (Numb._str(), line)
-							Numb.plus()
-						if Notes:
-							Notes = (self.AnsBase[6] % (Notes))
-							if stype == Types[1]:
-								Answer(AnsBase[11], stype, source, disp)
-							Message(source[0], Notes, disp)
-						else:
+				if db_desc:
+					notes = []
+					for numb, line in enumerate(db_desc):
+						if numb and line:
+							notes.append("Line[%s] %s" % (numb, line))
+					if notes:
+						Message(source[0], self.AnsBase[6] + str.join(chr(10), notes), disp)
+						if stype == Types[1]:
+							answer = AnsBase[11]
+					else:
+						with database(self.NoteFile) as db:
 							db("delete from note where jid=?", (source_,))
 							db.commit()
-							answer = self.AnsBase[0]
-					else:
 						answer = self.AnsBase[0]
+				else:
+					answer = self.AnsBase[0]
 		else:
 			answer = self.AnsBase[2]
 		if locals().has_key(Types[6]):

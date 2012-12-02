@@ -4,7 +4,7 @@
 # BlackSmith's core mark.2
 # BlackSmith.py
 
-# Code © (2010-2012) by WitcherGeralt (alkorgun@gmail.com)
+# Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 # imports
 
@@ -13,13 +13,17 @@ from traceback import print_exc as exc_info__
 from random import shuffle, randrange, choice
 from re import compile as compile__
 
-import sys, os, gc, time, ConfigParser
+import sys, os, gc, time, shutil, ConfigParser
 
-BsCore = os.path.abspath(__file__)
+BsCore = getattr(sys.modules["__main__"], "__file__", None)
+if BsCore:
+	BsCore = os.path.abspath(BsCore)
+	BsRoot = os.path.dirname(BsCore)
+	if BsRoot:
+		os.chdir(BsRoot)
+else:
+	BsRoot = os.getcwd()
 ZipLib = "librarys.zip"
-BsDir = os.path.split(BsCore)[0]
-if BsDir:
-	os.chdir(BsDir)
 sys.path.insert(0, ZipLib)
 
 from enconf import *
@@ -148,7 +152,7 @@ VarCache = {
 	"idle": 0.24,
 	"alive": True,
 	"errors": [],
-	"action": "# %s %s &" % (os.path.split(sys.executable)[1], BsCore)
+	"action": "# %s %s &" % (os.path.basename(sys.executable), BsCore)
 				}
 
 Info = {
@@ -195,7 +199,7 @@ def try_body(body, color):
 	try:
 		body = UnicodeType(body)
 	except:
-		color = False
+		color = None
 	return (body, color)
 
 def text_color(text, color):
@@ -203,7 +207,7 @@ def text_color(text, color):
 		text = color+text+color0
 	return text
 
-def Print(text, color = False):
+def Print(text, color = None):
 	try:
 		print text_color(text, color)
 	except:
@@ -260,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 38, 0)
+(BsMark, BsVer, BsRev) = (2, 39, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -373,12 +377,12 @@ def call_sfunctions(ls, list = ()):
 	for inst in Handlers[ls]:
 		execute_handler(inst, list)
 
-def composeTimer(cors, handler, Name = False, list = (), command = None):
+def composeTimer(sleep, handler, Name = None, list = (), command = None):
 	if not Name:
 		Name = "iTimer-%d" % (iThr.aCounter._int())
-	Timer_ = iThr.Timer(cors, execute_handler, (handler, list, command,))
-	Timer_.name = Name
-	return Timer_
+	Timer = iThr.Timer(sleep, execute_handler, (handler, list, command,))
+	Timer.name = Name
+	return Timer
 
 def composeThr(handler, Name, list = (), command = None):
 	if not Name.startswith(Types[13]):
@@ -390,7 +394,7 @@ def Try_Thr(Thr, Number = 0):
 		raise RuntimeError("exit")
 	try:
 		Thr.start()
-	except iThr.ThrFail:
+	except iThr.error:
 		Try_Thr(Thr, (Number + 1))
 	except:
 		collectExc(Thr.start)
@@ -398,7 +402,7 @@ def Try_Thr(Thr, Number = 0):
 def sThread_Run(Thr, handler, command = None):
 	try:
 		Thr.start()
-	except iThr.ThrFail:
+	except iThr.error:
 		try:
 			Try_Thr(Thr)
 		except RuntimeError:
@@ -462,7 +466,7 @@ class expansion(object):
 		if not self.desc.has_key(ls):
 			self.desc[ls] = []
 
-	def funcs_del(self, handler = False):
+	def funcs_del(self, handler = None):
 
 		def Del(inst, ls):
 			if ls == "03si":
@@ -487,10 +491,10 @@ class expansion(object):
 					Del(inst, ls)
 
 	def initialize_all(self):
-		for ls in sorted(self.desc.keys()):
-			if not (ls.endswith("si") and self.desc.has_key(ls)):
+		for ls, list in sorted(self.desc.items()):
+			if not ls.endswith("si"):
 				continue
-			for inst in self.desc[ls]:
+			for inst in list:
 				if ls in ("00si", "02si"):
 					execute_handler(inst)
 				elif ls == "01si":
@@ -707,16 +711,16 @@ class sConf(object):
 	def save_stats(self):
 		call_sfunctions("03si", (self.name,))
 
-	def leave(self, estatus = False):
+	def leave(self, exit_status = None):
 		self.IamHere = None
 		self.isModer = True
 		self.more = ""
 		stanza = xmpp.Presence(self.name, Types[4])
-		if estatus:
-			stanza.setStatus(estatus)
+		if exit_status:
+			stanza.setStatus(exit_status)
 		self.csend(stanza)
 
-	def full_leave(self, status = False):
+	def full_leave(self, status = None):
 		self.leave(status)
 		del Chats[self.name]
 		self.save_stats()
@@ -784,7 +788,7 @@ class sConf(object):
 
 def get_source(source, nick):
 	if source in Chats:
-		access = getattr(Chats[source].get_user(nick), "source", None)
+		source = getattr(Chats[source].get_user(nick), "source", None)
 	return source
 
 def get_access(source, nick):
@@ -1293,8 +1297,10 @@ def XmppPresenceCB(disp, stanza):
 					if TimerName not in iThr.ThrNames():
 						try:
 							composeTimer(360, ejoinTimer, TimerName, (conf,)).start()
-						except:
+						except iThr.error:
 							delivery(AnsBase[20] % (ecode, eCodesDesc[ecode], conf))
+						except:
+							collectExc(iThr.Thread.start)
 				elif ecode == eCodes[4]:
 					Chat.full_leave(eCodesDesc[ecode])
 					delivery(AnsBase[21] % (ecode, eCodesDesc[ecode], conf))
@@ -1388,14 +1394,14 @@ def XmppIqCB(disp, stanza):
 				anode = answer.getTag(Types[18])
 				anode.setTagData("name", ProdName)
 				anode.setTagData("version", ProdVer)
-				PyVer = str(sys.version).split()[0]
+				Python = "{} [{}.{}.{}]".format(sys.subversion[0], *sys.version_info)
 				if oSlist[0]:
-					os_name = get_pipe(sys_cmds[5]).strip()
+					Os = get_pipe(sys_cmds[5]).strip()
 				elif oSlist[1]:
-					os_name = "{0} {2:.16} [{4}]".format(*os.uname())
+					Os = "{0} {2:.16} [{4}]".format(*os.uname())
 				else:
-					os_name = "Os[%s]" % (BotOs)
-				anode.setTagData("os", "%s / PyVer[%s]" % (os_name, PyVer))
+					Os = BotOs.capitalize()
+				anode.setTagData("os", "%s / %s" % (Os, Python))
 			elif Name == xmpp.NS_URN_TIME:
 				anode = answer.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
 				anode.setTagData("utc", strfTime("%Y-%m-%dT%H:%M:%SZ", False))
@@ -1477,7 +1483,7 @@ def XmppMessageCB(disp, stanza):
 			if Chats[inst].cPref == command[:1]:
 				command = command[1:]
 			else:
-				command = False
+				command = None
 		elif isToBs and not Cmds.has_key(command) and command.startswith(cPrefs):
 			command = command[1:]
 		if isConf and command in Chats[inst].oCmds:
@@ -1505,7 +1511,7 @@ def connect_client(source, InstanceAttrs):
 		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 	except:
 		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
-		return (False, False)
+		return (False, None)
 	if ConType:
 		ConType = ConType.upper()
 		if ConTls and ConType != "TLS":
@@ -1515,7 +1521,7 @@ def connect_client(source, InstanceAttrs):
 		Print("\n'%s' using - '%s'" % (source, ConType), color4)
 	else:
 		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
-		return (False, False)
+		return (False, None)
 	Print("\n'%s' authenticating..." % (source), color4)
 	try:
 		Auth = disp.auth(user, code, GenResource)
@@ -1541,7 +1547,7 @@ def connect_client(source, InstanceAttrs):
 		if disp.isConnected():
 			disp.Roster = None
 		else:
-			return (False, False)
+			return (False, None)
 	except:
 		disp.Roster = None
 	disp.RespExp = {}

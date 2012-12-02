@@ -144,7 +144,7 @@ class expansion_temp(expansion):
 				if online(Name):
 					try:
 						Clients[Name].disconnect()
-					except:
+					except IOError:
 						pass
 			if connect_client(Name, InstansesDesc[Name])[0]:
 				try:

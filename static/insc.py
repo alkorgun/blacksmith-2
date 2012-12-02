@@ -55,11 +55,11 @@ else:
 		"Type --> 'excinfo %d' to show error (crashfile --> %s)", # 16
 		"Type --> 'excinfo %d' or 'sh cat %s' to show error", # 17
 		"%s[...]\n\n** %d symbols limit! Type 'more' to show rest of the text.", # 18
-		"Command '%s' is unavalable now!", # 19
+		"Command '%s' is unavailable now!", # 19
 		"Error %s (%s) - conference: '%s'.", # 20
 		"Error %s (%s), full exit from '%s'.", # 21
 		"Error %s (%s), I leaved '%s'.", # 22
-		"The service without admin's affilation is unavalable!", # 23
+		"The service without admin's affilation is unavailable!", # 23
 		"I disable all functions until I'll become an admin!", # 24
 		"Obtaining rights...", # 25
 		"sCode '%s' in %s (%s). Full leave!", # 26

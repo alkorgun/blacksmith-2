@@ -8,7 +8,7 @@ if DefLANG in ("RU", "UA"):
 		"Все 16 строк уже заполнены.", # 3
 		"В блокноте 16 строк.", # 4
 		"Эта строка - пуста.", # 5
-		"Твои записи:%s", # 6
+		"Твои записи:\n", # 6
 		"Запись добавлена под номером - %s.", # 7
 		"Эта строка итак пуста." # 8
 					)])
@@ -20,7 +20,7 @@ else:
 		"All of 16 lines are filled.", # 3
 		"There are 16 lines in note.", # 4
 		"This line is empty.", # 5
-		"Your notes:%s", # 6
+		"Your notes:\n", # 6
 		"Recorded in line - %s.", # 7
 		"This line is already empty." # 8
 					)

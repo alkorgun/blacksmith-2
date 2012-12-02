@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "alive_keeper" # /code.py v.x5
-#  Id: 16~5c
+# exp_name = "alive_keeper" # /code.py v.x6
+#  Id: 16~6c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -31,8 +31,10 @@ class expansion_temp(expansion):
 								Thr.kill()
 					try:
 						composeThr(connectAndDispatch, ThrName, (disp_str,)).start()
-					except:
+					except iThr.error:
 						delivery(AnsBase[28] % (disp_str))
+					except:
+						collectExc(iThr.Thread.start)
 				elif expansions.has_key(self.name):
 					disp.aKeeper.plus()
 					iq = xmpp.Iq(to = "%s/%s" % (disp_str, GenResource), typ = Types[10])
@@ -68,8 +70,10 @@ class expansion_temp(expansion):
 					if TimerName not in ThrIds:
 						try:
 							composeTimer(180, ejoinTimer, TimerName, (conf.name,)).start()
-						except:
+						except iThr.error:
 							pass
+						except:
+							collectExc(iThr.Thread.start)
 				elif expansions.has_key(self.name):
 					conf.aKeeper.plus()
 					iq = xmpp.Iq(to = "%s/%s" % (conf.name, conf.nick), typ = Types[10])

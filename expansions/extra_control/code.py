@@ -54,9 +54,9 @@ class expansion_temp(expansion):
 					if Number >= 0 and Number <= len(confs):
 						conf = confs[Number]
 					else:
-						conf = False
+						conf = None
 				else:
-					conf = False
+					conf = None
 				if conf:
 					itype = (body.pop(0)).lower()
 					if itype in ("chat", "чат".decode("utf-8")):
@@ -64,7 +64,7 @@ class expansion_temp(expansion):
 					elif itype in ("private", "приват".decode("utf-8")):
 						type2 = Types[0]
 					else:
-						type2 = False
+						type2 = None
 					if type2:
 						cmd = (body.pop(0)).lower()
 						if body:

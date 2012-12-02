@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x21
-#  Id: 25~21c
+# exp_name = "allweb" # /code.py v.x22
+#  Id: 25~22c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -581,10 +581,9 @@ class expansion_temp(expansion):
 					if not enough_access(source[1], source[2], 8):
 						folder = "Downloads"
 					if filename:
-						ls = os.path.split(filename)
-						if len(ls) > 1:
-							filename = ls[-1]
+						filename = os.path.basename(filename.rstrip("\\/"))
 					if folder:
+						folder = os.path.normpath(folder)
 						if AsciiSys:
 							folder = folder.encode("utf-8")
 						if not os.path.isdir(folder):
@@ -851,14 +850,14 @@ class expansion_temp(expansion):
 
 	def command_gismeteo(self, stype, source, body, disp):
 		if body:
-			ls = body.split()
+			ls = body.split(None, 1)
 			Numb = ls.pop(0)
 			if ls and isNumber(Numb):
-				City = body[(body.find(Numb) + len(Numb)):].strip()
 				Numb = int(Numb)
+				City = ls.pop(0)
 			else:
-				City = body
 				Numb = None
+				City = body
 			if -1 < Numb < 13 or not Numb:
 				Opener = Web("http://m.gismeteo.ru/citysearch/by_name/?", [("gis_search", City.encode("utf-8"))])
 				try:

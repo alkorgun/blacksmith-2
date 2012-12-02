@@ -135,7 +135,7 @@ class expansion_temp(expansion):
 				cmd = Cmds.get(command)
 				if ls:
 					body = (ls.pop(0)).lower()
-					if body in ("on", "вкл".decode("utf-8")):
+					if body in ("on", "1", "вкл".decode("utf-8")):
 						if not cmd.isAvalable:
 							if cmd.handler:
 								cmd.isAvalable = True
@@ -144,7 +144,7 @@ class expansion_temp(expansion):
 								answer = AnsBase[19] % (command)
 						else:
 							answer = self.AnsBase[16] % (command)
-					elif body in ("off", "выкл".decode("utf-8")):
+					elif body in ("off", "0", "выкл".decode("utf-8")):
 						if cmd.isAvalable:
 							if cmd.handler:
 								cmd.isAvalable = False

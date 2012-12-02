@@ -118,7 +118,7 @@ class expansion_temp(expansion):
 							if online(Name):
 								try:
 									Clients[Name].disconnect()
-								except:
+								except IOError:
 									pass
 							if Flood.has_key(Name):
 								del Flood[Name]

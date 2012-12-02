@@ -16,41 +16,41 @@ class expansion_temp(expansion):
 		cls = sorted(Clients.keys())
 		if body:
 			ls = body.split()
-			clnt = (ls.pop(0)).lower()
-			if clnt in cls:
-				cl_name = clnt
-			elif isNumber(clnt):
+			body = (ls.pop(0)).lower()
+			if body in cls:
+				Name = body
+			elif isNumber(body):
 				Number = (int(clnt) - 1)
 				if Number >= 0 and Number <= len(cls):
-					cl_name = cls[Number]
+					Name = cls[Number]
 				else:
-					cl_name = False
+					Name = None
 			else:
-				cl_name = False
-			if cl_name:
+				Name = None
+			if Name:
 				if ls:
 					body = ls.pop(0)
 					if ls:
 						jid = (ls.pop(0)).lower()
 						if jid.count("."):
 							if body == "+":
-								Clients[cl_name].Roster.Authorize(jid)
-								Clients[cl_name].Roster.Subscribe(jid)
+								Clients[Name].Roster.Authorize(jid)
+								Clients[Name].Roster.Subscribe(jid)
 								if ls:
 									Tabe = ("admin", "админ".decode("utf-8"))
 									Nick = ls.pop(0)
 									if ls and Tabe.count(ls[0].lower()):
-										Clients[cl_name].Roster.setItem(jid, Nick, ["Admins"])
+										Clients[Name].Roster.setItem(jid, Nick, ["Admins"])
 									else:
-										Clients[cl_name].Roster.setItem(jid, Nick, ["Users"])
+										Clients[Name].Roster.setItem(jid, Nick, ["Users"])
 								else:
-									Clients[cl_name].Roster.setItem(jid, (jid.split("@"))[0], ["Users"])
+									Clients[Name].Roster.setItem(jid, (jid.split("@"))[0], ["Users"])
 								answer = AnsBase[4]
 							elif body == "-":
-								if jid in Clients[cl_name].Roster.keys():
-									Clients[cl_name].Roster.Unauthorize(jid)
-									Clients[cl_name].Roster.Unsubscribe(jid)
-									Clients[cl_name].Roster.delItem(jid)
+								if jid in Clients[Name].Roster.keys():
+									Clients[Name].Roster.Unauthorize(jid)
+									Clients[Name].Roster.Unsubscribe(jid)
+									Clients[Name].Roster.delItem(jid)
 									answer = AnsBase[4]
 								else:
 									answer = self.AnsBase[0]
@@ -61,7 +61,7 @@ class expansion_temp(expansion):
 					else:
 						answer = AnsBase[2]
 				else:
-					Rdsp = getattr(Clients[cl_name], "Roster")
+					Rdsp = getattr(Clients[Name], "Roster")
 					if Rdsp:
 						jids = Rdsp.keys()
 						for jid in jids:
