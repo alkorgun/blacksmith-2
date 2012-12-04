@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 39, 0)
+(BsMark, BsVer, BsRev) = (2, 40, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -544,7 +544,7 @@ class Command(object):
 		self.isAvalable = True
 		self.help = help
 		self.handler = inst
-		self.desc = []
+		self.desc = set()
 		self.access = access
 
 	def reload(self, inst, access, help, exp):
@@ -565,8 +565,8 @@ class Command(object):
 				sThread("command", self.handler, (self.exp, stype, source, body, disp), self.name)
 				self.numb.plus()
 				source = get_source(source[1], source[2])
-				if source and source not in self.desc:
-					self.desc.append(source)
+				if source:
+					self.desc.add(source)
 			else:
 				Answer(AnsBase[19] % (self.name), stype, source, disp)
 		else:
