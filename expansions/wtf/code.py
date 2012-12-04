@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "wtf" # /code.py v.x2
-#  Id: 28~2c
+# exp_name = "wtf" # /code.py v.x3
+#  Id: 28~23
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -23,13 +23,13 @@ class expansion_temp(expansion):
 					db("select name from wtf order by name")
 					defs = db.fetchall()
 				if defs:
-					ls.append(self.AnsBase[0] % (len(defs), enumerated_list([name[0].capitalize() for name in defs])))
+					ls.append(self.AnsBase[0] % (len(defs), enumerated_list([name[0].title() for name in defs])))
 				if Chats.has_key(source[1]):
 					with database(cefile(chat_file(source[1], self.ChatBase))) as db:
 						db("select name from wtf order by name")
 						defs = db.fetchall()
 					if defs:
-						ls.append(self.AnsBase[1] % (len(defs), source[1], enumerated_list([name[0].capitalize() for name in defs])))
+						ls.append(self.AnsBase[1] % (len(defs), source[1], enumerated_list([name[0].title() for name in defs])))
 				if ls:
 					answer = self.AnsBase[-1] + str.join(chr(10)*2, ls)
 				else:
@@ -46,7 +46,7 @@ class expansion_temp(expansion):
 							data = data.lower()
 							numb = data.count(body)
 							if numb or body in name or name in body:
-								ls.append(self.AnsBase[3] % (name.capitalize(), numb))
+								ls.append(self.AnsBase[3] % (name.title(), numb))
 					if Chats.has_key(source[1]):
 						with database(cefile(chat_file(source[1], self.ChatBase))) as db:
 							db("select name, data from wtf order by name")
@@ -56,7 +56,7 @@ class expansion_temp(expansion):
 								data = data.lower()
 								numb = data.count(body)
 								if numb or body in name or name in body:
-									ls.append(self.AnsBase[3] % (name.capitalize(), numb))
+									ls.append(self.AnsBase[3] % (name.title(), numb))
 					if ls:
 						answer = self.AnsBase[-1] + enumerated_list(ls)
 					else:
@@ -69,14 +69,14 @@ class expansion_temp(expansion):
 					desc = db.fetchone()
 				if desc:
 					name, data, nick, date = desc
-					answer = self.AnsBase[5] % (name.capitalize(), data, nick, date)
+					answer = self.AnsBase[5] % (name.title(), data, nick, date)
 				if Chats.has_key(source[1]) and not answer:
 					with database(cefile(chat_file(source[1], self.ChatBase))) as db:
 						db("select * from wtf where name=?", (name,))
 						desc = db.fetchone()
 					if desc:
 						name, data, nick, date = desc
-						answer = self.AnsBase[5] % (name.capitalize(), data, nick, date)
+						answer = self.AnsBase[5] % (name.title(), data, nick, date)
 				if not answer:
 					answer = self.AnsBase[6] % (name)
 		else:

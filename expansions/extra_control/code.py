@@ -58,14 +58,14 @@ class expansion_temp(expansion):
 				else:
 					conf = None
 				if conf:
-					itype = (body.pop(0)).lower()
-					if itype in ("chat", "чат".decode("utf-8")):
-						type2 = Types[1]
-					elif itype in ("private", "приват".decode("utf-8")):
-						type2 = Types[0]
+					typ = (body.pop(0)).lower()
+					if typ in ("chat", "чат".decode("utf-8")):
+						stype_ = Types[1]
+					elif typ in ("private", "приват".decode("utf-8")):
+						stype_ = Types[0]
 					else:
-						type2 = None
-					if type2:
+						stype_ = None
+					if stype_:
 						cmd = (body.pop(0)).lower()
 						if body:
 							body = body[0]
@@ -73,20 +73,20 @@ class expansion_temp(expansion):
 							body = ""
 						if 2048 >= len(body):
 							if Cmds.has_key(cmd):
-								inst = Cmds[cmd]
-								if inst.isAvalable and inst.handler:
+								cmd = Cmds[cmd]
+								if cmd.isAvalable and cmd.handler:
 									Info["cmd"].plus()
-									if type2 == Types[1]:
+									if stype_ == Types[1]:
 										disp_ = Chats[conf].disp
 									else:
 										disp_ = get_disp(disp)
-									sThread("command", inst.handler, (inst.exp, type2, (source[0], conf, source[2]), body, disp_), inst.name)
-									inst.numb.plus()
+									sThread("command", cmd.handler, (cmd.exp, stype_, (source[0], conf, source[2]), body, disp_), cmd.name)
+									cmd.numb.plus()
 									source = get_source(source[1], source[2])
-									if source and source not in inst.desc:
-										inst.desc.append(source)
+									if source:
+										cmd.desc.add(source)
 								else:
-									answer = AnsBase[19] % (inst.name)
+									answer = AnsBase[19] % (cmd.name)
 							else:
 								answer = AnsBase[6]
 						else:

@@ -1,5 +1,5 @@
 shows/sets (for owners only) command prefix (list: !, @ , #, ., *)
-prefix (symbol)
+prefix (symbol/del)
 */prefix
 bot would show current prefix
 */prefix !

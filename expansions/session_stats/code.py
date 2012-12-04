@@ -76,7 +76,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[6]
 		else:
 			ls = []
-			for cmd in Cmds.values():
+			for cmd in Cmds.itervalues():
 				used = cmd.numb._int()
 				if used:
 					ls.append((used, len(cmd.desc), cmd.name))
