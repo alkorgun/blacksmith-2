@@ -1394,7 +1394,7 @@ def XmppIqCB(disp, stanza):
 				anode = answer.getTag(Types[18])
 				anode.setTagData("name", ProdName)
 				anode.setTagData("version", ProdVer)
-				Python = "{} [{}.{}.{}]".format(sys.subversion[0], *sys.version_info)
+				Python = "{0} [{1}.{2}.{3}]".format(sys.subversion[0], *sys.version_info)
 				if oSlist[0]:
 					Os = get_pipe(sys_cmds[5]).strip()
 				elif oSlist[1]:

@@ -4,7 +4,7 @@ This is BlackSmith mark.2 xmpp bot (the second generation of BlackSmith)
 To use Black-2 you will need:
 
 1. OS: *nix or Microsoft Windows (FreeBSD amd64 recommended)
-2. Python 2.6 or higher (Python 3+ isn't required)
+2. Python 2.7.0 or higher (Python 3+ isn't required)
 3. Python's sqlite lib. (Py-Sqlite3)
 4. Subversion (or TortoiseSVN for Windows)
 
