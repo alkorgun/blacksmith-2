@@ -1,36 +1,36 @@
 security control system
-order ([option] [on/off/number])/([servers] ([add/del] [server]))
-*/order
+{command} ([option] [on/off/number])/([servers] ([add/del] [server]))
+*/{command}
 bot would show current config
-*/order awipe on
+*/{command} awipe on
 activation of antiwipe feature
-*/order aspace on
+*/{command} aspace on
 spaces at the edges of nicks will be forbidden
-*/order verif off
+*/{command} verif off
 deactivation of authorisation feature
-*/order atiser on
+*/{command} atiser on
 activation of protection service from advertisement
-*/order aobscene off
+*/{command} aobscene off
 deactivation of protection service from obscene
-*/order acaps on
+*/{command} acaps on
 deactivation of protection service from caps-flood
-*/order sparta on
+*/{command} sparta on
 activation of "Sparta mode" (bot will ban all of new servers which are not in "white list")
-*/order lnick 24
+*/{command} lnick 24
 set the maximum length nickname for users (from 12 to 32)
-*/order aban 4
+*/{command} aban 4
 number of kick after that will ban follow (from 2 to 6)
-*/order loyalty 2
+*/{command} loyalty 2
 level of user access to which will respond to the security services (from 1 to 5)
-*/order devoice 180
+*/{command} devoice 180
 time (in seconds) for which user will be deprived of voting for violations (60 to 360)
-*/order msglen 1024
+*/{command} msglen 1024
 maximum message length allowed for users (from 512 to 2048)
-*/order prslen 256
+*/{command} prslen 256
 maximum length of status messages, to allow for users (from 128 to 512)
-*/order servers
+*/{command} servers
 bot would show "white list" of servers
-*/order servers add some_server.com
+*/{command} servers add some_server.com
 bot would append "some_server.com" to "white list"
-*/order servers del some_server.com
+*/{command} servers del some_server.com
 bot would remove "some_server.com" from "white list"

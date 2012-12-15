@@ -1,6 +1,6 @@
 statistics of jabber servers
-servstat (server)
-*/servstat
+{command} (server)
+*/{command}
 bot would show statistics of it's current jid's server
-*/servstat jabr.com
+*/{command} jabr.com
 bot would show statistics of jabr.com

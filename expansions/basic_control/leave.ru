@@ -1,8 +1,8 @@
 команда уводит бота из заданной конференции
-выйди (конференция)
-*/выйди
+{command} (конференция)
+*/{command}
 бот свалит из текущей конференции
-*/выйди some_chat@conference.jabber.ru
+*/{command} some_chat@conference.jabber.ru
 бот уйдёт из some_chat@conference.jabber.ru (если он вообще там сидит)
-*/выйди праативный
+*/{command} праативный
 не прокатит...

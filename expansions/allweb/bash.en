@@ -1,6 +1,6 @@
 quotes from bash.org
-bash (quotes'_number)
-*/bash
+{command} (quotes'_number)
+*/{command}
 bot would show a random quote
-*/bash 30456
+*/{command} 30456
 bot would show a quote with number 30456

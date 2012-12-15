@@ -1,4 +1,4 @@
 global unban (take away affiliation)
-fullunban [jid/nick]
-*/fullunban dude
+{command} [jid/nick]
+*/{command} dude
 bot would unban dude globally

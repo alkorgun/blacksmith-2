@@ -1,4 +1,4 @@
 bot shows how much access requires a specified command
-comacc [command]
-*/comacc join
+{command} [command]
+*/{command} join
 bot informs that the command "join" requires access 7

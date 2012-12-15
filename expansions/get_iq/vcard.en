@@ -1,8 +1,8 @@
 xmpp vCard
-vcard (nick/jid)
-*/vcard
+{command} (nick/jid)
+*/{command}
 bot would show your vCard
-*/vcard Dude
+*/{command} Dude
 bot would show Dude's vCard
-*/vcard dude@jabr.com
+*/{command} dude@jabr.com
 bot would show vCard of dude@jabr.com

@@ -1,4 +1,4 @@
 set subject
-subject [subject]
-*/subject Hello everybody!
+{command} [subject]
+*/{command} Hello everybody!
 bot would set conference subject - "Hello everybody!"

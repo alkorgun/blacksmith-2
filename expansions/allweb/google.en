@@ -1,6 +1,6 @@
 google search
-google [text/*]
-*/google blah blah
+{command} [text/*]
+*/{command} blah blah
 bot would show 1st search result
-*/google *
+*/{command} *
 bot would show next result

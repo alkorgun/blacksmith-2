@@ -1,8 +1,8 @@
 roster access controller
-roster2 [on/off]
-*/roster2
+{command} [on/off]
+*/{command}
 bot would show roster access state
-*/roster2 off
+*/{command} off
 bot would block access to the roster (access free just for bot's admins)
-*/roster2 on
+*/{command} on
 bot would open access to the roster (access free just for all users)

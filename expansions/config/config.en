@@ -1,6 +1,6 @@
 config control system (changes will be apply after restart)
-config (option=value)
-*/config
+{command} (option=value)
+*/{command}
 bot would show current config
-*/config RESOURCE=Bot_control_center MEMORY=96
+*/{command} RESOURCE=Bot_control_center MEMORY=96
 bot wiil set "Bot control center" as default resource and RAM usage limit - 96mb

@@ -1,4 +1,4 @@
 bot searchs users in it's lists
-search [search key]
-*/search Masha
+{command} [search key]
+*/{command} Masha
 bot would search Masha and tell you where is she

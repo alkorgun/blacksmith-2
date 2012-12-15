@@ -1,8 +1,8 @@
 xmpp ping statistics
-pstat (nick/jid)
-*/pstat
+{command} (nick/jid)
+*/{command}
 bot would show your statistics
-*/pstat Dude
+*/{command} Dude
 bot would show Dude's statistics
-*/pstat dude@jabr.com
+*/{command} dude@jabr.com
 bot would show the statistics of dude@jabr.com

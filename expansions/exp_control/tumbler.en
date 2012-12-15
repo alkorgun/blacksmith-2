@@ -1,10 +1,10 @@
 controller of the commands
-tumbler (command) (on/off)
-*/tumbler
+{command} (command) (on/off)
+*/{command}
 bot would show the list of disabled commands
-*/tumbler talkers
+*/{command} talkers
 bot would show the state of command "talkers"
-*/tumbler talkers off
+*/{command} talkers off
 bot would disable command "talkers"
-*/tumbler talkers on
+*/{command} talkers on
 bot would turn on command

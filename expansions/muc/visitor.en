@@ -1,4 +1,4 @@
 take away the voice
-visitor [jid/nick] ([/] [reason])
-*/visitor dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would make dude a visitor

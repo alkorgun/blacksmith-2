@@ -1,8 +1,8 @@
 converter
-convert (category) ([numer] [unit] [unit])
-*/convert
+{command} (category) ([numer] [unit] [unit])
+*/{command}
 bot would show converter's categorys
-*/convert temperature
+*/{command} temperature
 bot would show units from category "temperature"
-*/convert distance 3 mile metre
+*/{command} distance 3 mile metre
 bot would convert 3 miles to metres (4828)

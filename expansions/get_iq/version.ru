@@ -1,8 +1,8 @@
 xmpp версия
-версия (nick/jid)
-*/версия
+{command} (nick/jid)
+*/{command}
 бот покажет версию вашего клиента
-*/версия Dude
+*/{command} Dude
 бот покажет версию клиента "Dude"
-*/версия dude@jab.com
+*/{command} dude@jab.com
 бот покажет версию клиента "dude@jab.com"

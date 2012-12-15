@@ -1,6 +1,6 @@
 info. about bot's expansions
-expinfo (expansion)
-*/expinfo
+{command} (expansion)
+*/{command}
 bot would show expansions list
-*/expinfo help
+*/{command} help
 bot would show info. about expansion "help"

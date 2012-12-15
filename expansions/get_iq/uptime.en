@@ -1,6 +1,6 @@
 servers's uptime
-uptime (server)
-*/uptime
+{command} (server)
+*/{command}
 bot would show uptime of it's current jid's server
-*/uptime jabr.com
+*/{command} jabr.com
 bot would show uptime of jabr.com

@@ -83,7 +83,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
-	def command_adelivery(self, stype, source, body, disp):
+	def command_toadmin(self, stype, source, body, disp):
 		if body:
 			if PrivLimit >= len(body):
 				instance = get_source(source[1], source[2])
@@ -95,7 +95,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
-	def command_say(self, stype, source, body, disp):
+	def command_echo(self, stype, source, body, disp):
 		if body:
 			if ConfLimit >= len(body):
 				Message(source[1], body, disp)
@@ -150,8 +150,8 @@ class expansion_temp(expansion):
 		(command_sendall, "sendall", 8,),
 		(command_more, "more", 1,),
 		(command_send, "send", 8,),
-		(command_adelivery, "toadmin", 1,),
-		(command_say, "say", 7,),
+		(command_toadmin, "toadmin", 1,),
+		(command_echo, "echo", 6,),
 		(command_invite, "invite", 4,)
 					)
 

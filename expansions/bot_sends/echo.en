@@ -1,0 +1,4 @@
+bot sends message in to current chat
+{command} [text]
+*/{command} AAA!!
+bot would send: "AAA!!"

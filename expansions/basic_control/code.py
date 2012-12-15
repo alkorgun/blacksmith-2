@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "basic_control" # /code.py v.x11
-#  Id: 06~5c
+# exp_name = "basic_control" # /code.py v.x12
+#  Id: 06~6c
 #  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -94,7 +94,7 @@ class expansion_temp(expansion):
 				Chats[conf].leave(self.AnsBase[8] % (source[2]))
 				sleep(2)
 				Chats[conf].join()
-				self.Chat_check(conf)
+				self.Check(conf)
 				if Chats.has_key(conf) and Chats[conf].IamHere:
 					answer = AnsBase[4]
 				else:

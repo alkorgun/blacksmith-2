@@ -1,6 +1,6 @@
 chat's rating from jc.jabber.ru
-jc (conference)
-*/jc
+{command} (conference)
+*/{command}
 bot would show rating of current chatroom
-*/jc support
+*/{command} support
 bot would show support's rating

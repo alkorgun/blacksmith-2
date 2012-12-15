@@ -1,6 +1,6 @@
 exceptions cache
-excinfo (number)
-*/excinfo
+{command} (number)
+*/{command}
 bot would show number of unexpected exceptions
-*/excinfo 1
+*/{command} 1
 bot would show exception with number one

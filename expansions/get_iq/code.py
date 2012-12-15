@@ -154,15 +154,13 @@ class expansion_temp(expansion):
 			CallForResponse(disp, iq, self.answer_time0090, {"stype": stype, "source": source})
 
 	def answer_time0090(self, disp, stanza, stype, source):
+		Display = None
 		if xmpp.isResultNode(stanza):
-			Time = None
 			for node in stanza.getQueryChildren():
 				if "display" == node.getName():
-					Time = node.getData()
-			answer = Time or self.AnsBase[6]
-		else:
-			answer = self.AnsBase[6]
-		Answer(answer, stype, source, disp)
+					Display = node.getData()
+					break
+		Answer((Display or self.AnsBase[6]), stype, source, disp)
 
 	def command_version(self, stype, source, instance, disp):
 		if instance:
@@ -525,9 +523,9 @@ class expansion_temp(expansion):
 					else:
 						result.append(items[0])
 				answer = "\->\n" + enumerated_list(result)
-				res_ln = len(ls) + len(confs)
-				if res_ln:
-					answer += self.AnsBase[11] % (res_ln)
+				rlen = len(ls) + len(confs)
+				if rlen:
+					answer += self.AnsBase[11] % (rlen)
 			else:
 				answer = self.AnsBase[4]
 		else:

@@ -1,4 +1,4 @@
 gives participant role
-participant [jid/nick] ([/] [reason])
-*/participant dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would make dude a participant

@@ -1,4 +1,4 @@
 expansions loader (reloader)
-expload [expansion]
-*/expload help
+{command} [expansion]
+*/{command} help
 bot would load expansion "help"

@@ -1,8 +1,8 @@
 bot's shutdown
-exit (reason/silent)
-*/exit
+{command} (reason/silent)
+*/{command}
 bot would shutdown
-*/exit silent
+*/{command} silent
 bot would shutdown silently
-*/exit update
+*/{command} update
 bot would shutdown with status "update"

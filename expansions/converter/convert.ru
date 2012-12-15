@@ -1,8 +1,8 @@
 конвертер
-convert (категория) ([число] [единица_измерения] [единица_измерения])
-*/convert
+{command} (категория) ([число] [единица_измерения] [единица_измерения])
+*/{command}
 бот покажет список категорий конвертера
-*/convert temperature
+*/{command} temperature
 бот покажет единицы измерения категории "temperature"
-*/convert distance 3 mile metre
+*/{command} distance 3 mile metre
 бот переведет 3 мили в метры (4828)

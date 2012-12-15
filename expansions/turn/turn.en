@@ -1,6 +1,6 @@
 bot translate text's layout (EN <-> RU)
-turn (text)
-*/turn
+{command} (text)
+*/{command}
 bot would translate your last post
-*/turn some text
+*/{command} some text
 bot would translate this text

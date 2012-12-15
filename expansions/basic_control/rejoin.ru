@@ -1,6 +1,6 @@
 пот перезаходит в конференцию
-реджойн (конференция)
-*/реджойн
+{command} (конференция)
+*/{command}
 бот перезайдёт в текущую конференцию
-*/реджойн some_chat@conference.jabber.ru
+*/{command} some_chat@conference.jabber.ru
 бот перезайдёт в some_chat@conference.jabber.ru (если он вообще там сидит)

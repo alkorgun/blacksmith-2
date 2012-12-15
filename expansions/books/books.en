@@ -1,24 +1,24 @@
 shows library content
-books ([show] (names)/([author/genre/cycle] [parameters]))/([info] [book's_name])/([read] ((page_number) [book's_name])/(next))
-*/books
+{command} ([show] (names)/([author/genre/cycle] [parameters]))/([info] [book's_name])/([read] ((page_number) [book's_name])/(next))
+*/{command}
 bot would show books count
-*/books show
+*/{command} show
 bot would show the list with ID's of books
-*/books show names
+*/{command} show names
 bot would show the list with names of books
-*/books show author George Martin
+*/{command} show author George Martin
 bot would show the list of George Martin's books
-*/books show genre sf_fantasy
+*/{command} show genre sf_fantasy
 bot would show the list of sf_fantasy books
-*/books show cycle The Black Company
+*/{command} show cycle The Black Company
 bot would show the list of books of "The Black Company" cycle
-*/books info A Dance With Dragons
+*/{command} info A Dance With Dragons
 bot would show info about "A Dance With Dragons"
-*/books read
+*/{command} read
 bot would send you the last page of the last book, which you read
-*/books read Call of Cthulhu
+*/{command} read Call of Cthulhu
 bot would send you the first page of "Call of Cthulhu"
-*/books read 17 Call of Cthulhu
+*/{command} read 17 Call of Cthulhu
 bot would send you 17th page of "Call of Cthulhu"
-*/books read next
+*/{command} read next
 bot would send you the next page

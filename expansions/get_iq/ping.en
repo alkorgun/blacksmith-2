@@ -1,8 +1,8 @@
 xmpp ping
-ping (nick/jid)
-*/ping
+{command} (nick/jid)
+*/{command}
 bot would show your ping
-*/ping Dude
+*/{command} Dude
 bot would show Dude's ping
-*/ping dude@jabr.com
+*/{command} dude@jabr.com
 bot would show the ping of dude@jabr.com

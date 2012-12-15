@@ -1,4 +1,4 @@
 gives owner rights
-owner [jid/nick] ([/] [reason])
-*/owner dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would make dude owner of the conference

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "extra_control" # /code.py v.x9
-#  Id: 01~7c
+# exp_name = "extra_control" # /code.py v.x10
+#  Id: 01~8c
 #  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -58,10 +58,10 @@ class expansion_temp(expansion):
 				else:
 					conf = None
 				if conf:
-					typ = (body.pop(0)).lower()
-					if typ in ("chat", "чат".decode("utf-8")):
+					st = (body.pop(0)).lower()
+					if st in ("chat", "чат".decode("utf-8")):
 						stype_ = Types[1]
-					elif typ in ("private", "приват".decode("utf-8")):
+					elif st in ("private", "приват".decode("utf-8")):
 						stype_ = Types[0]
 					else:
 						stype_ = None
@@ -75,11 +75,11 @@ class expansion_temp(expansion):
 							if Cmds.has_key(cmd):
 								cmd = Cmds[cmd]
 								if cmd.isAvalable and cmd.handler:
-									Info["cmd"].plus()
 									if stype_ == Types[1]:
 										disp_ = Chats[conf].disp
 									else:
 										disp_ = get_disp(disp)
+									Info["cmd"].plus()
 									sThread("command", cmd.handler, (cmd.exp, stype_, (source[0], conf, source[2]), body, disp_), cmd.name)
 									cmd.numb.plus()
 									source = get_source(source[1], source[2])
@@ -122,8 +122,56 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[6]):
 			Answer(answer, stype, source, disp)
 
+	pointer = chr(62)*2
+
+	def command_redirect(self, stype, source, body, disp):
+		if Chats.has_key(source[1]):
+			if body:
+				if body.count(self.pointer) == True:
+					body = body.split(None, 1)
+					cmd = (body.pop(0)).lower()
+					if Cmds.has_key(cmd):
+						cmd = Cmds[cmd]
+						if enough_access(source[1], source[2], cmd.access):
+							if cmd.isAvalable and cmd.handler:
+								if body:
+									body = body[0].rsplit(self.pointer, 1)
+									if len(body) == 2:
+										body, nick = body
+										nick = nick.strip()
+										body = body.strip()
+									else:
+										nick = body[0].strip()
+										body = ""
+									if Chats[source[1]].isHereTS(nick):
+										Info["cmd"].plus()
+										sThread("command", cmd.handler, (cmd.exp, Types[0], ("%s/%s" % (source[1], nick), source[1], nick), body, disp), cmd.name)
+										cmd.numb.plus()
+										source_ = get_source(source[1], source[2])
+										if source_:
+											cmd.desc.add(source_)
+										answer = AnsBase[4]
+									else:
+										answer = AnsBase[7]
+								else:
+									answer = AnsBase[2]
+							else:
+								answer = AnsBase[19] % (cmd.name)
+						else:
+							answer = AnsBase[10]
+					else:
+						answer = AnsBase[6]
+				else:
+					answer = AnsBase[2]
+			else:
+				answer = AnsBase[1]
+		else:
+			answer = AnsBase[0]
+		Answer(answer, stype, source, disp)
+
 	commands = (
 		(command_turbo, "turbo", 1,),
 		(command_remote, "remote", 8,),
-		(command_private, "private", 1,)
+		(command_private, "private", 1,),
+		(command_redirect, "redirect", 5,)
 					)

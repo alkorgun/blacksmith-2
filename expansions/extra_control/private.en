@@ -1,4 +1,4 @@
 executes the specified command and sends answer to private
-private [command] (parameters)
-*/private ping
+{command} [command] (parameters)
+*/{command} ping
 bot would send pong-time to private

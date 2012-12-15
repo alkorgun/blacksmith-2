@@ -1,4 +1,4 @@
 bot shows command's location
-location [command]
-*/location join
+{command} [command]
+*/{command} join
 bot informs that the command "join" is located in to "basic_control" expansion

@@ -1,6 +1,6 @@
 replacement of the jid from which the bot will serve the specific conference
-botjid [jid] (conference)
-*/botjid some_name@jab.com chat@conference.jab.com
+{command} [jid] (conference)
+*/{command} some_name@jab.com chat@conference.jab.com
 bot would replace his current jid in chat@conference.jab.com to some_name@jab.com
-*/botjid some_name@jab.com
+*/{command} some_name@jab.com
 bot would replace his current jid in currebt chatroom to some_name@jab.com

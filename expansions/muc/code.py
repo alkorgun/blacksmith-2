@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "muc" # /code.py v.x7
-#  Id: 05~3c
-#  Code © (2009-2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "muc" # /code.py v.x8
+#  Id: 05~4c
+#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -25,6 +25,8 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[6]):
 			Answer(answer, stype, source, disp)
 
+	sep = chr(47)
+
 	def command_ban(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
@@ -34,23 +36,20 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
 							jid = get_source(source[1], nick)
-						elif Chats[source[1]].isHere(Nick):
-							jid = get_source(source[1], Nick)
-						elif nick.count(chr(46)) and not Nick.count(chr(32)):
-							jid = Nick
+						elif nick.count(chr(46)):
+							jid = nick
 						else:
 							jid = None
-						if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+						if jid and not enough_access(jid, None, 7) and jid != get_disp(disp):
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].outcast(jid, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].outcast(jid, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -73,23 +72,20 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
 							jid = get_source(source[1], nick)
-						elif Chats[source[1]].isHere(Nick):
-							jid = get_source(source[1], Nick)
-						elif nick.count(chr(46)) and not Nick.count(chr(32)):
-							jid = Nick
+						elif nick.count(chr(46)):
+							jid = nick
 						else:
 							jid = None
 						if jid:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].none(jid, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].none(jid, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -112,23 +108,20 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
 							jid = get_source(source[1], nick)
-						elif Chats[source[1]].isHere(Nick):
-							jid = get_source(source[1], Nick)
-						elif nick.count(chr(46)) and not Nick.count(chr(32)):
-							jid = Nick
+						elif nick.count(chr(46)):
+							jid = nick
 						else:
 							jid = None
 						if jid:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].member(jid, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].member(jid, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -151,23 +144,20 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
 							jid = get_source(source[1], nick)
-						elif Chats[source[1]].isHere(Nick):
-							jid = get_source(source[1], Nick)
-						elif nick.count(chr(46)) and not Nick.count(chr(32)):
-							jid = Nick
+						elif nick.count(chr(46)):
+							jid = nick
 						else:
 							jid = None
 						if jid:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].admin(jid, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].admin(jid, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -190,23 +180,20 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
 							jid = get_source(source[1], nick)
-						elif Chats[source[1]].isHere(Nick):
-							jid = get_source(source[1], Nick)
-						elif nick.count(chr(46)) and not Nick.count(chr(32)):
-							jid = Nick
+						elif nick.count(chr(46)):
+							jid = nick
 						else:
 							jid = None
 						if jid:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].owner(jid, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].owner(jid, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -229,22 +216,18 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
-							pass
-						elif Chats[source[1]].isHere(Nick):
-							nick = Nick
+							jid = get_source(source[1], nick)
 						else:
-							nick = None
-						jid = get_source(source[1], nick)
-						if nick and jid and Galist.get(jid, 0) < 7 and jid != get_disp(disp):
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							jid, nick = None, None
+						if nick and jid and not enough_access(jid, None, 7) and jid != get_disp(disp):
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].kick(nick, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].kick(nick, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -267,22 +250,18 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
-							pass
-						elif Chats[source[1]].isHere(Nick):
-							nick = Nick
+							jid = get_source(source[1], nick)
 						else:
-							nick = None
-						jid = get_source(source[1], nick)
-						if nick and jid and Galist.get(jid, 0) < 7:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							jid, nick = None, None
+						if nick and jid and not enough_access(jid, None, 7) and jid != get_disp(disp):
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].visitor(nick, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].visitor(nick, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -305,21 +284,14 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
-							pass
-						elif Chats[source[1]].isHere(Nick):
-							nick = Nick
-						else:
-							nick = None
-						if nick:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].participant(nick, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].participant(nick, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -342,21 +314,14 @@ class expansion_temp(expansion):
 						if not enough_access(source[1], source[2], 6):
 							Lock = True
 					if not Lock:
-						body = body.split(chr(47), 1)
-						nick = body.pop(0)
-						Nick = nick.strip()
+						body = body.split(self.sep, 1)
+						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
-							pass
-						elif Chats[source[1]].isHere(Nick):
-							nick = Nick
-						else:
-							nick = None
-						if nick:
-							if body and body[0]:
-								text = "%s: %s" % (source[2], (body.pop(0)).strip())
+							if body:
+								body = "%s: %s" % (source[2], body[0].strip())
 							else:
-								text = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].moder(nick, text, (None, (stype, source)))
+								body = "%s/%s" % (get_nick(source[1]), source[2])
+							Chats[source[1]].moder(nick, body, (None, (stype, source)))
 						else:
 							answer = AnsBase[7]
 					else:
@@ -397,25 +362,22 @@ class expansion_temp(expansion):
 	def command_fullban(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				body = body.split(chr(47), 1)
-				nick = body.pop(0)
-				Nick = nick.strip()
+				body = body.split(self.sep, 1)
+				nick = (body.pop(0)).strip()
 				if Chats[source[1]].isHere(nick):
 					jid = get_source(source[1], nick)
-				elif Chats[source[1]].isHere(Nick):
-					jid = get_source(source[1], Nick)
-				elif nick.count(chr(46)) and not Nick.count(chr(32)):
-					jid = Nick
+				elif nick.count(chr(46)):
+					jid = nick
 				else:
 					jid = None
-				if jid and Galist.get(jid, 0) < 7 and not Clients.has_key(jid):
-					if body and body[0]:
-						text = "%s: %s" % (source[2], (body.pop(0)).strip())
+				if nick and jid and not enough_access(jid, None, 7) and jid != get_disp(disp):
+					if body:
+						body = "%s: %s" % (source[2], body[0].strip())
 					else:
-						text = "%s/%s" % (get_nick(source[1]), source[2])
+						body = "%s/%s" % (get_nick(source[1]), source[2])
 					desc = self.PerfDesc.copy()
 					for conf in Chats.itervalues():
-						conf.outcast(jid, text, (self.HandleFB, {"desc": desc}))
+						conf.outcast(jid, body, (self.HandleFB, {"desc": desc}))
 					answer = self.calcPerformance(desc)
 				else:
 					answer = AnsBase[7]
@@ -428,15 +390,12 @@ class expansion_temp(expansion):
 	def command_fullunban(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				body = body.split(chr(47), 1)
-				nick = body.pop(0)
-				Nick = nick.strip()
+				body = body.split(self.sep, 1)
+				nick = (body.pop(0)).strip()
 				if Chats[source[1]].isHere(nick):
 					jid = get_source(source[1], nick)
-				elif Chats[source[1]].isHere(Nick):
-					jid = get_source(source[1], Nick)
-				elif nick.count(chr(46)) and not Nick.count(chr(32)):
-					jid = Nick
+				elif nick.count(chr(46)):
+					jid = nick
 				else:
 					jid = None
 				if jid:

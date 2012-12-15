@@ -1,8 +1,8 @@
 bot reloads
-reload (reason/silent)
-*/reload
+{command} (reason/silent)
+*/{command}
 bot would reload
-*/reload silent
+*/{command} silent
 bot would reload silently
-*/reload diagnostics
+*/{command} diagnostics
 bot would reload with status "diagnostics"

@@ -1,8 +1,8 @@
 shows local time of the user
-time (nick/jid)
-*/time
+{command} (nick/jid)
+*/{command}
 bot would show your time
-*/time Dude
+*/{command} Dude
 bot would show the time of Dude
-*/time dude@jabr.com
+*/{command} dude@jabr.com
 bot would show the time of dude@jabr.com

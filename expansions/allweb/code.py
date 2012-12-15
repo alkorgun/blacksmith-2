@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x22
-#  Id: 25~22c
+# exp_name = "allweb" # /code.py v.x23
+#  Id: 25~23c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -465,15 +465,15 @@ class expansion_temp(expansion):
 						answer = self.AnsBase[0]
 					else:
 						data = data.decode("utf-8")
-						list = get_text(data, "<table>", "</table>")
+						list = get_text(data, "<table.*?>", "</table>")
 						if list:
-							comp = compile__("/find-title-\d+?/title_.+?/images/b.gif\?link=/title/tt(\d+?)/';\">(.+?)</a> (.+?)<", 16)
+							comp = compile__("<td class=\"result_text\">\s<a href=\"/title/tt(\d+?)/\?ref_=fn_tt_tt_\d+?\">(.+?)</a>(.+?)</td>\s</tr>", 16)
 							list = comp.findall(list)
 						if list:
 							Number = itypes.Number()
 							ls = ["\n[#] [Name, Year] (#id)"]
-							for Numb, Name, Year in list:
-								ls.append("%d) %s %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Year.strip(), Numb))
+							for Numb, Name, Year in list[:20]:
+								ls.append("%d) %s %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), self.compile_st.sub("", Year.strip()), Numb))
 							answer = str.join(chr(10), ls)
 						else:
 							answer = self.AnsBase[5]

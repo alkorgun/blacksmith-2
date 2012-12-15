@@ -1,8 +1,8 @@
 показывает локальное время пользователя
-время (nick/jid)
-*/время
+{command} (nick/jid)
+*/{command}
 бот покажет ваще время
-*/время Dude
+*/{command} Dude
 бот покажет время "Dude"
-*/время dude@jab.com
+*/{command} dude@jab.com
 бот покажет время "dude@jab.com"

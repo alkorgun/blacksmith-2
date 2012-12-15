@@ -1,6 +1,8 @@
 bot shows help
-help (command)
-*/help
-bot informs how to use it
-*/help join
-bot shows info about command "join"
+{command} (command) (language)
+*/{command}
+bot would inform you how to use it
+*/{command} join
+bot would show info about command "join"
+*/{command} join ru
+bot would show info about command "join" on russian

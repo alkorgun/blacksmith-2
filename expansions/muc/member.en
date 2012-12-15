@@ -1,4 +1,4 @@
 gives regular participant rights
-member [jid/nick] ([/] [reason])
-*/member dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would make dude member of the conference

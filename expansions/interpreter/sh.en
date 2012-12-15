@@ -1,6 +1,6 @@
 executes shell command
-sh [command]
-*/sh TASKLIST /FI "IMAGENAME eq python.exe
+{command} [command]
+*/{command} TASKLIST /FI "IMAGENAME eq python.exe
 bot would show (windows) python task list & used ram
-*/sh ps -o rss -p 12154
+*/{command} ps -o rss -p 12154
 bot would show (unix) how much memory use prosess with pid 12154

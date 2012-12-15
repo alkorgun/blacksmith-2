@@ -1,4 +1,4 @@
 отправка приглашения в конференцию пользователю
-пригласи [jid/nick]
-*/пригласи someone@jabber.ru
+{command} [jid/nick]
+*/{command} someone@jabber.ru
 бот отошлёт приглашение someone@jabber.ru

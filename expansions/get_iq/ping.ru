@@ -1,8 +1,8 @@
 xmpp пинг
-пинг (nick/jid)
-*/пинг
+{command} (nick/jid)
+*/{command}
 бот покажет ваш пинг
-*/пинг Dude
+*/{command} Dude
 бот пропингует "Dude"
-*/пинг dude@jab.com
+*/{command} dude@jab.com
 бот пропингует "dude@jab.com"

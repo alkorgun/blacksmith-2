@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "help" # /code.py v.x5
-#  Id: 03~2c
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "help" # /code.py v.x6
+#  Id: 03~3c
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -32,23 +32,40 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
+	mark = "{command}"
+
 	def command_help(self, stype, source, body, disp):
 		if body:
-			command = body.lower()
+			body = body.split(None, 1)
+			command = (body.pop(0)).lower()
 			if Cmds.has_key(command):
-				if os.path.isfile(Cmds[command].help):
-					help = get_file(Cmds[command].help).splitlines()
-					if len(help) >= 2:
-						answer = self.AnsBase[2] % (help.pop(0), help.pop(0))
-						if help:
-							answer += self.AnsBase[3]
-							for line in help:
-								line = line.strip()
-								if line.startswith("*/"):
-									Char, line = unichr(187)*3, line[2:].lstrip()
-								else:
-									Char = (chr(9) + chr(42))
-								answer += "\n%s %s" % (Char, line)
+				if body:
+					lang = (body.pop(0)).lower()
+					if len(lang) == 2 and all([(char in CharCase[1]) for char in lang]):
+						help = os.path.join(ExpsDir, Cmds[command].exp.name, "%s.%s" % (Cmds[command].default, lang))
+					else:
+						help = None
+				else:
+					help = Cmds[command].help
+				if help and os.path.isfile(help):
+					help = get_file(help)
+					if self.mark in help:
+						help = help.format(command = command)
+						help = help.splitlines()
+						if len(help) >= 2:
+							ls = [self.AnsBase[2] % (help.pop(0), help.pop(0))]
+							if help:
+								ls.append(self.AnsBase[3])
+								for line in help:
+									line = line.strip()
+									if line.startswith("*/"):
+										Char, line = unichr(187)*3, line[2:].lstrip()
+									else:
+										Char = (chr(9) + chr(42))
+									ls.append("%s %s" % (Char, line))
+							answer = str.join(chr(10), ls)
+						else:
+							answer = self.AnsBase[17]
 					else:
 						answer = self.AnsBase[17]
 				else:

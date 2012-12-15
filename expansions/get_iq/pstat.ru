@@ -1,8 +1,8 @@
 статистика xmpp пинга
-пингстат (nick/jid)
-*/пингстат
+{command} (nick/jid)
+*/{command}
 бот покажет вашу статистику
-*/пингстат Dude
+*/{command} Dude
 бот покажет статистику "Dude"
-*/пингстат dude@jab.ru
+*/{command} dude@jab.ru
 бот покажет статистику "dude@jab.ru"

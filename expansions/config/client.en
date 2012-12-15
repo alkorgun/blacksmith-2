@@ -1,10 +1,10 @@
 clients control system
-client ([del] [jid])/([add] [host] [accout] [password] (port) (server))/([password] [jid] (text))
-*/client
+{command} ([del] [jid])/([add] [host] [accout] [password] (port) (server))/([password] [jid] (text))
+*/{command}
 bot would show current config
-*/client del bs@xmpp.ru
+*/{command} del bs@xmpp.ru
 bot would disable client with jid bs@xmpp.ru, and when will rejoin rooms behind which establishes this jid from another
-*/client add xmpp.ru bs xxx 5222 jabber.ru
+*/{command} add xmpp.ru bs xxx 5222 jabber.ru
 bot would start client with jid bs@xmpp.ru (if host=server, server specify is optional, such as a port if it=5222)
-*/client password bs@xmpp.ru xxx
+*/{command} password bs@xmpp.ru xxx
 bot would change jid's password (password specify is optional, bot can generate it. with parameter "set" after password, bot will just write it)

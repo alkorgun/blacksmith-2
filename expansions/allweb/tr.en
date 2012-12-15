@@ -1,10 +1,10 @@
 google translate
-tr (lang_from/auto/*) (lang_to) (text)
-*/tr
+{command} (lang_from/auto/*) (lang_to) (text)
+*/{command}
 bot would show supported languages
-*/tr en ru hello world
+*/{command} en ru hello world
 bot would translate "hello world" to russian
-*/tr auto ru hello world
+*/{command} auto ru hello world
 lang_from would detected automatically
-*/tr *
+*/{command} *
 bot would show next translation

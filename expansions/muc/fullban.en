@@ -1,4 +1,4 @@
 global add to outcast
-fullban [jid/nick] ([/] [reason])
-*/fullban dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would ban dude globally

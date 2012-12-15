@@ -1,10 +1,10 @@
 bot shows the visitors of the conference
-visitors (today/dates/list)
-*/visitors
+{command} (today/dates/list)
+*/{command}
 bot would show all of the visitors
-*/visitors today
+*/{command} today
 bot would show all of the visitors, who joined today
-*/visitors dates
+*/{command} dates
 bot would show all of the visitors, with dates of join
-*/visitors list
+*/{command} list
 bot would show shortlist of the visitors

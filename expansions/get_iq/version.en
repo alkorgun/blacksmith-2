@@ -1,8 +1,8 @@
 xmpp version
-version (nick/jid)
-*/version
+{command} (nick/jid)
+*/{command}
 bot would show your client's version
-*/version Dude
+*/{command} Dude
 bot would show client's version of Dude
-*/version dude@jabr.com
+*/{command} dude@jabr.com
 bot would show client's version of dude@jabr.com

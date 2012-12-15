@@ -1,0 +1,4 @@
+redirecting of a command's executing result to an another user (into private)
+{command} [command] (parameters) [>>] [nickname]
+*/{command} chatslist >> Mister Anonymous
+bot would send list of the chats to the user with nickname "Mister Anonymous"

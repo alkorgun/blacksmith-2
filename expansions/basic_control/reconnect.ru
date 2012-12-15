@@ -1,6 +1,6 @@
 переподключение клиентов бота
-реконнект (jid)
-*/реконнект
+{command} (jid)
+*/{command}
 бот переподключит текущий jid
-*/реконнект bot@jabber.ru
+*/{command} bot@jabber.ru
 бот переподключит bot@jabber.ru

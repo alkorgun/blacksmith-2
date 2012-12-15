@@ -1,4 +1,4 @@
 gives moderator rights
-moder [jid/nick] ([/] [reason])
-*/moder dude
+{command} [jid/nick] ([/] [reason])
+*/{command} dude
 bot would make dude moderator of the conference

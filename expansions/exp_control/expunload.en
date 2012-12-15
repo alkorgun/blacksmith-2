@@ -1,5 +1,5 @@
 expansions and functions unloader
-unload [expansion] (function)
+{command}xpansion] (function)
 */unload talkers
 bot would unload expansion "talkers"
 */unload talkers calculate_talkers

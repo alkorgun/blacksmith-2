@@ -1,8 +1,8 @@
 conferense users statistics
-userstat (nick/jid)
-*/userstat dude
+{command} (nick/jid)
+*/{command} dude
 bot would show dude's statistics
-*/userstat dude@j.ru
+*/{command} dude@j.ru
 bot would show dude's statistics
-*/userstat
+*/{command}
 bot would show your statistics

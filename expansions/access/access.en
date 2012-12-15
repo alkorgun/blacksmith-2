@@ -1,6 +1,6 @@
 bot shows your accecs or access of specified user
-access (jid/nick)
-*/access
+{command} (jid/nick)
+*/{command}
 bot would show your access
-*/access Dude
+*/{command} Dude
 bot would show Dude's access

@@ -1,6 +1,6 @@
 statistics of the commands
-comstat (command)
-*/comstat
+{command} (command)
+*/{command}
 bot would show statistics of top 20 commands
-*/comstat help
+*/{command} help
 bot would show statistics of command "help"
