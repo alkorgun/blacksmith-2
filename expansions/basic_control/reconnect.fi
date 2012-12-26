@@ -1,0 +1,6 @@
+kytke uudelleen botin asiakaat
+{command} (jid)
+*/{command}
+botti kytkee tän jidin uudelleen
+*/{command} bot@jabber.fi
+botti kytkee jidin bot@jabber.ru uudelleen

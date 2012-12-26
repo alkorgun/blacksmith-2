@@ -1,0 +1,8 @@
+käyttäjän tilastotiede
+{command} (lempinimi/jid)
+*/{command} Äijä
+botti näyttää Äijän tilastotieteen
+*/{command} khazam@j.fi
+botti näyttää jidin khazam@j.fi käyttäjän tilastotieteen
+*/{command}
+botti näyttää sun tilastotieteen

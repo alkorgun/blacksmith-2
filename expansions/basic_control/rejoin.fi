@@ -1,0 +1,6 @@
+botti liittyy konfernssiin uudelleen
+{command} (konferenssi)
+*/{command}
+botti liittyy tähän konferenssiin uudelleeen
+*/{command} joku_chat@conference.jabber.fi
+botti käy taas konferensissa joku_chat@conference.jabber.fi (jos se istuu siel)

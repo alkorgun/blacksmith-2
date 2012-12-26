@@ -195,7 +195,7 @@ class expansion_temp(expansion):
 							for x in xrange(24):
 								code += choice(symbols)
 						if locals().has_key("changed"):
-							self.answer_register(self, disp, xmpp.Iq(typ = Types[8]), stype, source, code)
+							self.answer_register(disp, xmpp.Iq(typ = Types[8]), stype, source, code)
 						elif online(Name):
 							Disp = Clients[Name]
 							iq = xmpp.Iq(Types[9] , xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])

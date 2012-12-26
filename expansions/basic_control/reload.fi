@@ -1,0 +1,8 @@
+botti pääsee lataamaan uudelleen
+{command} (syy/silent)
+*/{command}
+botti pääsee lataamaan uudellen
+*/{command} silent
+botti pääsee lataamaan uudellen hiljaisesti
+*/{command} diagnosoiminen
+botti pääsee lataamaan uudellen tilan "diagnosoiminen" kanssa

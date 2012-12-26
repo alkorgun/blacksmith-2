@@ -1,0 +1,8 @@
+botti näyttää komennon ohjeen tai yleisen ohjeen
+{command} (command) (language)
+*/{command}
+botti näyttää ohjeen
+*/{command} join
+botti näyttää ohjeen komentoa "join" varten
+*/{command} join fi
+botti näyttää ohjeen komentoa "join" varten suomeksi

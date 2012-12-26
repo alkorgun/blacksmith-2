@@ -1,0 +1,4 @@
+lähetä viestin osoitetulle jidille
+{command} [jid] [joku_teksti]
+*/{command} joku@jabber.fi Aaa!!!
+botti lähettää viestin joku@jabber.fi:n käyttäjälle : [Message from <lempinimesi/resurssi>:][uusi rivi][Aaa!!!]

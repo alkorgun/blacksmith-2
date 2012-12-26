@@ -164,7 +164,7 @@ class expansion_temp(expansion):
 
 	def command_reload(self, stype, source, body, disp):
 		exit_desclr = self.AnsBase[11] % (source[2])
-		if body not in ("silent", "тихо".decode("utf-8")):
+		if body.lower() not in ("-s", "silent", "тихо".decode("utf-8")):
 			if body:
 				exit_desclr += self.AnsBase[1] % (body)
 			for conf in Chats.itervalues():
@@ -180,7 +180,7 @@ class expansion_temp(expansion):
 
 	def command_exit(self, stype, source, body, disp):
 		exit_desclr = self.AnsBase[11] % (source[2])
-		if body not in ("silent", "тихо".decode("utf-8")):
+		if body.lower() not in ("-s", "silent", "тихо".decode("utf-8")):
 			if body:
 				exit_desclr += self.AnsBase[1] % (body)
 			for conf in Chats.itervalues():

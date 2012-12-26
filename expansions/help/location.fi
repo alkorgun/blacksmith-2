@@ -1,0 +1,4 @@
+botti näyttää milaisessa pluginissa osoitettu komento on
+{command} [komento]
+*/{command} join
+botti ilmoittaa siitä, että komento "join" on pluginissa "basic_control"

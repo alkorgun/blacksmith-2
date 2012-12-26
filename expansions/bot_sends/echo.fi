@@ -1,0 +1,4 @@
+lähetä viestin chattiin botin nimeltä
+{command} [joku/teksti]
+*/{command} Aaa!!!
+botti sanoo: "Aaa!!!"

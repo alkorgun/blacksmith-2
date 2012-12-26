@@ -1,0 +1,8 @@
+näyttää kalenteria
+{command} (kuukauden_numero) (vuosi)
+*/{command}
+botti näyttää tämän kuukauden kalenterin
+*/{command} 5
+botti näyttää tämä vuoden toukokuun kalenterin
+*/{command} 1 1
+botti näyttää ajanlaskun ekan kuun

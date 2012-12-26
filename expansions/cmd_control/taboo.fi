@@ -1,0 +1,8 @@
+komentojen käyttämisen kielto
+{command} (komento)
+*/{command}
+botti näyttää kielletty komentoja
+*/{command} bash
+botti kieltää komennon "bash"
+*/{command} bash
+botti ottaa komennon "bash" kiellon pois (jos tää komento oli kielletty ennen)

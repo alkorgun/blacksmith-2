@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 41, 0)
+(BsMark, BsVer, BsRev) = (2, 42, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -451,6 +451,8 @@ class expansion(object):
 		for inst, ls in self.handlers:
 			self.handler_register(getattr(self, inst.func_name), ls)
 
+	auto_clear = None
+
 	def dels(self, full = False):
 		while self.cmds:
 			cmd = self.cmds.pop()
@@ -459,6 +461,8 @@ class expansion(object):
 		self.funcs_del()
 		self.commands = ()
 		self.handlers = ()
+		if self.auto_clear:
+			execute_handler(self.auto_clear)
 		if full and expansions.has_key(self.name):
 			del expansions[self.name]
 
@@ -569,9 +573,11 @@ class Command(object):
 				if source:
 					self.desc.add(source)
 			else:
-				Answer(AnsBase[19] % (self.name), stype, source, disp)
+				answer = AnsBase[19] % (self.name)
 		else:
-			Answer(AnsBase[10], stype, source, disp)
+			answer = AnsBase[10]
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 def command_handler(exp_inst, handler, default, access, prefix = True):
 	Path = os.path.join(ExpsDir, exp_inst.name, default)
@@ -1323,15 +1329,13 @@ def XmppPresenceCB(disp, stanza):
 						xmpp_raise()
 				elif not Mserve:
 					xmpp_raise()
-			elif not Chat.isModer:
-				if Chat.nick == nick and aDesc.get(Role[0], 0) >= 2:
+			else:
+				inst = (inst.split(chr(47)))[0].lower()
+				if not Chat.isModer and Chat.nick == nick and aDesc.get(Role[0], 0) >= 2:
 					Chat.isModer = True
 					Chat.leave(AnsBase[25])
 					sleep(0.4)
-					Chat.join()
-				xmpp_raise()
-			else:
-				inst = (inst.split(chr(47)))[0].lower()
+					Chat.join(); xmpp_raise()
 			if Chat.isHereTS(nick) and Chat.isHe(nick, inst):
 				Chat.aroles_change(nick, Role, stanza)
 			else:
@@ -1356,12 +1360,12 @@ def XmppPresenceCB(disp, stanza):
 					if Chat.isHereTS(Nick) and Chat.isHe(Nick, inst):
 						Chat.aroles_change(Nick, Role, stanza)
 					else:
-						Chat.sjoined(Nick, Role, inst)
+						Chat.sjoined(Nick, Role, inst, stanza)
 			else:
-				status = (stanza.getReason() or stanza.getStatus())
+				Status = (stanza.getReason() or stanza.getStatus())
 				if Chat.isHereTS(nick):
 					Chat.sleaved(nick)
-				call_efunctions("05eh", (conf, nick, status, scode, disp,))
+				call_efunctions("05eh", (conf, nick, Status, scode, disp,))
 		if Chats.has_key(conf):
 			call_efunctions("02eh", (stanza, disp,))
 
@@ -1425,6 +1429,12 @@ def XmppIqCB(disp, stanza):
 
 # Message Handler
 
+class Macro:
+
+	__call__, __contains__ = None, lambda self, args: False
+
+Macro = Macro()
+
 def XmppMessageCB(disp, stanza):
 	Info["msg"].plus()
 	(source, inst, stype, nick) = sAttrs(stanza)
@@ -1481,22 +1491,22 @@ def XmppMessageCB(disp, stanza):
 			xmpp_raise()
 		temp = temp.split(None, 1)
 		command = (temp.pop(0)).lower()
-		if temp:
-			temp = temp[0]
-		else:
-			temp = ""
+		temp = temp[0] if temp else ""
 		if not isToBs and isConf and Chats[inst].cPref and command not in sCmds:
 			if command.startswith(Chats[inst].cPref):
 				command = command[1:]
 			else:
 				command = None
-		elif isToBs and command not in Cmds and command.startswith(cPrefs):
+		elif isToBs and command not in Cmds and (command, inst) not in Macro and command.startswith(cPrefs):
 			command = command[1:]
-		if isConf and command in Chats[inst].oCmds:
-			xmpp_raise()
+		if isConf:
+			if (command, inst) in Macro:
+				Macro(inst, command, stype, source, nick, temp, disp)
+			elif command in Chats[inst].oCmds:
+				xmpp_raise()
 		if command in Cmds:
+			VarCache["action"] = AnsBase[27] % command.capitalize()
 			VarCache["idle"] = time.time()
-			VarCache["action"] = AnsBase[27] % command.upper()
 			Cmds[command].execute(stype, (source, inst, nick), temp, disp)
 		else:
 			call_efunctions("01eh", (stanza, isConf, stype, (source, inst, nick), body, isToBs, disp,))

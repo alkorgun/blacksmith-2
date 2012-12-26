@@ -1,0 +1,10 @@
+määritelmien tietokannojen katsominen (wtf)
+{command} (ritelmän_nimi/all/search) (hakuavain)
+*/{command}
+botti näyttää määritelmien määrän tietokannoissa
+*/{command} botti
+botti näyttää määritelmän "botti" (jos se on olemassa)
+*/{command} all
+botti näyttää kaiki määritelmien nimet tietokannoissa
+*/{command} search porno
+botti pääsee etsimään sanaq "porno"

@@ -1,0 +1,4 @@
+lähetä kutsumisen konferenssiin muille käyttäjille
+{command} [jid/lempinimi]
+*/{command} joku@jabber.fi
+botti kutsuu joku@jabber.fi:n

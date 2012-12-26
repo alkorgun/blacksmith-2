@@ -1,0 +1,8 @@
+ota bottia pois konferenssista
+{command} (konferenssi)
+*/{command}
+botti menee pois tästä konferenssista
+*/{command} joku_chat@conference.jabber.fi
+botti menee pois joku_chat@conference.jabber.fi:sta (jos se on olemassa)
+*/{command} yksityinen
+ei käy...

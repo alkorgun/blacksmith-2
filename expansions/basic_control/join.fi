@@ -1,0 +1,8 @@
+laita bottia konferenssiin
+{command} [konferenssi] (1=botin_jid) (2=botin_lempinimi) (3=etuliite) (4=konferenssin_salasana)
+*/{command} joku_nimi@conference.jab.fi
+botti yhdistää konferenssiin joku_nimi@conference.jab.fi
+*/{command} joku_nimi@conference.jab.fi 4=loko-champ 3=!
+botti pääsee konferenssiin, ottaa esiin "loko-champ" salasanaksi ja asentaa etuliitteen "!"
+*/{command} joku_nimie@conference.jab.fi 1=bot@j.fi 2=Black-Bot
+botti pääsee konferenssiin lempinimen "Black-Bot" kanssa käyttäessä "bot@j.fi (jos sillä on tää jid) jidin

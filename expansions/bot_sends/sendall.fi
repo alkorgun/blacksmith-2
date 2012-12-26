@@ -1,0 +1,4 @@
+lähetä viestin konferensseihin, joita botti tarjoilee
+{command} [joku_teksti]
+*/{command} Aaa!!!
+botti lähettää "Aaa!!!" kaikkiin konferensseihin: [Message from <lempinimesi/resurssi>:][uusi rivi][Aaa!!!]

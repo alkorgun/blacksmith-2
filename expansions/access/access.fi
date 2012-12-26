@@ -1,0 +1,6 @@
+botti näyttää pääsysi tai osoitetun käyttäjän pääsyn
+{command} (jid/lempinimi)
+*/{command}
+botti näyttää pääsysi
+*/{command} Äijä
+botti näyttää käyttäjän lempinimellä "Äijä" pääsyn

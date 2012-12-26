@@ -1,0 +1,4 @@
+botti näyttä mitä pääsyä osoitetun komennon tarvitsee
+{command} [komento]
+*/{command} join
+botti ilmoittaa siitä, että komento "join" vaatii pääsyä 7

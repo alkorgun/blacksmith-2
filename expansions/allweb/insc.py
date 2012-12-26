@@ -3,7 +3,7 @@
 UserAgents = {
 	"RU": "ru-RU",
 	"UA": "ua-UA",
-	"FI": "fi-FI",
+	"FI": "fi_SE",
 	"EN": "en-US"
 				}
 

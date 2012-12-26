@@ -1,0 +1,6 @@
+botti asettaa paikallisen pääsyn osoitetulle käyttäjälle
+{command} [!/pääsy] [jid/lempinimi]
+*/{command} 6 Obi-Van kenobi
+botti asettaa pääsyn 6 Obi-Van Kenobille
+*/{command} ! obi-wan_kenobi@jab.net
+botti ottaa pääsyn pois obi-wan_kenobi@jab.net:lta

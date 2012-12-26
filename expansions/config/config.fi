@@ -1,0 +1,6 @@
+botin asetuksien valtius (muutokset ottaa voiman uudelleenkäynnistyksen jälkeen)
+{command} (operaatio=merkitys)
+*/{command}
+botti näyttää asetukset voimissa
+*/{command} RESOURCE=Bottijen_valtiuksen_keskus MEMORY=96
+botti kirjoittaa "Botijen valtiuksen keskus" perusresurssiksi ja 96Mb muistin käytön rajaksiq

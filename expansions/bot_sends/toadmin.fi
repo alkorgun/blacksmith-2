@@ -1,0 +1,4 @@
+lähetä viestin botin omistajalle
+{command} [joku_teksti]
+*/{command} Aaaa!!!
+botti lähettää "Aaa!!!" sen omistajalle

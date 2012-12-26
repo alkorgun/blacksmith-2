@@ -1,0 +1,8 @@
+sulje bottia
+{command} (syy/silent)
+*/{command}
+botti pääsee sulkemaan
+*/{command} silent
+botti pääsee sulkemaan hiljaisesti
+*/{command} päivittäminen
+botti pääsee sulkemaan tilan "päivittäminen" kanssa

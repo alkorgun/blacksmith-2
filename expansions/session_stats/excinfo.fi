@@ -1,0 +1,6 @@
+poikkeuksten keräilijä
+{command} (numero)
+*/{command}
+botti näyttää odottamattomien poikkeuksten määrän
+*/{command} 1
+botti näyttää poikkeuksen numero yksi

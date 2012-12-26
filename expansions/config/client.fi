@@ -1,0 +1,10 @@
+klöienttijen valtiuksen puhdistaminen
+{command} ([del] [jid])/([add] [isäntä] [tili] [salasanaq] (portti) (palvelin))/([password] [jid] (teksti))
+*/{command}
+botti nättää asetukset voimissa
+*/{command} del bs@xmpp.fi
+botti katkaisee jidin bs@xmpp.fi, mutta tulee tass huoneisiin, joissa tää jid istui,  muiden klienttijen käyttäessä
+*/{command} add xmpp.fi bs xxx 5222 jabber.fi
+botti ottaa kättämään jidin bs@xmpp.fi (jos isänä on sama että palvelin niin sen osoittaminen ei ole tarpessa kuin portii, jos se on 5222)
+*/{command} password bs@xmpp.fi xxx
+botti muokaa jidin salasanan (jos salasana ei ole osoitettu, botti keksii se automaattisesti. parametrin "set" kanssa salasanan jälkeen, botti vain kirjoittaa sen)

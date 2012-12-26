@@ -1,17 +1,21 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "turn" # /code.py v.x2
-#  Id: 21~2c
-#  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "turn" # /code.py v.x3
+#  Id: 21~3c
+#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	TableRU = '''ёйцукенгшщзхъфывапролджэячсмитьбю.!"№;%:?*()_+/-=\ЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ.'''.decode("utf-8")
-	TableEN = '''`qwertyuiop[]asdfghjkl;'zxcvbnm,./!@#;%^&*()_+.-=\~QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>/'''
+	TableRU = '''ёйцукенгшщзхъфывапролджэячсмитьбю.!"№;%:?*()_+/-=\\ЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ.'''.decode("utf-8")
+	TableFI = '''`qwertyuiopåvasdfghjklöäzxcvbnm,.-½!"#¤%&*()_+.-=\\?QWERTYUIOPÅ^ASDFGHJKLÖÄZXCVBNM;:_'''.decode("utf-8")
+	TableEN = '''`qwertyuiop[]asdfghjkl;'zxcvbnm,./!@#;%^&*()_+.-=\\~QWERTYUIOP{}ASDFGHJKL:"ZXCVBNM<>?'''
+	TableLA = (TableFI if DefLANG == "FI" else TableEN)
+
+	del TableFI, TableEN
 
 	TurnBase = {}
 
@@ -19,19 +23,19 @@ class expansion_temp(expansion):
 		
 		def Turn(conf, body):
 			desc = {}
-			for Nick in Chats[conf].get_nicks():
-				if Chats[conf].isHereTS(Nick):
-					for app in (["%s%s" % (Nick, Key) for Key in (":", ",", ">")] + [Nick]):
-						if body.count(app):
+			for user in Chats[conf].get_users():
+				if user.ishere:
+					for app in ([(user.nick + Key) for Key in (":", ",", ">")] + [user.nick]):
+						if app in body:
 							Numb = "*%s*" % str(len(desc.keys()) + 1)
 							desc[Numb] = app
 							body = body.replace(app, Numb)
 			Turned = str()
 			for smb in body:
-				if smb in self.TableEN:
-					Turned += self.TableRU[self.TableEN.index(smb)]
+				if smb in self.TableLA:
+					Turned += self.TableRU[self.TableLA.index(smb)]
 				elif smb in self.TableRU:
-					Turned += self.TableEN[self.TableRU.index(smb)]
+					Turned += self.TableLA[self.TableRU.index(smb)]
 				else:
 					Turned += smb
 			return sub_desc(Turned, desc)
@@ -58,16 +62,16 @@ class expansion_temp(expansion):
 			if source_:
 				self.TurnBase[source[1]][source_] = (strfTime("%H:%M:%S", False), body)
 
-	def init_Turn_Base(self, conf):
+	def init_turn_base(self, conf):
 		self.TurnBase[conf] = {}
 
-	def edit_Turn_Base(self, conf):
+	def edit_turn_base(self, conf):
 		del self.TurnBase[conf]
 
 	commands = ((command_turn, "turn", 1,),)
 
 	handlers = (
-		(init_Turn_Base, "01si"),
-		(edit_Turn_Base, "04si"),
+		(init_turn_base, "01si"),
+		(edit_turn_base, "04si"),
 		(collect_turnable, "01eh")
 					)

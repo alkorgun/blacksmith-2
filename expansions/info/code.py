@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "info" # /code.py v.x7
-#  Id: 11~6c
+# exp_name = "info" # /code.py v.x8
+#  Id: 11~7c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -22,13 +22,33 @@ class expansion_temp(expansion):
 			Answer(AnsBase[11], stype, source, disp)
 		Message(source[0], ls, disp)
 
-	def command_inchat(self, stype, source, body, disp):
+	def command_chatslist(self, stype, source, body, disp):
+		ls, Numb, access = [], itypes.Number(), enough_access(source[1], source[2], 7)
+		for conf_str, conf in sorted(Chats.items()):
+			arole = getattr(conf.get_user(conf.nick), "role", None)
+			cName = conf_str.split("@")[0]
+			disp_ = (conf.disp if access else "***")
+			cPref = str(conf.cPref)
+			online = itypes.Number()
+			for nick in conf.get_users():
+				if nick.ishere:
+					online.plus()
+			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online._str(), ("%s/%s" % arole if arole else str(arole))))
+		if ls:
+			if stype == Types[1]:
+				Answer(AnsBase[11], stype, source, disp)
+			ls.insert(0, self.AnsBase[5])
+			Message(source[0], str.join(chr(10), ls), disp)
+		else:
+			Answer(self.AnsBase[6], stype, source, disp)
+
+	def command_inmuc(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			ls, Numb, access = self.AnsBase[8], itypes.Number(), enough_access(source[1], source[2], 4)
 			owners, admins, members, none = [], [], [], []
 			for nick in Chats[source[1]].sorted_users():
 				if nick.ishere:
-					data = nick.nick
+					data = "%s [%d]" % (nick.nick, get_access(source[1], nick.nick))
 					if access and nick.source:
 						data += " (%s)" % (nick.source)
 					if nick.role[0] == aRoles[5]:
@@ -61,26 +81,6 @@ class expansion_temp(expansion):
 		else:
 			Answer(AnsBase[0], stype, source, disp)
 
-	def command_conflist(self, stype, source, body, disp):
-		ls, Numb, access = [], itypes.Number(), enough_access(source[1], source[2], 7)
-		for conf_str, conf in sorted(Chats.items()):
-			arole = getattr(conf.get_user(conf.nick), "role", None)
-			cName = conf_str.split("@")[0]
-			disp_ = (conf.disp if access else "***")
-			cPref = str(conf.cPref)
-			online = itypes.Number()
-			for nick in conf.get_users():
-				if nick.ishere:
-					online.plus()
-			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online._str(), ("%s/%s" % arole if arole else str(arole))))
-		if ls:
-			if stype == Types[1]:
-				Answer(AnsBase[11], stype, source, disp)
-			ls.insert(0, self.AnsBase[5])
-			Message(source[0], str.join(chr(10), ls), disp)
-		else:
-			Answer(self.AnsBase[6], stype, source, disp)
-
 	def command_visitors(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
@@ -112,7 +112,22 @@ class expansion_temp(expansion):
 					ls.append("%d. %s\t\t%s" % (Number.plus(), nick.nick, nick.date[2]))
 				if stype == Types[1]:
 					answer = AnsBase[11]
-				Message(source[0], self.AnsBase[2] % (Number._str(), str.join(chr(10))), disp)
+				Message(source[0], self.AnsBase[2] % (Number._str(), str.join(chr(10), ls)), disp)
+			elif body in ("roles", "роли".decode("utf-8")):
+				Number = itypes.Number()
+				Numb = itypes.Number()
+				ls = []
+				for nick in Chats[source[1]].sorted_users():
+					if not nick.ishere:
+						ls.append("%d. %s\t\t- %s" % (Number.plus(), nick.nick, "%s/%s" % nick.role))
+					else:
+						Numb.plus()
+				if Number._int():
+					if stype == Types[1]:
+						answer = AnsBase[11]
+					Message(source[0], self.AnsBase[3] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
+				else:
+					answer = self.AnsBase[4]
 			elif body in ("list", "лист".decode("utf-8")):
 				ls = sorted(Chats[source[1]].get_nicks())
 				if stype == Types[1]:
@@ -175,8 +190,8 @@ class expansion_temp(expansion):
 
 	commands = (
 		(command_online, "online", 7,),
-		(command_inchat, "inmuc", 2,),
-		(command_conflist, "chatslist", 5,),
+		(command_chatslist, "chatslist", 5,),
+		(command_inmuc, "inmuc", 2,),
 		(command_visitors, "visitors", 4,),
 		(command_search, "search", 2,)
 					)

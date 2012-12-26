@@ -1,0 +1,10 @@
+määritelmien tietokannojen hallinto (wtf)
+{command} (globally) [sana] [=] (määritelmä)
+*/{command} google = Young Skynet
+botti lisää "google" tämän konferenssin tietokantaan
+*/{command} google =
+botti postaa "google" tämän konferenssin tietokannasta
+*/{command} globally apple = Fruiterer
+botti lisää "apple" yleiseen tietokantaan (pääsy 7)
+*/{command} globally apple =
+botti poistaa "apple" yleisesta tietokannasta (pääsy 7)

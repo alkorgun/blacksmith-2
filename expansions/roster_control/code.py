@@ -20,7 +20,7 @@ class expansion_temp(expansion):
 			if body in cls:
 				Name = body
 			elif isNumber(body):
-				Number = (int(clnt) - 1)
+				Number = (int(cls) - 1)
 				if Number >= 0 and Number <= len(cls):
 					Name = cls[Number]
 				else:

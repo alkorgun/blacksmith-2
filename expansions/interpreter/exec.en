@@ -1,4 +1,6 @@
 executes python's code
-{command} [code]
+{command} (-s) [code]
 */{command} delivery("Aaa!!")
 bot would send "Aaa!!" in to Superadmin's JID
+*/{command} -s foo = bar
+bot would execute an expression without notice about the completion
