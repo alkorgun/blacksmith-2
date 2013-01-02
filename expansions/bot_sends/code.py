@@ -109,14 +109,13 @@ class expansion_temp(expansion):
 			if body:
 				timer = (726 if enough_access(source[1], source[2], 7) else (time.time() - ChatsAttrs[source[1]]["intr"]))
 				if timer >= 720:
-					source_, ar = None, body.split()[0]
+					source_, arg0 = None, body.split()[0]
 					if Chats[source[1]].isHere(body):
 						if Chats[source[1]].isHereTS(body):
-							Answer(self.AnsBase[6] % (body), stype, source, disp)
-							raise iThr.ThrKill("exit")
+							Answer(self.AnsBase[6] % (body), stype, source, disp); raise iThr.ThrKill("exit")
 						source_ = get_source(source[1], body)
-					elif isSource(ar):
-						source_ = ar.lower()
+					elif isSource(arg0):
+						source_ = arg0.lower()
 					if source_:
 						ChatsAttrs[source[1]]["intr"] = time.time()
 						invite = xmpp.Message(to = source[1])

@@ -243,8 +243,7 @@ class expansion_temp(expansion):
 			if prisoner:
 				prisoner.offenses += 1
 				if prisoner.offenses in (1, 2):
-					Answer(body, stype, source, disp)
-					raise iThr.ThrKill("exit")
+					Answer(body, stype, source, disp); raise iThr.ThrKill("exit")
 				elif prisoner.offenses == 3:
 					Chats[source[1]].visitor(source[2], "%s: %s" % (get_nick(source[1]), body))
 					prisoner.setDevoice()
@@ -256,8 +255,7 @@ class expansion_temp(expansion):
 			else:
 				self.spesial_kick(source[1], source[2], body)
 		else:
-			Answer(body, stype, source, disp)
-			raise iThr.ThrKill("exit")
+			Answer(body, stype, source, disp); raise iThr.ThrKill("exit")
 
 	def sheriff_01eh(self, stanza, isConf, stype, source, body, isToBs, disp):
 		if isConf and source[2] and Chats[source[1]].isModer:

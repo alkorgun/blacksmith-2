@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x8
-#  Id: 13~7c
+# exp_name = "get_iq" # /code.py v.x9
+#  Id: 13~8c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -18,8 +18,7 @@ class expansion_temp(expansion):
 					conf_nick = (source[1], instance)
 					instance, source_ = "%s/%s" % conf_nick, get_source(*conf_nick)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp)
-					raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance, source_ = source[0], get_source(source[1], source[2])
 		iq = xmpp.Iq(to = instance, typ = Types[10])
@@ -88,12 +87,11 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp)
-					raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(to = instance, typ = Types[10])
-		iq.addChild(Types[18], namespace = xmpp.NS_URN_TIME)
+		iq.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_time0202, {"stype": stype, "source": source, "instance": instance})
 
@@ -168,8 +166,7 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp)
-					raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(to = instance, typ = Types[10])
@@ -201,8 +198,7 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp)
-					raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(to = instance, typ = Types[10])
@@ -249,11 +245,15 @@ class expansion_temp(expansion):
 			if ls:
 				ls.insert(0, "\->")
 				answer = str.join(chr(10), ls)
+				if stype == Types[1]:
+					Message(source[1], answer, disp)
+					del answer
 			else:
 				answer = self.AnsBase[10]
 		else:
 			answer = self.AnsBase[6]
-		Answer(answer, stype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 	def command_uptime(self, stype, source, server, disp):
 		if not server:

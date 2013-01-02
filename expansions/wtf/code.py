@@ -2,7 +2,7 @@
 
 #  BlackSmith mark.2
 # exp_name = "wtf" # /code.py v.x3
-#  Id: 28~23
+#  Id: 28~3c
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -16,8 +16,8 @@ class expansion_temp(expansion):
 	def command_wtf(self, stype, source, body, disp):
 		if body:
 			ls = body.split(None, 1)
-			ar = (ls.pop(0)).lower()
-			if ar in ("all", "всё".decode("utf-8")):
+			arg0 = (ls.pop(0)).lower()
+			if arg0 in ("all", "всё".decode("utf-8")):
 				ls = []
 				with database(self.Base) as db:
 					db("select name from wtf order by name")
@@ -34,7 +34,7 @@ class expansion_temp(expansion):
 					answer = self.AnsBase[-1] + str.join(chr(10)*2, ls)
 				else:
 					answer = self.AnsBase[2]
-			elif ar in ("search", "искать".decode("utf-8")):
+			elif arg0 in ("search", "искать".decode("utf-8")):
 				if ls:
 					body = ls[0].lower()
 					ls = []
@@ -62,23 +62,23 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[4]
 			else:
-				name = body.lower()
+				body = body.lower()
 				answer = None
 				with database(self.Base) as db:
-					db("select * from wtf where name=?", (name,))
+					db("select * from wtf where name=?", (body,))
 					desc = db.fetchone()
 				if desc:
 					name, data, nick, date = desc
 					answer = self.AnsBase[5] % (name.title(), data, nick, date)
 				if Chats.has_key(source[1]) and not answer:
 					with database(cefile(chat_file(source[1], self.ChatBase))) as db:
-						db("select * from wtf where name=?", (name,))
+						db("select * from wtf where name=?", (body,))
 						desc = db.fetchone()
 					if desc:
 						name, data, nick, date = desc
 						answer = self.AnsBase[5] % (name.title(), data, nick, date)
 				if not answer:
-					answer = self.AnsBase[6] % (name)
+					answer = self.AnsBase[6] % (body)
 		else:
 			ls = []
 			with database(self.Base) as db:
@@ -122,8 +122,8 @@ class expansion_temp(expansion):
 	def command_def(self, stype, source, body, disp):
 		if body:
 			ls = body.split(None, 1)
-			ar = (ls.pop(0)).lower()
-			if ar in ("globally", "глобально".decode("utf-8")):
+			arg0 = (ls.pop(0)).lower()
+			if arg0 in ("globally", "глобально".decode("utf-8")):
 				if enough_access(source[1], source[2], 7):
 					if ls and self.sep in ls[0]:
 						ls = ls[0].split(self.sep, 1)

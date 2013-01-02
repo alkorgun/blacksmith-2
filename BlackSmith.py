@@ -264,7 +264,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 42, 0)
+(BsMark, BsVer, BsRev) = (2, 43, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -389,13 +389,13 @@ def composeThr(handler, Name, list = (), command = None):
 		Name = "%s-%d" % (Name, iThr.aCounter._int())
 	return iThr.KThread(execute_handler, Name, (handler, list, command,))
 
-def Try_Thr(Thr, Number = 0):
-	if Number >= 4:
+def StartThr(Thr, Number = 0):
+	if Number > 3:
 		raise RuntimeError("exit")
 	try:
 		Thr.start()
 	except iThr.error:
-		Try_Thr(Thr, (Number + 1))
+		StartThr(Thr, (Number + 1))
 	except:
 		collectExc(Thr.start)
 
@@ -404,7 +404,7 @@ def sThread_Run(Thr, handler, command = None):
 		Thr.start()
 	except iThr.error:
 		try:
-			Try_Thr(Thr)
+			StartThr(Thr)
 		except RuntimeError:
 			try:
 				Thr._run_backup()
@@ -1431,7 +1431,7 @@ def XmppIqCB(disp, stanza):
 
 class Macro:
 
-	__call__, __contains__ = None, lambda self, args: False
+	__call__, __contains__ = lambda self, *args: None, lambda self, args: False
 
 Macro = Macro()
 
@@ -1499,11 +1499,9 @@ def XmppMessageCB(disp, stanza):
 				command = None
 		elif isToBs and command not in Cmds and (command, inst) not in Macro and command.startswith(cPrefs):
 			command = command[1:]
-		if isConf:
-			if (command, inst) in Macro:
-				Macro(inst, command, stype, source, nick, temp, disp)
-			elif command in Chats[inst].oCmds:
-				xmpp_raise()
+		if isConf and command in Chats[inst].oCmds:
+			xmpp_raise()
+		Macro(inst, isConf, command, stype, source, nick, temp, disp)
 		if command in Cmds:
 			VarCache["action"] = AnsBase[27] % command.capitalize()
 			VarCache["idle"] = time.time()

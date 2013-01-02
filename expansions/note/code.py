@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "note" # /code.py v.x6
-#  Id: 22~5c
+# exp_name = "note" # /code.py v.x7
+#  Id: 22~6c
 #  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -17,8 +17,8 @@ class expansion_temp(expansion):
 		if source_:
 			if body:
 				ls = body.split()
-				mode = (ls.pop(0)).lower()
-				if mode in ("clear", "чисть".decode("utf-8")):
+				arg0 = (ls.pop(0)).lower()
+				if arg0 in ("clear", "чисть".decode("utf-8")):
 					with database(self.NoteFile) as db:
 						db("select * from note where jid=?", (source_,))
 						db_desc = db.fetchone()
@@ -29,9 +29,9 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[0]
 				elif ls:
-					if mode == "+":
+					if arg0 == "+":
 						body = body[2:].lstrip()
-						if len(body) <= 512:
+						if len(body) <= 512 or enough_access(source[1], source[2], 7):
 							date = strfTime(local = False)
 							with database(self.NoteFile) as db:
 								db("select * from note where jid=?", (source_,))
@@ -53,7 +53,7 @@ class expansion_temp(expansion):
 									answer = AnsBase[4]
 						else:
 							answer = self.AnsBase[1]
-					elif mode in ("-", "*"):
+					elif arg0 in ("-", "*"):
 						Numb = ls.pop(0)
 						if isNumber(Numb):
 							Numb = int(Numb)
@@ -62,7 +62,7 @@ class expansion_temp(expansion):
 									db("select * from note where jid=?", (source_,))
 									db_desc = db.fetchone()
 									if db_desc:
-										if mode == "*":
+										if arg0 == "*":
 											if db_desc[Numb]:
 												answer = db_desc[Numb]
 											else:

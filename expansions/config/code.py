@@ -166,7 +166,7 @@ class expansion_temp(expansion):
 									InstansesDesc[Instance] = desc
 									cat_file(ConDispFile, self.get_config(ConDisp))
 									try:
-										Try_Thr(composeThr(DispatchHandler, "%s-%s" % (Types[13], Instance), (Instance,)), -1)
+										StartThr(composeThr(DispatchHandler, "%s-%s" % (Types[13], Instance), (Instance,)), -1)
 									except RuntimeError:
 										answer = self.AnsBase[8]
 									else:

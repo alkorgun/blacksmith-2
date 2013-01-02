@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "cron" # /code.py v.x4
-#  Id: 27~3c
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "cron" # /code.py v.x5
+#  Id: 27~4c
+#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -40,26 +40,6 @@ class expansion_temp(expansion):
 						sThread("command(cron)", exe_cron, ls)
 					del self.CronDesc[id]
 
-	def getDate(self, ls, sft, sftime = "%H:%M:%S (%d.%m.%Y)"):
-		ls[5] += sft
-		while ls[5] >= 60:
-			ls[5] -= 60
-			ls[4] += 1
-			if ls[4] >= 60:
-				ls[4] -= 60
-				ls[3] += 1
-				if ls[3] >= 24:
-					ls[3] -= 24
-					ls[2] += 1
-					days = (0, 31, (28 if (ls[0] % 4) else 29), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-					if ls[2] > days[ls[1]]:
-						ls[2] -= days[ls[1]]
-						ls[1] += 1
-						if ls[1] > 12:
-							ls[1] -= 12
-							ls[0] += 1
-		return time.strftime(sftime, time.struct_time(ls))
-
 	def add_cron(self, disp, ls, body, Te, source, stype, gt, answer, repeat, **etc):
 		cmd = (ls.pop(0)).lower()
 		if Cmds.has_key(cmd):
@@ -69,9 +49,8 @@ class expansion_temp(expansion):
 				else:
 					body = ""
 				if 1024 >= len(body):
-					Time = time.mktime(gt)
 					instance = get_source(source[1], source[2])
-					self.CronDesc[self.CronCounter.plus()] = ((Te + Time), (cmd, instance, (stype, source, body, get_disp(disp)), repeat))
+					self.CronDesc[self.CronCounter.plus()] = (Te, (cmd, instance, (stype, source, body, get_disp(disp)), repeat))
 					self.cdesc_save()
 				else:
 					answer = AnsBase[5]
@@ -86,8 +65,8 @@ class expansion_temp(expansion):
 		if body:
 			ls = body.split()
 			if len(ls) >= 2:
-				Mode = (ls.pop(0)).lower()
-				if Mode in ("stop", "стоп".decode("utf-8")):
+				arg0 = (ls.pop(0)).lower()
+				if arg0 in ("stop", "стоп".decode("utf-8")):
 					id = ls.pop(0)
 					if isNumber(id):
 						id = int(id)
@@ -106,7 +85,7 @@ class expansion_temp(expansion):
 							answer = self.AnsBase[1] % (id)
 					else:
 						answer = AnsBase[30]
-				elif Mode in ("cycled", "цикл".decode("utf-8")):
+				elif arg0 in ("cycled", "цикл".decode("utf-8")):
 					if len(ls) >= 3:
 						Te = ls.pop(0)
 						Tr = ls.pop(0)
@@ -118,8 +97,10 @@ class expansion_temp(expansion):
 								t_ls, repeat = [Te], (Te, itypes.Number(Tr))
 								for x in xrange(1, Tr):
 									t_ls.append(t_ls[-1] + Te)
+								Time = time.mktime(gt)
+								Te += Time
 								ltls = len(t_ls)
-								t_ls = enumerated_list([self.getDate(list(gt), dt) for dt in t_ls[:8]])
+								t_ls = enumerated_list([time.ctime(dt + Time) for dt in t_ls[:8]])
 								if ltls > 8:
 									t_ls += self.AnsBase[3] % (ltls - 8)
 								answer = self.AnsBase[4] % (t_ls)
@@ -132,7 +113,7 @@ class expansion_temp(expansion):
 							answer = AnsBase[30]
 					else:
 						answer = AnsBase[2]
-				elif Mode in ("date", "дата".decode("utf-8")):
+				elif arg0 in ("date", "дата".decode("utf-8")):
 					if len(ls) >= 2:
 						date = list(gt)
 						Te = ls.pop(0)
@@ -172,9 +153,8 @@ class expansion_temp(expansion):
 							else:
 								Time, Te = time.mktime(gt), time.mktime(date)
 								if Te > Time:
-									Te = (Te - Time)
 									if 59 < Te <= 4147200 or enough_access(source[1], source[2], 7):
-										repeat = (Te,)
+										repeat = ((Te - Time),)
 										try:
 											answer = self.AnsBase[6] % time.strftime("%H:%M:%S (%d.%m.%Y)", date)
 										except ValueError:
@@ -189,11 +169,12 @@ class expansion_temp(expansion):
 									answer = AnsBase[2]
 					else:
 						answer = AnsBase[2]
-				elif isNumber(Mode):
-					Te = int(Mode)
+				elif isNumber(arg0):
+					Te = int(arg0)
 					if 59 < Te <= 4147200 or enough_access(source[1], source[2], 7):
 						repeat = (Te,)
-						answer = self.AnsBase[6] % self.getDate(list(gt), Te)
+						Te += time.mktime(gt)
+						answer = self.AnsBase[6] % time.ctime(Te)
 						add = self.add_cron
 						del self
 						answer = add(**locals())
@@ -206,13 +187,13 @@ class expansion_temp(expansion):
 		elif not self.CronDesc:
 			answer = self.AnsBase[7]
 		else:
-			Te = time.mktime(gt)
+			Time = time.mktime(gt)
 			ls = []
-			for id, (date, desc) in self.CronDesc.items():
-				if date > Te:
-					line = "%d (%s) [%s]" % (id, desc[0], self.getDate(list(gt), int(date - Te)))
+			for id, (date, desc) in sorted(self.CronDesc.items()):
+				if date > Time:
+					line = "%d (%s) [%s]" % (id, desc[0], time.ctime(date))
 					ls.append(line)
-			answer = self.AnsBase[8] % enumerated_list(sorted(ls))
+			answer = self.AnsBase[8] % enumerated_list(ls)
 		Answer(answer, stype, source, disp)
 
 	def start_cron(self):

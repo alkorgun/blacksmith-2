@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "access" # /code.py v.x2
-#  Id: 20~2c
+# exp_name = "access" # /code.py v.x3
+#  Id: 20~3c
 #  Code © (2011) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -13,66 +13,63 @@ class expansion_temp(expansion):
 	AccessFile = dynamic % ("access.db")
 	ChatAccessFile = "access.db"
 
+	accessDesc = (
+		"Visitor", # 0
+		"Participant", # 1
+		"Member", # 2
+		"Moder", # 3
+		"Member/Moder", # 4
+		"Admin", # 5
+		"Owner", # 6
+		"Chief", # 7
+		"God" # 8
+					)
+
+	def get_acc(self, access):
+		if access > 8:
+			access = "%d (Gandalf)" % (access)
+		elif access < 0:
+			access = "%d (f7u12)" % (access)
+		else:
+			access = "%d (%s)" % (access, self.accessDesc[access])
+		return access
+
 	def command_get_access(self, stype, source, body, disp):
-
-		def get_acc(access):
-			if access > 8:
-				access = "%d (Gandalf)" % (access)
-			elif access == 8:
-				access = "8 (God)"
-			elif access == 7:
-				access = "7 (Chief)"
-			else:
-				access = str(access)
-			return access
-
 		if not body:
-			answer = self.AnsBase[0] % get_acc(get_access(source[1], source[2]))
+			answer = self.AnsBase[0] % self.get_acc(get_access(source[1], source[2]))
 		elif Chats.has_key(source[1]):
 			if Chats[source[1]].isHere(body):
-				answer = self.AnsBase[1] % (body, get_acc(get_access(source[1], body)))
+				answer = self.AnsBase[1] % (body, self.get_acc(get_access(source[1], body)))
 			elif Galist.has_key(body):
-				answer = self.AnsBase[1] % (body, get_acc(Galist.get(body, 0)))
+				answer = self.AnsBase[1] % (body, self.get_acc(Galist.get(body, 0)))
 			elif Chats[source[1]].alist.has_key(body):
 				answer = self.AnsBase[1] % (body, str(Chats[source[1]].alist.get(body, 0)))
 			else:
 				answer = self.AnsBase[2] % (body)
 		elif Galist.has_key(body):
-			answer = self.AnsBase[1] % (body, get_acc(Galist.get(body, 0)))
+			answer = self.AnsBase[1] % (body, self.get_acc(Galist.get(body, 0)))
 		else:
 			answer = self.AnsBase[2] % (body)
 		Answer(answer, stype, source, disp)
 
 	def command_get_galist(self, stype, source, body, disp):
 		if Galist:
-			list = []
-			for x, y in Galist.items():
-				list.append([y, x])
-			list.sort()
-			list.reverse()
+			ls = sorted([(acc, user) for user, acc in Galist.iteritems()], reverse = True)
 			if stype == Types[1]:
-				Answer(AnsBase[11], stype, source, disp)
-			answer, Numb = self.AnsBase[5], itypes.Number()
-			for x in list:
-				answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
-			Message(source[0], answer, disp)
+				answer = AnsBase[11]
+			Message(source[0], self.AnsBase[5] + enumerated_list("%s - %d" % (user, acc) for acc, user in ls), disp)
 		else:
-			Answer(self.AnsBase[3], stype, source, disp)
+			answer = self.AnsBase[3]
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 	def command_get_lalist(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if Chats[source[1]].alist:
-				list = []
-				for x, y in Chats[source[1]].alist.items():
-					list.append([y, x])
-				list.sort()
-				list.reverse()
+				ls = sorted([(acc, user) for user, acc in Chats[source[1]].alist.iteritems()], reverse = True)
 				if stype == Types[1]:
-					Answer(AnsBase[11], stype, source, disp)
-				answer, Numb = self.AnsBase[5], itypes.Number()
-				for x in list:
-					answer += "%d) %s - %d\n" % (Numb.plus(), x[1], x[0])
-				Message(source[0], answer, disp)
+					answer = AnsBase[11]
+				Message(source[0], self.AnsBase[5] + enumerated_list("%s - %d" % (user, acc) for acc, user in ls), disp)
 			else:
 				answer = self.AnsBase[4]
 		else:
@@ -111,7 +108,7 @@ class expansion_temp(expansion):
 						instance = None
 				if instance:
 					access = body.pop(0)
-					if access == "!":
+					if access == chr(33):
 						if Galist.has_key(instance):
 							set_access(instance)
 							answer = AnsBase[4]
@@ -164,7 +161,7 @@ class expansion_temp(expansion):
 							instance = None
 					if instance:
 						access = body.pop(0)
-						if access == "!":
+						if access == chr(33):
 							if Chats[source[1]].alist.has_key(instance):
 								set_access(source[1], instance)
 								answer = AnsBase[4]

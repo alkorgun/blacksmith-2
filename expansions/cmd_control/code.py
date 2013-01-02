@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "cmd_control" # /code.py v.x1
-#  Id: 32~1c
+# exp_name = "cmd_control" # /code.py v.x2
+#  Id: 32~2c
 #  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -19,7 +19,7 @@ class expansion_temp(expansion):
 				if enough_access(source[1], source[2], 6):
 					ls = body.split()
 					command = (ls.pop(0)).lower()
-					if Cmds.has_key(command):
+					if command in Cmds:
 						if enough_access(source[1], source[2], Cmds[command].access):
 							if command not in sCmds:
 								if command in oCmds:
@@ -33,6 +33,10 @@ class expansion_temp(expansion):
 								answer = self.AnsBase[2]
 						else:
 							answer = AnsBase[10]
+					elif command in oCmds:
+						oCmds.remove(command)
+						answer = AnsBase[4]
+						cat_file(chat_file(source[1], self.TabooFile), str(oCmds))
 					else:
 						answer = AnsBase[6]
 				else:

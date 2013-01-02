@@ -24,7 +24,7 @@ class expansion_temp(expansion):
 			ls = body.split()
 			conf = (ls.pop(0)).lower()
 			if conf.count("@") and conf.count(".") >= 2:
-				if not Chats.has_key(conf):
+				if conf not in Chats:
 					confname = dynamic % (conf)
 					if not check_nosimbols(confname):
 						confname = encode_filename(confname)
@@ -148,7 +148,7 @@ class expansion_temp(expansion):
 						pass
 			if connect_client(Name, InstansesDesc[Name])[0]:
 				try:
-					Try_Thr(composeThr(DispatchHandler, ThrName, (Name,)), -1)
+					StartThr(composeThr(DispatchHandler, ThrName, (Name,)), -1)
 				except RuntimeError:
 					answer = self.AnsBase[16]
 				else:
@@ -179,7 +179,7 @@ class expansion_temp(expansion):
 		Exit("\n\nRestart command...", 0, 15)
 
 	def command_exit(self, stype, source, body, disp):
-		exit_desclr = self.AnsBase[11] % (source[2])
+		exit_desclr = self.AnsBase[12] % (source[2])
 		if body.lower() not in ("-s", "silent", "тихо".decode("utf-8")):
 			if body:
 				exit_desclr += self.AnsBase[1] % (body)
