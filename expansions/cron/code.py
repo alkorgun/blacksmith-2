@@ -70,12 +70,12 @@ class expansion_temp(expansion):
 					id = ls.pop(0)
 					if isNumber(id):
 						id = int(id)
-						if self.CronDesc.has_key(id):
+						if id in self.CronDesc:
 							if enough_access(source[1], source[2], 7):
 								del self.CronDesc[id]; self.cdesc_save()
 								answer = AnsBase[4]
 							else:
-								date, ls = self.CronDesc.get(id)
+								date, ls = self.CronDesc[id]
 								if ls[1] == get_source(source[1], source[2]):
 									del self.CronDesc[id]; self.cdesc_save()
 									answer = AnsBase[4]
@@ -156,7 +156,7 @@ class expansion_temp(expansion):
 									if 59 < Te <= 4147200 or enough_access(source[1], source[2], 7):
 										repeat = ((Te - Time),)
 										try:
-											answer = self.AnsBase[6] % time.strftime("%H:%M:%S (%d.%m.%Y)", date)
+											answer = self.AnsBase[6] % time.ctime(Te)
 										except ValueError:
 											answer = self.AnsBase[9]
 										else:

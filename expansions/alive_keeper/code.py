@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "alive_keeper" # /code.py v.x6
-#  Id: 16~6c
+# exp_name = "alive_keeper" # /code.py v.x7
+#  Id: 16~7c
 #  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -17,7 +17,7 @@ class expansion_temp(expansion):
 				Clients[get_disp(disp)].aKeeper = itypes.Number()
 
 		while VarCache["alive"]:
-			sleep(360)
+			sleep(120)
 			ThrIds = iThr.ThrNames()
 			for disp_str, disp in Clients.iteritems():
 				if not hasattr(disp, "aKeeper"):
@@ -37,7 +37,7 @@ class expansion_temp(expansion):
 						collectExc(iThr.Thread.start)
 				elif expansions.has_key(self.name):
 					disp.aKeeper.plus()
-					iq = xmpp.Iq(to = "%s/%s" % (disp_str, GenResource), typ = Types[10])
+					iq = xmpp.Iq(Types[10], to = "%s/%s" % (disp_str, GenResource))
 					iq.addChild(Types[16], namespace = xmpp.NS_PING)
 					iq.setID("Bs-i%d" % Info["outiq"].plus())
 					CallForResponse(disp_str, iq, alive_keeper_answer)
@@ -76,7 +76,7 @@ class expansion_temp(expansion):
 							collectExc(iThr.Thread.start)
 				elif expansions.has_key(self.name):
 					conf.aKeeper.plus()
-					iq = xmpp.Iq(to = "%s/%s" % (conf.name, conf.nick), typ = Types[10])
+					iq = xmpp.Iq(Types[10], to = "%s/%s" % (conf.name, conf.nick))
 					iq.addChild(Types[18], namespace = xmpp.NS_PING)
 					iq.setID("Bs-i%d" % Info["outiq"].plus())
 					CallForResponse(conf.disp, iq, conf_alive_keeper_answer, {"conf": conf.name})

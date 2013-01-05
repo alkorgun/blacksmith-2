@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "bot_sends" # /code.py v.x7
-#  Id: 18~6c
+# exp_name = "bot_sends" # /code.py v.x8
+#  Id: 18~7c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -107,7 +107,8 @@ class expansion_temp(expansion):
 	def command_invite(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				timer = (726 if enough_access(source[1], source[2], 7) else (time.time() - ChatsAttrs[source[1]]["intr"]))
+				Time, admin = time.time(), enough_access(source[1], source[2], 7)
+				timer = (720 if admin else (Time - ChatsAttrs[source[1]]["intr"]))
 				if timer >= 720:
 					source_, arg0 = None, body.split()[0]
 					if Chats[source[1]].isHere(body):
@@ -117,7 +118,8 @@ class expansion_temp(expansion):
 					elif isSource(arg0):
 						source_ = arg0.lower()
 					if source_:
-						ChatsAttrs[source[1]]["intr"] = time.time()
+						if not admin:
+							ChatsAttrs[source[1]]["intr"] = Time
 						invite = xmpp.Message(to = source[1])
 						node = xmpp.Node("x")
 						node.setNamespace(xmpp.NS_MUC_USER)

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "muc" # /code.py v.x8
-#  Id: 05~4c
+# exp_name = "muc" # /code.py v.x9
+#  Id: 05~5c
 #  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -13,7 +13,7 @@ class expansion_temp(expansion):
 	def command_subject(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
+				if Chats[source[1]].isModer or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (None,)*2)[1] == aRoles[9]:
 					Info["omsg"].plus()
 					Chats[source[1]].subject(xmpp.XMLescape(body))
 				else:
@@ -31,11 +31,7 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if body:
 				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+					if enough_access(source[1], source[2], 6) or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5],))[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -67,11 +63,7 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if body:
 				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+					if enough_access(source[1], source[2], 6) or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5],))[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -103,11 +95,7 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if body:
 				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+					if enough_access(source[1], source[2], 6) or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5],))[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -138,30 +126,23 @@ class expansion_temp(expansion):
 	def command_admin(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
-						body = body.split(self.sep, 1)
-						nick = (body.pop(0)).strip()
-						if Chats[source[1]].isHere(nick):
-							jid = get_source(source[1], nick)
-						elif nick.count(chr(46)):
-							jid = nick
-						else:
-							jid = None
-						if jid:
-							if body:
-								body = "%s: %s" % (source[2], body[0].strip())
-							else:
-								body = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].admin(jid, body, (None, (stype, source)))
-						else:
-							answer = AnsBase[7]
+				if getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5],))[0] == aRoles[5]:
+					body = body.split(self.sep, 1)
+					nick = (body.pop(0)).strip()
+					if Chats[source[1]].isHere(nick):
+						jid = get_source(source[1], nick)
+					elif nick.count(chr(46)):
+						jid = nick
 					else:
-						answer = self.AnsBase[0]
+						jid = None
+					if jid:
+						if body:
+							body = "%s: %s" % (source[2], body[0].strip())
+						else:
+							body = "%s/%s" % (get_nick(source[1]), source[2])
+						Chats[source[1]].admin(jid, body, (None, (stype, source)))
+					else:
+						answer = AnsBase[7]
 				else:
 					answer = self.AnsBase[1]
 			else:
@@ -174,30 +155,23 @@ class expansion_temp(expansion):
 	def command_owner(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
-						body = body.split(self.sep, 1)
-						nick = (body.pop(0)).strip()
-						if Chats[source[1]].isHere(nick):
-							jid = get_source(source[1], nick)
-						elif nick.count(chr(46)):
-							jid = nick
-						else:
-							jid = None
-						if jid:
-							if body:
-								body = "%s: %s" % (source[2], body[0].strip())
-							else:
-								body = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].owner(jid, body, (None, (stype, source)))
-						else:
-							answer = AnsBase[7]
+				if getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5],))[0] == aRoles[5]:
+					body = body.split(self.sep, 1)
+					nick = (body.pop(0)).strip()
+					if Chats[source[1]].isHere(nick):
+						jid = get_source(source[1], nick)
+					elif nick.count(chr(46)):
+						jid = nick
 					else:
-						answer = self.AnsBase[0]
+						jid = None
+					if jid:
+						if body:
+							body = "%s: %s" % (source[2], body[0].strip())
+						else:
+							body = "%s/%s" % (get_nick(source[1]), source[2])
+						Chats[source[1]].owner(jid, body, (None, (stype, source)))
+					else:
+						answer = AnsBase[7]
 				else:
 					answer = self.AnsBase[1]
 			else:
@@ -210,12 +184,9 @@ class expansion_temp(expansion):
 	def command_kick(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+				aRole = getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5], None))
+				if Chats[source[1]].isModer or aRole[1] == aRoles[9]:
+					if enough_access(source[1], source[2], 6) or aRole[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -244,12 +215,9 @@ class expansion_temp(expansion):
 	def command_visitor(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+				aRole = getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5], None))
+				if Chats[source[1]].isModer or aRole[1] == aRoles[9]:
+					if enough_access(source[1], source[2], 6) or aRole[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -278,12 +246,9 @@ class expansion_temp(expansion):
 	def command_participant(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
+				aRole = getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (aRoles[5], None))
+				if Chats[source[1]].isModer or aRole[1] == aRoles[9]:
+					if enough_access(source[1], source[2], 6) or aRole[0] != aRoles[5]:
 						body = body.split(self.sep, 1)
 						nick = (body.pop(0)).strip()
 						if Chats[source[1]].isHere(nick):
@@ -309,23 +274,16 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if body:
 				if Chats[source[1]].isModer:
-					Lock, BsNick = False, get_nick(source[1])
-					if getattr(Chats[source[1]].get_user(BsNick), "role", (aRoles[5],))[0] == aRoles[5]:
-						if not enough_access(source[1], source[2], 6):
-							Lock = True
-					if not Lock:
-						body = body.split(self.sep, 1)
-						nick = (body.pop(0)).strip()
-						if Chats[source[1]].isHere(nick):
-							if body:
-								body = "%s: %s" % (source[2], body[0].strip())
-							else:
-								body = "%s/%s" % (get_nick(source[1]), source[2])
-							Chats[source[1]].moder(nick, body, (None, (stype, source)))
+					body = body.split(self.sep, 1)
+					nick = (body.pop(0)).strip()
+					if Chats[source[1]].isHere(nick):
+						if body:
+							body = "%s: %s" % (source[2], body[0].strip())
 						else:
-							answer = AnsBase[7]
+							body = "%s/%s" % (get_nick(source[1]), source[2])
+						Chats[source[1]].moder(nick, body, (None, (stype, source)))
 					else:
-						answer = self.AnsBase[0]
+						answer = AnsBase[7]
 				else:
 					answer = self.AnsBase[1]
 			else:

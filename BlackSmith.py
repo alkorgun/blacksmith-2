@@ -750,7 +750,7 @@ class sConf(object):
 			delivery(self.name)
 
 	def iq_sender(self, attr, data, afrls, role, reason = str(), handler = None):
-		stanza = xmpp.Iq(to = self.name, typ = Types[9])
+		stanza = xmpp.Iq(Types[9], to = self.name)
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(Types[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)

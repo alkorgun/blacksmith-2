@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x9
-#  Id: 13~8c
+# exp_name = "get_iq" # /code.py v.x10
+#  Id: 13~9c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -21,7 +21,7 @@ class expansion_temp(expansion):
 					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance, source_ = source[0], get_source(source[1], source[2])
-		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = instance)
 		iq.addChild(Types[16], namespace = xmpp.NS_PING)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_ping, {"stype": stype, "source": source, "instance": instance, "source_": source_, "start": time.time()})
@@ -37,7 +37,7 @@ class expansion_temp(expansion):
 				self.PingStats[source_].append(answer)
 			Answer(self.AnsBase[0] % str(answer), stype, source, disp)
 		else:
-			iq = xmpp.Iq(to = instance, typ = Types[10])
+			iq = xmpp.Iq(Types[10], to = instance)
 			iq.addChild(Types[18], namespace = xmpp.NS_VERSION)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_ping_ver, {"stype": stype, "source": source, "instance": instance, "source_": source_, "start": time.time()})
@@ -90,28 +90,34 @@ class expansion_temp(expansion):
 					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = instance)
 		iq.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_time0202, {"stype": stype, "source": source, "instance": instance})
 
+	compile_tzo = compile__("^([-\+]+?)(\d+?):(\d+?)$")
+	compile_utc = compile__("^(\d+?)-(\d+?)-(\d+?)[A-Z]+?(\d+?):(\d+?):(\d+?)[A-Z]*?$")
+
 	def answer_time0202(self, disp, stanza, stype, source, instance):
 		if xmpp.isResultNode(stanza):
-			hours = None
+			course, date = None, ()
 			for node in stanza.getChildren():
-				tzo = node.getTagData("tzo")
-				if tzo and tzo.startswith((chr(43), chr(45))):
-					try:
-						hours, minutes = tzo[1:].split(chr(58))
-						symbol = tzo[0]
-						hours, minutes = int(symbol + hours), int(symbol + minutes)
-					except:
-						pass
-					else:
-						break
-			if isinstance(hours, int):
-				plus = (symbol == chr(43))
-				date = list(time.gmtime())
+				try:
+					course, hours, minutes = self.compile_tzo.search(node.getTagData("tzo")).groups()
+				except:
+					pass
+				try:
+					date = self.compile_utc.search(node.getTagData("utc")).groups()
+				except:
+					pass
+				else:
+					date = ([int(digit) for digit in date] + [0, 0, 0])
+				if course:
+					break
+			if course:
+				hours, minutes = int(course + hours), int(course + minutes)
+				if not date:
+					date = list(time.gmtime())
 				days = (31, 31, (28 if (date[0] % 4) else 29), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 				date[4] += minutes
 				date[3] += hours
@@ -120,7 +126,7 @@ class expansion_temp(expansion):
 					date[3] += 1
 				if date[3] >= 24:
 					date[3] -= 24
-					if plus:
+					if course == chr(43):
 						date[2] += 1
 						if date[2] > days[date[1]]:
 							date[2] = 1
@@ -141,12 +147,12 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[6]
 				else:
-					answer = time.strftime("%a %b %d %H:%M:%S %Y", date)
+					answer = time.ctime(time.mktime(date))
 			else:
 				answer = self.AnsBase[6]
 			Answer(answer, stype, source, disp)
 		else:
-			iq = xmpp.Iq(to = instance, typ = Types[10])
+			iq = xmpp.Iq(Types[10], to = instance)
 			iq.addChild(Types[18], namespace = xmpp.NS_TIME)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_time0090, {"stype": stype, "source": source})
@@ -169,7 +175,7 @@ class expansion_temp(expansion):
 					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = instance)
 		iq.addChild(Types[18], namespace = xmpp.NS_VERSION)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_version, {"stype": stype, "source": source})
@@ -201,7 +207,7 @@ class expansion_temp(expansion):
 					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(to = instance, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = instance)
 		iq.addChild(Types[18], namespace = xmpp.NS_VCARD)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_vcard, {"stype": stype, "source": source})
@@ -258,7 +264,7 @@ class expansion_temp(expansion):
 	def command_uptime(self, stype, source, server, disp):
 		if not server:
 			server = disp._owner.Server
-		iq = xmpp.Iq(to = server, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = server)
 		iq.addChild(Types[18], namespace = xmpp.NS_LAST)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_idle, {"stype": stype, "source": source, "instance": server, "typ": None})
@@ -272,7 +278,7 @@ class expansion_temp(expansion):
 				else:
 					answer = self.AnsBase[5] % (instance)
 			if not locals().has_key(Types[6]):
-				iq = xmpp.Iq(to = instance, typ = Types[10])
+				iq = xmpp.Iq(Types[10], to = instance)
 				iq.addChild(Types[18], namespace = xmpp.NS_LAST)
 				iq.setID("Bs-i%d" % Info["outiq"].plus())
 				CallForResponse(disp, iq, self.answer_idle, {"stype": stype, "source": source, "instance": nick, "typ": True})
@@ -296,9 +302,9 @@ class expansion_temp(expansion):
 
 		def get_req(body):
 			if DefLANG in ("RU", "UA"):
-				for numb, name in enumerate(("овнер", "админ", "мембер", "бан")):
-					name = name.decode("utf-8")
-					if name in body:
+				for numb, role in enumerate(("овнер", "админ", "мембер", "бан")):
+					role = role.decode("utf-8")
+					if role in body:
 						return self.affs[numb]
 			return (body if body in self.affs else None)
 
@@ -310,23 +316,23 @@ class expansion_temp(expansion):
 					if ls:
 						data = (ls.pop(0)).lower()
 						desc = {}
-						for name in self.affs:
-							iq = xmpp.Iq(to = source[1], typ = Types[10])
+						for role in self.affs:
+							iq = xmpp.Iq(Types[10], to = source[1])
 							query = xmpp.Node(Types[18])
 							query.setNamespace(xmpp.NS_MUC_ADMIN)
-							query.addChild("item", {aRoles[0]: name})
+							query.addChild("item", {aRoles[0]: role})
 							iq.addChild(node = query)
 							iq.setID("Bs-i%d" % Info["outiq"].plus())
-							CallForResponse(disp, iq, self.answer_aflist_search, {"desc": desc, "name": name, "data": data})
+							CallForResponse(disp, iq, self.answer_aflist_search, {"desc": desc, "role": role, "data": data})
 						for x in xrange(60):
 							sleep(0.2)
 							if len(desc.keys()) == 4:
 								break
 						Number = itypes.Number()
 						ls = []
-						for name, matches in desc.iteritems():
+						for role, matches in desc.iteritems():
 							if matches:
-								ls.append(name.capitalize() + "s:")
+								ls.append(role.capitalize() + "s:")
 								for jid in matches:
 									ls.append("%d) %s" % (Number.plus(), jid))
 						if ls:
@@ -348,7 +354,7 @@ class expansion_temp(expansion):
 									Numb = 20
 								else:
 									Numb = x
-						iq = xmpp.Iq(to = source[1], typ = Types[10])
+						iq = xmpp.Iq(Types[10], to = source[1])
 						query = xmpp.Node(Types[18])
 						query.setNamespace(xmpp.NS_MUC_ADMIN)
 						query.addChild("item", {aRoles[0]: body})
@@ -364,7 +370,7 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[6]):
 			Answer(answer, stype, source, disp)
 
-	def answer_aflist_search(self, disp, stanza, desc, name, data):
+	def answer_aflist_search(self, disp, stanza, desc, role, data):
 		if xmpp.isResultNode(stanza):
 			count = []
 			for node in stanza.getQueryChildren():
@@ -375,11 +381,11 @@ class expansion_temp(expansion):
 						if signature:
 							jid = "%s (%s)" % (jid, signature)
 						count.append(jid)
-			desc[name] = count
+			desc[role] = count
 
 	def answer_aflist(self, disp, stanza, stype, source, Numb):
 		if xmpp.isResultNode(stanza):
-			ls, Number = [], itypes.Number()
+			jids, Number = [], itypes.Number()
 			for node in stanza.getQueryChildren():
 				if node and node != "None":
 					jid = node.getAttr("jid")
@@ -390,11 +396,11 @@ class expansion_temp(expansion):
 							signature = node.getTagData("reason")
 							if signature:
 								jid = "%s (%s)" % (jid, signature)
-							ls.append("%d) %s" % (Number.plus(), jid))
-			if ls:
+							jids.append("%d) %s" % (Number.plus(), jid))
+			if jids:
 				if Numb and Numb < Number._int():
-					ls.append("...\nTotal: %s items." % (Number._str()))
-				Message(source[0], str.join(chr(10), ls), disp)
+					jids.append("...\nTotal: %s items." % (Number._str()))
+				Message(source[0], str.join(chr(10), jids), disp)
 				if stype == Types[1]:
 					answer = AnsBase[11]
 			else:
@@ -409,14 +415,14 @@ class expansion_temp(expansion):
 	def command_server_stats(self, stype, source, server, disp):
 		if not server:
 			server = disp._owner.Server
-		iq = xmpp.Iq(to = server, typ = Types[10])
+		iq = xmpp.Iq(Types[10], to = server)
 		iq.addChild(Types[18], namespace = xmpp.NS_STATS)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_server_stats, {"stype": stype, "source": source})
 
 	def answer_server_stats(self, disp, stanza, stype, source):
 		if xmpp.isResultNode(stanza):
-			iq = xmpp.Iq(to = stanza.getFrom(), typ = Types[10])
+			iq = xmpp.Iq(Types[10], to = stanza.getFrom())
 			iq.addChild(Types[18], {}, stanza.getQueryChildren(), xmpp.NS_STATS)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_server_stats_get, {"stype": stype, "source": source})
@@ -462,7 +468,7 @@ class expansion_temp(expansion):
 						desc["body"] = ls.pop(0)
 				else:
 					desc["body"] = body[len(server):].strip()
-			iq = xmpp.Iq(to = server, typ = Types[10])
+			iq = xmpp.Iq(Types[10], to = server)
 			iq.addChild(Types[18], namespace = xmpp.NS_DISCO_ITEMS)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_disco, desc)
