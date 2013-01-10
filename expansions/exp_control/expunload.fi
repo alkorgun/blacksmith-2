@@ -1,0 +1,6 @@
+expansioneiden ja poistaminen
+{command} [expansion] (funktio)
+*/{command} talkers
+botti ottaa "talkers" pois käyttämisestä
+*/{command} talkers calculate_talkers
+botti ottä pois puhujien lasku funktion (suositelisi vain kokeneille käyttäjille)

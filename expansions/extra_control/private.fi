@@ -1,0 +1,4 @@
+botti tee tän komennon ja lähettää vastaukseen privaatiksi
+{command} [komento] (parametrit)
+*/{command} ping
+botti tee 'ping' ja vastaa yksityisvastaukseksi

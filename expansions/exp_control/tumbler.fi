@@ -1,0 +1,10 @@
+väliaikainen globaali komentojen poistaminen/lisääminen
+{command} (komento) (on/off)
+*/{command}
+botti näyttä komentit poistetit käyttämisestä
+*/{command} talkers
+botti näyttä komennon "talkers" kunnan
+*/{command} talkers off
+botti poistaa komennon "talkers" seuraavaan uudelleenkäynnistykseen asti
+*/{command} talkers on
+botti ottaa komennon "talkers" käyttämiseen taas

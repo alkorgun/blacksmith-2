@@ -15,7 +15,7 @@ class expansion_temp(expansion):
 			if body:
 				if Chats[source[1]].isModer or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (None,)*2)[1] == aRoles[9]:
 					Info["omsg"].plus()
-					Chats[source[1]].subject(xmpp.XMLescape(body))
+					Chats[source[1]].subject(body)
 				else:
 					answer = self.AnsBase[1]
 			else:

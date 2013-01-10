@@ -1,0 +1,8 @@
+tee komentoa kaukotilalta
+{command} ([konferenssi/konferenssin_numero_listassa] [chat/private] [komento] (parametrit))
+*/{command} joku_konferenssi@conference.jabber.fi private clear
+botti tee komennon nin kuin joutuessa huoneeseen "joku_konferenssi@conference.jabber.fi", ja lähettää tuloksen sulle privaatiksi
+*/{command} 1 chat ping EdenPowers
+botti tee komennon huoneessa numero 1 ja lähettää tuloksen tähän huoneeseen
+*/{command}
+näytä komentojen numeroitua luetteloa

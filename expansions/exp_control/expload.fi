@@ -1,0 +1,4 @@
+botin expansioneiden lisääminen
+{command} [expansion]
+*/{command} help
+botti lisää expansion "help"

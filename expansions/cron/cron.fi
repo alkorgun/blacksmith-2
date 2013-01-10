@@ -1,0 +1,14 @@
+textävien ajastus (kaikki ajankohdat käyttävät UTC)
+{command} ([date] [komento] (parametrit))/([cycled] [aikalisä] [silmukoiden_määrä] [komento] (parametrit))/([date] [[tunti]:(minuutti):(sekunti)(&[päivä].(kuukausi).(vuosi))] [komento] (parametrit))/([stop] [tehtävän_ID])
+*/{command}
+botti näyttää kaikki suunniteltut tehtävät
+*/{command} 60 ping Joku_Käyttäjä
+botti tee 'ping Joku_Käyttäjä' 60:n sekunnin kuluttua
+*/{command} cycled 360 4 test
+botti tee 'test' 4 kertaa kuuden minuutin aikalisäksi
+*/{command} date 21&27 clear
+botti puhdistaa konferenssin tämän kuun 27:na päivänä ajoissa 21:00 (UTC)
+*/{command} date 18:40:20&02.12 ping
+botti tee 'ping' teille 2:na Joulukuna ajoissa 18:40:20 (UTC)
+*/{command} stop 47
+botti lopettaaa tehtävän numero 47

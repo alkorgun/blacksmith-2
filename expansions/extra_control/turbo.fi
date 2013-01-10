@@ -1,0 +1,4 @@
+toteutus monille komennoille (ei enemmän kuin 4 samalla hetkellä) (päsyksi 7 komentojen määrä on lopumaton)
+{command} [[komento] (parametrit)] [&&] [[komento] (parametrit)]
+*/{command} ping käyttäjä#1 && ping käyttäjä#2 && ping käyttäjä#3 && ping
+botti tee 'ping' kolmalle käyttäjälle

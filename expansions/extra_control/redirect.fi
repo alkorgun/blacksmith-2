@@ -1,0 +1,4 @@
+lähettää komentojen tekemisten tulosta toiselle käyttäjälle
+{command} [komento] (parametrit) [>>] [lempinimi]
+*/{command} chatslist >> Herra Anonymous
+botti lähettää konfirenssien listan käyttäjälle lempinimellä "Herra Anonymous"

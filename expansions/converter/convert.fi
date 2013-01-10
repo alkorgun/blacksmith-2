@@ -1,0 +1,8 @@
+konvertteri
+{command} (luokka) ([määrä] [mittauksen_merkki] [mittauksen_merkki])
+*/{command}
+botti näyttä konvertterin luokien listan
+*/{command} temperature
+botti näyttää mittauksen merkit temperatureen luokassa
+*/{command} distance 3 mile metre
+botti kääntää 3 mailia metriksi (4828)

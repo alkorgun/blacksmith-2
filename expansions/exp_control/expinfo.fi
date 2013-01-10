@@ -1,0 +1,6 @@
+informaatio botin expansioneista
+{command} (expansion)
+*/{command}
+botti näyttää expansioneiden listan
+*/{command} help
+botti näyttää informaatiota expansioneista "help"
