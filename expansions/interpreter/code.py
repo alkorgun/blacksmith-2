@@ -1,11 +1,11 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "interpreter" # /code.py v.x9
-#  Id: 04~7c
-#  Code © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
-#  Code © (2007) by Als [Als@exploit.in]
-#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "interpreter" # /code.py v.x10
+#  Id: 04~8c
+#  Idea © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
+#  Idea © (2007) by Als [Als@exploit.in]
+#  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -24,8 +24,8 @@ class expansion_temp(expansion):
 				answer = UnicodeType(eval(UnicodeType(body)))
 				if not answer.strip():
 					answer = "None (%s)" % (answer)
-			except:
-				answer = "%s - %s" % exc_info()
+			except Exception, exc:
+				answer = exc_str(exc)
 		else:
 			answer = AnsBase[1]
 		if not silent:
@@ -41,8 +41,8 @@ class expansion_temp(expansion):
 					body = args.pop()
 			try:
 				exec(UnicodeType(body + chr(10)), globals())
-			except:
-				answer = "%s - %s" % exc_info()
+			except Exception, exc:
+				answer = exc_str(exc)
 			else:
 				answer = AnsBase[4]
 		else:

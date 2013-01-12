@@ -600,8 +600,8 @@ class expansion_temp(expansion):
 							data = Opener.download(filename, folder, self.download_process, [source[0], time.time(), disp, 0, 0], self.UserAgent)
 						except Web.Two.HTTPError, exc:
 							answer = str(exc)
-						except SelfExc:
-							answer = "Error! %s." % exc_info()[1].capitalize()
+						except SelfExc, exc:
+							answer = "Error! %s." % exc[0].capitalize()
 						except:
 							answer = self.AnsBase[0]
 						else:

@@ -13,9 +13,9 @@ class expansion_temp(expansion):
 	def command_subject(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if body:
-				if Chats[source[1]].isModer or getattr(Chats[source[1]].get_user(get_nick(source[1])), "role", (None,)*2)[1] == aRoles[9]:
-					Info["omsg"].plus()
-					Chats[source[1]].subject(body)
+				Chat = Chats[source[1]]
+				if Chat.isModer or getattr(Chat.get_user(Chat.nick), "role", (None,)*2)[1] == aRoles[9]:
+					Chat.subject(body)
 				else:
 					answer = self.AnsBase[1]
 			else:

@@ -148,7 +148,7 @@ class expansion_temp(expansion):
 						pass
 			if connect_client(Name, InstansesDesc[Name])[0]:
 				try:
-					StartThr(composeThr(DispatchHandler, ThrName, (Name,)), -1)
+					StartThr(composeThr(Dispatcher, ThrName, (Name,)), -1)
 				except RuntimeError:
 					answer = self.AnsBase[16]
 				else:

@@ -271,8 +271,8 @@ class expansion_temp(expansion):
 							if os.path.isfile(Path):
 								try:
 									self.importFB2(Path, source[2].strip())
-								except SelfExc:
-									answer = exc_info()[1]
+								except SelfExc, exc:
+									answer = exc[0]
 								except:
 									if AsciiSys:
 										Path = Path.decode("utf-8")

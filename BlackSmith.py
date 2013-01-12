@@ -4,7 +4,7 @@
 # BlackSmith's core mark.2
 # BlackSmith.py
 
-# Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 # imports
 
@@ -170,8 +170,10 @@ class SelfExc(Exception):
 	pass
 
 def exc_info():
-	exc = sys.exc_info()
-	return (exc[0].__name__ if exc[0] else str(exc[0]), str(exc[1]))
+	exc, err, tb = sys.exc_info()
+	if exc and err:
+		exc, err = exc.__name__, err[0]
+	return (exc, err)
 
 def exc_info_(fp = None):
 	try:
@@ -187,6 +189,8 @@ def get_exc():
 	except:
 		exc = "(...)"
 	return exc
+
+exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0])
 
 def exec_(instance, list = ()):
 	try:
@@ -264,11 +268,11 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 43, 0)
+(BsMark, BsVer, BsRev) = (2, 44, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
-	if len(Cache) >= 4:
+	if len(Cache) > 3:
 		BsRev = Cache[3].strip()
 		if BsRev.isdigit():
 			BsRev = int(BsRev)
@@ -456,7 +460,7 @@ class expansion(object):
 	def dels(self, full = False):
 		while self.cmds:
 			cmd = self.cmds.pop()
-			if Cmds.has_key(cmd):
+			if cmd in Cmds:
 				Cmds[cmd].off()
 		self.funcs_del()
 		self.commands = ()
@@ -591,7 +595,7 @@ def command_handler(exp_inst, handler, default, access, prefix = True):
 	else:
 		name = default
 		help = "%s.en" % (Path)
-	if Cmds.has_key(name):
+	if name in Cmds:
 		Cmds[name].reload(handler, access, help, exp_inst)
 	else:
 		Cmds[name] = Command(handler, default, name, access, help, exp_inst)
@@ -648,7 +652,7 @@ class sConf(object):
 	def csend(self, stanza):
 		Sender(self.disp, stanza)
 
-	isHere = lambda self, nick: self.desc.has_key(nick)
+	isHere = lambda self, nick: (nick in self.desc)
 
 	isHereTS = lambda self, nick: (self.desc[nick].ishere if self.isHere(nick) else False)
 
@@ -707,6 +711,7 @@ class sConf(object):
 		self.csend(stanza)
 
 	def subject(self, body):
+		Info["omsg"].plus()
 		self.csend(xmpp.Message(self.name, "", Types[1], body))
 
 	def set_status(self, state, status):
@@ -739,13 +744,13 @@ class sConf(object):
 
 	def save(self, RealSave = True):
 		if initialize_file(ChatsFile):
-			list = eval(get_file(ChatsFile))
+			desc = eval(get_file(ChatsFile))
 			if not RealSave:
-				if list.has_key(self.name):
-					del list[self.name]
+				if self.name in desc:
+					del desc[self.name]
 			else:
-				list[self.name] = {"disp": self.disp, Types[12]: self.nick, "cPref": self.cPref, "code": self.code}
-			cat_file(ChatsFile, str(list))
+				desc[self.name] = {"disp": self.disp, Types[12]: self.nick, "cPref": self.cPref, "code": self.code}
+			cat_file(ChatsFile, str(desc))
 		else:
 			delivery(self.name)
 
@@ -831,7 +836,7 @@ def delivery(body):
 
 def Message(inst, body, disp = None):
 	body = object_encode(body)
-	if Chats.has_key(inst):
+	if inst in Chats:
 		stype = Types[1]
 		if not disp:
 			disp = Chats[inst].disp
@@ -845,7 +850,7 @@ def Message(inst, body, disp = None):
 				chat = inst.getStripped()
 			else:
 				chat = (inst.split(chr(47)))[0].lower()
-			if Chats.has_key(chat):
+			if chat in Chats:
 				disp = Chats[chat].disp
 			else:
 				disp = GenDisp
@@ -887,7 +892,7 @@ def IdleClient():
 			cls[disp] = 0
 	for conf in Chats.itervalues():
 		disp = conf.disp
-		if cls.has_key(disp):
+		if disp in cls:
 			cls[disp] += 1
 	if cls:
 		idle = min(cls.values())
@@ -897,7 +902,7 @@ def IdleClient():
 	return GenDisp
 
 def ejoinTimer(conf):
-	if Chats.has_key(conf):
+	if conf in Chats:
 		Chats[conf].join()
 
 ejoinTimerName = lambda conf: "%s-%s" % (ejoinTimer.func_name, conf.decode("utf-8"))
@@ -907,34 +912,31 @@ get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server) if isin
 get_nick = lambda chat: getattr(Chats.get(chat), Types[12], DefNick)
 
 def online(disp):
-	if isinstance(disp, InstanceType):
-		disp = get_disp(disp)
-	if Clients.has_key(disp):
+	disp = get_disp(disp)
+	if disp in Clients:
 		return Clients[disp].isConnected()
 	return False
 
-def CallForResponse(disp, stanza, handler, keywords = {}):
+def CallForResponse(disp, stanza, handler, kdesc = {}):
 	if isinstance(stanza, xmpp.Iq):
-		if isinstance(disp, InstanceType):
-			disp = get_disp(disp)
-		if Clients.has_key(disp):
+		disp = get_disp(disp)
+		if disp in Clients:
 			ID = stanza.getID()
 			if not ID:
 				xmpp.dispatcher.ID += 1
 				ID = str(xmpp.dispatcher.ID)
 				stanza.setID(ID)
-			Clients[disp].RespExp[ID] = (handler, keywords)
+			Clients[disp].RespExp[ID] = (handler, kdesc)
 			Sender(disp, stanza)
 
-def exec_bsExp(instance, disp, node, kdesc):
-	instance(disp, node, **kdesc)
+def exec_bsExp(instance, disp, iq, kdesc):
+	instance(disp, iq, **kdesc)
 
-def ResponseChecker(disp, stanza):
-	Name = get_disp(disp)
-	Numb = stanza.getID()
-	if Clients[Name].RespExp.has_key(Numb):
-		(handler, keywords) = Clients[Name].RespExp.pop(Numb)
-		sThread(handler.func_name, exec_bsExp, (handler, disp, stanza, keywords))
+def ResponseChecker(disp, iq):
+	Disp, ID = disp._owner, iq.getID()
+	if ID in Disp.RespExp:
+		(handler, kdesc) = Disp.RespExp.pop(ID)
+		sThread(handler.func_name, exec_bsExp, (handler, disp, iq, kdesc))
 		xmpp_raise()
 
 def HandleResponse(disp, stanza, source):
@@ -946,15 +948,14 @@ def HandleResponse(disp, stanza, source):
 def Sender(disp, stanza):
 	try:
 		if not isinstance(disp, InstanceType):
-			if Clients.has_key(disp):
-				disp = Clients[disp]
-			else:
-				raise SelfExc("'%s' isn't my client!" % (disp))
+			if disp not in Clients:
+				raise SelfExc("client '%s' not exists" % (disp))
+			disp = Clients[disp]
 		disp.send(stanza)
 	except IOError:
 		pass
-	except SelfExc:
-		pass
+	except SelfExc, exc:
+		Print(exc_str(exc, "\n\n%s: %s!"), color2)
 	except:
 		collectExc(Sender)
 
@@ -1252,21 +1253,19 @@ def join_chats():
 		except KeyboardInterrupt:
 			raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 		except SyntaxError:
-			del_file(ChatsFile)
+			del_file(ChatsFile); initialize_file(ChatsFile)
 			Confs = {}
-			initialize_file(ChatsFile)
 		except:
 			Confs = {}
 		Print("\n\nThere are %d rooms in list..." % len(Confs.keys()), color4)
-		for conf in Confs.keys():
-			Attrs = Confs[conf]
-			Chats[conf] = sConf(conf, Attrs["disp"], Attrs["code"], Attrs["cPref"], Attrs["nick"], True)
-			Chats[conf].load_all()
-			if Clients.has_key(Chats[conf].disp):
-				Chats[conf].join()
-				Print("\n%s joined %s;" % (Chats[conf].disp, conf), color3)
+		for conf, desc in Confs.iteritems():
+			Chats[conf] = Chat = sConf(conf, added = True, **desc)
+			Chat.load_all()
+			if Chat.disp in Clients:
+				Chat.join()
+				Print("\n%s joined %s;" % (Chat.disp, conf), color3)
 			else:
-				Print("\nI'll join %s then %s would be connected..." % (conf, Chats[conf].disp), color1)
+				Print("\nI'll join %s then %s would be connected..." % (conf, Chat.disp), color1)
 	else:
 		Print("\n\nError: unable to create the conferences-list file!", color2)
 
@@ -1291,7 +1290,7 @@ def XmppPresenceCB(disp, stanza):
 			else:
 				Sender(disp, xmpp.Presence(conf, Types[7]))
 		xmpp_raise()
-	elif Chats.has_key(conf):
+	elif conf in Chats:
 		Chat = Chats[conf]
 		if stype == Types[7]:
 			ecode = stanza.getErrorCode()
@@ -1366,7 +1365,7 @@ def XmppPresenceCB(disp, stanza):
 				if Chat.isHereTS(nick):
 					Chat.sleaved(nick)
 				call_efunctions("05eh", (conf, nick, Status, scode, disp,))
-		if Chats.has_key(conf):
+		if conf in Chats:
 			call_efunctions("02eh", (stanza, disp,))
 
 # Iq Handler
@@ -1442,7 +1441,7 @@ def XmppMessageCB(disp, stanza):
 		xmpp_raise()
 	if stanza.getTimestamp():
 		xmpp_raise()
-	isConf = Chats.has_key(inst)
+	isConf = (inst in Chats)
 	if not isConf and not enough_access(inst, nick, 7):
 		if not Roster["on"]:
 			xmpp_raise()
@@ -1523,8 +1522,8 @@ def connect_client(source, InstanceAttrs):
 		ConType = disp.connect((server, cport), None, *ConType)
 	except KeyboardInterrupt:
 		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
-	except:
-		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
+	except Exception, exc:
+		Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (source, server.upper(), cport, exc_str(exc)), color2)
 		return (False, None)
 	if ConType:
 		ConType = ConType.upper()
@@ -1534,22 +1533,20 @@ def connect_client(source, InstanceAttrs):
 			Print("\n'%s' was successfully connected!" % (source), color3)
 		Print("\n'%s' using - '%s'" % (source, ConType), color4)
 	else:
-		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), str(cport)), color2)
+		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), cport), color2)
 		return (False, None)
 	Print("\n'%s' authenticating..." % (source), color4)
 	try:
 		Auth = disp.auth(user, code, GenResource)
 	except KeyboardInterrupt:
 		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
-	except:
-		eBody = exc_info()
-		Print("Can't authenticate '%s'!\n\t'%s' - %s" % (source, eBody[0], eBody[1]), color2)
+	except Exception, exc:
+		Print("Can't authenticate '%s'!\n\t%s" % (source, exc_str(exc)), color2)
 		return (False, eCodes[2])
-	if Auth:
-		if Auth == "sasl":
-			Print("\n'%s' was successfully authenticated!" % (source), color3)
-		else:
-			Print("\n'%s' was authenticated, but old auth method is used...", color1)
+	if Auth == "sasl":
+		Print("\n'%s' was successfully authenticated!" % (source), color3)
+	elif Auth:
+		Print("\n'%s' was authenticated, but old authentication method used..." % (source), color1)
 	else:
 		eBody = str(disp.lastErr)
 		eCode = str(disp.lastErrCode)
@@ -1578,7 +1575,7 @@ def connectAndDispatch(disp):
 		for conf in Chats.itervalues():
 			if disp == conf.disp:
 				conf.join()
-		DispatchHandler(disp)
+		Dispatcher(disp)
 	else:
 		delivery(AnsBase[28] % (disp))
 
@@ -1602,32 +1599,35 @@ def ReverseDisp(disp, rejoin = True):
 		else:
 			sleep(60)
 
-def DispatchHandler(disp):
-	ZeroCycles = itypes.Number()
+def Dispatcher(disp):
+	disp = Clients[disp]
+	zero = itypes.Number()
 	while VarCache["alive"]:
 		try:
-			Cycle = Clients[disp].iter()
-			if not Cycle:
-				Cycles = ZeroCycles.plus()
-				if Cycles >= 16:
+			if not disp.iter():
+				if zero.plus() >= 16:
 					raise IOError("disconnected!")
 		except KeyboardInterrupt:
 			break
 		except iThr.ThrKill:
 			break
 		except IOError:
+			disp = get_disp(disp)
 			if not ReverseDisp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
-			ZeroCycles = itypes.Number()
+			disp = Clients[disp]
+			zero = itypes.Number()
 		except xmpp.Conflict:
-			delivery(AnsBase[29] % (disp))
+			delivery(AnsBase[29] % get_disp(disp))
 			break
 		except xmpp.SystemShutdown:
+			disp = get_disp(disp)
 			if not ReverseDisp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
-			ZeroCycles = itypes.Number()
+			disp = Clients[disp]
+			zero = itypes.Number()
 		except xmpp.StreamError:
 			pass
 		except:
@@ -1652,7 +1652,7 @@ def load_mark2():
 	for disp in Clients.keys():
 		ThrName = "%s-%s" % (Types[13], disp)
 		if ThrName not in iThr.ThrNames():
-			composeThr(DispatchHandler, ThrName, (disp,)).start()
+			composeThr(Dispatcher, ThrName, (disp,)).start()
 	while VarCache["alive"]:
 		sleep(180)
 		Cls = itypes.Number()
