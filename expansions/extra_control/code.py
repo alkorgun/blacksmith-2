@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "extra_control" # /code.py v.x10
-#  Id: 01~8c
-#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "extra_control" # /code.py v.x11
+#  Id: 01~9c
+#  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -15,25 +15,27 @@ class expansion_temp(expansion):
 	def command_turbo(self, stype, source, body, disp):
 		if body:
 			if self.sep in body:
-				ls = body.split(self.sep)
-				lslen = len(ls) - 1
-				if lslen < 4 or enough_access(source[1], source[2], 7):
-					for numb, body in enumerate(ls):
-						body = body.strip()
-						body = body.split(None, 1)
-						cmd = (body.pop(0)).lower()
-						if Cmds.has_key(cmd):
-							if body:
-								body = body[0]
+				ls = [body.strip() for body in body.split(self.sep)]
+				if all(ls):
+					lslen = len(ls) - 1
+					if lslen < 4 or enough_access(source[1], source[2], 7):
+						for numb, body in enumerate(ls):
+							body = body.split(None, 1)
+							cmd = (body.pop(0)).lower()
+							if Cmds.has_key(cmd):
+								if body:
+									body = body[0]
+								else:
+									body = ""
+								Cmds[cmd].execute(stype, source, body, disp)
+								if numb not in (0, lslen):
+									sleep(2)
 							else:
-								body = ""
-							Cmds[cmd].execute(stype, source, body, disp)
-							if numb not in (0, lslen):
-								sleep(2)
-						else:
-							answer = AnsBase[6]
+								answer = AnsBase[6]
+					else:
+						answer = AnsBase[10]
 				else:
-					answer = AnsBase[10]
+					answer = AnsBase[2]
 			else:
 				answer = AnsBase[2]
 		else:
