@@ -190,7 +190,7 @@ def get_exc():
 		exc = "(...)"
 	return exc
 
-exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0])
+exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0] if err.args else None)
 
 def exec_(instance, list = ()):
 	try:
