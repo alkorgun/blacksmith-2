@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x10
-#  Id: 13~9c
+# exp_name = "get_iq" # /code.py v.x11
+#  Id: 13~10c
 #  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -116,38 +116,15 @@ class expansion_temp(expansion):
 					break
 			if course:
 				hours, minutes = int(course + hours), int(course + minutes)
-				if not date:
-					date = list(time.gmtime())
-				days = (31, 31, (28 if (date[0] % 4) else 29), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-				date[4] += minutes
-				date[3] += hours
-				if date[4] >= 60:
-					date[4] -= 60
-					date[3] += 1
-				if date[3] >= 24:
-					date[3] -= 24
-					if course == chr(43):
-						date[2] += 1
-						if date[2] > days[date[1]]:
-							date[2] = 1
-							date[1] += 1
-							if date[1] > 12:
-								date[1] = 1
-								date[0] += 1
-					else:
-						date[2] -= 1
-						if not date[2]:
-							date[1] -= 1
-							date[2] = days[date[1]]
-							if not date[1]:
-								date[1] = 12
-								date[0] -= 1
 				try:
-					date = time.struct_time(date)
+					if date:
+						date = time.struct_time(date)
+					else:
+						date = time.gmtime()
 				except:
 					answer = self.AnsBase[6]
 				else:
-					answer = time.ctime(time.mktime(date))
+					answer = time.ctime(time.mktime(date) + hours*3600 + minutes*60)
 			else:
 				answer = self.AnsBase[6]
 			Answer(answer, stype, source, disp)
