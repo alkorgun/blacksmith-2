@@ -185,7 +185,7 @@ class expansion_temp(expansion):
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(Types[10], to = instance)
-		iq.addChild(Types[18], namespace = xmpp.NS_VCARD)
+		iq.addChild("vCard", namespace = xmpp.NS_VCARD)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_vcard, {"stype": stype, "source": source})
 

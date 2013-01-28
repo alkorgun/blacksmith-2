@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "extra_control" # /code.py v.x11
-#  Id: 01~9c
+# exp_name = "extra_control" # /code.py v.x12
+#  Id: 01~10c
 #  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -48,12 +48,12 @@ class expansion_temp(expansion):
 		if body:
 			body = body.split(None, 3)
 			if len(body) >= 3:
-				x = (body.pop(0)).lower()
-				if x in confs:
-					conf = x
-				elif isNumber(x):
-					Number = (int(x) - 1)
-					if Number >= 0 and Number <= len(confs):
+				arg0 = (body.pop(0)).lower()
+				if arg0 in confs:
+					conf = arg0
+				elif isNumber(arg0):
+					Number = (int(arg0) - 1)
+					if -1 < Number < len(confs):
 						conf = confs[Number]
 					else:
 						conf = None

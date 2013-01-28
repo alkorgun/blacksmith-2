@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "roster_control" # /code.py v.x3
-#  Id: 23~3c
-#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "roster_control" # /code.py v.x4
+#  Id: 23~4c
+#  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -15,63 +15,66 @@ class expansion_temp(expansion):
 	def command_roster(self, stype, source, body, disp):
 		cls = sorted(Clients.keys())
 		if body:
-			ls = body.split()
-			body = (ls.pop(0)).lower()
-			if body in cls:
-				Name = body
-			elif isNumber(body):
-				Number = (int(cls) - 1)
-				if Number >= 0 and Number <= len(cls):
+			body = body.split()
+			arg0 = (body.pop(0)).lower()
+			if arg0 in cls:
+				Name = arg0
+			elif isNumber(arg0):
+				Number = (int(arg0) - 1)
+				if -1 < Number < len(cls):
 					Name = cls[Number]
 				else:
 					Name = None
 			else:
 				Name = None
 			if Name:
-				if ls:
-					body = ls.pop(0)
-					if ls:
-						jid = (ls.pop(0)).lower()
-						if jid.count("."):
-							if body == "+":
-								Clients[Name].Roster.Authorize(jid)
-								Clients[Name].Roster.Subscribe(jid)
-								if ls:
-									Tabe = ("admin", "админ".decode("utf-8"))
-									Nick = ls.pop(0)
-									if ls and Tabe.count(ls[0].lower()):
-										Clients[Name].Roster.setItem(jid, Nick, ["Admins"])
+				if body:
+					arg0 = body.pop(0)
+					if body:
+						arg2 = (body.pop(0)).lower()
+						if (chr(46) in arg2):
+							Roster = getattr(Clients[Name], "Roster")
+							if Roster:
+								if arg0 == "+":
+									Roster.Authorize(arg2)
+									Roster.Subscribe(arg2)
+									if body:
+										Nick = body.pop(0)
+										if body and (body.pop(0)).lower() in ("admin", "админ".decode("utf-8")):
+											Roster.setItem(arg2, Nick, ["Admins"])
+										else:
+											Roster.setItem(arg2, Nick, ["Users"])
 									else:
-										Clients[Name].Roster.setItem(jid, Nick, ["Users"])
-								else:
-									Clients[Name].Roster.setItem(jid, (jid.split("@"))[0], ["Users"])
-								answer = AnsBase[4]
-							elif body == "-":
-								if jid in Clients[Name].Roster.keys():
-									Clients[Name].Roster.Unauthorize(jid)
-									Clients[Name].Roster.Unsubscribe(jid)
-									Clients[Name].Roster.delItem(jid)
+										Roster.setItem(arg2, (arg2.split("@"))[0], ["Users"])
 									answer = AnsBase[4]
+								elif arg0 == "-":
+									if arg2 in Clients[Name].Roster.keys():
+										Roster.Unauthorize(arg2)
+										Roster.Unsubscribe(arg2)
+										Roster.delItem(arg2)
+										answer = AnsBase[4]
+									else:
+										answer = self.AnsBase[0]
 								else:
-									answer = self.AnsBase[0]
+									answer = AnsBase[2]
 							else:
-								answer = AnsBase[2]
+								answer = AnsBase[7]
 						else:
 							answer = AnsBase[2]
 					else:
 						answer = AnsBase[2]
 				else:
-					Rdsp = getattr(Clients[Name], "Roster")
-					if Rdsp:
-						jids = Rdsp.keys()
+					Roster = getattr(Clients[Name], "Roster")
+					if Roster:
+						jids = Roster.keys()
 						for jid in jids:
-							if jid.count("@conference."):
+							if ("@conference." in jid):
 								jids.remove(jid)
-					if Rdsp and jids:
+					if Roster and jids:
 						Groups = {None: []}
 						for jid in jids:
-							Name = Rdsp.getName(jid)
-							Grps = Rdsp.getGroups(jid)
+							Name = Roster.getName(jid)
+							Grps = Roster.getGroups(jid)
 							if Grps:
 								Gp = sorted(Grps)[0]
 								if not Groups.has_key(Gp):
@@ -97,7 +100,8 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[2]
 		else:
 			answer = enumerated_list(cls)
-		Answer(answer, stype, source, disp)
+		if locals().has_key(Types[6]):
+			Answer(answer, stype, source, disp)
 
 	def command_roster_state(self, stype, source, body, disp):
 		if body:
