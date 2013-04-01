@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "config" # /code.py v.x5
-#  Id: 19~4c
-#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "config" # /code.py v.x6
+#  Id: 19~5c
+#  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -195,12 +195,12 @@ class expansion_temp(expansion):
 							for x in xrange(24):
 								code += choice(symbols)
 						if locals().has_key("changed"):
-							self.answer_register(disp, xmpp.Iq(Types[8]), stype, source, code)
+							self.answer_register(disp, xmpp.Iq(Types[8]), stype, source, code, disp)
 						elif online(Name):
 							Disp = Clients[Name]
 							iq = xmpp.Iq(Types[9] , xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])
 							Info["outiq"].plus()
-							CallForResponse(Disp, iq, self.answer_register, {"stype": stype, "source": source, "code": code})
+							CallForResponse(Disp, iq, self.answer_register, {"stype": stype, "source": source, "code": code, "str_disp": get_disp(disp)})
 						else:
 							answer = self.AnsBase[12]
 					else:
@@ -218,7 +218,7 @@ class expansion_temp(expansion):
 		if locals().has_key(Types[6]):
 			Answer(answer, stype, source)
 
-	def answer_register(self, disp, stanza, stype, source, code):
+	def answer_register(self, disp, stanza, stype, source, code, str_disp):
 		if xmpp.isResultNode(stanza):
 			Name = get_disp(disp)
 			if Name == GenDisp:
@@ -238,7 +238,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[4]
 		else:
 			answer = AnsBase[7]
-		Answer(answer, stype, source, disp)
+		Answer(answer, stype, source, str_disp)
 
 	commands = (
 		(command_config, "config", 8,),
