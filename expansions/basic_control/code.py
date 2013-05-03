@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "basic_control" # /code.py v.x12
-#  Id: 06~6c
-#  Code © (2009-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "basic_control" # /code.py v.x13
+#  Id: 06~7c
+#  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -19,11 +19,13 @@ class expansion_temp(expansion):
 			if Numb.plus() >= 50:
 				break
 
+	compile_chat = compile__("^.+?@(?:conference|muc|chat|room|group)\.[\w-]+?\.[\.\w-]+?$")
+
 	def command_join(self, stype, source, body, disp):
 		if body:
 			ls = body.split()
 			conf = (ls.pop(0)).lower()
-			if conf.count("@") and conf.count(".") >= 2:
+			if self.compile_chat.match(conf):
 				if conf not in Chats:
 					confname = dynamic % (conf)
 					if not check_nosimbols(confname):

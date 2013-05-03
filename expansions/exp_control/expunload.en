@@ -1,6 +1,6 @@
 expansions and functions unloader
-{command}xpansion] (function)
-*/unload talkers
+{command} [expansion] (function)
+*/{command} talkers
 bot would unload expansion "talkers"
-*/unload talkers calculate_talkers
-bot would unload talkers calculator (unloader should use only uers with experience)
+*/{command} talkers calculate_talkers
+bot would unload talkers calculator (unloader should use only users with experience)
