@@ -268,7 +268,7 @@ GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 
-(BsMark, BsVer, BsRev) = (2, 44, 0)
+(BsMark, BsVer, BsRev) = (2, 45, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -1442,16 +1442,18 @@ def XmppMessageCB(disp, stanza):
 	if stanza.getTimestamp():
 		xmpp_raise()
 	isConf = (inst in Chats)
-	if not isConf and not enough_access(inst, nick, 7):
+	if isConf:
+		Chat = Chats[inst]
+		if (not Mserve and not Chat.isModer):
+			xmpp_raise()
+	elif not enough_access(inst, nick, 7):
 		if not Roster["on"]:
 			xmpp_raise()
 		CheckFlood(disp)
-	if isConf and not Mserve and not Chats[inst].isModer:
-		xmpp_raise()
-	BotNick = (DefNick if not isConf else Chats[inst].nick)
+	BotNick = (Chat.nick if isConf else DefNick)
 	if nick == BotNick:
 		xmpp_raise()
-	Subject = stanza.getSubject()
+	Subject = isConf and stanza.getSubject()
 	body = stanza.getBody()
 	if body:
 		body = body.strip()
@@ -1467,7 +1469,7 @@ def XmppMessageCB(disp, stanza):
 			if code == eCodes[7]:
 				if not isConf:
 					xmpp_raise()
-				Chats[inst].join()
+				Chat.join()
 				sleep(0.6)
 			Message(source, body)
 		xmpp_raise()
@@ -1491,14 +1493,14 @@ def XmppMessageCB(disp, stanza):
 		temp = temp.split(None, 1)
 		command = (temp.pop(0)).lower()
 		temp = temp[0] if temp else ""
-		if not isToBs and isConf and Chats[inst].cPref and command not in sCmds:
-			if command.startswith(Chats[inst].cPref):
+		if not isToBs and isConf and Chat.cPref and command not in sCmds:
+			if command.startswith(Chat.cPref):
 				command = command[1:]
 			else:
 				command = None
 		elif isToBs and command not in Cmds and (command, inst) not in Macro and command.startswith(cPrefs):
 			command = command[1:]
-		if isConf and command in Chats[inst].oCmds:
+		if isConf and command in Chat.oCmds:
 			xmpp_raise()
 		Macro(inst, isConf, command, stype, source, nick, temp, disp)
 		if command in Cmds:
