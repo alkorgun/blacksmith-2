@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x23
-#  Id: 25~23c
+# exp_name = "allweb" # /code.py v.x24
+#  Id: 25~24c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -272,7 +272,7 @@ class expansion_temp(expansion):
 			c1st = (ls.pop(0)).lower()
 			if c1st in ("top250", "топ250".decode("utf-8")):
 				if ls:
-					limit = exec_(int, (ls.pop(0),))
+					limit = apply(int, (ls.pop(0),))
 					if limit <= 5:
 						limit = 5
 				else:
@@ -294,11 +294,10 @@ class expansion_temp(expansion):
 										'?<a href="/film/\d+?/votes/" class="continue">(.+?)</a> <span.*?>(.+?)</span>', 16)
 						list = comp.findall(list)
 					if list:
-						Number = itypes.Number()
 						ls = ["\n[#] [Name, Year] [Rating] (Votes)"]
-						for Name, Numb, Numb_ in list:
-							ls.append("%d) %s - %s (%s)" % (Number.plus(), self.sub_ehtmls(Name), Numb, sub_desc(Numb, ["&nbsp;"])))
-							if limit and limit <= Number._int():
+						for Number, (Name, Numb, Count) in enumerate(list, 1):
+							ls.append("%d) %s - %s (%s)" % (Number, self.sub_ehtmls(Name), Numb, sub_desc(Count, ["&nbsp;"])))
+							if limit and limit <= Number:
 								break
 						if not limit or limit > 25:
 							if stype == Types[1]:
@@ -312,7 +311,7 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[1]
 			elif isNumber(body):
-				Opener = Web("http://m.kinopoisk.ru/movie/%s" % (body), headers = self.kinoHeaders.copy())
+				Opener = Web("http://m.kinopoisk.ru/movie/%d" % int(body), headers = self.kinoHeaders.copy())
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError, exc:
@@ -352,10 +351,9 @@ class expansion_temp(expansion):
 						comp = compile__("<a href=\"http://m.kinopoisk.ru/movie/(\d+?)/\">(.+?)</a>")
 						list = comp.findall(data)
 						if list:
-							Number = itypes.Number()
 							ls = ["\n[#] [Name, Year] (#id)"]
-							for Numb, Name in list:
-								ls.append("%d) %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), Numb))
+							for Number, (Numb, Name) in enumerate(list, 1):
+								ls.append("%d) %s (#%s)" % (Number, self.sub_ehtmls(Name), Numb))
 							answer = str.join(chr(10), ls)
 						elif data.count(self.C3oP):
 							answer = self.AnsBase[-1]
@@ -370,13 +368,25 @@ class expansion_temp(expansion):
 
 	IMDbHeaders = {"Accept-Language": "%s,en" % UserAgents.get(DefLANG, "en-US")}
 
+	IMDbRequest = { # imdbapi.org
+		"type": "json",
+#		"id": "tt", # get info by ID
+#		"q": "any title", # for the search
+#		"limit": str(choice(range(1, 11))), # for the search
+		"plot": "none", # or "simple" or "full"
+		"episode": "0", # or "1"
+		"lang": UserAgents.get(DefLANG, "en-US"),
+		"aka": "simple", # or "full"
+		"release": "simple", # or "full"
+					}
+
 	def command_imdb(self, stype, source, body, disp):
 		if body:
 			ls = body.split()
 			c1st = (ls.pop(0)).lower()
 			if c1st in ("top250", "топ250".decode("utf-8")):
 				if ls:
-					limit = exec_(int, (ls.pop(0),))
+					limit = apply(int, (ls.pop(0),))
 					if limit <= 5:
 						limit = 5
 				else:
@@ -390,18 +400,17 @@ class expansion_temp(expansion):
 					answer = self.AnsBase[0]
 				else:
 					data = data.decode("utf-8")
-					list = get_text(data, '<div id="main">', "</div>")
-					if list:
+					data = get_text(data, '<div id="main">', "</div>")
+					if data:
 						comp = compile__('<td align="center">%s((?:\d\.\d)+|\d+?)</font></td><td>%s<a href="/title/tt\d+?/">' \
 										'(.+?)</a>(.+?)</font></td><td align="right">%s(.+?)</font>' \
 										'</td>' % (('<font face="Arial, Helvetica, sans-serif" size="-1">',)*3), 16)
-						list = comp.findall(list)
-					if list:
-						Number = itypes.Number()
+						data = comp.findall(data)
+					if data:
 						ls = ["\n[#] [Name, Year] [Rating] (Votes)"]
-						for Numb, Name, Year, Numb_ in list:
-							ls.append("%s) %s %s - %s (%s)" % (Number.plus(), self.sub_ehtmls(Name), Year.strip(), Numb, Numb_))
-							if limit and limit <= Number._int():
+						for Number, (Numb, Name, Year, Count) in enumerate(data, 1):
+							ls.append("%s) %s %s - %s (%s)" % (Number, self.sub_ehtmls(Name), Year.strip(), Numb, Count))
+							if limit and limit <= Number:
 								break
 						if not limit or limit > 25:
 							if stype == Types[1]:
@@ -413,7 +422,10 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[1]
 			elif isNumber(body):
-				Opener = Web("http://www.imdb.com/title/tt%s/" % (body), headers = self.IMDbHeaders)
+				IMDbRequest = self.IMDbRequest.copy()
+				IMDbRequest["id"] = ("tt" + body)
+				IMDbRequest["plot"] = "full"
+				Opener = Web("http://imdbapi.org/?", IMDbRequest.iteritems())
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError, exc:
@@ -421,42 +433,46 @@ class expansion_temp(expansion):
 				except:
 					answer = self.AnsBase[0]
 				else:
-					data = data.decode("utf-8")
-					Name = get_text(data, '<h1 class="header" itemprop="name">', "<span.*?>")
-					if Name:
-						ls = ["\->"]
-						Year = get_text(data, '<a href="/year/\d+?/">', "</a>", "\d+")
-						if Year:
-							ls.append("%s (%s)" % (Name, Year))
-						else:
-							ls.append(Name)
-						desc = get_text(data, '<p itemprop="description">', "</p>")
-						if desc:
-							ls.append(unichr(171) + self.decodeHTML(desc).strip() + unichr(187))
-						for Title in ("Director", "Star", "Writer"):
-							list = get_text(data, "<h4 class=\"inline\">\s*?%s[s]?:\s*?</h4>" % Title, "(?:<span>|</div>)")
-							if list:
-								comp = compile__(">(.+?)</a>")
-								list = comp.findall(list)
-								if list:
-									ls.append("%ss: %s" % (Title, str.join(", ", list)))
-						rValue = get_text(data, '<span itemprop="ratingValue">', "</span>")
-						if rValue:
-							rCount = get_text(data, '<span itemprop="ratingCount">', "</span>")
-							if rCount:
-								rValue = "%s (Votes: %s)" % (rValue, rCount)
-							ls.append("Rating: %s" % rValue)
-						if len(ls) >= 2:
-							answer = self.decodeHTML(str.join(chr(10), ls))
-						else:
-							answer = self.AnsBase[1]
-					else:
+					try:
+						data = self.json.loads(data)
+					except:
 						answer = self.AnsBase[1]
+					else:
+						ls = ["\->"]
+						try:
+
+							assert isinstance(data, dict)
+
+							ls.append("%s, %s, %s." % (data["title"], data["year"], str.join(chr(32), data.get("runtime", ("??",)))))
+							ls.append(", ".join(data["genres"]))
+							ls.append(", ".join(data["country"]))
+							temp = data.get("directors")
+							if temp:
+								ls.append("Directors: " + ", ".join(temp[:3]))
+							temp = data.get("writers")
+							if temp:
+								ls.append("Writers: " + ", ".join(temp[:3]))
+							temp = data.get("actors")
+							if temp:
+								ls.append("Stars: " + ", ".join(temp[:5]))
+							temp = data.get("plot") or data.get("plot_simple")
+							if temp:
+								ls.append(unichr(171) + temp + unichr(187))
+							temp = data.get("rating")
+							if temp:
+								ls.append("IMDb rating: %s (%s)" % (temp, data.get("rating_count", 0)))
+						except (AssertionError, TypeError, LookupError):
+							answer = self.AnsBase[5]
+						else:
+							answer = self.sub_ehtmls(str.join(chr(10), ls))
 			else:
 				body = (body if chr(42) != c1st else body[2:].strip())
 				if body:
 					body = body.encode("utf-8")
-					Opener = Web("http://www.imdb.com/find?", [("s", "tt"), ("q", body)], self.IMDbHeaders)
+					IMDbRequest = self.IMDbRequest.copy()
+					IMDbRequest["q"] = body
+					IMDbRequest["limit"] = "10"
+					Opener = Web("http://imdbapi.org/?", IMDbRequest.iteritems())
 					try:
 						data = Opener.get_page(self.UserAgent_Moz)
 					except Web.Two.HTTPError, exc:
@@ -464,19 +480,26 @@ class expansion_temp(expansion):
 					except:
 						answer = self.AnsBase[0]
 					else:
-						data = data.decode("utf-8")
-						list = get_text(data, "<table.*?>", "</table>")
-						if list:
-							comp = compile__("<td class=\"result_text\">\s<a href=\"/title/tt(\d+?)/\?ref_=fn_tt_tt_\d+?\">(.+?)</a>(.+?)</td>\s</tr>", 16)
-							list = comp.findall(list)
-						if list:
-							Number = itypes.Number()
-							ls = ["\n[#] [Name, Year] (#id)"]
-							for Numb, Name, Year in list[:20]:
-								ls.append("%d) %s %s (#%s)" % (Number.plus(), self.sub_ehtmls(Name), self.compile_st.sub("", Year.strip()), Numb))
-							answer = str.join(chr(10), ls)
+						try:
+							data = self.json.loads(data)
+						except:
+							answer = self.AnsBase[1]
 						else:
-							answer = self.AnsBase[5]
+							try:
+
+								assert isinstance(data, list)
+
+								data = sorted([(desc.get("rating"),
+												desc["title"],
+												desc["year"],
+												desc["imdb_id"][2:]) for desc in data], reverse = True)
+							except (AssertionError, TypeError, LookupError):
+								answer = self.AnsBase[5]
+							else:
+								ls = ["\n[#] [Name, Year] (#id)"]
+								for Number, (Numb, Name, Year, ID) in enumerate(data, 1):
+									ls.append("%d) %s, %s (#%s)" % (Number, Name, Year, ID))
+								answer = self.sub_ehtmls(str.join(chr(10), ls))
 				else:
 					answer = AnsBase[2]
 		else:

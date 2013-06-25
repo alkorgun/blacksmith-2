@@ -1,13 +1,14 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "wtf" # /code.py v.x3
-#  Id: 28~3c
-#  Code © (2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "wtf" # /code.py v.x4
+#  Id: 28~4c
+#  Code © (2012-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
+		check_sqlite()
 		expansion.__init__(self, name)
 
 	Base = dynamic % ("wtf.db")

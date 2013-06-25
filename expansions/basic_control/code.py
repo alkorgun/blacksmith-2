@@ -74,7 +74,7 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[3] % (conf)
 							sleep(3.6)
-							if ejoinTimerName(conf) in iThr.ThrNames():
+							if ejoinTimerName(conf) in iThr.getNames():
 								answer += self.AnsBase[13]
 					else:
 						answer = self.AnsBase[15] % (conf)
@@ -135,20 +135,18 @@ class expansion_temp(expansion):
 			Name = body.split()[0].lower()
 		else:
 			Name = get_disp(disp)
-		if InstansesDesc.has_key(Name):
+		if InstancesDesc.has_key(Name):
 			ThrName = "%s-%s" % (Types[13], Name)
 			if Clients.has_key(Name):
-				ThrIds = iThr.ThrNames()
-				if ThrName in ThrIds:
-					for Thr in iThr.enumerate():
-						if Thr._Thread__name == ThrName:
-							Thr.kill()
+				for Thr in iThr.enumerate():
+					if ThrName == Thr.getName():
+						Thr.kill()
 				if online(Name):
 					try:
 						Clients[Name].disconnect()
 					except IOError:
 						pass
-			if connect_client(Name, InstansesDesc[Name])[0]:
+			if connect_client(Name, InstancesDesc[Name])[0]:
 				try:
 					StartThr(composeThr(Dispatcher, ThrName, (Name,)), -1)
 				except RuntimeError:
@@ -173,7 +171,7 @@ class expansion_temp(expansion):
 				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
-		iThr.Threads_kill()
+		iThr.killAllThreads()
 		for disp in Clients.keys():
 			if online(disp):
 				sUnavailable(disp, exit_desclr)
@@ -189,7 +187,7 @@ class expansion_temp(expansion):
 				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
-		iThr.Threads_kill()
+		iThr.killAllThreads()
 		for disp in Clients.keys():
 			if online(disp):
 				sUnavailable(disp, exit_desclr)

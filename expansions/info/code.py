@@ -11,8 +11,8 @@ class expansion_temp(expansion):
 		expansion.__init__(self, name)
 
 	def command_online(self, stype, source, body, disp):
-		ls, ThrIds = self.AnsBase[7], iThr.ThrNames()
-		for numb, disp_ in enumerate(sorted(InstansesDesc.keys()), 1):
+		ls, ThrIds = self.AnsBase[7], iThr.getNames()
+		for numb, disp_ in enumerate(sorted(InstancesDesc.keys()), 1):
 			alive = str("%s-%s" % (Types[13], disp_) in ThrIds)
 			connect = online(disp_)
 			if not connect:

@@ -3,11 +3,12 @@
 #  BlackSmith mark.2
 # exp_name = "books" # /code.py v.x8
 #  Id: 29~8c
-#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
+#  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
+		check_sqlite()
 		expansion.__init__(self, name)
 
 	import fb2
@@ -82,11 +83,11 @@ class expansion_temp(expansion):
 
 	def command_get_books(self, stype, source, body, disp):
 		if body:
-			list = body.split()
-			a1 = (list.pop(0)).lower()
+			args = body.split()
+			a1 = (args.pop(0)).lower()
 			if a1 in ("show", "показать".decode("utf-8")):
-				if list:
-					a2 = (list.pop(0)).lower()
+				if args:
+					a2 = (args.pop(0)).lower()
 					if a2 in ("names", "названия".decode("utf-8")):
 						with database(self.BooksFile) as db:
 							db("select name from books order by name")
@@ -108,7 +109,7 @@ class expansion_temp(expansion):
 										}
 						if desc.has_key(a2):
 							a2 = desc.get(a2, None)
-						if a2 in ls and list:
+						if a2 in ls and args:
 							a3 = body[((body.lower()).find(a0) + len(a0)):].strip()
 							if a2 in ("author", "genre"):
 								with database(self.BooksFile) as db:
@@ -148,7 +149,7 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[0]
 			elif a1 in ("info", "инфо".decode("utf-8")):
-				if list:
+				if args:
 					a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 					a3 = self.getID(a2)
 					with database(self.BooksFile) as db:
@@ -184,8 +185,8 @@ class expansion_temp(expansion):
 					answer = AnsBase[2]
 			elif a1 in ("read", "читать".decode("utf-8")):
 				jid = get_source(source[1], source[2])
-				if list:
-					a2 = (list.pop(0)).lower()
+				if args:
+					a2 = (args.pop(0)).lower()
 					if a2 in ("next", "далее".decode("utf-8")):
 						if jid:
 							with database(self.ReadersFile) as db:
@@ -248,23 +249,23 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			with database(self.BooksFile) as db:
-				db("select id from books")
-				db_desc = db.fetchall()
-			if db_desc:
-				answer = self.AnsBase[8] % len(db_desc)
+				db("select count(id) from books")
+				count = db.fetchone()
+			if count[0]:
+				answer = self.AnsBase[8] % count
 			else:
 				answer = self.AnsBase[0]
 		Answer(answer, stype, source, disp)
 
 	def command_set_books(self, stype, source, body, disp):
 		if body:
-			list = body.split()
-			if len(list) >= 2:
-				a1 = (list.pop(0)).lower()
+			args = body.split()
+			if len(args) >= 2:
+				a1 = (args.pop(0)).lower()
 				if a1 in ("add", "добавить".decode("utf-8")):
-					a2 = (list.pop(0)).lower()
+					a2 = (args.pop(0)).lower()
 					if a2 in ("file", "fb2", "файл".decode("utf-8")):
-						if list:
+						if args:
 							Path = body[((body.lower()).find(a2) + len(a2)):].strip()
 							if AsciiSys:
 								Path = Path.encode("utf-8")
@@ -299,12 +300,12 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[15]
 				elif a1 in ("edit", "править".decode("utf-8")):
-					if len(list) >= 4:
-						a2 = self.getID(list.pop(0))
+					if len(args) >= 4:
+						a2 = self.getID(args.pop(0))
 						if a2:
-							a3 = (list.pop(0)).lower()
+							a3 = (args.pop(0)).lower()
 							if a3 in ("info", "инфо".decode("utf-8")):
-								a4 = (list.pop(0)).lower()
+								a4 = (args.pop(0)).lower()
 								a0, ls = a4, "author;year;genre;seq1;seq2;cover;annotation;link;name;c0".split(";")
 								desc = {
 									"автор".decode("utf-8"): ls[0],
@@ -322,7 +323,7 @@ class expansion_temp(expansion):
 								if desc.has_key(a4):
 									a4 = desc.get(a4, None)
 								if a4 in ls:
-									a5 = (list.pop(0)).lower()
+									a5 = (args.pop(0)).lower()
 									if a4 in (ls[1], ls[4]):
 										if isNumber(a5):
 											a5 = int(a5)
@@ -354,7 +355,7 @@ class expansion_temp(expansion):
 										db("select page from %s" % a2)
 										lines = db.fetchall()
 										llens = len(lines)
-										a4 = (list.pop(0)).lower()
+										a4 = (args.pop(0)).lower()
 										if a4 in ("add", "добавить".decode("utf-8")):
 											a5 = body[((body.lower()).find(a4) + len(a4)):].strip()
 											if llens:
@@ -366,9 +367,9 @@ class expansion_temp(expansion):
 											db.commit()
 											answer = AnsBase[4]
 										elif a4 in ("delete", "удалить".decode("utf-8")):
-											a5 = (list.pop(0)).lower()
-											if list:
-												a6 = list.pop(0)
+											a5 = (args.pop(0)).lower()
+											if args:
+												a6 = args.pop(0)
 												if isNumber(a6):
 													a6 = int(a6)
 													if a5 in ("before", "до".decode("utf-8")):
@@ -436,7 +437,7 @@ class expansion_temp(expansion):
 					else:
 						answer = AnsBase[2]
 				elif a1 in ("delete", "удалить".decode("utf-8")):
-					a2 = self.getID(list.pop(0))
+					a2 = self.getID(args.pop(0))
 					if a2:
 						with database(self.BooksFile) as db:
 							db("select * from books where id=?", (a2,))

@@ -1,18 +1,21 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "talkers" # /code.py v.x5
-#  Id: 14~4c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "talkers" # /code.py v.x6
+#  Id: 14~5c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
+		check_sqlite()
 		expansion.__init__(self, name)
 
 	TalkersFile = "talkers.db"
 
 	TalkersDesc = {}
+
+	db = lambda self, conf: database(cefile(chat_file(conf, self.TalkersFile)), self.TalkersDesc[conf])
 
 	def command_talkers(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -29,11 +32,9 @@ class expansion_temp(expansion):
 						else:
 							Number = 0
 						if a2 in ("local", "локальный".decode("utf-8")):
-							filename = cefile(chat_file(source[1], self.TalkersFile))
-							with self.TalkersDesc[source[1]]:
-								with database(filename) as db:
-									db("select * from talkers order by -msgs")
-									db_desc = db.fetchmany(Number if Number > 0 else 10)
+							with self.db(source[1]) as db:
+								db("select * from talkers order by -msgs")
+								db_desc = db.fetchmany(Number if Number > 0 else 10)
 							if db_desc:
 								answer, Numb = self.AnsBase[0], itypes.Number()
 								for x in db_desc:
@@ -43,11 +44,9 @@ class expansion_temp(expansion):
 						elif a2 in ("global", "глобальный".decode("utf-8")):
 							Glob_dbs = {}
 							for conf in Chats.keys():
-								filename = cefile(chat_file(conf, self.TalkersFile))
-								with self.TalkersDesc[conf]:
-									with database(filename) as db:
-										db("select * from talkers order by -msgs")
-										db_desc = db.fetchmany(256)
+								with self.db(conf) as db:
+									db("select * from talkers order by -msgs")
+									db_desc = db.fetchmany(256)
 								for x in db_desc:
 									if Glob_dbs.has_key(x[0]):
 										Glob_dbs[x[0]][2] += x[2]
@@ -76,11 +75,9 @@ class expansion_temp(expansion):
 						def get_talker_stats(source_):
 							x, y = 0, 0
 							for conf in Chats.keys():
-								filename = cefile(chat_file(conf, self.TalkersFile))
-								with self.TalkersDesc[conf]:
-									with database(filename) as db:
-										db("select * from talkers where jid=?", (source_,))
-										db_desc = db.fetchone()
+								with self.db(conf) as db:
+									db("select * from talkers where jid=?", (source_,))
+									db_desc = db.fetchone()
 								if db_desc:
 									x += db_desc[2]
 									y += db_desc[3]
@@ -108,11 +105,9 @@ class expansion_temp(expansion):
 							else:
 								Glob_dbs = {}
 								for conf in Chats.keys():
-									filename = cefile(chat_file(conf, self.TalkersFile))
-									with self.TalkersDesc[conf]:
-										with database(filename) as db:
-											db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
-											db_desc = db.fetchmany(10)
+									with self.db(conf) as db:
+										db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+										db_desc = db.fetchmany(10)
 									for x in db_desc:
 										if Glob_dbs.has_key(x[0]):
 											Glob_dbs[x[0]][2] += x[2]
@@ -138,11 +133,9 @@ class expansion_temp(expansion):
 						a2 = body[((body.lower()).find(a1) + len(a1)):].strip()
 
 						def get_talker_stats(source_, conf):
-							filename = cefile(chat_file(conf, self.TalkersFile))
-							with self.TalkersDesc[conf]:
-								with database(filename) as db:
-									db("select * from talkers where jid=?", (source_,))
-									x = db.fetchone()
+							with self.db(conf) as db:
+								db("select * from talkers where jid=?", (source_,))
+								x = db.fetchone()
 							if x:
 								answer = self.AnsBase[2] % (x[2], x[3], str(round((float(x[3]) / x[2]), 1)))
 							else:
@@ -165,11 +158,9 @@ class expansion_temp(expansion):
 							if source_:
 								answer = get_talker_stats(source_, source[1])
 							else:
-								filename = cefile(chat_file(source[1], self.TalkersFile))
-								with self.TalkersDesc[source[1]]:
-									with database(filename) as db:
-										db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
-										db_desc = db.fetchmany(10)
+								with self.db(source[1]) as db:
+									db("select * from talkers where (jid like ? or lastnick like ?) order by -msgs", (a2, a2))
+									db_desc = db.fetchmany(10)
 								if db_desc:
 									answer, Numb = self.AnsBase[0], itypes.Number()
 									for x in db_desc:
@@ -192,16 +183,14 @@ class expansion_temp(expansion):
 			source_ = get_source(source[1], source[2])
 			if source_:
 				nick = source[2].strip()
-				filename = cefile(chat_file(source[1], self.TalkersFile))
-				with self.TalkersDesc[source[1]]:
-					with database(filename) as db:
-						db("select * from talkers where jid=?", (source_,))
-						db_desc = db.fetchone()
-						if db_desc:
-							db("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_desc[2] + 1), (db_desc[3] + len(body.split())), source_))
-						else:
-							db("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
-						db.commit()
+				with self.db(source[1]) as db:
+					db("select * from talkers where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc:
+						db("update talkers set lastnick=?, msgs=?, words=? where jid=?", (nick, (db_desc[2] + 1), (db_desc[3] + len(body.split())), source_))
+					else:
+						db("insert into talkers values (?,?,?,?)", (source_, nick, 1, len(body.split())))
+					db.commit()
 
 	def init_talkers_base(self, conf):
 		filename = cefile(chat_file(conf, self.TalkersFile))

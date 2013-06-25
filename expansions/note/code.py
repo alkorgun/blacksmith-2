@@ -1,13 +1,14 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "note" # /code.py v.x7
-#  Id: 22~6c
-#  Code © (2010-2011) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "note" # /code.py v.x8
+#  Id: 22~7c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
+		check_sqlite()
 		expansion.__init__(self, name)
 
 	NoteFile = dynamic % ("notepad.db")

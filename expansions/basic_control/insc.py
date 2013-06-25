@@ -28,7 +28,7 @@ else:
 		"I have joined -> '%s'", # 2
 		"I can't join -> '%s'", # 3
 		"Attention! %s (%s) ordered me to leave -> '%s'", # 4
-		"Chat is already in list.", # 5
+		"Chat is already in the list.", # 5
 		"Apparently '%s' isn't a conference. I wouldn't join it.", # 6
 		"I'm %s -» XMPP BOT. Joined by order from %s", # 7
 		"Rejoin by command from %s", # 8

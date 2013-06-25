@@ -1,18 +1,21 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "user_stats" # /code.py v.x6
-#  Id: 17~5c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "user_stats" # /code.py v.x7
+#  Id: 17~6c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
 	def __init__(self, name):
+		check_sqlite()
 		expansion.__init__(self, name)
 
 	UstatsFile = "jstat.db"
 
 	UstatsDesc = {}
+
+	db = lambda self, conf: database(cefile(chat_file(conf, self.UstatsFile)), self.UstatsDesc[conf])
 
 	def command_user_stats(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -20,11 +23,9 @@ class expansion_temp(expansion):
 				body = get_source(source[1], source[2])
 			elif Chats[source[1]].isHere(body):
 				body = get_source(source[1], body)
-			filename = cefile(chat_file(source[1], self.UstatsFile))
-			with self.UstatsDesc[source[1]]:
-				with database(filename) as db:
-					db("select * from stat where jid=?", (body,))
-					db_desc = db.fetchone()
+			with self.db(source[1]) as db:
+				db("select * from stat where jid=?", (body,))
+				db_desc = db.fetchone()
 			if db_desc:
 				answer = self.AnsBase[0] % (db_desc[3], db_desc[2], db_desc[1])
 				if db_desc[3] >= 2 and db_desc[4]:
@@ -54,22 +55,21 @@ class expansion_temp(expansion):
 
 	def calc_stat_04eh(self, conf, nick, instance, role, stanza, disp):
 		if instance and nick != get_nick(conf):
-			date, filename = strfTime(local = False), cefile(chat_file(conf, self.UstatsFile))
-			with self.UstatsDesc[conf]:
-				with database(filename) as db:
-					db("select * from stat where jid=?", (instance,))
-					db_desc = db.fetchone()
-					if db_desc:
-						db("update stat set joined=?, joins=? where jid=?", (date, (db_desc[3] + 1), instance))
-						if nick not in db_desc[6].split("-/-"):
-							db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), instance))
-						arole = "%s/%s" % (role)
-						if db_desc[1] != arole:
-							db("update stat set arole=? where jid=?", (arole, instance))
-						db.commit()
-					else:
-						db("insert into stat values (?,?,?,?,?,?,?)", (instance, "%s/%s" % (role), date, 1, "", "", nick))
-						db.commit()
+			date = strfTime(local = False)
+			with self.db(conf) as db:
+				db("select * from stat where jid=?", (instance,))
+				db_desc = db.fetchone()
+				if db_desc:
+					db("update stat set joined=?, joins=? where jid=?", (date, (db_desc[3] + 1), instance))
+					if nick not in db_desc[6].split("-/-"):
+						db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), instance))
+					arole = "%s/%s" % (role)
+					if db_desc[1] != arole:
+						db("update stat set arole=? where jid=?", (arole, instance))
+					db.commit()
+				else:
+					db("insert into stat values (?,?,?,?,?,?,?)", (instance, "%s/%s" % (role), date, 1, "", "", nick))
+					db.commit()
 
 	def calc_stat_05eh(self, conf, nick, sbody, scode, disp):
 		if nick != get_nick(conf):
@@ -80,42 +80,37 @@ class expansion_temp(expansion):
 					sbody = "banned:(%s)" % (sbody)
 				elif scode == sCodes[2]:
 					sbody = "kicked:(%s)" % (sbody)
-				date, filename = strfTime(local = False), cefile(chat_file(conf, self.UstatsFile))
-				with self.UstatsDesc[conf]:
-					with database(filename) as db:
-						db("select * from stat where jid=?", (source_,))
-						db_desc = db.fetchone()
-						if db_desc:
-							db("update stat set seen=?, leave=? where jid=?", (date, sbody, source_))
-							db.commit()
+				date = strfTime(local = False)
+				with self.db(conf) as db:
+					db("select * from stat where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc:
+						db("update stat set seen=?, leave=? where jid=?", (date, sbody, source_))
+						db.commit()
 
 	def calc_stat_06eh(self, conf, old_nick, nick, disp):
 		if nick != get_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				filename = cefile(chat_file(conf, self.UstatsFile))
-				with self.UstatsDesc[conf]:
-					with database(filename) as db:
-						db("select * from stat where jid=?", (source_,))
-						db_desc = db.fetchone()
-						if db_desc and nick not in db_desc[6].split("-/-"):
-							db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), source_))
-							db.commit()
+				with self.db(conf) as db:
+					db("select * from stat where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc and nick not in db_desc[6].split("-/-"):
+						db("update stat set nicks=? where jid=?", ("%s-/-%s" % (db_desc[6], nick), source_))
+						db.commit()
 
 	def calc_stat_07eh(self, conf, nick, role, disp):
 		if nick != get_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				filename = cefile(chat_file(conf, self.UstatsFile))
-				with self.UstatsDesc[conf]:
-					with database(filename) as db:
-						db("select * from stat where jid=?", (source_,))
-						db_desc = db.fetchone()
-						if db_desc:
-							arole = "%s/%s" % (role)
-							if db_desc[1] != arole:
-								db("update stat set arole=? where jid=?", (arole, source_))
-								db.commit()
+				with self.db(conf) as db:
+					db("select * from stat where jid=?", (source_,))
+					db_desc = db.fetchone()
+					if db_desc:
+						arole = "%s/%s" % (role)
+						if db_desc[1] != arole:
+							db("update stat set arole=? where jid=?", (arole, source_))
+							db.commit()
 
 	def init_stat_base(self, conf):
 		filename = cefile(chat_file(conf, self.UstatsFile))

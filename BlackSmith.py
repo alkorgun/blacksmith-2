@@ -169,6 +169,10 @@ Info = {
 class SelfExc(Exception):
 	pass
 
+def check_sqlite():
+
+	assert itypes.sqlite3, "py-sqlite3 required"
+
 def exc_info():
 	exc, err, tb = sys.exc_info()
 	if exc and err:
@@ -192,9 +196,9 @@ def get_exc():
 
 exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0] if err.args else None)
 
-def exec_(instance, list = ()):
+def apply(instance, args = ()):
 	try:
-		code = instance(*list)
+		code = instance(*args)
 	except:
 		code = None
 	return code
@@ -267,8 +271,9 @@ GenInscFile = static % ("insc.py")
 GenConFile = static % ("config.ini")
 ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
+ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 45, 0)
+(BsMark, BsVer, BsRev) = (2, 46, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -304,7 +309,7 @@ try:
 	GenCon = ConfigParser.ConfigParser()
 	GenCon.read(GenConFile)
 	GenDisp, Instance = client_config(GenCon, "CLIENT")
-	InstansesDesc = {GenDisp: Instance}
+	InstancesDesc = {GenDisp: Instance}
 	ConTls = eval(GenCon.get("STATES", "TLS"))
 	Mserve = eval(GenCon.get("STATES", "MSERVE"))
 	GetExc = eval(GenCon.get("STATES", "GETEXC"))
@@ -322,7 +327,7 @@ try:
 		ConDisp.read(ConDispFile)
 		for Block in ConDisp.sections():
 			Disp, Instance = client_config(ConDisp, Block)
-			InstansesDesc[Disp] = Instance
+			InstancesDesc[Disp] = Instance
 except:
 	Exit("\n\nOne of the configuration files is corrupted!", 1, 30)
 
@@ -394,7 +399,7 @@ def composeThr(handler, Name, list = (), command = None):
 	return iThr.KThread(execute_handler, Name, (handler, list, command,))
 
 def StartThr(Thr, Number = 0):
-	if Number > 3:
+	if Number > 2:
 		raise RuntimeError("exit")
 	try:
 		Thr.start()
@@ -662,9 +667,13 @@ class sConf(object):
 
 	get_nicks = lambda self: self.desc.keys()
 
-	sorted_users = lambda self: [self.get_user(nick) for nick in sorted(self.get_nicks())]
-
 	get_users = lambda self: self.desc.values()
+
+	def sorted_users(self):
+		for user in sorted(self.get_nicks()):
+			user = self.get_user(user)
+			if user:
+				yield user
 
 	def sjoined(self, nick, role, source, stanza):
 		access = Galist.get(source, None)
@@ -750,7 +759,9 @@ class sConf(object):
 					del desc[self.name]
 			else:
 				desc[self.name] = {"disp": self.disp, Types[12]: self.nick, "cPref": self.cPref, "code": self.code}
-			cat_file(ChatsFile, str(desc))
+			desc = str(desc)
+			cat_file(ChatsFileBackup, desc)
+			cat_file(ChatsFile, desc)
 		else:
 			delivery(self.name)
 
@@ -998,7 +1009,7 @@ def initialize_file(filename, data = "{}"):
 	return True
 
 def del_file(filename):
-	exec_(os.remove, (cefile(filename),))
+	apply(os.remove, (cefile(filename),))
 
 def get_file(filename):
 	with open(cefile(filename), "r") as fp:
@@ -1083,7 +1094,7 @@ def get_pipe(command):
 		data = "(...)"
 	return data
 
-class Web:
+class Web(object):
 
 	import urllib as One, urllib2 as Two
 
@@ -1121,8 +1132,8 @@ class Web:
 		else:
 			raise SelfExc("no info about file's size")
 		if not filename:
-			if info.has_key("Content-Disposition"):
-				disp = info.get("Content-Disposition")
+			disp = info.get("Content-Disposition")
+			if disp:
 				comp = compile__("filename=[\"']+?(.+?)[\"']+?")
 				disp = comp.search(disp)
 				if disp:
@@ -1163,7 +1174,7 @@ def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
 		body = (body.group(1)).strip()
 	return body
 
-def sub_desc(body, ls, sub = None):
+def sub_desc(body, ls, sub = str()):
 	if isinstance(ls, dict):
 		for x, z in ls.items():
 			body = body.replace(x, z)
@@ -1171,11 +1182,11 @@ def sub_desc(body, ls, sub = None):
 		for x in ls:
 			if isinstance(x, (list, tuple)):
 				if len(x) >= 2:
-					body = body.replace(x[0], x[1])
+					body = body.replace(*x[:2])
 				else:
-					body = body.replace(x[0], (sub if sub else ""))
+					body = body.replace(x[0], sub)
 			else:
-				body = body.replace(x, (sub if sub else ""))
+				body = body.replace(x, sub)
 	return body
 
 strfTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
@@ -1208,7 +1219,7 @@ def Size2Text(Size):
 
 enumerated_list = lambda ls: str.join(chr(10), ["%d) %s" % (numb, line) for numb, line in enumerate(ls, 1)])
 
-isNumber = lambda obj: (not exec_(int, (obj,)) is None)
+isNumber = lambda obj: (not apply(int, (obj,)) is None)
 
 isSource = lambda jid: isJID.match(jid)
 
@@ -1223,16 +1234,17 @@ def calculate(Numb = int()):
 		lines = get_pipe(sys_cmds[0] % (BsPid)).splitlines()
 		if len(lines) >= 2:
 			Numb = lines[1].strip()
-	return (int() if not isNumber(Numb) else int(Numb))
+	return (0 if not isNumber(Numb) else int(Numb))
 
 def check_copies():
 	Cache = Base = {"PID": BsPid, "up": Info["sess"], "alls": []}
 	if os.path.isfile(PidFile):
 		try:
 			Cache = eval(get_file(PidFile))
-		except:
+		except SyntaxError:
 			del_file(PidFile)
-			Cache = Base
+		except:
+			pass
 		else:
 			try:
 				if BsPid == Cache["PID"]:
@@ -1243,21 +1255,21 @@ def check_copies():
 					os.kill(Cache["PID"], 9); raise SelfExc()
 			except:
 				Cache = Base
-	exec_(cat_file, (PidFile, str(Cache)))
+	apply(cat_file, (PidFile, str(Cache)))
 	del Cache["PID"]; Info.update(Cache)
 
 def join_chats():
 	if initialize_file(ChatsFile):
 		try:
-			Confs = eval(get_file(ChatsFile))
+			try:
+				Confs = eval(get_file(ChatsFile))
+			except SyntaxError:
+				Confs = eval(get_file(ChatsFileBackup))
 		except KeyboardInterrupt:
 			raise KeyboardInterrupt("Interrupt (Ctrl+C)")
-		except SyntaxError:
-			del_file(ChatsFile); initialize_file(ChatsFile)
-			Confs = {}
 		except:
 			Confs = {}
-		Print("\n\nThere are %d rooms in list..." % len(Confs.keys()), color4)
+		Print("\n\nThere are %d rooms in the list..." % len(Confs.keys()), color4)
 		for conf, desc in Confs.iteritems():
 			Chats[conf] = Chat = sConf(conf, added = True, **desc)
 			Chat.load_all()
@@ -1301,7 +1313,7 @@ def XmppPresenceCB(disp, stanza):
 				elif ecode in (eCodes[5], eCodes[12]):
 					Chat.IamHere = False
 					TimerName = ejoinTimerName(conf)
-					if TimerName not in iThr.ThrNames():
+					if TimerName not in iThr.getNames():
 						try:
 							composeTimer(360, ejoinTimer, TimerName, (conf,)).start()
 						except iThr.error:
@@ -1582,7 +1594,7 @@ def connectAndDispatch(disp):
 		delivery(AnsBase[28] % (disp))
 
 def connect_clients():
-	for Inctance, Attrs in InstansesDesc.items():
+	for Inctance, Attrs in InstancesDesc.items():
 		conn = connect_client(Inctance, Attrs)
 		if not conn[0]:
 			if conn[1] and conn[1] == eCodes[2]:
@@ -1592,7 +1604,7 @@ def connect_clients():
 def ReverseDisp(disp, rejoin = True):
 	Iters = itypes.Number()
 	while 1440 > Iters.plus():
-		if connect_client(disp, InstansesDesc[disp])[0]:
+		if connect_client(disp, InstancesDesc[disp])[0]:
 			if rejoin:
 				for conf in Chats.itervalues():
 					if disp == conf.disp:
@@ -1653,15 +1665,15 @@ def load_mark2():
 	call_sfunctions("02si")
 	for disp in Clients.keys():
 		ThrName = "%s-%s" % (Types[13], disp)
-		if ThrName not in iThr.ThrNames():
+		if ThrName not in iThr.getNames():
 			composeThr(Dispatcher, ThrName, (disp,)).start()
 	while VarCache["alive"]:
 		sleep(180)
 		Cls = itypes.Number()
-		for Name in iThr.ThrNames():
+		for Name in iThr.getNames():
 			if Name.startswith(Types[13]):
 				Cls.plus()
-		if Cls._int() == 0:
+		if not int(Cls):
 			sys_exit("All of the clients now fallen!")
 		sys.exc_clear()
 		gc.collect()
@@ -1671,7 +1683,7 @@ def load_mark2():
 def sys_exit(exit_desclr = "Suicide!"):
 	VarCache["alive"] = False
 	Print("\n\n%s" % (exit_desclr), color2)
-	iThr.Threads_kill()
+	iThr.killAllThreads()
 	for disp in Clients.keys():
 		if online(disp):
 			sUnavailable(disp, exit_desclr)

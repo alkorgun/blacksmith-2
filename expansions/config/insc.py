@@ -28,7 +28,7 @@ else:
 		"Forbidden!", # 7
 		"The system can not allocate resources to another client.", # 8
 		"No connection.", # 9
-		"This jid is already in list.", # 10
+		"This jid is already in the list.", # 10
 		"'%s' not in clients-list.", # 11
 		"'%s' is offline." # 12
 					)

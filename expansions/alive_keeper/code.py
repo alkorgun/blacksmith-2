@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "alive_keeper" # /code.py v.x7
-#  Id: 16~7c
-#  Code © (2011-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "alive_keeper" # /code.py v.x8
+#  Id: 16~8c
+#  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -18,7 +18,7 @@ class expansion_temp(expansion):
 
 		while VarCache["alive"]:
 			sleep(120)
-			ThrIds = iThr.ThrNames()
+			ThrIds = iThr.getNames()
 			for disp_str, disp in Clients.iteritems():
 				if not hasattr(disp, "aKeeper"):
 					disp.aKeeper = itypes.Number()
@@ -27,7 +27,7 @@ class expansion_temp(expansion):
 					ThrName = "%s-%s" % (Types[13], disp_str)
 					if ThrName in ThrIds:
 						for Thr in iThr.enumerate():
-							if Thr._Thread__name == ThrName:
+							if ThrName == Thr.getName():
 								Thr.kill()
 					try:
 						composeThr(connectAndDispatch, ThrName, (disp_str,)).start()
@@ -58,7 +58,7 @@ class expansion_temp(expansion):
 
 		while VarCache["alive"]:
 			sleep(360)
-			ThrIds = iThr.ThrNames()
+			ThrIds = iThr.getNames()
 			for conf in Chats.itervalues():
 				if not (online(conf.disp) and conf.IamHere):
 					continue
@@ -89,8 +89,7 @@ class expansion_temp(expansion):
 		Name1 = self.alive_keeper.func_name
 		Name2 = self.conf_alive_keeper.func_name
 		for Thr in iThr.enumerate():
-			ThrName = Thr._Thread__name
-			if ThrName.startswith((Name1, Name2)):
+			if Thr.name.startswith((Name1, Name2)):
 				Thr.kill()
 		composeThr(self.alive_keeper, Name1).start()
 		composeThr(self.conf_alive_keeper, Name2).start()

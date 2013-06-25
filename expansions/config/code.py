@@ -71,12 +71,12 @@ class expansion_temp(expansion):
 
 	def command_cls_config(self, stype, source, body, disp):
 		if body:
-			list = body.split()
-			if len(list) >= 2:
-				body = (list.pop(0)).lower()
+			args = body.split()
+			if len(args) >= 2:
+				body = (args.pop(0)).lower()
 				if body in ("del", "удалить".decode("utf-8")):
-					Name = (list.pop(0)).lower()
-					if InstansesDesc.has_key(Name):
+					Name = (args.pop(0)).lower()
+					if InstancesDesc.has_key(Name):
 						clients = Clients.keys()
 						if not Clients.has_key(Name) or len(clients) >= 2:
 							if Name == GenDisp:
@@ -99,12 +99,10 @@ class expansion_temp(expansion):
 									if Gen == client_config(ConDisp, x)[0]:
 										ConDisp.remove_section(x)
 							if Clients.has_key(Name):
-								ThrIds = iThr.ThrNames()
 								ThrName = "%s-%s" % (Types[13], Name)
-								if ThrName in ThrIds:
-									for Thr in iThr.enumerate():
-										if Thr._Thread__name == ThrName:
-											Thr.kill()
+								for Thr in iThr.enumerate():
+									if ThrName == Thr.getName():
+										Thr.kill()
 							for conf in Chats.itervalues():
 								if conf.disp == Name:
 									if online(Name):
@@ -122,7 +120,7 @@ class expansion_temp(expansion):
 									pass
 							if Flood.has_key(Name):
 								del Flood[Name]
-							del InstansesDesc[Name]
+							del InstancesDesc[Name]
 							for x in ConDisp.sections():
 								if Name == client_config(ConDisp, x)[0]:
 									ConDisp.remove_section(x)
@@ -135,22 +133,22 @@ class expansion_temp(expansion):
 					else:
 						answer = self.AnsBase[11]
 				elif body in ("add", "добавить".decode("utf-8")):
-					if len(list) >= 3:
-						host = (list.pop(0)).lower()
-						user = (list.pop(0)).lower()
-						code = (list.pop(0))
-						if list:
-							port = (list.pop(0))
+					if len(args) >= 3:
+						host = (args.pop(0)).lower()
+						user = (args.pop(0)).lower()
+						code = (args.pop(0))
+						if args:
+							port = (args.pop(0))
 							if not isNumber(port):
 								port = "5222"
 						else:
 							port = "5222"
 						jid = "%s@%s" % (user, host)
 						serv = (host)
-						if list:
-							serv = (list.pop(0)).lower()
+						if args:
+							serv = (args.pop(0)).lower()
 						if not Clients.has_key(jid):
-							if not InstansesDesc.has_key(jid):
+							if not InstancesDesc.has_key(jid):
 								if connect_client(jid, (serv, port, host, user, code))[0]:
 									Numb = itypes.Number()
 									Name = "CLIENT%d" % (len(ConDisp.sections()) + Numb.plus())
@@ -163,7 +161,7 @@ class expansion_temp(expansion):
 									ConDisp.set(Name, "user", user)
 									ConDisp.set(Name, "pass", code)
 									Instance, desc = client_config(ConDisp, Name)
-									InstansesDesc[Instance] = desc
+									InstancesDesc[Instance] = desc
 									cat_file(ConDispFile, self.get_config(ConDisp))
 									try:
 										StartThr(composeThr(Dispatcher, "%s-%s" % (Types[13], Instance), (Instance,)), -1)
@@ -183,12 +181,12 @@ class expansion_temp(expansion):
 					else:
 						answer = AnsBase[2]
 				elif body in ("password", "пароль".decode("utf-8")):
-					Name = (list.pop(0)).lower()
-					if InstansesDesc.has_key(Name):
-						if list:
-							code = (list.pop(0))
-							if list:
-								if (list.pop(0)).lower() in ("set", "записать".decode("utf-8")):
+					Name = (args.pop(0)).lower()
+					if InstancesDesc.has_key(Name):
+						if args:
+							code = (args.pop(0))
+							if args:
+								if (args.pop(0)).lower() in ("set", "записать".decode("utf-8")):
 									changed = True
 						else:
 							code, symbols = "", "%s.%s_%s+(!}{#)" % (CharCase[0], CharCase[1], CharCase[2])
@@ -230,11 +228,11 @@ class expansion_temp(expansion):
 						ConDisp.set(x, "pass", code)
 						cat_file(ConDispFile, self.get_config(ConDisp))
 						break
-			serv = InstansesDesc[Name][0]
-			port = InstansesDesc[Name][1]
-			host = InstansesDesc[Name][2]
-			user = InstansesDesc[Name][3]
-			InstansesDesc[Name] = (serv, port, host, user, code)
+			serv = InstancesDesc[Name][0]
+			port = InstancesDesc[Name][1]
+			host = InstancesDesc[Name][2]
+			user = InstancesDesc[Name][3]
+			InstancesDesc[Name] = (serv, port, host, user, code)
 			answer = AnsBase[4]
 		else:
 			answer = AnsBase[7]

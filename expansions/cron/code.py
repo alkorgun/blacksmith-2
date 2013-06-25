@@ -199,7 +199,7 @@ class expansion_temp(expansion):
 	def start_cron(self):
 		Name = self.def_cron.func_name
 		for Thr in iThr.enumerate():
-			if Thr._Thread__name.startswith(Name):
+			if Thr.name.startswith(Name):
 				Thr.kill()
 		if initialize_file(self.CronFile, "({}, 0)"):
 			cdesc, ccnt = eval(get_file(self.CronFile))
