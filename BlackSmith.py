@@ -146,7 +146,7 @@ XEPs = set(IqXEPs + (
 	xmpp.NS_RECEIPTS
 				))
 
-isJID = compile__(".+?@[\w-]+?\.[\w-]+?", 32)
+isJID = compile__("^.+?@[\w-]+?\.[\.\w-]+?$", 32)
 
 VarCache = {
 	"idle": 0.24,
@@ -273,7 +273,7 @@ ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 46, 0)
+(BsMark, BsVer, BsRev) = (2, 47, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -351,7 +351,7 @@ Cmds = {}
 cPrefs = ("!", "@", "#", ".", "*")
 sCmds = []
 Chats = {}
-Flood = {}
+Guard = {}
 Galist = {GodName: 8}
 Roster = {"on": True}
 Clients = {}
@@ -886,15 +886,17 @@ def Answer(body, stype, source, disp = None):
 
 def CheckFlood(disp):
 	disp = get_disp(disp)
-	if not Flood.has_key(disp):
-		Flood[disp] = []
-	Flood[disp].append(time.time())
-	if len(Flood[disp]) >= 4:
-		if (Flood[disp][-1] - Flood[disp][0]) <= 8:
-			Flood[disp] = [Flood[disp].pop()]
+	if disp in Guard:
+		desc = Guard[disp]
+	else:
+		desc = Guard[disp] = []
+	desc.append(time.time())
+	if len(desc) > 3:
+		if desc[-1] - desc[0] < 9:
+			Guard[disp] = [desc.pop()]
 			xmpp_raise()
 		else:
-			Flood[disp].pop(0)
+			desc.pop(0)
 
 def IdleClient():
 	cls = dict()
@@ -1100,22 +1102,20 @@ class Web(object):
 
 	Opener = Two.build_opener()
 
-	def __init__(self, link, data = [], headers = {}):
+	def __init__(self, link, qudesc = (), data = None, headers = {}):
 		self.link = link
+		if qudesc:
+			self.link += self.encode(qudesc)
+		self.data = data
 		self.headers = headers
-		if data:
-			list = []
-			for Name, Attr in data:
-				Name = self.One.quote_plus(Name)
-				Attr = self.One.quote_plus(Attr)
-				list.append("%s=%s" % (Name, Attr))
-			self.link += "&".join(list)
+
+	encode = staticmethod(One.urlencode)
 
 	def add_header(self, name, header):
 		self.headers[name] = header
 
 	def open(self, header = ()):
-		dest = self.Two.Request(self.link)
+		dest = self.Two.Request(self.link, self.data)
 		if header:
 			self.add_header(*header)
 		if self.headers:
@@ -1181,7 +1181,7 @@ def sub_desc(body, ls, sub = str()):
 	else:
 		for x in ls:
 			if isinstance(x, (list, tuple)):
-				if len(x) >= 2:
+				if len(x) > 1:
 					body = body.replace(*x[:2])
 				else:
 					body = body.replace(x[0], sub)
@@ -1228,7 +1228,7 @@ def calculate(Numb = int()):
 		lines = get_pipe(sys_cmds[1] % (BsPid)).splitlines()
 		if len(lines) >= 3:
 			list = lines[3].split()
-			if len(list) >= 6:
+			if len(list) > 5:
 				Numb = (list[4] + list[5])
 	else:
 		lines = get_pipe(sys_cmds[0] % (BsPid)).splitlines()

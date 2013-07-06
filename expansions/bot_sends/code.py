@@ -18,7 +18,7 @@ class expansion_temp(expansion):
 					s1_backup = Chats[source[1]].state
 					s2_backup = Chats[source[1]].status
 					Chats[source[1]].change_status(sList[2], self.AnsBase[0])
-				zero = xmpp.Message(to = source[1], typ = Types[1])
+				zero = xmpp.Message(source[1], typ = Types[1])
 				for Numb in xrange(24):
 					if not Chats.has_key(source[1]):
 						raise SelfExc("exit")

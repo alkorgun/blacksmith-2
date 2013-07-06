@@ -50,7 +50,7 @@ class expansion_temp(expansion):
 					self.PingStats[source_] = []
 				self.PingStats[source_].append(answer)
 			Name = "[None]"
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				name = node.getName()
 				if name == "name":
 					Name = node.getData()
@@ -137,7 +137,7 @@ class expansion_temp(expansion):
 	def answer_time0090(self, disp, stanza, stype, source):
 		Display = None
 		if xmpp.isResultNode(stanza):
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				if "display" == node.getName():
 					Display = node.getData()
 					break
@@ -160,7 +160,7 @@ class expansion_temp(expansion):
 	def answer_version(self, disp, stanza, stype, source):
 		if xmpp.isResultNode(stanza):
 			Name, Ver, Os = "[None]", "[None]", "[None]"
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				name = node.getName()
 				if name == "name":
 					Name = node.getData()
@@ -350,7 +350,7 @@ class expansion_temp(expansion):
 	def answer_aflist_search(self, disp, stanza, desc, role, data):
 		if xmpp.isResultNode(stanza):
 			count = []
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				if node and node != "None":
 					jid = node.getAttr("jid")
 					if jid and jid.count(data):
@@ -363,7 +363,7 @@ class expansion_temp(expansion):
 	def answer_aflist(self, disp, stanza, stype, source, Numb):
 		if xmpp.isResultNode(stanza):
 			jids, Number = [], itypes.Number()
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				if node and node != "None":
 					jid = node.getAttr("jid")
 					if jid:
@@ -400,7 +400,7 @@ class expansion_temp(expansion):
 	def answer_server_stats(self, disp, stanza, stype, source):
 		if xmpp.isResultNode(stanza):
 			iq = xmpp.Iq(Types[10], to = stanza.getFrom())
-			iq.addChild(Types[18], {}, stanza.getQueryChildren(), xmpp.NS_STATS)
+			iq.addChild(Types[18], {}, stanza.getQueryChildren() or [], xmpp.NS_STATS)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_server_stats_get, {"stype": stype, "source": source})
 		else:
@@ -409,7 +409,7 @@ class expansion_temp(expansion):
 	def answer_server_stats_get(self, disp, stanza, stype, source):
 		if xmpp.isResultNode(stanza):
 			ls = []
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				name = node.getAttr("name")
 				value = node.getAttr("value")
 				if name and value:
@@ -457,7 +457,7 @@ class expansion_temp(expansion):
 	def answer_disco(self, disp, stanza, stype, source, body, limit):
 		if xmpp.isResultNode(stanza):
 			confs, ls = [], []
-			for node in stanza.getQueryChildren():
+			for node in stanza.getQueryChildren() or ():
 				if node and node != "None":
 					jid = str(node.getAttr("jid"))
 					name = node.getAttr("name")

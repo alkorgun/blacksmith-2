@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x24
-#  Id: 25~24c
+# exp_name = "allweb" # /code.py v.x25
+#  Id: 25~25c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -186,7 +186,7 @@ class expansion_temp(expansion):
 								("sl", lang0),
 								("tl", langX),
 								("text", body.encode("utf-8")))
-						Opener = Web("http://translate.google.com/translate_a/t?", desc, {"Accept-Charset": "utf-8"})
+						Opener = Web("http://translate.google.com/translate_a/t?", desc, headers = {"Accept-Charset": "utf-8"})
 						try:
 							data = Opener.get_page(self.UserAgent_Moz)
 						except Web.Two.HTTPError, exc:
@@ -637,6 +637,37 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
+	PasteLangs = PasteLangs
+
+	def command_paste(self, stype, source, body, disp):
+		if body:
+			args = body.split(None, 1)
+			arg0 = (args.pop(0)).lower()
+			if arg0 in self.PasteLangs:
+				if args:
+					body = args.pop()
+				else:
+					body = None
+					answer = AnsBase[2]
+			else:
+				arg0 = "text"
+			if body:
+				Opener = Web("http://paste.ubuntu.com/", data = Web.encode({"poster": ProdName, "syntax": arg0, "content": body.encode("utf-8")}))
+				try:
+					fp = Opener.open(self.UserAgent)
+					answer = fp.url
+					fp.close()
+				except Web.Two.HTTPError, exc:
+					answer = str(exc)
+				except:
+					answer = self.AnsBase[0]
+		else:
+			answer = self.AnsBase[8] + str.join(chr(10), ["%s - %s" % (k, l) for k, l in sorted(self.PasteLangs.items())])
+			if stype == Types[1]:
+				Message(source[0], answer, disp)
+				answer = AnsBase[11]
+		Answer(answer, stype, source, disp)
+
 	if DefLANG in ("RU", "UA"):
 
 		def command_chuck(self, stype, source, body, disp):
@@ -999,6 +1030,7 @@ class expansion_temp(expansion):
 		(command_python, "python", 2,),
 		(command_url_shorten, "shorten", 2,),
 		(command_download, "download", 7,),
+		(command_paste, "paste", 2,),
 		(command_chuck, "chuck", 2,),
 		(command_bash, "bash", 2,)
 					)
@@ -1018,4 +1050,4 @@ class expansion_temp(expansion):
 
 if DefLANG in ("RU", "UA"):
 	del CurrencyDesc
-del UserAgents, LangMap
+del UserAgents, PasteLangs, LangMap

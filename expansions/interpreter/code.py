@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "interpreter" # /code.py v.x10
-#  Id: 04~8c
+# exp_name = "interpreter" # /code.py v.x11
+#  Id: 04~9c
 #  Idea © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Idea © (2007) by Als [Als@exploit.in]
 #  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
@@ -12,18 +12,24 @@ class expansion_temp(expansion):
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
+	opts =  ("-l", "-r", "-s")
+
+	opt_locals = opts[0]
+	opt_result = opts[1]
+	opt_silent = opts[2]
+
 	def command_eval(self, stype, source, body, disp):
 		silent = False
 		if body:
 			args = body.split(None, 1)
 			if len(args) == 2:
-				if (args.pop(0)).lower() == "-s":
+				if self.opt_silent == (args.pop(0)).lower():
 					silent = True
 					body = args.pop()
 			try:
-				answer = UnicodeType(eval(UnicodeType(body)))
+				answer = unicode(eval(unicode(body)))
 				if not answer.strip():
-					answer = "None (%s)" % (answer)
+					answer = `answer`
 			except Exception, exc:
 				answer = exc_str(exc)
 		else:
@@ -34,17 +40,30 @@ class expansion_temp(expansion):
 	def command_exec(self, stype, source, body, disp):
 		silent = False
 		if body:
-			args = body.split(None, 1)
-			if len(args) == 2:
-				if (args.pop(0)).lower() == "-s":
+			opts = set()
+			while len(opts) < 3:
+				args = body.split(None, 1)
+				if len(args) != 2:
+					break
+				temp = (args.pop(0)).lower()
+				if (temp not in self.opts):
+					break
+				opts.add(temp)
+				body = args.pop()
+			if not all([(temp in opts) for temp in self.opts[-2:]]):
+				if (self.opt_silent in opts):
 					silent = True
-					body = args.pop()
-			try:
-				exec(UnicodeType(body + chr(10)), globals())
-			except Exception, exc:
-				answer = exc_str(exc)
+				try:
+					exec(unicode(body + chr(10)), (locals if (self.opt_locals in opts) else globals)())
+				except Exception, exc:
+					answer = exc_str(exc)
+				else:
+					try:
+						answer = unicode(result) if (self.opt_result in opts) else AnsBase[4]
+					except Exception, exc:
+						answer = exc_str(exc)
 			else:
-				answer = AnsBase[4]
+				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
 		if not silent:
@@ -63,18 +82,18 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
-	achtung = chr(42)*2
+	taboo = chr(42)*2
 
 	compile_math = compile__("([0-9]|[\+\-\(\/\*\)\%\^\.])")
 
 	def command_calc(self, stype, source, body, disp):
 		if body:
-			if self.achtung not in body and 32 >= len(body):
+			if self.taboo not in body and 32 >= len(body):
 				if not self.compile_math.sub("", body).strip():
 					try:
-						answer = UnicodeType(eval(body))
+						answer = unicode(eval(body))
 					except ZeroDivisionError:
-						answer = "+∞".decode("utf-8")
+						answer = "+\xe2\x88\x9e"
 					except:
 						answer = AnsBase[2]
 				else:

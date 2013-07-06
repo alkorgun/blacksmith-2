@@ -1,6 +1,12 @@
 executes python's code
-{command} (-s) [code]
+{command} ((-l) (-r) (-s)) [code]
 */{command} delivery("Aaa!!")
 bot would send "Aaa!!" in to Superadmin's JID
-*/{command} -s foo = bar
+*/{command} -l foo = "bar"
+bot would execute an expression using local namespace
+*/{command} -r foo = "bar"; result = "Done!"
+bot would execute an expression and try to return variable "result"
+*/{command} -s foo = "bar"
 bot would execute an expression without notice about the completion
+*/{command} -l -r foo = 2; bar = 2; result = foo*bar
+bot would execute an expression using local namespace and return "result"

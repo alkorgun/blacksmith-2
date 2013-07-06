@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "basic_control" # /code.py v.x13
-#  Id: 06~7c
+# exp_name = "basic_control" # /code.py v.x14
+#  Id: 06~8c
 #  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -19,7 +19,7 @@ class expansion_temp(expansion):
 			if Numb.plus() >= 50:
 				break
 
-	compile_chat = compile__("^.+?@(?:conference|muc|chat|room|group)\.[\w-]+?\.[\.\w-]+?$")
+	compile_chat = compile__("^[^\s'\"@<>&]+?@(?:conference|muc|chat|room|group)\.[\w-]+?\.[\.\w-]+?$")
 
 	def command_join(self, stype, source, body, disp):
 		if body:
