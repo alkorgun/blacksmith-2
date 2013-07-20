@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x25
-#  Id: 25~25c
+# exp_name = "allweb" # /code.py v.x26
+#  Id: 25~26c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -18,6 +18,8 @@ class expansion_temp(expansion):
 
 	UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (Windows NT 6.1; WOW64; {0}) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.89 Safari/537.1".format(UserAgents.get(DefLANG, "en-US")))
 
+	Web.Opener.addheaders = [UserAgent_Moz]
+
 	edefs = dict()
 
 	for Name, Numb in htmlentitydefs.name2codepoint.iteritems():
@@ -25,20 +27,12 @@ class expansion_temp(expansion):
 
 	del Name, Numb
 
-	Web.Opener.addheaders = [UserAgent_Moz]
+	edefs["&apos;"] = unichr(39)
 
-	REP_desc = {
+	TagsDesc = {
 		"<br>": chr(10),
 		"<br />": chr(10)
 					}
-
-	XML_ls = [
-		("&lt;", "<"),
-		("&gt;", ">"),
-		("&quot;", '"'),
-		("&apos;", "'"),
-		("&amp;", "&")
-					]
 
 	compile_st = compile__("<[^<>]+?>")
 	compile_ehtmls = compile__("&(#?[xX]?(?:[0-9a-fA-F]+|\w{1,8}));")
@@ -67,7 +61,7 @@ class expansion_temp(expansion):
 		return data
 
 	def decodeHTML(self, data):
-		data = sub_desc(data, self.REP_desc)
+		data = sub_desc(data, self.TagsDesc)
 		data = self.compile_st.sub("", data)
 		data = self.sub_ehtmls(data)
 		return data.strip()
@@ -876,7 +870,7 @@ class expansion_temp(expansion):
 				Numb, Name, Quote = data.groups()
 				lt = chr(10)*3
 				answer = self.decodeHTML("Quote: #%s | by %s\n%s" % (Numb, Name, Quote))
-				while answer.count(lt):
+				while (lt in answer):
 					answer = answer.replace(lt, lt[:2])
 			else:
 				answer = self.AnsBase[1]

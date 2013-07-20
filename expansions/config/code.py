@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "config" # /code.py v.x6
-#  Id: 19~5c
+# exp_name = "config" # /code.py v.x7
+#  Id: 19~6c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -131,7 +131,7 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[7]
 					else:
-						answer = self.AnsBase[11]
+						answer = self.AnsBase[11] % (Name)
 				elif body in ("add", "добавить".decode("utf-8")):
 					if len(args) >= 3:
 						host = (args.pop(0)).lower()
@@ -193,16 +193,16 @@ class expansion_temp(expansion):
 							for x in xrange(24):
 								code += choice(symbols)
 						if locals().has_key("changed"):
-							self.answer_register(disp, xmpp.Iq(Types[8]), stype, source, code, disp)
+							self.answer_register(Name, xmpp.Iq(Types[8]), stype, source, code, disp)
 						elif online(Name):
 							Disp = Clients[Name]
 							iq = xmpp.Iq(Types[9] , xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])
 							Info["outiq"].plus()
 							CallForResponse(Disp, iq, self.answer_register, {"stype": stype, "source": source, "code": code, "str_disp": get_disp(disp)})
 						else:
-							answer = self.AnsBase[12]
+							answer = self.AnsBase[12] % (Name)
 					else:
-						answer = self.AnsBase[11]
+						answer = self.AnsBase[11] % (Name)
 				else:
 					answer = AnsBase[2]
 			else:
