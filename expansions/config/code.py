@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "config" # /code.py v.x7
-#  Id: 19~6c
+# exp_name = "config" # /code.py v.x8
+#  Id: 19~7c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -49,12 +49,13 @@ class expansion_temp(expansion):
 				for Title in ConfigDesc.keys():
 					for (Name, data) in ConfigDesc[Title].items():
 						GenCon.set(Title, Name, data)
-						if Name not in self.ops[-2:]:
-							data = eval(data)
-							if Name == self.ops[0]:
-								data *= 1024
-								data = (32768 if (data and data <= 32768) else data)
-						globals()[self.opsGeq[self.ops.index(Name)]] = data
+						if Name in self.ops:
+							if Name not in self.ops[-2:]:
+								data = eval(data)
+								if Name == self.ops[0]:
+									data *= 1024
+									data = (32768 if (data and data <= 32768) else data)
+							globals()[self.opsGeq[self.ops.index(Name)]] = data
 				cat_file(GenConFile, self.get_config(GenCon))
 				ls = []
 				for Name in ConfigDesc.values():

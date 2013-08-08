@@ -180,7 +180,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[0]
 		Answer(answer, stype, source, disp)
 
-	def spesial_kick(self, conf, nick, text):
+	def special_kick(self, conf, nick, text):
 		Chats[conf].kick(nick, "%s: %s" % (get_nick(conf), text))
 		raise iThr.ThrKill("exit")
 
@@ -227,15 +227,15 @@ class expansion_temp(expansion):
 
 		if (nick.strip()):
 			if len(nick) > ChatsAttrs[conf]["laws"]["lnick"]:
-				self.spesial_kick(conf, nick, self.AnsBase[0] % (ChatsAttrs[conf]["laws"]["lnick"]))
+				self.special_kick(conf, nick, self.AnsBase[0] % (ChatsAttrs[conf]["laws"]["lnick"]))
 			if nick_checker(conf, nick):
-				self.spesial_kick(conf, nick, self.AnsBase[1])
+				self.special_kick(conf, nick, self.AnsBase[1])
 			if ChatsAttrs[conf]["laws"]["space"]:
 				if len(nick) != len(nick.strip()):
-					self.spesial_kick(conf, nick, self.AnsBase[2])
+					self.special_kick(conf, nick, self.AnsBase[2])
 			if ChatsAttrs[conf]["laws"]["obscene"]:
 				if self.obscene_checker(nick):
-					self.spesial_kick(conf, nick, self.AnsBase[3])
+					self.special_kick(conf, nick, self.AnsBase[3])
 
 	def sheriff_set(self, stype, source, source_, access, loyalty, body, disp):
 		if access <= loyalty:
@@ -251,9 +251,9 @@ class expansion_temp(expansion):
 					raise iThr.ThrKill("exit")
 				else:
 					prisoner.setDevoice()
-					self.spesial_kick(source[1], source[2], body)
+					self.special_kick(source[1], source[2], body)
 			else:
-				self.spesial_kick(source[1], source[2], body)
+				self.special_kick(source[1], source[2], body)
 		else:
 			Answer(body, stype, source, disp); raise iThr.ThrKill("exit")
 
@@ -271,7 +271,7 @@ class expansion_temp(expansion):
 								if access <= loyalty[1]:
 									if prisoner:
 										prisoner.setDevoice()
-									self.spesial_kick(source[1], source[2], self.AnsBase[4])
+									self.special_kick(source[1], source[2], self.AnsBase[4])
 								else:
 									Answer(self.AnsBase[4], stype, source, disp)
 								raise iThr.ThrKill("exit")
@@ -283,7 +283,7 @@ class expansion_temp(expansion):
 									Message(source[0], self.AnsBase[21], disp)
 								elif prisoner.vnumb.plus() >= 3:
 									prisoner.vnumb = itypes.Number()
-									self.spesial_kick(source[1], source[2], self.AnsBase[22])
+									self.special_kick(source[1], source[2], self.AnsBase[22])
 								else:
 									Message(source[0], self.AnsBase[23], disp)
 								raise iThr.ThrKill("exit")
@@ -292,7 +292,7 @@ class expansion_temp(expansion):
 							if (list[-1] - list[0]) <= 6:
 								prisoner.msdates = [list.pop()]
 								prisoner.setDevoice()
-								self.spesial_kick(source[1], source[2], self.AnsBase[15])
+								self.special_kick(source[1], source[2], self.AnsBase[15])
 							else:
 								prisoner.msdates.pop(0)
 						del list
@@ -419,7 +419,7 @@ class expansion_temp(expansion):
 				if len(list) >= 4:
 					if (list[-1] - list[0]) <= 10:
 						prisoner.prdates = [list.pop()]
-						self.spesial_kick(conf, nick, self.AnsBase[13])
+						self.special_kick(conf, nick, self.AnsBase[13])
 					else:
 						prisoner.prdates.pop(0)
 				del list
@@ -427,13 +427,13 @@ class expansion_temp(expansion):
 				if status:
 					if ChatsAttrs[conf]["laws"]["tiser"]:
 						if self.tiser_checker(status):
-							self.spesial_kick(conf, nick, self.AnsBase[4])
+							self.special_kick(conf, nick, self.AnsBase[4])
 					if ChatsAttrs[conf]["laws"]["obscene"]:
 						if self.obscene_checker(status):
-							self.spesial_kick(conf, nick, self.AnsBase[8])
+							self.special_kick(conf, nick, self.AnsBase[8])
 					if ChatsAttrs[conf]["laws"]["prlen"]:
 						if len(status) > ChatsAttrs[conf]["laws"]["prlen"]:
-							self.spesial_kick(conf, nick, self.AnsBase[9])
+							self.special_kick(conf, nick, self.AnsBase[9])
 
 	def sheriff_05eh(self, conf, nick, sbody, scode, disp):
 		if nick != get_nick(conf):
@@ -463,7 +463,7 @@ class expansion_temp(expansion):
 					if len(list) >= 4:
 						if (list[-1] - list[0]) <= 10:
 							prisoner.prdates = [list.pop()]
-							self.spesial_kick(conf, nick, self.AnsBase[13])
+							self.special_kick(conf, nick, self.AnsBase[13])
 						else:
 							prisoner.prdates.pop(0)
 
@@ -489,7 +489,7 @@ class expansion_temp(expansion):
 					if len(list) >= 4:
 						if (list[-1] - list[0]) <= 10:
 							prisoner.prdates = [list.pop()]
-							self.spesial_kick(conf, nick, self.AnsBase[13])
+							self.special_kick(conf, nick, self.AnsBase[13])
 						else:
 							prisoner.prdates.pop(0)
 					del list
@@ -497,13 +497,13 @@ class expansion_temp(expansion):
 					if status:
 						if ChatsAttrs[conf]["laws"]["tiser"]:
 							if self.tiser_checker(status):
-								self.spesial_kick(conf, nick, self.AnsBase[4])
+								self.special_kick(conf, nick, self.AnsBase[4])
 						if ChatsAttrs[conf]["laws"]["obscene"]:
 							if self.obscene_checker(status):
-								self.spesial_kick(conf, nick, self.AnsBase[8])
+								self.special_kick(conf, nick, self.AnsBase[8])
 						if ChatsAttrs[conf]["laws"]["prlen"]:
 							if len(status) > ChatsAttrs[conf]["laws"]["prlen"]:
-								self.spesial_kick(conf, nick, self.AnsBase[9])
+								self.special_kick(conf, nick, self.AnsBase[9])
 
 	def sheriff_01si(self, conf):
 		self.Prison[conf] = {}

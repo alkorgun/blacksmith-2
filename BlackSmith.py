@@ -273,7 +273,7 @@ ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 47, 0)
+(BsMark, BsVer, BsRev) = (2, 48, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -1492,7 +1492,7 @@ def XmppMessageCB(disp, stanza):
 		if stype != Types[1]:
 			if (stanza.getTag(Types[14])):
 				answer = xmpp.Message(source)
-				answer.setTag(Types[15], namespace = xmpp.NS_RECEIPTS)
+				answer.setTag(Types[15], namespace = xmpp.NS_RECEIPTS).setAttr("id", stanza.getID())
 				answer.setID(stanza.getID())
 				Sender(disp, answer)
 			stype = Types[0]
