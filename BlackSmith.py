@@ -170,8 +170,8 @@ class SelfExc(Exception):
 	pass
 
 def check_sqlite():
-
-	assert itypes.sqlite3, "py-sqlite3 required"
+	if not itypes.sqlite3:
+		raise SelfExc("py-sqlite3 required")
 
 def exc_info():
 	exc, err, tb = sys.exc_info()

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "interpreter" # /code.py v.x11
-#  Id: 04~9c
+# exp_name = "interpreter" # /code.py v.x12
+#  Id: 04~10c
 #  Idea © (2002-2005) by Mike Mintz [mikemintz@gmail.com]
 #  Idea © (2007) by Als [Als@exploit.in]
 #  Code © (2009-2013) by WitcherGeralt [alkorgun@gmail.com]
@@ -51,15 +51,15 @@ class expansion_temp(expansion):
 				opts.add(temp)
 				body = args.pop()
 			if not all([(temp in opts) for temp in self.opts[-2:]]):
-				if (self.opt_silent in opts):
+				if self.opt_silent in opts:
 					silent = True
 				try:
-					exec(unicode(body + chr(10)), (locals if (self.opt_locals in opts) else globals)())
-				except Exception, exc:
-					answer = exc_str(exc)
+					exec(unicode(body + chr(10)), (locals if self.opt_locals in opts else globals)())
+				except:
+					answer = "%s - %s" % exc_info()
 				else:
 					try:
-						answer = unicode(result) if (self.opt_result in opts) else AnsBase[4]
+						answer = unicode(result) if self.opt_result in opts else AnsBase[4]
 					except Exception, exc:
 						answer = exc_str(exc)
 			else:
