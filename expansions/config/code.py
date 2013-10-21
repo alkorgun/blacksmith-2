@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "config" # /code.py v.x8
-#  Id: 19~7c
+# exp_name = "config" # /code.py v.x9
+#  Id: 19~8c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -119,8 +119,8 @@ class expansion_temp(expansion):
 									Clients[Name].disconnect()
 								except IOError:
 									pass
-							if Flood.has_key(Name):
-								del Flood[Name]
+							if Guard.has_key(Name):
+								del Guard[Name]
 							del InstancesDesc[Name]
 							for x in ConDisp.sections():
 								if Name == client_config(ConDisp, x)[0]:

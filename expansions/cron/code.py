@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "cron" # /code.py v.x5
-#  Id: 27~4c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "cron" # /code.py v.x6
+#  Id: 27~5c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -95,15 +95,13 @@ class expansion_temp(expansion):
 								answer = self.AnsBase[2]
 							elif 59 < Te and Te*Tr <= 4147200 or enough_access(source[1], source[2], 7):
 								t_ls, repeat = [Te], (Te, itypes.Number(Tr))
-								for x in xrange(1, Tr):
+								for x in xrange(7):
 									t_ls.append(t_ls[-1] + Te)
 								Time = time.mktime(gt)
 								Te += Time
-								ltls = len(t_ls)
-								t_ls = enumerated_list([time.ctime(dt + Time) for dt in t_ls[:8]])
-								if ltls > 8:
-									t_ls += self.AnsBase[3] % (ltls - 8)
-								answer = self.AnsBase[4] % (t_ls)
+								answer = self.AnsBase[4] % enumerated_list([time.ctime(dt + Time) for dt in t_ls])
+								if Tr > 8:
+									answer += self.AnsBase[3] % (Tr - 8)
 								add = self.add_cron
 								del self
 								answer = add(**locals())

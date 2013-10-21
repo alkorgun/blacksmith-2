@@ -969,7 +969,9 @@ def Sender(disp, stanza):
 		pass
 	except SelfExc, exc:
 		Print(exc_str(exc, "\n\n%s: %s!"), color2)
-	except:
+	except iThr.ThrKill:
+		pass
+	except Exeption:
 		collectExc(Sender)
 
 sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = Types[4], status = data))
