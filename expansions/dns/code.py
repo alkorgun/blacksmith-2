@@ -28,24 +28,24 @@ class expansion_temp(expansion):
 	def command_port(self, stype, source, adress, disp):
 		if adress:
 			adress = adress.split()
-			if len(adress) != 2:
+			if len(adress) == 2:
 				host, port = adress
 				if port.isdigit():
-					server = (host, int(port))
+					server = (host.encode("idna"), int(port))
 					if ":" in host:
 						flag = self.socket.AF_INET6
 						server = server.__add__((0, 0))
 						host = host.join(("[", "]"))
 					else:
 						flag = self.socket.AF_INET
-					sock = self.socket.socket(flag, socket.SOCK_STREAM)
+					sock = self.socket.socket(flag, self.socket.SOCK_STREAM)
 					sock.settimeout(6)
 					try:
 						sock.connect(server)
 					except:
-						result = "{0}:{1} is closed.".format(host, port)
+						answer = "{0}:{1} is closed.".format(host, port)
 					else:
-						result = "{0}:{1} is opened.".format(host, port)
+						answer = "{0}:{1} is opened.".format(host, port)
 					finally:
 						sock.close()
 				else:
