@@ -203,13 +203,6 @@ def apply(instance, args = ()):
 		code = None
 	return code
 
-def try_body(body, color):
-	try:
-		body = UnicodeType(body)
-	except:
-		color = None
-	return (body, color)
-
 def text_color(text, color):
 	if eColors and color:
 		text = color+text+color0
@@ -218,7 +211,7 @@ def text_color(text, color):
 def Print(text, color = None):
 	try:
 		print text_color(text, color)
-	except:
+	except Exception:
 		pass
 
 def try_sleep(slp):
@@ -417,9 +410,7 @@ def sThread_Run(Thr, handler, command = None):
 		except RuntimeError:
 			try:
 				Thr._run_backup()
-			except KeyboardInterrupt:
-				raise KeyboardInterrupt("Interrupt (Ctrl+C)")
-			except:
+			except Exception:
 				collectExc(handler, command)
 	except:
 		collectExc(sThread_Run, command)
@@ -842,7 +833,9 @@ def delivery(body):
 		Print("\n\n%s" % (body), color1)
 	except SelfExc:
 		Print("\n\n%s" % (body), color1)
-	except:
+	except iThr.ThrKill:
+		raise
+	except Exception:
 		exc_info_()
 
 def Message(inst, body, disp = None):
@@ -970,7 +963,7 @@ def Sender(disp, stanza):
 	except SelfExc, exc:
 		Print(exc_str(exc, "\n\n%s: %s!"), color2)
 	except iThr.ThrKill:
-		pass
+		raise
 	except Exeption:
 		collectExc(Sender)
 
@@ -1062,7 +1055,7 @@ def collectExc(instance, command = None):
 		if GetExc and online(GenDisp):
 			delivery(error_body)
 		else:
-			Print(*try_body(error_body, color2))
+			Print(error_body, color2)
 
 # Other functions
 
@@ -1094,7 +1087,7 @@ def get_pipe(command):
 			data = pipe.read()
 		if oSlist[0]:
 			data = data.decode("cp866")
-	except:
+	except Exception:
 		data = "(...)"
 	return data
 
@@ -1267,9 +1260,7 @@ def join_chats():
 				Confs = eval(get_file(ChatsFile))
 			except SyntaxError:
 				Confs = eval(get_file(ChatsFileBackup))
-		except KeyboardInterrupt:
-			raise KeyboardInterrupt("Interrupt (Ctrl+C)")
-		except:
+		except Exception:
 			Confs = {}
 		Print("\n\nThere are %d rooms in the list..." % len(Confs.keys()), color4)
 		for conf, desc in Confs.iteritems():
@@ -1536,8 +1527,6 @@ def connect_client(source, InstanceAttrs):
 		ConType = (False, True)
 	try:
 		ConType = disp.connect((server, cport), None, *ConType)
-	except KeyboardInterrupt:
-		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 	except Exception, exc:
 		Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (source, server.upper(), cport, exc_str(exc)), color2)
 		return (False, None)
@@ -1554,8 +1543,6 @@ def connect_client(source, InstanceAttrs):
 	Print("\n'%s' authenticating..." % (source), color4)
 	try:
 		Auth = disp.auth(user, code, GenResource)
-	except KeyboardInterrupt:
-		raise KeyboardInterrupt("Interrupt (Ctrl+C)")
 	except Exception, exc:
 		Print("Can't authenticate '%s'!\n\t%s" % (source, exc_str(exc)), color2)
 		return (False, eCodes[2])
@@ -1575,7 +1562,7 @@ def connect_client(source, InstanceAttrs):
 			disp.Roster = None
 		else:
 			return (False, None)
-	except:
+	except Exception:
 		disp.Roster = None
 	disp.RespExp = {}
 	disp.RegisterHandler(xmpp.NS_PRESENCE, XmppPresenceCB)
@@ -1700,5 +1687,3 @@ if __name__ == "__main__":
 	except:
 		collectExc(load_mark2)
 		sys_exit("Critical Fail!")
-
-# The End is Near =>
