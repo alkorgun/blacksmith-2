@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "allweb" # /code.py v.x27
-#  Id: 26~26c
+# exp_name = "allweb" # /code.py v.x28
+#  Id: 26~27c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -16,7 +16,7 @@ class expansion_temp(expansion):
 
 	UserAgent = ("User-Agent", "%s/%s" % (ProdName[:10], CapsVer))
 
-	UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (Linux; Android 4.0.4; {0}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.82 Safari/537.36".format(UserAgents.get(DefLANG, "en-US")))
+	UserAgent_Moz = (UserAgent[0], "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36".format(UserAgents.get(DefLANG, "en-US")))
 
 	Web.Opener.addheaders = [UserAgent_Moz]
 
@@ -121,7 +121,7 @@ class expansion_temp(expansion):
 						try:
 							list = data["responseData"]["results"]
 							desc = list.pop(0)
-						except TypeError, LookupError:
+						except (TypeError, LookupError):
 							answer = self.AnsBase[5]
 						else:
 							ls = []
@@ -195,7 +195,7 @@ class expansion_temp(expansion):
 							else:
 								try:
 									body = data["sentences"][0]["trans"]
-								except TypeError, LookupError:
+								except (TypeError, LookupError):
 									answer = self.AnsBase[1]
 								else:
 									if lang0 == "auto":
@@ -400,7 +400,7 @@ class expansion_temp(expansion):
 					else:
 						try:
 							data = data["list"]
-						except TypeError, LookupError:
+						except (TypeError, LookupError):
 							answer = self.AnsBase[1]
 						else:
 							ls = ["\n[#] [Name, Year] [Rating] (Votes)"]
