@@ -5,7 +5,7 @@ UserAgents = {
 	"UA": "ua-UA",
 	"FI": "fi_SE",
 	"EN": "en-US"
-				}
+}
 
 PasteLangs = {
 	"apacheconf": "ApacheConf",
@@ -105,7 +105,7 @@ PasteLangs = {
 	"xml+myghty": "XML+Myghty",
 	"xml+php": "XML+PHP",
 	"xml+smarty": "XML+Smarty"
-				}
+}
 
 if DefLANG in ("RU", "UA"):
 	AnsBase_temp = tuple([line.decode("utf-8") for line in (
@@ -123,7 +123,7 @@ if DefLANG in ("RU", "UA"):
 		"Сейчас в процессе другая загрузка. Попробуй позже.", # 11
 		"\n* Погода предоставлена Gismeteo.ru", # -2
 		"Запрос блокирован Кинопоиском." # -1
-					)])
+	)])
 
 	LangMap = {
 		"af": "Африкаанс",		"ar": "Арабский",		"be": "Белорусский",
@@ -143,7 +143,7 @@ if DefLANG in ("RU", "UA"):
 		"sv": "Шведский",		"sw": "Суахили",		"th": "Тайский",
 		"tl": "Тагальский",		"tr": "Турецкий",		"uk": "Украинский",
 		"vi": "Вьетнамский",	"yi": "Идиш",			"zh-CN": "Китайский"
-					}
+	}
 
 	CurrencyDesc = {
 		"AMD": "Армянский драм",
@@ -182,7 +182,7 @@ if DefLANG in ("RU", "UA"):
 		"UZS": "Узбекский сум",
 		"XDR": "Специальные права заимствования (¤)",
 		"ZAR": "Южноафриканский рэнд"
-					}
+	}
 else:
 	AnsBase_temp = (
 		"No access to the resource.", # 0
@@ -197,7 +197,7 @@ else:
 		"loaded - {0}%", # 9
 		"Download can take several minutes...", # 10
 		"Now I'm busy with another load. Try again later." # 11
-					)
+	)
 
 	LangMap = {
 		"af": "Afrikaans",		"ar": "Arabic",			"be": "Byelorussian",
@@ -217,4 +217,4 @@ else:
 		"sv": "Swedish",		"sw": "Swahili",		"th": "Thai",
 		"tl": "Tagalog",		"tr": "Turkish",		"uk": "Ukrainian",
 		"vi": "Vietnamese",		"yi": "Yiddish",		"zh-CN": "Chinese"
-				}
+}

@@ -143,7 +143,7 @@ class expansion_temp(expansion):
 											date[0] = int(Date.pop(0))
 								except:
 									answer = AnsBase[2]
-						if not locals().has_key(Types[6]):
+						if not locals().has_key(sBase[6]):
 							try:
 								date = time.struct_time(date)
 							except:
@@ -195,10 +195,10 @@ class expansion_temp(expansion):
 		Answer(answer, stype, source, disp)
 
 	def start_cron(self):
-		Name = self.def_cron.func_name
-		for Thr in iThr.enumerate():
-			if Thr.name.startswith(Name):
-				Thr.kill()
+		Name = self.def_cron.__name__
+		for thr in ithr.enumerate():
+			if thr.name.startswith(Name):
+				thr.kill()
 		if initialize_file(self.CronFile, "({}, 0)"):
 			cdesc, ccnt = eval(get_file(self.CronFile))
 			Time = time.mktime(time.gmtime())
@@ -236,4 +236,4 @@ class expansion_temp(expansion):
 	handlers = (
 		(start_cron, "02si"),
 		(cdesc_save, "03si")
-					)
+	)

@@ -19,7 +19,7 @@ class expansion_temp(expansion):
 			if Numb.plus() >= 50:
 				break
 
-	compile_chat = compile__("^[^\s'\"@<>&]+?@(?:conference|muc|chat|room|group)\.[\w-]+?\.[\.\w-]+?$")
+	compile_chat = compile__("^[^\s'\"@<>&]+?@(?:conference|muc|conf|chat|group)\.[\w-]+?\.[\.\w-]+?$")
 
 	def command_join(self, stype, source, body, disp):
 		if body:
@@ -74,7 +74,7 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[3] % (conf)
 							sleep(3.6)
-							if ejoinTimerName(conf) in iThr.getNames():
+							if ejoinTimerName(conf) in ithr.getNames():
 								answer += self.AnsBase[13]
 					else:
 						answer = self.AnsBase[15] % (conf)
@@ -127,7 +127,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[8]
 		else:
 			answer = AnsBase[10]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_reconnect(self, stype, source, body, disp):
@@ -136,11 +136,11 @@ class expansion_temp(expansion):
 		else:
 			Name = get_disp(disp)
 		if InstancesDesc.has_key(Name):
-			ThrName = "%s-%s" % (Types[13], Name)
+			thrName = "%s-%s" % (sBase[13], Name)
 			if Clients.has_key(Name):
-				for Thr in iThr.enumerate():
-					if ThrName == Thr.getName():
-						Thr.kill()
+				for thr in ithr.enumerate():
+					if thrName == thr.getName():
+						thr.kill()
 				if online(Name):
 					try:
 						Clients[Name].disconnect()
@@ -148,7 +148,7 @@ class expansion_temp(expansion):
 						pass
 			if connect_client(Name, InstancesDesc[Name])[0]:
 				try:
-					StartThr(composeThr(Dispatcher, ThrName, (Name,)), -1)
+					startThr(composeThr(Dispatcher, thrName, (Name,)), -1)
 				except RuntimeError:
 					answer = self.AnsBase[16]
 				else:
@@ -171,7 +171,7 @@ class expansion_temp(expansion):
 				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
-		iThr.killAllThreads()
+		ithr.killAllThreads()
 		for disp in Clients.keys():
 			if online(disp):
 				sUnavailable(disp, exit_desclr)
@@ -187,7 +187,7 @@ class expansion_temp(expansion):
 				Message(conf.name, exit_desclr, conf.disp)
 		sleep(6)
 		VarCache["alive"] = False
-		iThr.killAllThreads()
+		ithr.killAllThreads()
 		for disp in Clients.keys():
 			if online(disp):
 				sUnavailable(disp, exit_desclr)
@@ -201,4 +201,4 @@ class expansion_temp(expansion):
 		(command_reconnect, "reconnect", 8,),
 		(command_reload, "reload", 8,),
 		(command_exit, "exit", 8,)
-					)
+	)

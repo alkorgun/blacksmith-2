@@ -63,7 +63,7 @@ class expansion_temp(expansion):
 								Top_list.reverse()
 								for x in Top_list:
 									answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
-									if Numb._int() >= limit:
+									if Numb >= limit:
 										break
 							else:
 								answer = self.AnsBase[1]
@@ -124,7 +124,7 @@ class expansion_temp(expansion):
 									Usr_list.reverse()
 									for x in Usr_list:
 										answer += "\n%d. %s\t\t%d\t%d\t%s" % (Numb.plus(), x[2], x[0], x[1], str(round((float(x[1]) / x[0]), 1)))
-										if Numb._int() >= 10:
+										if Numb >= 10:
 											break
 									answer += self.AnsBase[3]
 								else:
@@ -179,7 +179,7 @@ class expansion_temp(expansion):
 		Answer(answer, stype, source, disp)
 
 	def calculate_talkers(self, stanza, isConf, stype, source, body, isToBs, disp):
-		if isConf and stype == Types[1] and source[2]:
+		if isConf and stype == sBase[1] and source[2]:
 			source_ = get_source(source[1], source[2])
 			if source_:
 				nick = source[2].strip()
@@ -198,7 +198,7 @@ class expansion_temp(expansion):
 			with database(filename) as db:
 				db("create table talkers (jid text, lastnick text, msgs integer, words integer)")
 				db.commit()
-		self.TalkersDesc[conf] = iThr.Semaphore()
+		self.TalkersDesc[conf] = ithr.Semaphore()
 
 	def edit_talkers_desc(self, conf):
 		del self.TalkersDesc[conf]
@@ -209,4 +209,4 @@ class expansion_temp(expansion):
 		(init_talkers_base, "01si"),
 		(edit_talkers_desc, "04si"),
 		(calculate_talkers, "01eh")
-					)
+	)

@@ -25,7 +25,7 @@ if DefLANG in ("RU", "UA"):
 		"Невозможно отправить ошибку, смотри к крешлогах.", # 20
 		"Ошибки №%s не существует!", # 21
 		"Всего произошло %d ошибок." # 22
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"\n*// Session's statistics (Pid: %d):", # 0
@@ -51,4 +51,4 @@ else:
 		"Unable to send error, look for crash logs.", # 20
 		"Exception #%s isn't exists!", # 21
 		"Total %d exceptions happened." # 22
-					)
+	)

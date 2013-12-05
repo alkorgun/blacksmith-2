@@ -14,24 +14,24 @@ class expansion_temp(expansion):
 		GameChrLS[0]: {
 				GameChrLS[1]: 9,
 				GameChrLS[3]: 2
-						},
+		},
 		GameChrLS[1]: {
 				GameChrLS[2]: 0,
 				GameChrLS[3]: 5
-						},
+		},
 		GameChrLS[2]: {
 				GameChrLS[0]: 1,
 				GameChrLS[4]: 7
-						},
+		},
 		GameChrLS[3]: {
 				GameChrLS[2]: 6,
 				GameChrLS[4]: 3
-						},
+		},
 		GameChrLS[4]: {
 				GameChrLS[0]: 8,
 				GameChrLS[1]: 4
-						}
-				}
+		}
+	}
 
 	GameRules = GameRules
 

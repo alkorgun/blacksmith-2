@@ -14,7 +14,7 @@ if DefLANG in ("RU", "UA"):
 		"Определение «%s» уже есть в глобальной базе.", # 9
 		"Не существует локальной базы для ростера.", # 10
 		"\->\n" # -1
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"There are %d definition(s) in global base:\n%s", # 0
@@ -29,4 +29,4 @@ else:
 		"'%s' is already in the global base.", # 9
 		"There is no local base for the roster.", # 10
 		"\->\n" # -1
-					)
+	)

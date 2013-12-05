@@ -13,7 +13,7 @@ if DefLANG in ("RU", "UA"):
 		"Список юзеров в чате:", # 8
 		"Нашел %s похожих пользователей:\n%s", # 9
 		"Не знаю." # 10
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Today there were %s visitors here:\n%s\n+ %s are still here.", # 0
@@ -27,4 +27,4 @@ else:
 		"Users-list:", # 8
 		"Total %s similar users:\n%s", # 9
 		"No result." # 10
-					)
+	)

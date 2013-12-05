@@ -100,7 +100,7 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[2]
 		else:
 			answer = enumerated_list(cls)
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_roster_state(self, stype, source, body, disp):
@@ -133,6 +133,6 @@ class expansion_temp(expansion):
 	commands = (
 		(command_roster, "roster", 7,),
 		(command_roster_state, "roster2", 7,)
-					)
+	)
 
 	handlers = ((init_roster_state, "00si"),)

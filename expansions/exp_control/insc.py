@@ -21,7 +21,7 @@ if DefLANG in ("RU", "UA"):
 		"Команда «%s» включена.", # 16
 		"Команда «%s» отключена.", # 17
 		"Нет отключенных команд." # 18
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"\n[Name][state][code-file][lang-file]", # 0
@@ -43,4 +43,4 @@ else:
 		"Command '%s' is on.", # 16
 		"Command '%s' is off.", # 17
 		"No disabled commands." # 18
-					)
+	)

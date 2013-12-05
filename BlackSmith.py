@@ -8,7 +8,7 @@
 
 # imports
 
-from types import NoneType, UnicodeType, InstanceType
+from types import NoneType, InstanceType, GeneratorType
 from traceback import print_exc as exc_info__
 from random import shuffle, randrange, choice
 from re import compile as compile__
@@ -28,7 +28,7 @@ sys.path.insert(0, ZipLib)
 
 from enconf import *
 
-import xmpp, iThr, itypes
+import xmpp, ithr, itypes
 
 # Cache & Statistics
 
@@ -40,7 +40,7 @@ color2 = chr(27) + "[31;1m" # red
 color3 = chr(27) + "[32m" # green
 color4 = chr(27) + "[34;1m" # blue
 
-sys_cmds = [
+cmdsDb = [
 	"ps -o rss -p %d", # 0
 	'TASKLIST /FI "PID eq %d"', # 1
 	"COLOR F0", # 2
@@ -48,9 +48,9 @@ sys_cmds = [
 	"TASKKILL /PID %d /T /f", # 4
 	"Ver", # 5
 	'sh -c "%s" 2>&1' # 6
-				]
+]
 
-Types = (
+sBase = (
 	"chat", # 0
 	"groupchat", # 1
 	"normal", # 2
@@ -70,7 +70,7 @@ Types = (
 	"ping", # 16
 	"time", # 17
 	"query" # 18
-				)
+)
 
 aRoles = (
 	"affiliation", # 0
@@ -83,14 +83,14 @@ aRoles = (
 	"visitor", # 7
 	"participant", # 8
 	"moderator" # 9
-				)
+)
 
 sList = (
 	"chat", # готов поболтать
 	"away", # отошел
 	"xa", # не беспокоить
 	"dnd" # недоступен
-				)
+)
 
 aDesc = {
 	"owner": 3,
@@ -98,14 +98,14 @@ aDesc = {
 	"admin": 2,
 	"participant": 1,
 	"member": 1
-				}
+}
 
 sCodesDesc = {
 	"301": "has-been-banned", # 0
 	"303": "nick-changed", # 1
 	"307": "has-been-kicked", # 2
 	"407": "members-only" # 3
-				}
+}
 
 sCodes = sorted(sCodesDesc.keys())
 
@@ -124,7 +124,7 @@ eCodesDesc = {
 	"501": "feature-not-implemented", # 11
 	"503": "service-unavailable", # 12
 	"504": "remote-server-timeout" # 13
-				}
+}
 
 eCodes = sorted(eCodesDesc.keys())
 
@@ -135,7 +135,7 @@ IqXEPs = (
 	xmpp.NS_URN_TIME, # 3
 	xmpp.NS_LAST, # 4
 	xmpp.NS_DISCO_INFO # 5
-				)
+)
 
 XEPs = set(IqXEPs + (
 	xmpp.NS_CAPS,
@@ -144,7 +144,7 @@ XEPs = set(IqXEPs + (
 	xmpp.NS_MUC,
 	xmpp.NS_ROSTER,
 	xmpp.NS_RECEIPTS
-				))
+))
 
 isJID = compile__("^.+?@[\w-]+?\.[\.\w-]+?$", 32)
 
@@ -153,7 +153,7 @@ VarCache = {
 	"alive": True,
 	"errors": [],
 	"action": "# %s %s &" % (os.path.basename(sys.executable), BsCore)
-				}
+}
 
 Info = {
 	"cmd": itypes.Number(),		"sess": time.time(),
@@ -162,7 +162,7 @@ Info = {
 	"prs": itypes.Number(),		"iq": itypes.Number(),
 	"errors": itypes.Number(),
 	"omsg": itypes.Number(),	"outiq": itypes.Number()
-				}
+}
 
 # Useful features
 
@@ -189,7 +189,7 @@ sleep, database = time.sleep, itypes.Database
 
 def get_exc():
 	try:
-		exc = iThr.get_exc()
+		exc = ithr.get_exc()
 	except:
 		exc = "(...)"
 	return exc
@@ -205,7 +205,7 @@ def apply(instance, args = ()):
 
 def text_color(text, color):
 	if eColors and color:
-		text = color+text+color0
+		text = color + text + color0
 	return text
 
 def Print(text, color = None):
@@ -266,7 +266,7 @@ ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 48, 0)
+(BsMark, BsVer, BsRev) = (2, 50, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -283,9 +283,9 @@ Caps = "http://blacksmith-2.googlecode.com/svn/"
 CapsVer = "%d.%d" % (BsMark, BsVer)
 FullName = "HellDev's %s Ver.%s (%s)" % (ProdName, ProdVer, Caps)
 
-BotOs, BsPid = os.name, os.getpid()
+BotOS, BsPid = os.name, os.getpid()
 
-oSlist = ((BotOs == "nt"), (BotOs == "posix"))
+OSList = ((BotOS == "nt"), (BotOS == "posix"))
 
 def client_config(config, section):
 	serv = config.get(section, "serv").lower()
@@ -294,9 +294,9 @@ def client_config(config, section):
 		port = 5222
 	user = config.get(section, "user").lower()
 	host = config.get(section, "host").lower()
-	code = config.get(section, "pass")
+	password = config.get(section, "pass")
 	jid = "%s@%s" % (user, host)
-	return (jid, (serv, port, host, user, code))
+	return (jid, (serv, port, host, user, password))
 
 try:
 	GenCon = ConfigParser.ConfigParser()
@@ -333,9 +333,9 @@ try:
 except:
 	Exit("\n\nError: general inscript is damaged!", 1, 30)
 
-if oSlist[0]:
-	os.system(sys_cmds[2])
-	os.system("%s %s" % (sys_cmds[3], FullName))
+if OSList[0]:
+	os.system(cmdsDb[2])
+	os.system("%s %s" % (cmdsDb[3], FullName))
 
 # lists & dicts
 
@@ -357,9 +357,9 @@ Handlers = {
 	"09eh": [], "00si": [],
 	"01si": [], "02si": [],
 	"03si": [], "04si": []
-				}
+}
 
-Sequence = iThr.Semaphore()
+Sequence = ithr.Semaphore()
 
 # call & execute Threads & handlers
 
@@ -368,7 +368,7 @@ def execute_handler(handler_instance, list = (), command = None):
 		handler_instance(*list)
 	except KeyboardInterrupt:
 		pass
-	except iThr.ThrKill:
+	except ithr.ThrKill:
 		pass
 	except SelfExc:
 		pass
@@ -379,37 +379,37 @@ def call_sfunctions(ls, list = ()):
 	for inst in Handlers[ls]:
 		execute_handler(inst, list)
 
-def composeTimer(sleep, handler, Name = None, list = (), command = None):
-	if not Name:
-		Name = "iTimer-%d" % (iThr.aCounter._int())
-	Timer = iThr.Timer(sleep, execute_handler, (handler, list, command,))
-	Timer.name = Name
+def composeTimer(sleep, handler, name = None, list = (), command = None):
+	if not name:
+		name = "iTimer-%s" % (ithr.aCounter._str())
+	Timer = ithr.Timer(sleep, execute_handler, (handler, list, command,))
+	Timer.name = name
 	return Timer
 
-def composeThr(handler, Name, list = (), command = None):
-	if not Name.startswith(Types[13]):
-		Name = "%s-%d" % (Name, iThr.aCounter._int())
-	return iThr.KThread(execute_handler, Name, (handler, list, command,))
+def composeThr(handler, name, list = (), command = None):
+	if not name.startswith(sBase[13]):
+		name = "%s-%s" % (name, ithr.aCounter._str())
+	return ithr.KThread(execute_handler, name, (handler, list, command,))
 
-def StartThr(Thr, Number = 0):
-	if Number > 2:
+def startThr(thr, number = 0):
+	if number > 2:
 		raise RuntimeError("exit")
 	try:
-		Thr.start()
-	except iThr.error:
-		StartThr(Thr, (Number + 1))
+		thr.start()
+	except ithr.error:
+		startThr(thr, (number + 1))
 	except:
-		collectExc(Thr.start)
+		collectExc(thr.start)
 
-def sThread_Run(Thr, handler, command = None):
+def sThread_Run(thr, handler, command = None):
 	try:
-		Thr.start()
-	except iThr.error:
+		thr.start()
+	except ithr.error:
 		try:
-			StartThr(Thr)
+			startThr(thr)
 		except RuntimeError:
 			try:
-				Thr._run_backup()
+				thr._run_backup()
 			except Exception:
 				collectExc(handler, command)
 	except:
@@ -449,7 +449,7 @@ class expansion(object):
 		for ls in self.commands:
 			command_handler(self, *ls)
 		for inst, ls in self.handlers:
-			self.handler_register(getattr(self, inst.func_name), ls)
+			self.handler_register(getattr(self, inst.__name__), ls)
 
 	auto_clear = None
 
@@ -458,7 +458,7 @@ class expansion(object):
 			cmd = self.cmds.pop()
 			if cmd in Cmds:
 				Cmds[cmd].off()
-		self.funcs_del()
+		self.clear_handlers()
 		self.commands = ()
 		self.handlers = ()
 		if self.auto_clear:
@@ -466,16 +466,12 @@ class expansion(object):
 		if full and expansions.has_key(self.name):
 			del expansions[self.name]
 
-	def ls_add(self, ls):
-		if not self.desc.has_key(ls):
-			self.desc[ls] = []
-
-	def funcs_del(self, handler = None):
+	def clear_handlers(self, handler = None):
 
 		def Del(inst, ls):
 			if ls == "03si":
 				execute_handler(inst)
-			self.inst_del(ls, inst)
+			self.del_handler(ls, inst)
 			list = self.desc[ls]
 			list.remove(inst)
 			if not list:
@@ -505,10 +501,6 @@ class expansion(object):
 					for conf in Chats.keys():
 						execute_handler(inst, (conf,))
 
-	def func_add(self, ls, inst):
-		self.ls_add(ls)
-		self.desc[ls].append(inst)
-
 	def load(self):
 		if expansions.has_key(self.name):
 			expansions[self.name].dels()
@@ -523,21 +515,21 @@ class expansion(object):
 			exp = (exp_inst, ())
 		return exp
 
-	def inst_add(self, ls, inst):
+	def add_handler(self, ls, inst):
 		if inst not in Handlers[ls]:
 			Handlers[ls].append(inst)
 
-	def inst_del(self, ls, inst):
+	def del_handler(self, ls, inst):
 		if inst in Handlers[ls]:
 			Handlers[ls].remove(inst)
 
 	def handler_register(self, inst, ls):
-		Name = inst.func_name
+		name = inst.__name__
 		for instance in Handlers[ls]:
-			if Name == instance.func_name:
-				self.inst_del(ls, instance)
-		self.inst_add(ls, inst)
-		self.func_add(ls, inst)
+			if name == instance.__name__:
+				self.del_handler(ls, instance)
+		self.add_handler(ls, inst)
+		self.desc.setdefault(ls, []).append(inst)
 
 class Command(object):
 
@@ -576,7 +568,7 @@ class Command(object):
 				answer = AnsBase[19] % (self.name)
 		else:
 			answer = AnsBase[10]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 def command_handler(exp_inst, handler, default, access, prefix = True):
@@ -712,7 +704,7 @@ class sConf(object):
 
 	def subject(self, body):
 		Info["omsg"].plus()
-		self.csend(xmpp.Message(self.name, "", Types[1], body))
+		self.csend(xmpp.Message(self.name, "", sBase[1], body))
 
 	def set_status(self, state, status):
 		self.state, self.status = (state, status)
@@ -728,7 +720,7 @@ class sConf(object):
 		self.IamHere = None
 		self.isModer = True
 		self.more = ""
-		stanza = xmpp.Presence(self.name, Types[4])
+		stanza = xmpp.Presence(self.name, sBase[4])
 		if exit_status:
 			stanza.setStatus(exit_status)
 		self.csend(stanza)
@@ -749,7 +741,7 @@ class sConf(object):
 				if self.name in desc:
 					del desc[self.name]
 			else:
-				desc[self.name] = {"disp": self.disp, Types[12]: self.nick, "cPref": self.cPref, "code": self.code}
+				desc[self.name] = {"disp": self.disp, sBase[12]: self.nick, "cPref": self.cPref, "code": self.code}
 			desc = str(desc)
 			cat_file(ChatsFileBackup, desc)
 			cat_file(ChatsFile, desc)
@@ -757,9 +749,9 @@ class sConf(object):
 			delivery(self.name)
 
 	def iq_sender(self, attr, data, afrls, role, reason = str(), handler = None):
-		stanza = xmpp.Iq(Types[9], to = self.name)
+		stanza = xmpp.Iq(sBase[9], to = self.name)
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
-		query = xmpp.Node(Types[18])
+		query = xmpp.Node(sBase[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)
 		arole = query.addChild("item", {attr: data, afrls: role})
 		if reason:
@@ -770,36 +762,36 @@ class sConf(object):
 		else:
 			handler, kdesc = handler
 			if not handler:
-				handler = HandleResponse
+				handler = handleResponse
 				kdesc = {"source": kdesc}
 			CallForResponse(self.disp, stanza, handler, kdesc)
 
 	def outcast(self, jid, reason = str(), handler = ()):
-		self.iq_sender(Types[11], jid, aRoles[0], aRoles[1], reason, handler)
+		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[1], reason, handler)
 
 	def none(self, jid, reason = str(), handler = ()):
-		self.iq_sender(Types[11], jid, aRoles[0], aRoles[2], reason, handler)
+		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[2], reason, handler)
 
 	def member(self, jid, reason = str(), handler = ()):
-		self.iq_sender(Types[11], jid, aRoles[0], aRoles[3], reason, handler)
+		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[3], reason, handler)
 
 	def admin(self, jid, reason = str(), handler = ()):
-		self.iq_sender(Types[11], jid, aRoles[0], aRoles[4], reason, handler)
+		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[4], reason, handler)
 
 	def owner(self, jid, reason = str(), handler = ()):
-		self.iq_sender(Types[11], jid, aRoles[0], aRoles[5], reason, handler)
+		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[5], reason, handler)
 
 	def kick(self, nick, reason = str(), handler = ()):
-		self.iq_sender(Types[12], nick, aRoles[6], aRoles[2], reason, handler)
+		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[2], reason, handler)
 
 	def visitor(self, nick, reason = str(), handler = ()):
-		self.iq_sender(Types[12], nick, aRoles[6], aRoles[7], reason, handler)
+		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[7], reason, handler)
 
 	def participant(self, nick, reason = str(), handler = ()):
-		self.iq_sender(Types[12], nick, aRoles[6], aRoles[8], reason, handler)
+		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[8], reason, handler)
 
 	def moder(self, nick, reason = str(), handler = ()):
-		self.iq_sender(Types[12], nick, aRoles[6], aRoles[9], reason, handler)
+		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[9], reason, handler)
 
 def get_source(source, nick):
 	if source in Chats:
@@ -815,7 +807,7 @@ def get_access(source, nick):
 
 enough_access = lambda conf, nick, access = 0: (access <= get_access(conf, nick))
 
-object_encode = lambda obj: (obj if isinstance(obj, UnicodeType) else str(obj).decode("utf-8", "replace"))
+object_encode = lambda obj: (obj if isinstance(obj, unicode) else str(obj).decode("utf-8", "replace"))
 
 def delivery(body):
 	try:
@@ -828,12 +820,12 @@ def delivery(body):
 			if not online(Disp):
 				raise SelfExc("disconnected!")
 		Info["omsg"].plus()
-		Clients[Disp].send(xmpp.Message(GodName, body, Types[0]))
+		Clients[Disp].send(xmpp.Message(GodName, body, sBase[0]))
 	except IOError:
 		Print("\n\n%s" % (body), color1)
 	except SelfExc:
 		Print("\n\n%s" % (body), color1)
-	except iThr.ThrKill:
+	except ithr.ThrKill:
 		raise
 	except Exception:
 		exc_info_()
@@ -841,14 +833,14 @@ def delivery(body):
 def Message(inst, body, disp = None):
 	body = object_encode(body)
 	if inst in Chats:
-		stype = Types[1]
+		stype = sBase[1]
 		if not disp:
 			disp = Chats[inst].disp
 		if len(body) > ConfLimit:
 			Chats[inst].more = body[ConfLimit:].strip()
 			body = AnsBase[18] % (body[:ConfLimit].strip(), ConfLimit)
 	else:
-		stype = Types[0]
+		stype = sBase[0]
 		if not disp:
 			if isinstance(inst, xmpp.JID):
 				chat = inst.getStripped()
@@ -870,7 +862,7 @@ def Message(inst, body, disp = None):
 	Sender(disp, xmpp.Message(inst, body.strip(), stype))
 
 def Answer(body, stype, source, disp = None):
-	if stype == Types[0]:
+	if stype == sBase[0]:
 		instance = source[0]
 	else:
 		body = "%s: %s" % (source[2], object_encode(body))
@@ -911,11 +903,11 @@ def ejoinTimer(conf):
 	if conf in Chats:
 		Chats[conf].join()
 
-ejoinTimerName = lambda conf: "%s-%s" % (ejoinTimer.func_name, conf.decode("utf-8"))
+ejoinTimerName = lambda conf: "%s-%s" % (ejoinTimer.__name__, conf.decode("utf-8"))
 
 get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server) if isinstance(disp, (xmpp.Client, xmpp.dispatcher.Dispatcher)) else disp
 
-get_nick = lambda chat: getattr(Chats.get(chat), Types[12], DefNick)
+get_nick = lambda chat: getattr(Chats.get(chat), sBase[12], DefNick)
 
 def online(disp):
 	disp = get_disp(disp)
@@ -942,14 +934,12 @@ def ResponseChecker(disp, iq):
 	Disp, ID = disp._owner, iq.getID()
 	if ID in Disp.RespExp:
 		(handler, kdesc) = Disp.RespExp.pop(ID)
-		sThread(handler.func_name, exec_bsExp, (handler, disp, iq, kdesc))
+		sThread(getattr(handler, "__name__"), exec_bsExp, (handler, disp, iq, kdesc))
 		xmpp_raise()
 
-def HandleResponse(disp, stanza, source):
-	if xmpp.isResultNode(stanza):
-		Answer(AnsBase[4], source[0], source[1], disp)
-	else:
-		Answer(AnsBase[7], source[0], source[1], disp)
+def handleResponse(disp, stanza, source):
+	stype, source = source[:2]
+	Answer(AnsBase[4 if xmpp.isResultNode(stanza) else 7], stype, source, disp)
 
 def Sender(disp, stanza):
 	try:
@@ -960,18 +950,18 @@ def Sender(disp, stanza):
 		disp.send(stanza)
 	except IOError:
 		pass
-	except SelfExc, exc:
+	except SelfExc as exc:
 		Print(exc_str(exc, "\n\n%s: %s!"), color2)
-	except iThr.ThrKill:
+	except ithr.ThrKill:
 		raise
 	except Exeption:
 		collectExc(Sender)
 
-sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = Types[4], status = data))
+sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = sBase[4], status = data))
 
-def caps_add(Node):
-	Node.setTag("c", {"node": Caps, "ver": CapsVer}, xmpp.NS_CAPS)
-	return Node
+def caps_add(node):
+	node.setTag("c", {"node": Caps, "ver": CapsVer}, xmpp.NS_CAPS)
+	return node
 
 Yday = lambda: getattr(time.gmtime(), "tm_yday")
 
@@ -983,7 +973,7 @@ def sAttrs(stanza):
 	return (source, instance.lower(),
 					stype, resource)
 
-GetRole = lambda Node: (str(Node.getAffiliation()), str(Node.getRole()))
+GetRole = lambda node: (str(node.getAffiliation()), str(node.getRole()))
 
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
@@ -1020,51 +1010,51 @@ def cat_file(filename, data, otype = "wb"):
 # Crashlogs
 
 def collectDFail():
-	crashfile = open(GenCrash, "ab")
-	exc_info_(crashfile)
-	crashfile.close()
+	with open(GenCrash, "ab") as fp:
+		exc_info_(fp)
 
-def collectExc(instance, command = None):
-	Number, instance, error_body = (len(VarCache["errors"]) + 1), instance.func_name, get_exc()
-	VarCache["errors"].append(error_body)
+def collectExc(inst, command = None):
+	error = get_exc()
+	VarCache["errors"].append(error)
+	inst, number = getattr(inst, "__name__") or str(inst), len(VarCache["errors"])
 	if GetExc and online(GenDisp):
 		if command:
-			exception = AnsBase[13] % (command, instance)
+			exception = AnsBase[13] % (command, inst)
 		else:
-			exception = AnsBase[14] % (instance)
+			exception = AnsBase[14] % (inst)
 		delivery(AnsBase[15] % exception)
 	else:
-		Print("\n\nError: can't execute '%s'!" % (instance), color2)
-	filename = "%s/error[%d]%s.crash" % (FailDir, (Info["cfw"]._int() + 1), strfTime("[%H.%M.%S][%d.%m.%Y]"))
+		Print("\n\nError: can't execute '%s'!" % (inst), color2)
+	filename = "%s/error[%d]%s.crash" % (FailDir, int(Info["cfw"]) + 1, strfTime("[%H.%M.%S][%d.%m.%Y]"))
 	try:
 		if not os.path.exists(FailDir):
 			os.mkdir(FailDir, 0755)
-		crashfile = open(filename, "wb")
-		Info["cfw"].plus()
-		exc_info_(crashfile)
-		crashfile.close()
-		if GetExc and online(GenDisp):
-			if oSlist[0]:
-				delivery(AnsBase[16] % (Number, filename))
-			else:
-				delivery(AnsBase[17] % (Number, filename))
-		else:
-			Print("\n\nCrash file --> %s\nError's number --> %d" % (filename, Number), color2)
+		with open(filename, "wb") as fp:
+			Info["cfw"].plus()
+			exc_info_(fp)
 	except:
 		exc_info_()
 		if GetExc and online(GenDisp):
-			delivery(error_body)
+			delivery(error)
 		else:
-			Print(error_body, color2)
+			Print(error, color2)
+	else:
+		if GetExc and online(GenDisp):
+			if OSList[0]:
+				delivery(AnsBase[16] % (number, filename))
+			else:
+				delivery(AnsBase[17] % (number, filename))
+		else:
+			Print("\n\nCrash file --> %s\nError's number --> %d" % (filename, number), color2)
 
 # Other functions
 
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
-	for ExpDir in sorted(os.listdir(ExpsDir)):
-		if (".svn" == ExpDir) or not os.path.isdir(os.path.join(ExpsDir, ExpDir)):
+	for expDir in sorted(os.listdir(ExpsDir)):
+		if (".svn" == expDir) or not os.path.isdir(os.path.join(ExpsDir, expDir)):
 			continue
-		exp = expansion(ExpDir)
+		exp = expansion(expDir)
 		if exp.isExp:
 			exp, exc = exp.load()
 			if exp:
@@ -1073,19 +1063,19 @@ def load_expansions():
 				except:
 					exc = exc_info()
 					exp.dels(True)
-					Print("Can't init - %s!%s" % (ExpDir, "\n\t* %s: %s" % exc), color2)
+					Print("Can't init - %s!%s" % (expDir, "\n\t* %s: %s" % exc), color2)
 				else:
-					Print("%s - successfully loaded!" % (ExpDir), color3)
+					Print("%s - successfully loaded!" % (expDir), color3)
 			else:
-				Print("Can't load - %s!%s" % (ExpDir, "\n\t* %s: %s" % exc), color2)
+				Print("Can't load - %s!%s" % (expDir, "\n\t* %s: %s" % exc), color2)
 		else:
-			Print("%s - isn't an expansion!" % (ExpDir), color2)
+			Print("%s - isn't an expansion!" % (expDir), color2)
 
 def get_pipe(command):
 	try:
 		with os.popen(command) as pipe:
 			data = pipe.read()
-		if oSlist[0]:
+		if OSList[0]:
 			data = data.decode("cp866")
 	except Exception:
 		data = "(...)"
@@ -1218,52 +1208,52 @@ isNumber = lambda obj: (not apply(int, (obj,)) is None)
 
 isSource = lambda jid: isJID.match(jid)
 
-def calculate(Numb = int()):
-	if oSlist[0]:
-		lines = get_pipe(sys_cmds[1] % (BsPid)).splitlines()
+def calculate(numb = int()):
+	if OSList[0]:
+		lines = get_pipe(cmdsDb[1] % (BsPid)).splitlines()
 		if len(lines) >= 3:
 			list = lines[3].split()
 			if len(list) > 5:
-				Numb = (list[4] + list[5])
+				numb = (list[4] + list[5])
 	else:
-		lines = get_pipe(sys_cmds[0] % (BsPid)).splitlines()
+		lines = get_pipe(cmdsDb[0] % (BsPid)).splitlines()
 		if len(lines) >= 2:
-			Numb = lines[1].strip()
-	return (0 if not isNumber(Numb) else int(Numb))
+			numb = lines[1].strip()
+	return (0 if not isNumber(numb) else int(numb))
 
 def check_copies():
-	Cache = Base = {"PID": BsPid, "up": Info["sess"], "alls": []}
+	cache = base = {"PID": BsPid, "up": Info["sess"], "alls": []}
 	if os.path.isfile(PidFile):
 		try:
-			Cache = eval(get_file(PidFile))
+			cache = eval(get_file(PidFile))
 		except SyntaxError:
 			del_file(PidFile)
 		except:
 			pass
 		else:
 			try:
-				if BsPid == Cache["PID"]:
-					Cache["alls"].append(strfTime())
-				elif oSlist[0]:
-					get_pipe(sys_cmds[4] % (Cache["PID"])); raise SelfExc()
+				if BsPid == cache["PID"]:
+					cache["alls"].append(strfTime())
+				elif OSList[0]:
+					get_pipe(cmdsDb[4] % (cache["PID"])); raise SelfExc()
 				else:
-					os.kill(Cache["PID"], 9); raise SelfExc()
+					os.kill(cache["PID"], 9); raise SelfExc()
 			except:
-				Cache = Base
-	apply(cat_file, (PidFile, str(Cache)))
-	del Cache["PID"]; Info.update(Cache)
+				cache = base
+	apply(cat_file, (PidFile, str(cache)))
+	del cache["PID"]; Info.update(cache)
 
 def join_chats():
 	if initialize_file(ChatsFile):
 		try:
 			try:
-				Confs = eval(get_file(ChatsFile))
+				confs = eval(get_file(ChatsFile))
 			except SyntaxError:
-				Confs = eval(get_file(ChatsFileBackup))
+				confs = eval(get_file(ChatsFileBackup))
 		except Exception:
-			Confs = {}
-		Print("\n\nThere are %d rooms in the list..." % len(Confs.keys()), color4)
-		for conf, desc in Confs.iteritems():
+			confs = {}
+		Print("\n\nThere are %d rooms in the list..." % len(confs.keys()), color4)
+		for conf, desc in confs.iteritems():
 			Chats[conf] = Chat = sConf(conf, added = True, **desc)
 			Chat.load_all()
 			if Chat.disp in Clients:
@@ -1281,7 +1271,7 @@ def XmppPresenceCB(disp, stanza):
 	(source, conf, stype, nick) = sAttrs(stanza)
 	if not enough_access(conf, nick):
 		xmpp_raise()
-	if stype == Types[5]:
+	if stype == sBase[5]:
 		disp = disp._owner
 		if disp.Roster:
 			if enough_access(conf, nick, 7):
@@ -1293,11 +1283,11 @@ def XmppPresenceCB(disp, stanza):
 				disp.Roster.setItem(conf, conf, ["Users"])
 				disp.Roster.Subscribe(conf)
 			else:
-				Sender(disp, xmpp.Presence(conf, Types[7]))
+				Sender(disp, xmpp.Presence(conf, sBase[7]))
 		xmpp_raise()
 	elif conf in Chats:
 		Chat = Chats[conf]
-		if stype == Types[7]:
+		if stype == sBase[7]:
 			ecode = stanza.getErrorCode()
 			if ecode:
 				if ecode == eCodes[9]:
@@ -1306,23 +1296,23 @@ def XmppPresenceCB(disp, stanza):
 				elif ecode in (eCodes[5], eCodes[12]):
 					Chat.IamHere = False
 					TimerName = ejoinTimerName(conf)
-					if TimerName not in iThr.getNames():
+					if TimerName not in ithr.getNames():
 						try:
 							composeTimer(360, ejoinTimer, TimerName, (conf,)).start()
-						except iThr.error:
+						except ithr.error:
 							delivery(AnsBase[20] % (ecode, eCodesDesc[ecode], conf))
 						except:
-							collectExc(iThr.Thread.start)
+							collectExc(ithr.Thread.start)
 				elif ecode == eCodes[4]:
 					Chat.full_leave(eCodesDesc[ecode])
 					delivery(AnsBase[21] % (ecode, eCodesDesc[ecode], conf))
 				elif ecode in (eCodes[2], eCodes[6]):
 					Chat.leave(eCodesDesc[ecode])
 					delivery(AnsBase[22] % (ecode, eCodesDesc[ecode], conf))
-		elif stype in (Types[3], None):
+		elif stype in (sBase[3], None):
 			if Chat.nick == nick:
 				Chat.IamHere = True
-			Role = GetRole(stanza)
+			role = GetRole(stanza)
 			inst = stanza.getJid()
 			if not inst:
 				if Chat.isModer:
@@ -1335,16 +1325,16 @@ def XmppPresenceCB(disp, stanza):
 					xmpp_raise()
 			else:
 				inst = (inst.split(chr(47)))[0].lower()
-				if not Chat.isModer and Chat.nick == nick and aDesc.get(Role[0], 0) >= 2:
+				if not Chat.isModer and Chat.nick == nick and aDesc.get(role[0], 0) >= 2:
 					Chat.isModer = True
 					Chat.leave(AnsBase[25])
 					sleep(0.4)
 					Chat.join(); xmpp_raise()
 			if Chat.isHereTS(nick) and Chat.isHe(nick, inst):
-				Chat.aroles_change(nick, Role, stanza)
+				Chat.aroles_change(nick, role, stanza)
 			else:
-				Chat.sjoined(nick, Role, inst, stanza)
-		elif stype == Types[4]:
+				Chat.sjoined(nick, role, inst, stanza)
+		elif stype == sBase[4]:
 			scode = stanza.getStatusCode()
 			if Chat.nick == nick and scode in (sCodes[0], sCodes[2]):
 				Chat.full_leave(sCodesDesc[scode])
@@ -1360,11 +1350,11 @@ def XmppPresenceCB(disp, stanza):
 					inst = stanza.getJid()
 					if inst:
 						inst = (inst.split(chr(47)))[0].lower()
-					Role = GetRole(stanza)
+					role = GetRole(stanza)
 					if Chat.isHereTS(Nick) and Chat.isHe(Nick, inst):
-						Chat.aroles_change(Nick, Role, stanza)
+						Chat.aroles_change(Nick, role, stanza)
 					else:
-						Chat.sjoined(Nick, Role, inst, stanza)
+						Chat.sjoined(Nick, role, inst, stanza)
 			else:
 				Status = (stanza.getReason() or stanza.getStatus())
 				if Chat.isHereTS(nick):
@@ -1381,49 +1371,48 @@ def XmppIqCB(disp, stanza):
 	(source, inst, stype, nick) = sAttrs(stanza)
 	if not enough_access(inst, nick):
 		xmpp_raise()
-	if stype == Types[10]:
-		Name = stanza.getQueryNS()
-		if not Name:
-			Name = (stanza.getTag(Types[16]) or stanza.getTag(Types[17]))
-			if Name:
-				Name = Name.getNamespace()
-		if Name in IqXEPs:
-			answer = stanza.buildReply(Types[8])
-			if Name == xmpp.NS_DISCO_INFO:
-				anode = answer.getTag(Types[18])
+	if stype == sBase[10]:
+		ns = stanza.getQueryNS()
+		if not ns:
+			ns = stanza.getTag(sBase[16]) or stanza.getTag(sBase[17])
+			ns = ns and ns.getNamespace()
+		if ns in IqXEPs:
+			answer = stanza.buildReply(sBase[8])
+			if ns == xmpp.NS_DISCO_INFO:
+				anode = answer.getTag(sBase[18])
 				anode.addChild("identity", {"category": "client",
 											"type": "bot",
 											"name": ProdName[:10]})
 				for feature in XEPs:
 					anode.addChild("feature", {"var": feature})
-			elif Name == xmpp.NS_LAST:
-				anode = answer.getTag(Types[18])
+			elif ns == xmpp.NS_LAST:
+				anode = answer.getTag(sBase[18])
 				anode.setAttr("seconds", int(time.time() - VarCache["idle"]))
 				anode.setData(VarCache["action"])
-			elif Name == xmpp.NS_VERSION:
-				anode = answer.getTag(Types[18])
+			elif ns == xmpp.NS_VERSION:
+				anode = answer.getTag(sBase[18])
 				anode.setTagData("name", ProdName)
 				anode.setTagData("version", ProdVer)
 				Python = "{0} [{1}.{2}.{3}]".format(sys.subversion[0], *sys.version_info)
-				if oSlist[0]:
-					Os = get_pipe(sys_cmds[5]).strip()
-				elif oSlist[1]:
+				if OSList[0]:
+					Os = get_pipe(cmdsDb[5]).strip()
+				elif OSList[1]:
 					Os = "{0} {2:.16} [{4}]".format(*os.uname())
 				else:
-					Os = BotOs.capitalize()
+					Os = BotOS.capitalize()
 				anode.setTagData("os", "%s / %s" % (Os, Python))
-			elif Name == xmpp.NS_URN_TIME:
-				anode = answer.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
+			elif ns == xmpp.NS_URN_TIME:
+				anode = answer.addChild(sBase[17], namespace = xmpp.NS_URN_TIME)
 				anode.setTagData("utc", strfTime("%Y-%m-%dT%H:%M:%SZ", False))
 				TimeZone = (time.altzone if time.daylight else time.timezone)
 				anode.setTagData("tzo", "%s%02d:%02d" % (((TimeZone < 0) and "+" or "-"),
 											abs(TimeZone) / 3600,
 											abs(TimeZone) / 60 % 60))
-			elif Name == xmpp.NS_TIME:
-				anode = answer.getTag(Types[18])
+			elif ns == xmpp.NS_TIME:
+				anode = answer.getTag(sBase[18])
 				anode.setTagData("utc", strfTime("%Y%m%dT%H:%M:%S", False))
 				tz = strfTime("%Z")
-				if oSlist[0]:
+				if OSList[0]:
 					tz = tz.decode("cp1251")
 				anode.setTagData("tz", tz)
 				anode.setTagData("display", time.asctime())
@@ -1455,20 +1444,20 @@ def XmppMessageCB(disp, stanza):
 		if not Roster["on"]:
 			xmpp_raise()
 		CheckFlood(disp)
-	BotNick = (Chat.nick if isConf else DefNick)
-	if nick == BotNick:
+	botNick = (Chat.nick if isConf else DefNick)
+	if nick == botNick:
 		xmpp_raise()
-	Subject = isConf and stanza.getSubject()
+	subject = isConf and stanza.getSubject()
 	body = stanza.getBody()
 	if body:
 		body = body.strip()
-	elif Subject:
-		body = Subject.strip()
+	elif subject:
+		body = subject.strip()
 	if not body:
 		xmpp_raise()
 	if len(body) > IncLimit:
 		body = "%s[...] %d symbols limit." % (body[:IncLimit].strip(), IncLimit)
-	if stype == Types[7]:
+	if stype == sBase[7]:
 		code = stanza.getErrorCode()
 		if code in (eCodes[10], eCodes[7]):
 			if code == eCodes[7]:
@@ -1478,18 +1467,18 @@ def XmppMessageCB(disp, stanza):
 				sleep(0.6)
 			Message(source, body)
 		xmpp_raise()
-	if Subject:
-		call_efunctions("09eh", (inst, nick, Subject, body, disp,))
+	if subject:
+		call_efunctions("09eh", (inst, nick, subject, body, disp,))
 	else:
-		temp, isToBs = body, (stype == Types[0])
-		if stype != Types[1]:
-			if (stanza.getTag(Types[14])):
+		temp, isToBs = body, (stype == sBase[0])
+		if stype != sBase[1]:
+			if (stanza.getTag(sBase[14])):
 				answer = xmpp.Message(source)
-				answer.setTag(Types[15], namespace = xmpp.NS_RECEIPTS).setAttr("id", stanza.getID())
+				answer.setTag(sBase[15], namespace = xmpp.NS_RECEIPTS).setAttr("id", stanza.getID())
 				answer.setID(stanza.getID())
 				Sender(disp, answer)
-			stype = Types[0]
-		for app in [(BotNick + Key) for Key in (":", ",", ">")]:
+			stype = sBase[0]
+		for app in [(botNick + key) for key in (":", ",", ">")]:
 			if temp.startswith(app):
 				temp, isToBs = temp[len(app):].lstrip(), True
 				break
@@ -1517,44 +1506,43 @@ def XmppMessageCB(disp, stanza):
 
 # Connecting & Dispatching
 
-def connect_client(source, InstanceAttrs):
-	(server, cport, host, user, code) = InstanceAttrs
+def connect_client(inst, attrs):
+	(server, cport, host, user, password) = attrs
 	disp = xmpp.Client(host, cport, None)
-	Print("\n\n'%s' connecting..." % (source), color4)
+	Print("\n\n'%s' connecting..." % inst, color4)
 	if ConTls:
-		ConType = (None, False)
+		conType = (None, False)
 	else:
-		ConType = (False, True)
+		conType = (False, True)
 	try:
-		ConType = disp.connect((server, cport), None, *ConType)
-	except Exception, exc:
-		Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (source, server.upper(), cport, exc_str(exc)), color2)
+		conType = disp.connect((server, cport), None, *conType)
+	except Exception as exc:
+		Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (inst, server.upper(), cport, exc_str(exc)), color2)
 		return (False, None)
-	if ConType:
-		ConType = ConType.upper()
-		if ConTls and ConType != "TLS":
-			Print("\n'%s' was connected, but a connection isn't secure." % (source), color1)
+	if conType:
+		conType = conType.upper()
+		if ConTls and conType != "TLS":
+			Print("\n'%s' was connected, but a connection isn't secure." % inst, color1)
 		else:
-			Print("\n'%s' was successfully connected!" % (source), color3)
-		Print("\n'%s' using - '%s'" % (source, ConType), color4)
+			Print("\n'%s' was successfully connected!" % inst, color3)
+		Print("\n'%s' using - '%s'" % (inst, conType), color4)
 	else:
-		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (source, server.upper(), cport), color2)
+		Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (inst, server.upper(), cport), color2)
 		return (False, None)
-	Print("\n'%s' authenticating..." % (source), color4)
+	Print("\n'%s' authenticating, wait..." % inst, color4)
 	try:
-		Auth = disp.auth(user, code, GenResource)
-	except Exception, exc:
-		Print("Can't authenticate '%s'!\n\t%s" % (source, exc_str(exc)), color2)
+		auth = disp.auth(user, password, GenResource)
+	except Exception as exc:
+		Print("Can't authenticate '%s'!\n\t%s" % (inst, exc_str(exc)), color2)
 		return (False, eCodes[2])
-	if Auth == "sasl":
-		Print("\n'%s' was successfully authenticated!" % (source), color3)
-	elif Auth:
-		Print("\n'%s' was authenticated, but old authentication method used..." % (source), color1)
+	if auth == "sasl":
+		Print("\n'%s' was successfully authenticated!" % inst, color3)
+	elif auth:
+		Print("\n'%s' was authenticated, but old authentication method used..." % inst, color1)
 	else:
-		eBody = str(disp.lastErr)
-		eCode = str(disp.lastErrCode)
-		Print("Can't authenticate '%s'! Error: '%s' (%s)" % (source, eCode, eBody), color2)
-		return (False, eCode)
+		error, code = disp.lastErr, disp.lastErrCode
+		Print("Can't authenticate '%s'! Error: '%s' (%s)" % (inst, code, error), color2)
+		return (False, code)
 	try:
 		disp.getRoster()
 	except IOError:
@@ -1568,12 +1556,12 @@ def connect_client(source, InstanceAttrs):
 	disp.RegisterHandler(xmpp.NS_PRESENCE, XmppPresenceCB)
 	disp.RegisterHandler(xmpp.NS_IQ, XmppIqCB)
 	disp.RegisterHandler(xmpp.NS_MESSAGE, XmppMessageCB)
-	Clients[source] = disp
+	Clients[inst] = disp
 	Sender(disp, caps_add(xmpp.Presence(show = sList[0], status = DefStatus)))
-	return (True, source)
+	return (True, inst)
 
 def connectAndDispatch(disp):
-	if ReverseDisp(disp, False):
+	if reverseDisp(disp, False):
 		sleep(60)
 		for conf in Chats.itervalues():
 			if disp == conf.disp:
@@ -1583,16 +1571,16 @@ def connectAndDispatch(disp):
 		delivery(AnsBase[28] % (disp))
 
 def connect_clients():
-	for Inctance, Attrs in InstancesDesc.items():
-		conn = connect_client(Inctance, Attrs)
+	for inst, attrs in InstancesDesc.items():
+		conn = connect_client(inst, attrs)
 		if not conn[0]:
 			if conn[1] and conn[1] == eCodes[2]:
 				continue
-			composeTimer(60, connectAndDispatch, "%s-%s" % (Types[13], Inctance), (Inctance,)).start()
+			composeTimer(60, connectAndDispatch, "%s-%s" % (sBase[13], inst), (inst,)).start()
 
-def ReverseDisp(disp, rejoin = True):
-	Iters = itypes.Number()
-	while 1440 > Iters.plus():
+def reverseDisp(disp, rejoin = True):
+	iters = itypes.Number()
+	while 1440 > iters.plus():
 		if connect_client(disp, InstancesDesc[disp])[0]:
 			if rejoin:
 				for conf in Chats.itervalues():
@@ -1612,11 +1600,11 @@ def Dispatcher(disp):
 					raise IOError("disconnected!")
 		except KeyboardInterrupt:
 			break
-		except iThr.ThrKill:
+		except ithr.ThrKill:
 			break
 		except IOError:
 			disp = get_disp(disp)
-			if not ReverseDisp(disp):
+			if not reverseDisp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
 			disp = Clients[disp]
@@ -1626,7 +1614,7 @@ def Dispatcher(disp):
 			break
 		except xmpp.SystemShutdown:
 			disp = get_disp(disp)
-			if not ReverseDisp(disp):
+			if not reverseDisp(disp):
 				delivery(AnsBase[28] % (disp))
 				break
 			disp = Clients[disp]
@@ -1653,16 +1641,16 @@ def load_mark2():
 	Print("\n\n%s is ready to serve!\n\n" % (ProdName), color3)
 	call_sfunctions("02si")
 	for disp in Clients.keys():
-		ThrName = "%s-%s" % (Types[13], disp)
-		if ThrName not in iThr.getNames():
-			composeThr(Dispatcher, ThrName, (disp,)).start()
+		thrName = "%s-%s" % (sBase[13], disp)
+		if thrName not in ithr.getNames():
+			composeThr(Dispatcher, thrName, (disp,)).start()
 	while VarCache["alive"]:
 		sleep(180)
-		Cls = itypes.Number()
-		for Name in iThr.getNames():
-			if Name.startswith(Types[13]):
-				Cls.plus()
-		if not int(Cls):
+		threads = 0
+		for name in ithr.getNames():
+			if name.startswith(sBase[13]):
+				threads += 1
+		if not threads:
 			sys_exit("All of the clients now fallen!")
 		sys.exc_clear()
 		gc.collect()
@@ -1672,7 +1660,7 @@ def load_mark2():
 def sys_exit(exit_desclr = "Suicide!"):
 	VarCache["alive"] = False
 	Print("\n\n%s" % (exit_desclr), color2)
-	iThr.killAllThreads()
+	ithr.killAllThreads()
 	for disp in Clients.keys():
 		if online(disp):
 			sUnavailable(disp, exit_desclr)

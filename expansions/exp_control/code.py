@@ -23,7 +23,7 @@ class expansion_temp(expansion):
 					if expansions[exp_name].cmds:
 						answer += self.AnsBase[4] % (", ".join(expansions[exp_name].cmds))
 					if expansions[exp_name].desc:
-						answer += self.AnsBase[5] % ("; ".join(["%s: (%s)" % (eh, ", ".join([inst.func_name for inst in ls])) for eh, ls in sorted(expansions[exp_name].desc.items())]))
+						answer += self.AnsBase[5] % ("; ".join(["%s: (%s)" % (eh, ", ".join([inst.__name__ for inst in ls])) for eh, ls in sorted(expansions[exp_name].desc.items())]))
 				else:
 					exp = expansion(exp_name)
 					if os.path.exists(exp.path):
@@ -55,7 +55,7 @@ class expansion_temp(expansion):
 				answer += self.AnsBase[9] % (elexps_len, chr(10).join(elexps))
 		Answer(answer, stype, source, disp)
 
-	ReloadSemaphore = iThr.Semaphore()
+	ReloadSemaphore = ithr.Semaphore()
 
 	def command_expload(self, stype, source, body, disp):
 		if body:
@@ -104,14 +104,14 @@ class expansion_temp(expansion):
 					list = []
 					for ls in expansions[exp_name].desc.values():
 						for instance in ls:
-							inst = instance.func_name
+							inst = instance.__name__
 							list.append(inst)
 							if inst == Name:
 								handler = instance
 								break
 					if handler:
 						with self.ReloadSemaphore:
-							expansions[exp_name].funcs_del(handler)
+							expansions[exp_name].clear_handlers(handler)
 						answer = AnsBase[4]
 					elif list:
 						answer = self.AnsBase[14] % (", ".join(sorted(list)))
@@ -172,4 +172,4 @@ class expansion_temp(expansion):
 		(command_expload, "expload", 8,),
 		(command_expunload, "expunload", 8,),
 		(command_tumbler, "tumbler", 8,)
-					)
+	)

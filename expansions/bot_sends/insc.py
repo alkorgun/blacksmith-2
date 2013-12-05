@@ -12,7 +12,7 @@ if DefLANG in ("RU", "UA"):
 		"Адресат неопределён.", # 7
 		"Не более 1го приглащения за 12 минут! (Осталось: %s)", # 8
 		"Чистка итак в процессе!" # 9
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"cleaning conference...", # 0
@@ -25,4 +25,4 @@ else:
 		"Unknown target.", # 7
 		"Users can send only one invite in 12 minutes! (Remain: %s)", # 8
 		"Cleaning already in the process!" # 9
-					)
+	)

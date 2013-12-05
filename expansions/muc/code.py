@@ -22,7 +22,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	sep = chr(47)
@@ -56,7 +56,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_none(self, stype, source, body, disp):
@@ -88,7 +88,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_member(self, stype, source, body, disp):
@@ -120,7 +120,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_admin(self, stype, source, body, disp):
@@ -149,7 +149,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_owner(self, stype, source, body, disp):
@@ -178,7 +178,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_kick(self, stype, source, body, disp):
@@ -209,7 +209,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_visitor(self, stype, source, body, disp):
@@ -240,7 +240,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_participant(self, stype, source, body, disp):
@@ -267,7 +267,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_moder(self, stype, source, body, disp):
@@ -290,7 +290,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	PerfDesc = {"done": 0, "fail": 0}
@@ -310,9 +310,9 @@ class expansion_temp(expansion):
 		sl = sum(desc.values())
 		if cl > sl:
 			desc["none"] = (cl - sl)
-			answer = self.AnsBase[2] %  desc
+			answer = self.AnsBase[2] % desc
 		elif desc["fail"]:
-			answer = self.AnsBase[3] %  desc
+			answer = self.AnsBase[3] % desc
 		else:
 			answer = self.AnsBase[4]
 		return answer
@@ -382,4 +382,4 @@ class expansion_temp(expansion):
 		(command_moder, "moder", 5,),
 		(command_fullban, "fullban", 7,),
 		(command_fullunban, "fullunban", 7,)
-					)
+	)

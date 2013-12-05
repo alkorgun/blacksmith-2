@@ -177,9 +177,9 @@ class expansion_temp(expansion):
 	commands = (
 		(command_wtf, "wtf", 2,),
 		(command_def, "def", 4,)
-					)
+	)
 
 	handlers = (
 		(init_wtf_base, "00si"),
 		(init_local_wtf_base, "01si")
-					)
+	)

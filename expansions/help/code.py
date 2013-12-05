@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "help" # /code.py v.x6
-#  Id: 03~3c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "help" # /code.py v.x7
+#  Id: 03~4c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -83,30 +83,28 @@ class expansion_temp(expansion):
 			lcmds[x] = itypes.Number()
 		for cmd in Cmds.keys():
 			access = Cmds[cmd].access
-			if not cmds.has_key(access):
-				cmds[access] = []
-			cmds[access].append(cmd)
+			cmds.setdefault(access, []).append(cmd)
 			for x in lcmds.keys():
 				if x >= access:
 					lcmds[x].plus()
-		for x in cmds.keys():
-			cmds[x].sort()
+		for ls in cmds.itervalues():
+			ls.sort()
 		if cmds.has_key(8):
-			answer += self.AnsBase[8] % (lcmds[8]._str(), ", ".join(cmds[8]))
+			answer += self.AnsBase[8] % (lcmds[8], ", ".join(cmds[8]))
 		if cmds.has_key(7):
-			answer += self.AnsBase[9] % (lcmds[7]._str(), ", ".join(cmds[7]))
+			answer += self.AnsBase[9] % (lcmds[7], ", ".join(cmds[7]))
 		if cmds.has_key(6):
-			answer += self.AnsBase[10] % (lcmds[6]._str(), ", ".join(cmds[6]))
+			answer += self.AnsBase[10] % (lcmds[6], ", ".join(cmds[6]))
 		if cmds.has_key(5):
-			answer += self.AnsBase[11] % (lcmds[5]._str(), ", ".join(cmds[5]))
+			answer += self.AnsBase[11] % (lcmds[5], ", ".join(cmds[5]))
 		if cmds.has_key(4):
-			answer += self.AnsBase[12] % (lcmds[4]._str(), ", ".join(cmds[4]))
+			answer += self.AnsBase[12] % (lcmds[4], ", ".join(cmds[4]))
 		if cmds.has_key(3):
-			answer += self.AnsBase[13] % (lcmds[3]._str(), ", ".join(cmds[3]))
+			answer += self.AnsBase[13] % (lcmds[3], ", ".join(cmds[3]))
 		if cmds.has_key(2):
-			answer += self.AnsBase[14] % (lcmds[2]._str(), ", ".join(cmds[2]))
+			answer += self.AnsBase[14] % (lcmds[2], ", ".join(cmds[2]))
 		if cmds.has_key(1):
-			answer += self.AnsBase[15] % (lcmds[1]._str(), ", ".join(cmds[1]))
+			answer += self.AnsBase[15] % (lcmds[1], ", ".join(cmds[1]))
 		access = get_access(source[1], source[2])
 		if access > 8:
 			access = "%d (Gandalf)" % (access)
@@ -117,7 +115,7 @@ class expansion_temp(expansion):
 		else:
 			access = str(access)
 		answer += self.AnsBase[16] % (access)
-		if stype == Types[1]:
+		if stype == sBase[1]:
 			Answer(AnsBase[11], stype, source, disp)
 		Message(source[0], answer, disp)
 
@@ -126,4 +124,4 @@ class expansion_temp(expansion):
 		(command_comacc, "comacc", 1,),
 		(command_help, "help", 1, False),
 		(command_commands, "commands", 1, False)
-					)
+	)

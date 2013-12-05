@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "bot_sends" # /code.py v.x8
-#  Id: 18~7c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "bot_sends" # /code.py v.x9
+#  Id: 18~8c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -14,25 +14,26 @@ class expansion_temp(expansion):
 		if Chats.has_key(source[1]):
 			if ChatsAttrs[source[1]]["dirt"]:
 				ChatsAttrs[source[1]]["dirt"] = None
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					s1_backup = Chats[source[1]].state
 					s2_backup = Chats[source[1]].status
 					Chats[source[1]].change_status(sList[2], self.AnsBase[0])
-				zero = xmpp.Message(source[1], typ = Types[1])
+				zero = xmpp.Message(source[1], typ = sBase[1])
+				zero.setBody("")
 				for Numb in xrange(24):
 					if not Chats.has_key(source[1]):
 						raise SelfExc("exit")
 					Sender(disp, zero); Info["omsg"].plus()
 					if (Numb != 23):
 						sleep(1.4)
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					Chats[source[1]].change_status(s1_backup, s2_backup)
 				ChatsAttrs[source[1]]["dirt"] = True
 			else:
 				answer = self.AnsBase[9]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_test(self, stype, source, body, disp):
@@ -63,6 +64,8 @@ class expansion_temp(expansion):
 		else:
 			Answer(AnsBase[0], stype, source, disp)
 
+	compile_chat = compile__("^[^\s'\"@<>&]+?@(?:conference|muc|conf|chat|group)\.[\w-]+?\.[\.\w-]+?$")
+
 	def command_send(self, stype, source, body, disp):
 		if body:
 			body = body.split(None, 1)
@@ -70,7 +73,7 @@ class expansion_temp(expansion):
 				sTo, body = body
 				if isSource(sTo):
 					conf = (sTo.split(chr(47)))[0].lower()
-					if Chats.has_key(conf) or not conf.count("@conf"):
+					if conf in Chats or not self.compile_chat.match(conf):
 						Message(sTo, self.AnsBase[5] % (source[2], body))
 						answer = AnsBase[4]
 					else:
@@ -113,7 +116,7 @@ class expansion_temp(expansion):
 					source_, arg0 = None, body.split()[0]
 					if Chats[source[1]].isHere(body):
 						if Chats[source[1]].isHereTS(body):
-							Answer(self.AnsBase[6] % (body), stype, source, disp); raise iThr.ThrKill("exit")
+							Answer(self.AnsBase[6] % (body), stype, source, disp); raise ithr.ThrKill("exit")
 						source_ = get_source(source[1], body)
 					elif isSource(arg0):
 						source_ = arg0.lower()
@@ -139,11 +142,10 @@ class expansion_temp(expansion):
 			answer = AnsBase[0]
 		Answer(answer, stype, source, disp)
 
-	def init_bot_sender(self, conf):
-		if not ChatsAttrs.has_key(conf):
-			ChatsAttrs[conf] = {}
-		ChatsAttrs[conf]["intr"] = 0
-		ChatsAttrs[conf]["dirt"] = True
+	def init_bot_sender(self, chat):
+		desc = ChatsAttrs.setdefault(chat, {})
+		desc["intr"] = 0
+		desc["dirt"] = True
 
 	commands = (
 		(command_clear, "clear", 3,),
@@ -154,6 +156,6 @@ class expansion_temp(expansion):
 		(command_toadmin, "toadmin", 1,),
 		(command_echo, "echo", 6,),
 		(command_invite, "invite", 4,)
-					)
+	)
 
 	handlers = ((init_bot_sender, "01si"),)

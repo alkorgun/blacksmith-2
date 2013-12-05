@@ -20,7 +20,7 @@ if DefLANG in ("RU", "UA"):
 		"Не могу создать директорию, вероятно «%s» содержит запрещённые символы. Соответственно, я не могу обслуживать эту конференцию.", # 15
 		"Система не может выделить ресурсы на ещё один клиент.", # 16
 		"«%s» нет в списке клиентов." # 17
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Attention! %s (%s) sent me in to -> '%s'", # 0
@@ -41,4 +41,4 @@ else:
 		"Unable to create a directory, probably '%s' contains an invalid characters. Accordingly, I can't serve this conference.", # 15
 		"The system can not allocate resources to another client.", # 16
 		"'%s' not in the clients-list." # 17
-					)
+	)

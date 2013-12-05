@@ -17,10 +17,10 @@ class expansion_temp(expansion):
 				if Number in xrange(len(VarCache["errors"])):
 					try:
 						exc = VarCache["errors"][Number]
-						if oSlist[0]:
+						if OSList[0]:
 							exc = exc.decode("cp1251")
 						exc = str(exc)
-						if stype == Types[1]:
+						if stype == sBase[1]:
 							Answer(AnsBase[11], stype, source, disp)
 						Message(source[0], exc, disp)
 					except:
@@ -31,7 +31,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[30]
 		else:
 			answer = self.AnsBase[22] % len(VarCache["errors"])
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_botup(self, stype, source, body, disp):
@@ -39,7 +39,7 @@ class expansion_temp(expansion):
 		answer = self.AnsBase[15] % (Time2Text(NowTime - Info["up"]))
 		if Info["alls"]:
 			answer += self.AnsBase[16] % (Time2Text(NowTime - Info["sess"]), str(len(Info["alls"])), ", ".join(sorted(Info["alls"])))
-		elif not oSlist[0]:
+		elif not OSList[0]:
 			answer += self.AnsBase[17]
 		Answer(answer, stype, source, disp)
 
@@ -50,17 +50,17 @@ class expansion_temp(expansion):
 		if len(Info["alls"]):
 			answer += self.AnsBase[2] % (Time2Text(NowTime - Info["sess"]))
 		answer += self.AnsBase[7] % len(Chats.keys())
-		answer += self.AnsBase[3] % (Info["msg"]._str())
-		answer += self.AnsBase[4] % (Info["cmd"]._str())
-		answer += self.AnsBase[5] % (Info["prs"]._str(), Info["iq"]._str())
-		answer += self.AnsBase[6] % (Info["omsg"]._str(), Info["outiq"]._str())
+		answer += self.AnsBase[3] % (Info["msg"])
+		answer += self.AnsBase[4] % (Info["cmd"])
+		answer += self.AnsBase[5] % (Info["prs"], Info["iq"])
+		answer += self.AnsBase[6] % (Info["omsg"], Info["outiq"])
 		Number = itypes.Number()
 		for conf in Chats.itervalues():
 			Number.plus(len(conf.get_nicks()))
 		answer += self.AnsBase[8] % (int(Number))
-		answer += self.AnsBase[10] % (len(VarCache["errors"]), Info["errors"]._str())
-		answer += self.AnsBase[11] % (Info["cfw"]._str())
-		answer += self.AnsBase[12] % (iThr.Counter._str(), len(iThr.enumerate()))
+		answer += self.AnsBase[10] % (len(VarCache["errors"]), Info["errors"])
+		answer += self.AnsBase[11] % (Info["cfw"])
+		answer += self.AnsBase[12] % (ithr.Counter, len(ithr.enumerate()))
 		answer += self.AnsBase[13] % os.times()[0]
 		Number = calculate()
 		if Number:
@@ -71,7 +71,7 @@ class expansion_temp(expansion):
 		if body:
 			cmd = body.lower()
 			if Cmds.has_key(cmd):
-				answer = self.AnsBase[18] % (cmd, Cmds[cmd].numb._str(), len(Cmds[cmd].desc))
+				answer = self.AnsBase[18] % (cmd, Cmds[cmd].numb, len(Cmds[cmd].desc))
 			else:
 				answer = AnsBase[6]
 		else:
@@ -88,4 +88,4 @@ class expansion_temp(expansion):
 		(command_botup, "botup", 1,),
 		(command_session, "stat", 1,),
 		(command_stats, "comstat", 1,)
-					)
+	)

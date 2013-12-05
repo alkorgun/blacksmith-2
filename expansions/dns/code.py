@@ -59,4 +59,4 @@ class expansion_temp(expansion):
 	commands = (
 		(command_dns, "dns", 1,),
 		(command_port, "port", 1,)
-					)
+	)

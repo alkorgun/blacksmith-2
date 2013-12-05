@@ -11,7 +11,7 @@ if DefLANG in ("RU", "UA"):
 		"Твои записи:\n", # 6
 		"Запись добавлена под номером - %s.", # 7
 		"Эта строка итак пуста." # 8
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Your note is empty.", # 0
@@ -23,4 +23,4 @@ else:
 		"Your notes:\n", # 6
 		"Recorded in line - %s.", # 7
 		"This line is already empty." # 8
-					)
+	)

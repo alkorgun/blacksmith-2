@@ -7,7 +7,7 @@ if DefLANG in ("RU", "UA"):
 		"У меня нет такого jid'а.", # 2
 		"Доступ в ростер свободный.", # 3
 		"Доступ в ростер ограничен." # 4
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"This jid isn't in that client's roster.", # 0
@@ -15,4 +15,4 @@ else:
 		"It isn't my jid.", # 2
 		"Access to the roster is free.", # 3
 		"Access to the roster is blocked." # 4
-					)
+	)

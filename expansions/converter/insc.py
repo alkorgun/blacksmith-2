@@ -5,10 +5,10 @@ if DefLANG in ("RU", "UA"):
 		"Неверно указана единица измерения.", # 0
 		"Oops...", # 1
 		"Неверно указана категория." # 2
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Incorrect unit.", # 0
 		"Oops...", # 1
 		"Incorrect category." # 2
-					)
+	)

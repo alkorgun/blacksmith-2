@@ -14,7 +14,7 @@ if DefLANG in ("RU", "UA"):
 		"Нет cовпадений.", # 9
 		"Вкард не заполнен.", # 10
 		"\n\n** Всего %d пунктов." # 11
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Pong - %s sec.", # 0
@@ -29,4 +29,4 @@ else:
 		"No matches.", # 9
 		"The vCard is empty.", # 10
 		"\n\n** Total %d results." # 11
-					)
+	)

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "config" # /code.py v.x9
-#  Id: 19~8c
+# exp_name = "config" # /code.py v.x10
+#  Id: 19~9c
 #  Code © (2011-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -14,13 +14,13 @@ class expansion_temp(expansion):
 		cfg = []
 		for s in config.sections():
 			cfg.append("[%s]" % (s.upper()))
-			for (op, i) in config.items(s):
-				cfg.append("%s = %s" % (op.upper(), str(i)))
+			for (opt, i) in config.items(s):
+				cfg.append("%s = %s" % (opt.upper(), str(i)))
 		return "\r\n".join(cfg)
 
-	ops = ("memory", "incoming", "chat", "private", "tls", "mserve", "getexc", "status", "resource")
+	opts = ("memory", "incoming", "chat", "private", "tls", "mserve", "getexc", "status", "resource")
 
-	opsGeq = ("MaxMemory", "IncLimit", "ConfLimit", "PrivLimit", "ConTls", "Mserve", "GetExc", "DefStatus", "GenResource")
+	optsGlobEq = ("MaxMemory", "IncLimit", "ConfLimit", "PrivLimit", "ConTls", "Mserve", "GetExc", "DefStatus", "GenResource")
 
 	def command_config(self, stype, source, body, disp):
 		if body:
@@ -28,46 +28,44 @@ class expansion_temp(expansion):
 			for x in body.split():
 				if not x.count("="):
 					continue
-				Name, data = x.split("=", 1)
+				opt, data = x.split("=", 1)
 				if not data:
 					continue
-				Name = Name.lower()
-				for Title in GenCon.sections():
-					if Name in GenCon.options(Title):
-						if Name in self.ops[:4]:
+				opt = opt.lower()
+				for title in GenCon.sections():
+					if opt in GenCon.options(title):
+						if opt in self.opts[:4]:
 							if not isNumber(data):
 								continue
-						elif Name in self.ops[4:-2]:
+						elif opt in self.opts[4:-2]:
 							if data not in ("True", "False"):
 								continue
-						elif Name in self.ops[-2:]:
-							data = sub_desc(data, {chr(95): chr(32)})
-						if not ConfigDesc.has_key(Title):
-							ConfigDesc[Title] = {}
-						ConfigDesc[Title][Name] = data
+						elif opt in self.opts[-2:]:
+							data = data.replace(chr(95), chr(32))
+						ConfigDesc.setdefault(title, {})[opt] = data
 			if ConfigDesc:
-				for Title in ConfigDesc.keys():
-					for (Name, data) in ConfigDesc[Title].items():
-						GenCon.set(Title, Name, data)
-						if Name in self.ops:
-							if Name not in self.ops[-2:]:
+				for (title, opts) in ConfigDesc.items():
+					for (opt, data) in opts.items():
+						GenCon.set(title, opt, data)
+						if opt in self.opts:
+							if opt not in self.opts[-2:]:
 								data = eval(data)
-								if Name == self.ops[0]:
+								if opt == self.opts[0]:
 									data *= 1024
 									data = (32768 if (data and data <= 32768) else data)
-							globals()[self.opsGeq[self.ops.index(Name)]] = data
+							globals()[self.optsGlobEq[self.opts.index(opt)]] = data
 				cat_file(GenConFile, self.get_config(GenCon))
 				ls = []
-				for Name in ConfigDesc.values():
-					ls.extend(Name.keys())
-				answer = self.AnsBase[0] % (", ".join([Name.upper() for Name in ls]))
+				for opts in ConfigDesc.values():
+					ls.extend(opts.keys())
+				answer = self.AnsBase[0] % (", ".join([opt.upper() for opt in ls]))
 			else:
 				answer = self.AnsBase[1]
 		else:
 			Message(source[0], self.AnsBase[2] + self.get_config(GenCon), disp)
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				answer = AnsBase[11]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_cls_config(self, stype, source, body, disp):
@@ -100,10 +98,10 @@ class expansion_temp(expansion):
 									if Gen == client_config(ConDisp, x)[0]:
 										ConDisp.remove_section(x)
 							if Clients.has_key(Name):
-								ThrName = "%s-%s" % (Types[13], Name)
-								for Thr in iThr.enumerate():
-									if ThrName == Thr.getName():
-										Thr.kill()
+								thrName = "%s-%s" % (sBase[13], Name)
+								for thr in ithr.enumerate():
+									if thrName == thr.getName():
+										thr.kill()
 							for conf in Chats.itervalues():
 								if conf.disp == Name:
 									if online(Name):
@@ -165,7 +163,7 @@ class expansion_temp(expansion):
 									InstancesDesc[Instance] = desc
 									cat_file(ConDispFile, self.get_config(ConDisp))
 									try:
-										StartThr(composeThr(Dispatcher, "%s-%s" % (Types[13], Instance), (Instance,)), -1)
+										startThr(composeThr(Dispatcher, "%s-%s" % (sBase[13], Instance), (Instance,)), -1)
 									except RuntimeError:
 										answer = self.AnsBase[8]
 									else:
@@ -194,10 +192,10 @@ class expansion_temp(expansion):
 							for x in xrange(24):
 								code += choice(symbols)
 						if locals().has_key("changed"):
-							self.answer_register(Name, xmpp.Iq(Types[8]), stype, source, code, disp)
+							self.answer_register(Name, xmpp.Iq(sBase[8]), stype, source, code, disp)
 						elif online(Name):
 							Disp = Clients[Name]
-							iq = xmpp.Iq(Types[9] , xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])
+							iq = xmpp.Iq(sBase[9], xmpp.NS_REGISTER, to = Disp.Server, payload = [xmpp.Node("username", payload = [Disp.User]), xmpp.Node("password", payload = [code])])
 							Info["outiq"].plus()
 							CallForResponse(Disp, iq, self.answer_register, {"stype": stype, "source": source, "code": code, "str_disp": get_disp(disp)})
 						else:
@@ -212,9 +210,9 @@ class expansion_temp(expansion):
 			answer = self.AnsBase[3]
 		else:
 			Message(source[0], self.AnsBase[2] + self.get_config(ConDisp), disp)
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				answer = AnsBase[11]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source)
 
 	def answer_register(self, disp, stanza, stype, source, code, str_disp):
@@ -242,4 +240,4 @@ class expansion_temp(expansion):
 	commands = (
 		(command_config, "config", 8,),
 		(command_cls_config, "client", 8,)
-					)
+	)

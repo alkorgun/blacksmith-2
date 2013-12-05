@@ -156,6 +156,6 @@ class expansion_temp(expansion):
 		(command_status, "botstatus", 7,),
 		(command_password, "password", 6,),
 		(command_prefix, "prefix", 1, False)
-					)
+	)
 
 	handlers = ((load_status, "01si"),)

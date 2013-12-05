@@ -12,7 +12,7 @@ class expansion_temp(expansion):
 	def __init__(self, name):
 		expansion.__init__(self, name)
 
-	opts =  ("-l", "-r", "-s")
+	opts = ("-l", "-r", "-s")
 
 	opt_locals = opts[0]
 	opt_result = opts[1]
@@ -29,9 +29,9 @@ class expansion_temp(expansion):
 			try:
 				answer = unicode(eval(unicode(body)))
 				if not answer.strip():
-					answer = `answer`
-			except Exception, exc:
-				answer = exc_str(exc)
+					answer = repr(answer)
+			except:
+					answer = "%s - %s" % exc_info()
 		else:
 			answer = AnsBase[1]
 		if not silent:
@@ -60,7 +60,7 @@ class expansion_temp(expansion):
 				else:
 					try:
 						answer = unicode(result) if self.opt_result in opts else AnsBase[4]
-					except Exception, exc:
+					except Exception as exc:
 						answer = exc_str(exc)
 			else:
 				answer = AnsBase[2]
@@ -71,8 +71,8 @@ class expansion_temp(expansion):
 
 	def command_sh(self, stype, source, body, disp):
 		if body:
-			if oSlist[1]:
-				command = sys_cmds[6] % (body.encode("utf-8"))
+			if OSList[1]:
+				command = cmdsDb[6] % (body.encode("utf-8"))
 			else:
 				command = body.encode("cp1251")
 			answer = get_pipe(command)
@@ -109,4 +109,4 @@ class expansion_temp(expansion):
 		(command_exec, "exec", 8,),
 		(command_sh, "sh", 8,),
 		(command_calc, "calc", 2,)
-					)
+	)

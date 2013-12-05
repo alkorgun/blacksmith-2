@@ -11,14 +11,14 @@ class expansion_temp(expansion):
 		expansion.__init__(self, name)
 
 	def command_online(self, stype, source, body, disp):
-		ls, ThrIds = self.AnsBase[7], iThr.getNames()
+		ls, thrIds = self.AnsBase[7], ithr.getNames()
 		for numb, disp_ in enumerate(sorted(InstancesDesc.keys()), 1):
-			alive = str("%s-%s" % (Types[13], disp_) in ThrIds)
+			alive = str("%s-%s" % (sBase[13], disp_) in thrIds)
 			connect = online(disp_)
 			if not connect:
 				connect = None
 			ls += "\n%d) %s - %s - %s" % (numb, disp_, str(connect), alive)
-		if stype == Types[1]:
+		if stype == sBase[1]:
 			Answer(AnsBase[11], stype, source, disp)
 		Message(source[0], ls, disp)
 
@@ -33,9 +33,9 @@ class expansion_temp(expansion):
 			for nick in conf.get_users():
 				if nick.ishere:
 					online.plus()
-			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online._str(), ("%s/%s" % arole if arole else str(arole))))
+			ls.append("%d) %s/%s [%s] \"%s\" (%s) - %s" % (Numb.plus(), cName, conf.nick, disp_, cPref, online, ("%s/%s" % arole if arole else str(arole))))
 		if ls:
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				Answer(AnsBase[11], stype, source, disp)
 			ls.insert(0, self.AnsBase[5])
 			Message(source[0], str.join(chr(10), ls), disp)
@@ -75,7 +75,7 @@ class expansion_temp(expansion):
 				ls += "\n\nOthers:"
 				for x in none:
 					ls += "\n%d) %s" % (Numb.plus(), x)
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				Answer(AnsBase[11], stype, source, disp)
 			Message(source[0], ls, disp)
 		else:
@@ -100,9 +100,9 @@ class expansion_temp(expansion):
 					else:
 						Numb.plus()
 				if Number._int():
-					if stype == Types[1]:
+					if stype == sBase[1]:
 						answer = AnsBase[11]
-					Message(source[0], self.AnsBase[0] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
+					Message(source[0], self.AnsBase[0] % (Number, str.join(chr(10), ls), Numb), disp)
 				else:
 					answer = self.AnsBase[1]
 			elif body in ("dates", "даты".decode("utf-8")):
@@ -110,9 +110,9 @@ class expansion_temp(expansion):
 				ls = []
 				for nick in Chats[source[1]].sorted_users():
 					ls.append("%d. %s\t\t%s" % (Number.plus(), nick.nick, nick.date[2]))
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					answer = AnsBase[11]
-				Message(source[0], self.AnsBase[2] % (Number._str(), str.join(chr(10), ls)), disp)
+				Message(source[0], self.AnsBase[2] % (Number, str.join(chr(10), ls)), disp)
 			elif body in ("roles", "роли".decode("utf-8")):
 				Number = itypes.Number()
 				Numb = itypes.Number()
@@ -123,14 +123,14 @@ class expansion_temp(expansion):
 					else:
 						Numb.plus()
 				if Number._int():
-					if stype == Types[1]:
+					if stype == sBase[1]:
 						answer = AnsBase[11]
-					Message(source[0], self.AnsBase[3] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
+					Message(source[0], self.AnsBase[3] % (Number, str.join(chr(10), ls), Numb), disp)
 				else:
 					answer = self.AnsBase[4]
 			elif body in ("list", "лист".decode("utf-8")):
 				ls = sorted(Chats[source[1]].get_nicks())
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					answer = AnsBase[11]
 				Message(source[0], self.AnsBase[2] % (str(len(ls)), ", ".join(ls)), disp)
 			else:
@@ -146,14 +146,14 @@ class expansion_temp(expansion):
 					else:
 						Numb.plus()
 				if Number._int():
-					if stype == Types[1]:
+					if stype == sBase[1]:
 						answer = AnsBase[11]
-					Message(source[0], self.AnsBase[3] % (Number._str(), str.join(chr(10), ls), Numb._str()), disp)
+					Message(source[0], self.AnsBase[3] % (Number, str.join(chr(10), ls), Numb), disp)
 				else:
 					answer = self.AnsBase[4]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	CharsCY = "етуоранкхсвм".decode("utf-8")
@@ -175,17 +175,17 @@ class expansion_temp(expansion):
 								ls.append("%d) %s (%s) [%s]" % (Numb.plus(), user.nick, conf_str, user.source))
 							else:
 								ls.append("%d) %s (%s)" % (Numb.plus(), user.nick, conf_str))
-							if Numb._int() >= 20:
+							if Numb >= 20:
 								break
 			if Numb._int():
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					answer = AnsBase[11]
-				Message(source[0], self.AnsBase[9] % (Numb._str(), str.join(chr(10), ls)), disp)
+				Message(source[0], self.AnsBase[9] % (Numb, str.join(chr(10), ls)), disp)
 			else:
 				answer = self.AnsBase[10]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	commands = (
@@ -194,4 +194,4 @@ class expansion_temp(expansion):
 		(command_inmuc, "inmuc", 2,),
 		(command_visitors, "visitors", 4,),
 		(command_search, "search", 2,)
-					)
+	)

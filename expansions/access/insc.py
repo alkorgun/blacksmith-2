@@ -13,7 +13,7 @@ if DefLANG in ("RU", "UA"):
 		"Нельзя дать локальный доступ меньше 0 и больше 6.", # 8
 		"У «%s» глобальный доступ.", # 9
 		"Не могу дать доступ «%s»." # 10
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Your access - %s.", # 0
@@ -27,4 +27,4 @@ else:
 		"You can't give local access < 0 & > 6.", # 8
 		"'%s' has global access.", # 9
 		"I can't give access to '%s'." # 10
-					)
+	)

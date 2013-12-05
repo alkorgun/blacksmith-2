@@ -38,14 +38,14 @@ class expansion_temp(expansion):
 								db("select * from note where jid=?", (source_,))
 								db_desc = db.fetchone()
 								if db_desc:
-									Numb = itypes.Number()
+									numb = itypes.Number()
 									for line in db_desc:
 										if not line:
-											db("update note set line_%s=? where jid=?" % (Numb._str()), ("[%s] %s" % (date, body), source_))
+											db("update note set line_%s=? where jid=?" % (numb._str()), ("[%s] %s" % (date, body), source_))
 											db.commit()
-											answer = self.AnsBase[7] % (Numb._str())
+											answer = self.AnsBase[7] % (numb._str())
 											break
-										Numb.plus()
+										numb.plus()
 									else:
 										answer = self.AnsBase[3]
 								else:
@@ -55,23 +55,23 @@ class expansion_temp(expansion):
 						else:
 							answer = self.AnsBase[1]
 					elif arg0 in ("-", "*"):
-						Numb = ls.pop(0)
-						if isNumber(Numb):
-							Numb = int(Numb)
-							if Numb in xrange(1, 17):
+						numb = ls.pop(0)
+						if isNumber(numb):
+							numb = int(numb)
+							if numb in xrange(1, 17):
 								with database(self.NoteFile) as db:
 									db("select * from note where jid=?", (source_,))
 									db_desc = db.fetchone()
 									if db_desc:
 										if arg0 == "*":
-											if db_desc[Numb]:
-												answer = db_desc[Numb]
+											if db_desc[numb]:
+												answer = db_desc[numb]
 											else:
 												answer = self.AnsBase[5]
-										elif not db_desc[Numb]:
+										elif not db_desc[numb]:
 											answer = self.AnsBase[8]
 										else:
-											db("update note set line_%d=? where jid=?" % (Numb), ("", source_))
+											db("update note set line_%d=? where jid=?" % (numb), ("", source_))
 											db.commit()
 											answer = AnsBase[4]
 									else:
@@ -95,7 +95,7 @@ class expansion_temp(expansion):
 							notes.append("Line[%s] %s" % (numb, line))
 					if notes:
 						answer = self.AnsBase[6] + str.join(chr(10), notes)
-						if stype == Types[1]:
+						if stype == sBase[1]:
 							Message(source[0], answer, disp)
 							answer = AnsBase[11]
 					else:
@@ -112,7 +112,7 @@ class expansion_temp(expansion):
 	def init_note_file(self):
 		if not os.path.isfile(self.NoteFile):
 			with database(self.NoteFile) as db:
-				db("create table note (jid text, %s)" % (", ".join(["line_%s text" % (Numb) for Numb in xrange(1, 17)])))
+				db("create table note (jid text, %s)" % (", ".join(["line_%s text" % (numb) for numb in xrange(1, 17)])))
 				db.commit()
 
 	commands = ((command_note, "note", 2,),)

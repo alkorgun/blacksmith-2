@@ -19,7 +19,7 @@ class expansion_temp(expansion):
 			"hour": 8766.0, # Час
 			"minute": 525960.0, # Минута
 			"second": 31557600.0, # Секунда
-						},
+		},
 		"info": { # Информация
 			"bit": 1.0, # Бит !# Base
 			"kbit": 9.765625e-04, # 2^10
@@ -39,7 +39,7 @@ class expansion_temp(expansion):
 			"ebyte": 1.08420217249e-19, # 2^60
 			"zbyte": 1.05879118407e-22, # 2^70
 			"ybyte": 1.03397576569e-25, # 2^80
-						},
+		},
 		"magnetics": { # Магнитное Поле
 			"gauss": 1.0, # Gauss; Ггаусс (G; Гс) !# Base
 			"tesla": 1e-04, # Tesla; Тесла (T; Тл)
@@ -55,7 +55,7 @@ class expansion_temp(expansion):
 			"microtesla": 1e02, # 10^-06
 			"nanotesla": 1e05, # 10^-09
 			"picotesla": 1e08, # 10^-12
-						},
+		},
 		"power": { # Мощность
 			"watt": 1.0, # Watt; Ватт (W; Вт) !# Base
 			"kwatt": 1e-03, # 10^03
@@ -63,12 +63,12 @@ class expansion_temp(expansion):
 			"gwatt": 1e-09, # 10^09
 			"twatt": 1e-12, # 10^12
 			"hpwr": 0.0013596216173, # Horse Power; Лошадиная Сила
-						},
+		},
 		"radiation": { # Радиационное Излучение
 			"bq": 1.0, # Becquerel; Беккерель (Bq; Бк) !# Base (Базовое Значение)
 			"ci": 2.7027e-11, # Curie; Кюри (Ci; Ки)
 			"rad": 1e-06, # Radiation Absorbed Dose (rad; Рад)
-						},
+		},
 		"temperature": { # Температура
 			"c": ((lambda Numb: Numb), # °C (Celsius; Цельсий) !# Base
 					(lambda Numb: Numb)),
@@ -86,14 +86,14 @@ class expansion_temp(expansion):
 					(lambda Numb: (Numb * 5.0 / 4.0))), # to Celsius
 			"ro": ((lambda Numb: (Numb * 21.0 / 40.0 + 7.5)), # from Celsius to °Ro (Romer; Рёмер)
 					(lambda Numb: ((Numb - 7.5) * 40.0 / 21.0))), # to Celsius
-						},
+		},
 		"pressure": { # Давление
 			"atm": 1.0, # Standard Atmosphere; Атмосферное Давление (atm; атм) !# Base
 			"bar": 1.01325, # bar; бар
 			"pa": 101325.0, # Pascal; Паскаль (Pa; Па)
 			"torr": 760.0, # Torr; Миллиметр Ртутного Столба
 			"psi": 14.696, # Pound per Square Inch; Фунт на Квадратный Дюйм
-						},
+		},
 		"volume": { # Объем
 			"usbushel": 1.0, # U.S. Bushel; Американский Бушель !# Base
 			"bushel": 0.968938622, # U.K. Bushel; Имперский Бушель
@@ -113,7 +113,7 @@ class expansion_temp(expansion):
 			"metre^3": 0.035239072, # Cubic Metre; Кубический Метр
 			"foot^3": 1.24445608, # Cubic Foot; Кубический Фут
 			"inch^3": 2150.42011, # Cubic Inch; Кубический Дюйм
-						},
+		},
 		"weight": { # Масса
 			"g": 1.0, # Gram; Грамм !# Base
 			"kg": 1e-03, # KiloGram; Килограмм
@@ -124,7 +124,7 @@ class expansion_temp(expansion):
 			"lbt": 0.002679229, # Troyes Pound; Тройский Фунт
 			"pd": 6.10482666e-05, # Russian Pood; Пуд
 			"carat": 5.0, # Carat; Карат
-						},
+		},
 		"distance": { # Длина
 			"angstrom": 1.0, # Angström; Ангстрём !# Base
 			"nanometre": 1e-01, # 10^-09
@@ -144,7 +144,7 @@ class expansion_temp(expansion):
 			"au": 6.68458712267e-22, # Astronomical Unit; Астрономическая Единица (средний радиус земной орбиты)
 			"ly": 1.05700083402e-26, # Light-Year; Световой Год
 			"pc": 3.24077927001e-27, # Parsec; Парсек
-						},
+		},
 		"speed": { # Скорость
 			"km/h": 1.0, # KiloMetres per Hour; Километры в Час !# Base
 			"m/s": 0.2778, # Metres per Second; Метры в Секунду
@@ -152,7 +152,7 @@ class expansion_temp(expansion):
 			"mph": 0.621371192, # Miles per Hour; Мили в Час
 			"fps": 0.911344415281, # Feet per Second; Футы в Секунду
 			"ls": 9.26566930076e-10, # Light-Speed; Скорость Света
-						},
+		},
 		"angle": { # Угол
 			"degree": 1.0, # Degree; Градус ° !# Base
 			"second": 3600.0, # Arc Second; Угловая Секунда
@@ -160,7 +160,7 @@ class expansion_temp(expansion):
 			"rad": 0.0174532925, # Radians; Радиан
 			"turn": 0.00277777777778, # Turn; Оборот
 			"gon": 1.111111111111111, # Gradian; Градон
-						},
+		},
 		"square": { # Площадь
 			"acre": 1.0, # Acre; Акр !# Base
 			"milimetre^2": 4046856420.0, # Square MilliMetre; Квадратный Миллиметр
@@ -173,7 +173,7 @@ class expansion_temp(expansion):
 			"hectare": 0.404685642, # Hectare; Гектар
 			"are": 40.4685642, # Are; Ар
 			"barn": 4.04685642e31, # Barn; Барн
-						},
+		},
 		"energy": { # Энергия
 			"btu": 1.0, # British Thermal Unit; Британская Термическая Единица !# Base
 			"mbtu": 1000000.0, # Million British Thermal Unit; Миллион Британских Термических Единиц
@@ -184,8 +184,8 @@ class expansion_temp(expansion):
 			"joule": 1055.05585, # Joule (Watt per Second); Джоуль (Ватт Секунда)
 			"watt/h": 0.29307107, # Watt per Hour; Ватт Час
 			"kwatt/h": 0.00029307107, # KiloWatt per Hour; Киловатт Час
-						},
-					}
+		},
+	}
 
 	ConvertTemp = lambda self, Numb, Type, ToType, Desc = CrDesc["temperature"]: Desc[ToType][0](Desc[Type][1](Numb))
 

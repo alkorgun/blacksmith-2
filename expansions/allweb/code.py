@@ -32,7 +32,7 @@ class expansion_temp(expansion):
 	TagsDesc = {
 		"<br>": chr(10),
 		"<br />": chr(10)
-					}
+	}
 
 	compile_st = compile__("<[^<>]+?>")
 	compile_ehtmls = compile__("&(#?[xX]?(?:[0-9a-fA-F]+|\w{1,8}));")
@@ -77,7 +77,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://jc.jabber.ru/search.html?", [("search", cName.encode("utf-8"))])
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -108,7 +108,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://ajax.googleapis.com/ajax/services/search/web?", [("v", "1.0"), ("q", body.encode("utf-8"))])
 				try:
 					data = Opener.get_page(self.UserAgent)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -183,7 +183,7 @@ class expansion_temp(expansion):
 						Opener = Web("http://translate.google.com/translate_a/t?", desc, headers = {"Accept-Charset": "utf-8"})
 						try:
 							data = Opener.get_page(self.UserAgent_Moz)
-						except Web.Two.HTTPError, exc:
+						except Web.Two.HTTPError as exc:
 							answer = str(exc)
 						except:
 							answer = self.AnsBase[0]
@@ -246,7 +246,7 @@ class expansion_temp(expansion):
 					answer = self.AnsBase[3]
 		else:
 			answer = self.AnsBase[8] + str.join(chr(10), ["%s - %s" % (k, l) for k, l in sorted(self.LangMap.items())])
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				Message(source[0], answer, disp)
 				answer = AnsBase[11]
 		Answer(answer, stype, source, disp)
@@ -256,7 +256,7 @@ class expansion_temp(expansion):
 		"Accept": "text/html",
 		"Accept-Charset": "cp1251",
 		"Accept-Language": "ru"
-					}
+	}
 
 	C3oP = "СЗоР"
 
@@ -276,7 +276,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://www.kinopoisk.ru/level/20/", headers = kinoHeaders)
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -294,7 +294,7 @@ class expansion_temp(expansion):
 							if limit and limit <= Number:
 								break
 						if not limit or limit > 25:
-							if stype == Types[1]:
+							if stype == sBase[1]:
 								Answer(AnsBase[11], stype, source, disp)
 							Top250 = str.join(chr(10), ls)
 							Message(source[0], Top250, disp)
@@ -308,7 +308,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://m.kinopoisk.ru/movie/%d" % int(body), headers = self.kinoHeaders.copy())
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -336,7 +336,7 @@ class expansion_temp(expansion):
 					Opener = Web("http://m.kinopoisk.ru/search/%s" % Web.One.quote_plus(body), headers = self.kinoHeaders.copy())
 					try:
 						data = Opener.get_page(self.UserAgent_Moz)
-					except Web.Two.HTTPError, exc:
+					except Web.Two.HTTPError as exc:
 						answer = str(exc)
 					except:
 						answer = self.AnsBase[0]
@@ -357,7 +357,7 @@ class expansion_temp(expansion):
 					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	IMDbHeaders = {"Accept-Language": "%s,en" % UserAgents.get(DefLANG, "en-US")}
@@ -372,7 +372,7 @@ class expansion_temp(expansion):
 		"lang": UserAgents.get(DefLANG, "en-US"),
 		"aka": "simple", # or "full"
 		"release": "simple", # or "full"
-					}
+	}
 
 	def command_imdb(self, stype, source, body, disp):
 		if body:
@@ -388,7 +388,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://m.imdb.com/chart/top_json", headers = self.IMDbHeaders)
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -406,9 +406,9 @@ class expansion_temp(expansion):
 							ls = ["\n[#] [Name, Year] [Rating] (Votes)"]
 							comp = compile__("([\d\.,]+).*\s([\d\.,]+)")
 							try:
-			
+
 								assert isinstance(data, list)
-			
+
 								for Number, desc in enumerate(data, 1):
 									Name = desc["title"]
 									Year = desc["extra"]
@@ -420,7 +420,7 @@ class expansion_temp(expansion):
 								answer = self.AnsBase[5]
 							else:
 								if not limit or limit > 25:
-									if stype == Types[1]:
+									if stype == sBase[1]:
 										Answer(AnsBase[11], stype, source, disp)
 									Top250 = str.join(chr(10), ls)
 									Message(source[0], Top250, disp)
@@ -433,7 +433,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://imdbapi.org/?", IMDbRequest.items())
 				try:
 					data = Opener.get_page(self.UserAgent_Moz)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -480,7 +480,7 @@ class expansion_temp(expansion):
 					Opener = Web("http://imdbapi.org/?", IMDbRequest.items())
 					try:
 						data = Opener.get_page(self.UserAgent_Moz)
-					except Web.Two.HTTPError, exc:
+					except Web.Two.HTTPError as exc:
 						answer = str(exc)
 					except:
 						answer = self.AnsBase[0]
@@ -509,14 +509,14 @@ class expansion_temp(expansion):
 					answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_python(self, stype, source, body, disp):
 		Opener = Web("http://python.org/")
 		try:
 			data = Opener.get_page(self.UserAgent)
-		except Web.Two.HTTPError, exc:
+		except Web.Two.HTTPError as exc:
 			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
@@ -539,7 +539,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://is.gd/create.php?", [("format", "json"), ("url", body.encode("utf-8"))])
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -560,7 +560,7 @@ class expansion_temp(expansion):
 			answer = AnsBase[1]
 		Answer(answer, stype, source, disp)
 
-	downloadLock = iThr.allocate_lock()
+	downloadLock = ithr.allocate_lock()
 
 	def download_process(self, info, blockNumb, blockSize, size, fb):
 		if not blockNumb:
@@ -626,9 +626,9 @@ class expansion_temp(expansion):
 						Opener = Web(link)
 						try:
 							data = Opener.download(filename, folder, self.download_process, [source[0], time.time(), disp, 0, 0], self.UserAgent)
-						except Web.Two.HTTPError, exc:
+						except Web.Two.HTTPError as exc:
 							answer = str(exc)
-						except SelfExc, exc:
+						except SelfExc as exc:
 							answer = "Error! %s." % exc[0].capitalize()
 						except:
 							answer = self.AnsBase[0]
@@ -662,13 +662,13 @@ class expansion_temp(expansion):
 					fp = Opener.open(self.UserAgent)
 					answer = fp.url
 					fp.close()
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
 		else:
 			answer = self.AnsBase[8] + str.join(chr(10), ["%s - %s" % (k, l) for k, l in sorted(self.PasteLangs.items())])
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				Message(source[0], answer, disp)
 				answer = AnsBase[11]
 		Answer(answer, stype, source, disp)
@@ -682,7 +682,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://chucknorrisfacts.ru/random")
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -703,7 +703,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://bash.im/random")
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -723,7 +723,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://www.chucknorrisfacts.com/all-chuck-norris-facts?page=%d" % randrange(974)) # 04:12 09.11.2012 by UTC number of pages was 974
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -744,7 +744,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://bash.org/?random")
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -772,7 +772,7 @@ class expansion_temp(expansion):
 				else:
 					answer = AnsBase[2]
 			elif Code in ("list", "список".decode("utf-8")):
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					Answer(AnsBase[11], stype, source, disp)
 				Curls = ["\->"] + ["%s: %s" % desc for desc in sorted(self.CurrencyDesc.items())]
 				Message(source[0], str.join(chr(10), Curls), disp)
@@ -788,7 +788,7 @@ class expansion_temp(expansion):
 							Opener = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 							try:
 								data = Opener.get_page(self.UserAgent)
-							except Web.Two.HTTPError, exc:
+							except Web.Two.HTTPError as exc:
 								answer = str(exc)
 							except:
 								answer = self.AnsBase[0]
@@ -820,7 +820,7 @@ class expansion_temp(expansion):
 					Opener = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 					try:
 						data = Opener.get_page(self.UserAgent)
-					except Web.Two.HTTPError, exc:
+					except Web.Two.HTTPError as exc:
 						answer = str(exc)
 					except:
 						answer = self.AnsBase[0]
@@ -841,7 +841,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://www.cbr.ru/scripts/XML_daily.asp")
 			try:
 				data = Opener.get_page(self.UserAgent)
-			except Web.Two.HTTPError, exc:
+			except Web.Two.HTTPError as exc:
 				answer = str(exc)
 			except:
 				answer = self.AnsBase[0]
@@ -853,13 +853,13 @@ class expansion_temp(expansion):
 					ls, Number = ["\->"], itypes.Number()
 					for Code, No, Numb in sorted(list):
 						ls.append("%d) %s/RUB - %s/%s" % (Number.plus(), Code, No, Numb))
-					if stype == Types[1]:
+					if stype == sBase[1]:
 						Answer(AnsBase[11], stype, source, disp)
 					Curls = str.join(chr(10), ls)
 					Message(source[0], Curls, disp)
 				else:
 					answer = self.AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_jquote(self, stype, source, body, disp):
@@ -869,7 +869,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://jabber-quotes.ru/api/read/?id=random")
 		try:
 			data = Opener.get_page(self.UserAgent)
-		except Web.Two.HTTPError, exc:
+		except Web.Two.HTTPError as exc:
 			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
@@ -894,7 +894,7 @@ class expansion_temp(expansion):
 			Opener = Web("http://ithappens.ru/random")
 		try:
 			data = Opener.get_page(self.UserAgent)
-		except Web.Two.HTTPError, exc:
+		except Web.Two.HTTPError as exc:
 			answer = str(exc)
 		except:
 			answer = self.AnsBase[0]
@@ -921,7 +921,7 @@ class expansion_temp(expansion):
 				Opener = Web("http://m.gismeteo.ru/citysearch/by_name/?", [("gis_search", City.encode("utf-8"))])
 				try:
 					data = Opener.get_page(self.UserAgent)
-				except Web.Two.HTTPError, exc:
+				except Web.Two.HTTPError as exc:
 					answer = str(exc)
 				except:
 					answer = self.AnsBase[0]
@@ -934,7 +934,7 @@ class expansion_temp(expansion):
 						Opener = Web("http://m.gismeteo.ru/weather/%s/" % data)
 						try:
 							data = Opener.get_page(self.UserAgent)
-						except Web.Two.HTTPError, exc:
+						except Web.Two.HTTPError as exc:
 							answer = str(exc)
 						except:
 							answer = self.AnsBase[0]
@@ -982,7 +982,7 @@ class expansion_temp(expansion):
 						Opener = Web("http://m.market.yandex.ru/spec.xml?hid=%d&modelid=%d" % (int(c1st), int(c2nd)))
 						try:
 							data = Opener.get_page(self.UserAgent_Moz)
-						except Web.Two.HTTPError, exc:
+						except Web.Two.HTTPError as exc:
 							answer = str(exc)
 						except:
 							answer = self.AnsBase[0]
@@ -1004,7 +1004,7 @@ class expansion_temp(expansion):
 					Opener = Web("http://m.market.yandex.ru/search.xml?", [("nopreciser", "1"), ("text", body)])
 					try:
 						data = Opener.get_page(self.UserAgent_Moz)
-					except Web.Two.HTTPError, exc:
+					except Web.Two.HTTPError as exc:
 						answer = str(exc)
 					except:
 						answer = self.AnsBase[0]
@@ -1038,7 +1038,7 @@ class expansion_temp(expansion):
 		(command_paste, "paste", 2,),
 		(command_chuck, "chuck", 2,),
 		(command_bash, "bash", 2,)
-					)
+	)
 
 	if DefLANG in ("RU", "UA"):
 		commands = commands.__add__((
@@ -1048,7 +1048,7 @@ class expansion_temp(expansion):
 			(command_ithappens, "ithappens", 2,),
 			(command_gismeteo, "gismeteo", 2,),
 			(command_yandex_market, "market", 2,)
-						))
+		))
 		CurrencyDesc = CurrencyDesc
 	else:
 		del kinoHeaders, C3oP, command_kino, command_currency, command_jquote, command_ithappens, command_gismeteo

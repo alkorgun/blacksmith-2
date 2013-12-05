@@ -7,7 +7,7 @@ if DefLANG in ("RU", "UA"):
 		"Задача выполнена в %(done)d, отклонена в %(fail)d, а также нет ответа из %(none)d конференций.", # 2
 		"Задача выполнена в %(done)d, отклонена в %(fail)d конференциях.", # 3
 		"Задача выполнена во всех конференциях." # 4
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Security protocols are prohibits this action.", # 0
@@ -15,4 +15,4 @@ else:
 		"The task is executed in %(done)d, rejected in %(fail)d, and no response from %(none)d conferences.", # 2
 		"The task is executed in %(done)d, rejected in %(fail)d conferences.", # 3
 		"The task is executed in all of the conferences." # 4
-					)
+	)

@@ -14,7 +14,7 @@ class expansion_temp(expansion):
 		list = ["Until the New Year (UTC) left:"]
 		Time = time.gmtime()
 		dr = lambda Numb: (Numb, ("s" if Numb >= 2 else ""))
-		t0 = (365 if (Time.tm_year%4) else 366)
+		t0 = (365 if (Time.tm_year % 4) else 366)
 		t1 = (t0 - Time.tm_yday)
 		t2 = (23 - Time.tm_hour)
 		t3 = (59 - Time.tm_min)

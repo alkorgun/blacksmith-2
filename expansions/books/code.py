@@ -106,7 +106,7 @@ class expansion_temp(expansion):
 							"жанр".decode("utf-8"): ls[1],
 							"серию".decode("utf-8"): ls[2],
 							"cycle": ls[2]
-										}
+						}
 						if desc.has_key(a2):
 							a2 = desc.get(a2, None)
 						if a2 in ls and args:
@@ -242,7 +242,7 @@ class expansion_temp(expansion):
 										db("update readers set book=?, page=? where jid=?", (book, page, jid))
 									else:
 										db("insert into readers values (?,?,?)", (jid, book, page))
-							if stype == Types[1]:
+							if stype == sBase[1]:
 								Message(source[0], answer, disp)
 								answer = AnsBase[11]
 			else:
@@ -272,7 +272,7 @@ class expansion_temp(expansion):
 							if os.path.isfile(Path):
 								try:
 									self.importFB2(Path, source[2].strip())
-								except SelfExc, exc:
+								except SelfExc as exc:
 									answer = exc[0]
 								except:
 									if AsciiSys:
@@ -319,7 +319,7 @@ class expansion_temp(expansion):
 									"number": ls[4],
 									"cover_ext": ls[9],
 									"cycle": ls[3]
-												}
+								}
 								if desc.has_key(a4):
 									a4 = desc.get(a4, None)
 								if a4 in ls:
@@ -472,6 +472,6 @@ class expansion_temp(expansion):
 	commands = (
 		(command_get_books, "books", 2,),
 		(command_set_books, "library", 7,)
-					)
+	)
 
 	handlers = ((init_books_base, "00si"),)

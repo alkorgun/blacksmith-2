@@ -16,7 +16,7 @@ if DefLANG in ("RU", "UA"):
 		"'%s' является здесь префиксом.", # 11
 		"Префикс не установлен.", # 12
 		"Статус '%s' мне неизвестен." # 13
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"I can't, because '%s' is offline.", # 0
@@ -33,4 +33,4 @@ else:
 		"'%s' is current prefix here.", # 11
 		"The prefix wasn't set.", # 12
 		"'%s' isn't a status." # 13
-					)
+	)

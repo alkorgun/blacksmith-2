@@ -23,7 +23,7 @@ class expansion_temp(expansion):
 		"Owner", # 6
 		"Chief", # 7
 		"God" # 8
-					)
+	)
 
 	def get_acc(self, access):
 		if access > 8:
@@ -55,26 +55,26 @@ class expansion_temp(expansion):
 	def command_get_galist(self, stype, source, body, disp):
 		if Galist:
 			ls = sorted([(acc, user) for user, acc in Galist.iteritems()], reverse = True)
-			if stype == Types[1]:
+			if stype == sBase[1]:
 				answer = AnsBase[11]
 			Message(source[0], self.AnsBase[5] + enumerated_list("%s - %d" % (user, acc) for acc, user in ls), disp)
 		else:
 			answer = self.AnsBase[3]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_get_lalist(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
 			if Chats[source[1]].alist:
 				ls = sorted([(acc, user) for user, acc in Chats[source[1]].alist.iteritems()], reverse = True)
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					answer = AnsBase[11]
 				Message(source[0], self.AnsBase[5] + enumerated_list("%s - %d" % (user, acc) for acc, user in ls), disp)
 			else:
 				answer = self.AnsBase[4]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_set_access(self, stype, source, body, disp):
@@ -204,9 +204,9 @@ class expansion_temp(expansion):
 		(command_get_lalist, "acclist2", 4,),
 		(command_set_access, "gaccess", 8,),
 		(command_set_local_access, "laccess", 6,)
-					)
+	)
 
 	handlers = (
 		(load_acclist, "00si"),
 		(load_local_acclist, "01si")
-					)
+	)

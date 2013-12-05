@@ -1,9 +1,9 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "get_iq" # /code.py v.x11
-#  Id: 13~10c
-#  Code © (2010-2012) by WitcherGeralt [alkorgun@gmail.com]
+# exp_name = "get_iq" # /code.py v.x12
+#  Id: 13~11c
+#  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
 
@@ -18,11 +18,11 @@ class expansion_temp(expansion):
 					conf_nick = (source[1], instance)
 					instance, source_ = "%s/%s" % conf_nick, get_source(*conf_nick)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
 		else:
 			instance, source_ = source[0], get_source(source[1], source[2])
-		iq = xmpp.Iq(Types[10], to = instance)
-		iq.addChild(Types[16], namespace = xmpp.NS_PING)
+		iq = xmpp.Iq(sBase[10], to = instance)
+		iq.addChild(sBase[16], namespace = xmpp.NS_PING)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_ping, {"stype": stype, "source": source, "instance": instance, "source_": source_, "start": time.time()})
 
@@ -37,8 +37,8 @@ class expansion_temp(expansion):
 				self.PingStats[source_].append(answer)
 			Answer(self.AnsBase[0] % str(answer), stype, source, disp)
 		else:
-			iq = xmpp.Iq(Types[10], to = instance)
-			iq.addChild(Types[18], namespace = xmpp.NS_VERSION)
+			iq = xmpp.Iq(sBase[10], to = instance)
+			iq.addChild(sBase[18], namespace = xmpp.NS_VERSION)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_ping_ver, {"stype": stype, "source": source, "instance": instance, "source_": source_, "start": time.time()})
 
@@ -87,11 +87,11 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(Types[10], to = instance)
-		iq.addChild(Types[17], namespace = xmpp.NS_URN_TIME)
+		iq = xmpp.Iq(sBase[10], to = instance)
+		iq.addChild(sBase[17], namespace = xmpp.NS_URN_TIME)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_time0202, {"stype": stype, "source": source, "instance": instance})
 
@@ -129,8 +129,8 @@ class expansion_temp(expansion):
 				answer = self.AnsBase[6]
 			Answer(answer, stype, source, disp)
 		else:
-			iq = xmpp.Iq(Types[10], to = instance)
-			iq.addChild(Types[18], namespace = xmpp.NS_TIME)
+			iq = xmpp.Iq(sBase[10], to = instance)
+			iq.addChild(sBase[18], namespace = xmpp.NS_TIME)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_time0090, {"stype": stype, "source": source})
 
@@ -149,11 +149,11 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(Types[10], to = instance)
-		iq.addChild(Types[18], namespace = xmpp.NS_VERSION)
+		iq = xmpp.Iq(sBase[10], to = instance)
+		iq.addChild(sBase[18], namespace = xmpp.NS_VERSION)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_version, {"stype": stype, "source": source})
 
@@ -181,10 +181,10 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise iThr.ThrKill("exit")
+					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
 		else:
 			instance = source[0]
-		iq = xmpp.Iq(Types[10], to = instance)
+		iq = xmpp.Iq(sBase[10], to = instance)
 		iq.addChild("vCard", namespace = xmpp.NS_VCARD)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_vcard, {"stype": stype, "source": source})
@@ -205,7 +205,7 @@ class expansion_temp(expansion):
 		"CTRY": "Country",
 		"ORGNAME": "Organization",
 		"ORGUNIT": "Department"
-					}
+	}
 
 	def parse_vcard(self, node, ls):
 		if node.kids:
@@ -228,21 +228,21 @@ class expansion_temp(expansion):
 			if ls:
 				ls.insert(0, "\->")
 				answer = str.join(chr(10), ls)
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					Message(source[1], answer, disp)
 					del answer
 			else:
 				answer = self.AnsBase[10]
 		else:
 			answer = self.AnsBase[6]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_uptime(self, stype, source, server, disp):
 		if not server:
 			server = disp._owner.Server
-		iq = xmpp.Iq(Types[10], to = server)
-		iq.addChild(Types[18], namespace = xmpp.NS_LAST)
+		iq = xmpp.Iq(sBase[10], to = server)
+		iq.addChild(sBase[18], namespace = xmpp.NS_LAST)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_idle, {"stype": stype, "source": source, "instance": server, "typ": None})
 
@@ -254,22 +254,22 @@ class expansion_temp(expansion):
 					instance = "%s/%s" % (source[1], instance)
 				else:
 					answer = self.AnsBase[5] % (instance)
-			if not locals().has_key(Types[6]):
-				iq = xmpp.Iq(Types[10], to = instance)
-				iq.addChild(Types[18], namespace = xmpp.NS_LAST)
+			if not locals().has_key(sBase[6]):
+				iq = xmpp.Iq(sBase[10], to = instance)
+				iq.addChild(sBase[18], namespace = xmpp.NS_LAST)
 				iq.setID("Bs-i%d" % Info["outiq"].plus())
 				CallForResponse(disp, iq, self.answer_idle, {"stype": stype, "source": source, "instance": nick, "typ": True})
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def answer_idle(self, disp, stanza, stype, source, instance, typ):
 		if xmpp.isResultNode(stanza):
-			seconds = stanza.getTagAttr(Types[18], "seconds")
+			seconds = stanza.getTagAttr(sBase[18], "seconds")
 			if seconds and seconds != "0" and isNumber(seconds):
 				answer = (self.AnsBase[8] if typ else self.AnsBase[7]) % (instance, Time2Text(int(seconds)))
-		if not locals().has_key(Types[6]):
+		if not locals().has_key(sBase[6]):
 			answer = self.AnsBase[6]
 		Answer(answer, stype, source, disp)
 
@@ -294,8 +294,8 @@ class expansion_temp(expansion):
 						data = (ls.pop(0)).lower()
 						desc = {}
 						for role in self.affs:
-							iq = xmpp.Iq(Types[10], to = source[1])
-							query = xmpp.Node(Types[18])
+							iq = xmpp.Iq(sBase[10], to = source[1])
+							query = xmpp.Node(sBase[18])
 							query.setNamespace(xmpp.NS_MUC_ADMIN)
 							query.addChild("item", {aRoles[0]: role})
 							iq.addChild(node = query)
@@ -314,7 +314,7 @@ class expansion_temp(expansion):
 									ls.append("%d) %s" % (Number.plus(), jid))
 						if ls:
 							Message(source[0], str.join(chr(10), ls), disp)
-							if stype == Types[1]:
+							if stype == sBase[1]:
 								answer = AnsBase[11]
 						else:
 							answer = self.AnsBase[9]
@@ -331,8 +331,8 @@ class expansion_temp(expansion):
 									Numb = 20
 								else:
 									Numb = x
-						iq = xmpp.Iq(Types[10], to = source[1])
-						query = xmpp.Node(Types[18])
+						iq = xmpp.Iq(sBase[10], to = source[1])
+						query = xmpp.Node(sBase[18])
 						query.setNamespace(xmpp.NS_MUC_ADMIN)
 						query.addChild("item", {aRoles[0]: body})
 						iq.addChild(node = query)
@@ -344,7 +344,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def answer_aflist_search(self, disp, stanza, desc, role, data):
@@ -367,7 +367,7 @@ class expansion_temp(expansion):
 				if node and node != "None":
 					jid = node.getAttr("jid")
 					if jid:
-						if Numb and Numb <= Number._int():
+						if Numb and Numb <= Number:
 							Number.plus()
 						else:
 							signature = node.getTagData("reason")
@@ -375,16 +375,16 @@ class expansion_temp(expansion):
 								jid = "%s (%s)" % (jid, signature)
 							jids.append("%d) %s" % (Number.plus(), jid))
 			if jids:
-				if Numb and Numb < Number._int():
-					jids.append("...\nTotal: %s items." % (Number._str()))
+				if Numb and Numb < Number:
+					jids.append("...\nTotal: %s items." % Number)
 				Message(source[0], str.join(chr(10), jids), disp)
-				if stype == Types[1]:
+				if stype == sBase[1]:
 					answer = AnsBase[11]
 			else:
 				answer = self.AnsBase[6]
 		else:
 			answer = self.AnsBase[6]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	XEPs.add(xmpp.NS_STATS)
@@ -392,15 +392,15 @@ class expansion_temp(expansion):
 	def command_server_stats(self, stype, source, server, disp):
 		if not server:
 			server = disp._owner.Server
-		iq = xmpp.Iq(Types[10], to = server)
-		iq.addChild(Types[18], namespace = xmpp.NS_STATS)
+		iq = xmpp.Iq(sBase[10], to = server)
+		iq.addChild(sBase[18], namespace = xmpp.NS_STATS)
 		iq.setID("Bs-i%d" % Info["outiq"].plus())
 		CallForResponse(disp, iq, self.answer_server_stats, {"stype": stype, "source": source})
 
 	def answer_server_stats(self, disp, stanza, stype, source):
 		if xmpp.isResultNode(stanza):
-			iq = xmpp.Iq(Types[10], to = stanza.getFrom())
-			iq.addChild(Types[18], {}, stanza.getQueryChildren() or [], xmpp.NS_STATS)
+			iq = xmpp.Iq(sBase[10], to = stanza.getFrom())
+			iq.addChild(sBase[18], {}, stanza.getQueryChildren() or [], xmpp.NS_STATS)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_server_stats_get, {"stype": stype, "source": source})
 		else:
@@ -412,8 +412,9 @@ class expansion_temp(expansion):
 			for node in stanza.getQueryChildren() or ():
 				name = node.getAttr("name")
 				value = node.getAttr("value")
+				units = node.getAttr("units")
 				if name and value:
-					ls.append("%s: %s" % (name, value))
+					ls.append("%s: %s %s" % (name, value, units))
 			if ls:
 				ls.insert(0, "Stats of %s ->" % stanza.getFrom())
 				answer = str.join(chr(10), ls)
@@ -435,7 +436,7 @@ class expansion_temp(expansion):
 				if isNumber(limit):
 					limit = int(limit)
 					if limit > 2:
-						if stype == Types[0]:
+						if stype == sBase[0]:
 							if limit > 256:
 								limit = 256
 						elif limit > 24:
@@ -445,8 +446,8 @@ class expansion_temp(expansion):
 						desc["body"] = ls.pop(0)
 				else:
 					desc["body"] = body[len(server):].strip()
-			iq = xmpp.Iq(Types[10], to = server)
-			iq.addChild(Types[18], namespace = xmpp.NS_DISCO_ITEMS)
+			iq = xmpp.Iq(sBase[10], to = server)
+			iq.addChild(sBase[18], namespace = xmpp.NS_DISCO_ITEMS)
 			iq.setID("Bs-i%d" % Info["outiq"].plus())
 			CallForResponse(disp, iq, self.answer_disco, desc)
 		else:
@@ -526,4 +527,4 @@ class expansion_temp(expansion):
 		(command_aflist, "list", 4,),
 		(command_server_stats, "servstat", 1,),
 		(command_disco, "disco", 2,)
-					)
+	)

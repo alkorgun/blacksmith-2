@@ -75,7 +75,7 @@ class expansion_temp(expansion):
 		if nick != get_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				sbody = UnicodeType(sbody)
+				sbody = str(sbody)
 				if scode == sCodes[0]:
 					sbody = "banned:(%s)" % (sbody)
 				elif scode == sCodes[2]:
@@ -118,7 +118,7 @@ class expansion_temp(expansion):
 			with database(filename) as db:
 				db("create table stat (jid text, arole text, joined text, joins integer, seen text, leave text, nicks text)")
 				db.commit()
-		self.UstatsDesc[conf] = iThr.Semaphore()
+		self.UstatsDesc[conf] = ithr.Semaphore()
 
 	def edit_stat_desc(self, conf):
 		del self.UstatsDesc[conf]
@@ -126,7 +126,7 @@ class expansion_temp(expansion):
 	commands = (
 		(command_user_stats, "userstat", 2,),
 		(command_here, "here", 1,)
-					)
+	)
 
 	handlers = (
 		(init_stat_base, "01si"),
@@ -135,4 +135,4 @@ class expansion_temp(expansion):
 		(calc_stat_05eh, "05eh"),
 		(calc_stat_06eh, "06eh"),
 		(calc_stat_07eh, "07eh")
-					)
+	)

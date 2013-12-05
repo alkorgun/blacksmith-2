@@ -20,7 +20,7 @@ if DefLANG in ("RU", "UA"):
 		"\n\n• Команды для Участников [доступ 1] - %s:\n%s", # 15
 		"\n\nТвой уровень доступа - %s.", # 16
 		"Файл со справкой повреждён!" # 17
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Command '%s' is located in expansion -> %s", # 0
@@ -41,4 +41,4 @@ else:
 		"\n\n# User's commands [access 1] - %s:\n%s", # 15
 		"\n\nYour access level - %s.", # 16
 		"Help file is damaged!" # 17
-					)
+	)

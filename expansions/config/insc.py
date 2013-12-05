@@ -15,7 +15,7 @@ if DefLANG in ("RU", "UA"):
 		"Этот jid уже есть в списках.", # 10
 		"«%s» нет в списке клиентов.", # 11
 		"«%s» сейчас оффлайн." # 12
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"Changed options: %s", # 0
@@ -31,4 +31,4 @@ else:
 		"This jid is already in the list.", # 10
 		"'%s' not in clients-list.", # 11
 		"'%s' is offline." # 12
-					)
+	)

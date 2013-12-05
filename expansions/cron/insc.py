@@ -12,7 +12,7 @@ if DefLANG in ("RU", "UA"):
 		"Нет запланированных заданий.", # 7
 		"\n[№][ID][Команда][Deadline]\n%s", # 8
 		"Дата/Время введены некорректно." # 9
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"You asked to execute '%s'.", # 0
@@ -25,4 +25,4 @@ else:
 		"There are no tasks.", # 7
 		"\n[#][ID][Command][Deadline]\n%s", # 8
 		"Date/Time is incorrect." # 9
-					)
+	)

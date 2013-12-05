@@ -40,7 +40,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = AnsBase[1]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_remote(self, stype, source, body, disp):
@@ -62,9 +62,9 @@ class expansion_temp(expansion):
 				if conf:
 					st = (body.pop(0)).lower()
 					if st in ("chat", "чат".decode("utf-8")):
-						stype_ = Types[1]
+						stype_ = sBase[1]
 					elif st in ("private", "приват".decode("utf-8")):
-						stype_ = Types[0]
+						stype_ = sBase[0]
 					else:
 						stype_ = None
 					if stype_:
@@ -77,7 +77,7 @@ class expansion_temp(expansion):
 							if Cmds.has_key(cmd):
 								cmd = Cmds[cmd]
 								if cmd.isAvalable and cmd.handler:
-									if stype_ == Types[1]:
+									if stype_ == sBase[1]:
 										disp_ = Chats[conf].disp
 									else:
 										disp_ = get_disp(disp)
@@ -101,7 +101,7 @@ class expansion_temp(expansion):
 				answer = AnsBase[2]
 		else:
 			answer = enumerated_list(confs)
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	def command_private(self, stype, source, body, disp):
@@ -114,14 +114,14 @@ class expansion_temp(expansion):
 						body = body[0]
 					else:
 						body = ""
-					Cmds[cmd].execute(Types[0], source, body, disp)
+					Cmds[cmd].execute(sBase[0], source, body, disp)
 				else:
 					answer = AnsBase[6]
 			else:
 				answer = AnsBase[1]
 		else:
 			answer = AnsBase[0]
-		if locals().has_key(Types[6]):
+		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
 	pointer = chr(62)*2
@@ -147,7 +147,7 @@ class expansion_temp(expansion):
 										body = ""
 									if Chats[source[1]].isHereTS(nick):
 										Info["cmd"].plus()
-										sThread("command", cmd.handler, (cmd.exp, Types[0], ("%s/%s" % (source[1], nick), source[1], nick), body, disp), cmd.name)
+										sThread("command", cmd.handler, (cmd.exp, sBase[0], ("%s/%s" % (source[1], nick), source[1], nick), body, disp), cmd.name)
 										cmd.numb.plus()
 										source_ = get_source(source[1], source[2])
 										if source_:
@@ -176,4 +176,4 @@ class expansion_temp(expansion):
 		(command_remote, "remote", 8,),
 		(command_private, "private", 1,),
 		(command_redirect, "redirect", 5,)
-					)
+	)

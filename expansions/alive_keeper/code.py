@@ -18,33 +18,33 @@ class expansion_temp(expansion):
 
 		while VarCache["alive"]:
 			sleep(120)
-			ThrIds = iThr.getNames()
+			thrIds = ithr.getNames()
 			for disp_str, disp in Clients.iteritems():
 				if not hasattr(disp, "aKeeper"):
 					disp.aKeeper = itypes.Number()
-				if disp.aKeeper._int() >= 3:
+				if disp.aKeeper > 2:
 					disp.aKeeper = itypes.Number()
-					ThrName = "%s-%s" % (Types[13], disp_str)
-					if ThrName in ThrIds:
-						for Thr in iThr.enumerate():
-							if ThrName == Thr.getName():
-								Thr.kill()
+					thrName = "%s-%s" % (sBase[13], disp_str)
+					if thrName in thrIds:
+						for thr in ithr.enumerate():
+							if thrName == thr.getName():
+								thr.kill()
 					try:
-						composeThr(connectAndDispatch, ThrName, (disp_str,)).start()
-					except iThr.error:
+						composeThr(connectAndDispatch, thrName, (disp_str,)).start()
+					except ithr.error:
 						delivery(AnsBase[28] % (disp_str))
 					except:
-						collectExc(iThr.Thread.start)
+						collectExc(ithr.Thread.start)
 				elif expansions.has_key(self.name):
 					disp.aKeeper.plus()
-					iq = xmpp.Iq(Types[10], to = "%s/%s" % (disp_str, GenResource))
-					iq.addChild(Types[16], namespace = xmpp.NS_PING)
+					iq = xmpp.Iq(sBase[10], to = "%s/%s" % (disp_str, GenResource))
+					iq.addChild(sBase[16], namespace = xmpp.NS_PING)
 					iq.setID("Bs-i%d" % Info["outiq"].plus())
 					CallForResponse(disp_str, iq, alive_keeper_answer)
 					del iq
 				else:
-					raise iThr.ThrKill("exit")
-			del ThrIds
+					raise ithr.ThrKill("exit")
+			del thrIds
 
 	def conf_alive_keeper(self):
 
@@ -58,39 +58,39 @@ class expansion_temp(expansion):
 
 		while VarCache["alive"]:
 			sleep(360)
-			ThrIds = iThr.getNames()
+			thrIds = ithr.getNames()
 			for conf in Chats.itervalues():
 				if not (online(conf.disp) and conf.IamHere):
 					continue
 				if not hasattr(conf, "aKeeper"):
 					conf.aKeeper = itypes.Number()
-				if conf.aKeeper._int() >= 3:
+				if conf.aKeeper > 2:
 					conf.aKeeper = itypes.Number()
 					TimerName = ejoinTimerName(conf.name)
-					if TimerName not in ThrIds:
+					if TimerName not in thrIds:
 						try:
 							composeTimer(180, ejoinTimer, TimerName, (conf.name,)).start()
-						except iThr.error:
+						except ithr.error:
 							pass
 						except:
-							collectExc(iThr.Thread.start)
+							collectExc(ithr.Thread.start)
 				elif expansions.has_key(self.name):
 					conf.aKeeper.plus()
-					iq = xmpp.Iq(Types[10], to = "%s/%s" % (conf.name, conf.nick))
-					iq.addChild(Types[18], namespace = xmpp.NS_PING)
+					iq = xmpp.Iq(sBase[10], to = "%s/%s" % (conf.name, conf.nick))
+					iq.addChild(sBase[18], namespace = xmpp.NS_PING)
 					iq.setID("Bs-i%d" % Info["outiq"].plus())
 					CallForResponse(conf.disp, iq, conf_alive_keeper_answer, {"conf": conf.name})
 					del iq
 				else:
-					raise iThr.ThrKill("exit")
-			del ThrIds
+					raise ithr.ThrKill("exit")
+			del thrIds
 
 	def start_keepers(self):
-		Name1 = self.alive_keeper.func_name
-		Name2 = self.conf_alive_keeper.func_name
-		for Thr in iThr.enumerate():
-			if Thr.name.startswith((Name1, Name2)):
-				Thr.kill()
+		Name1 = self.alive_keeper.__name__
+		Name2 = self.conf_alive_keeper.__name__
+		for thr in ithr.enumerate():
+			if thr.name.startswith((Name1, Name2)):
+				thr.kill()
 		composeThr(self.alive_keeper, Name1).start()
 		composeThr(self.conf_alive_keeper, Name2).start()
 

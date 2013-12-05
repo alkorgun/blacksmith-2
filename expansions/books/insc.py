@@ -18,7 +18,7 @@ if DefLANG in ("RU", "UA"):
 		"Неверный номер страницы.", # 13
 		"Нет такой страницы.", # 14
 		"Неверное название." # 15
-					)])
+	)])
 else:
 	AnsBase_temp = (
 		"The library is empty.", # 0
@@ -37,4 +37,4 @@ else:
 		"Incorrect page number.", # 13
 		"No such page.", # 14
 		"Incorrect name." # 15
-					)
+	)
