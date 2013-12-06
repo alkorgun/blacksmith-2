@@ -75,7 +75,6 @@ class expansion_temp(expansion):
 		if nick != get_nick(conf):
 			source_ = get_source(conf, nick)
 			if source_:
-				sbody = str(sbody)
 				if scode == sCodes[0]:
 					sbody = "banned:(%s)" % (sbody)
 				elif scode == sCodes[2]:
@@ -85,7 +84,7 @@ class expansion_temp(expansion):
 					db("select * from stat where jid=?", (source_,))
 					db_desc = db.fetchone()
 					if db_desc:
-						db("update stat set seen=?, leave=? where jid=?", (date, sbody, source_))
+						db("update stat set seen=?, leave=? where jid=?", (date, unicode(sbody), source_))
 						db.commit()
 
 	def calc_stat_06eh(self, conf, old_nick, nick, disp):

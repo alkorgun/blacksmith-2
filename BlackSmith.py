@@ -23,8 +23,8 @@ if BsCore:
 		os.chdir(BsRoot)
 else:
 	BsRoot = os.getcwd()
-ZipLib = "librarys.zip"
-sys.path.insert(0, ZipLib)
+LibDir = "libs.zip"
+sys.path.insert(0, LibDir)
 
 from enconf import *
 
@@ -175,14 +175,16 @@ def check_sqlite():
 
 def exc_info():
 	exc, err, tb = sys.exc_info()
-	if exc and err:
+	try:
 		exc, err = exc.__name__, err[0]
-	return (exc, err)
+	except Exception:
+		exc, err = str(exc), str(err)
+	return exc, err
 
 def exc_info_(fp = None):
 	try:
 		exc_info__(None, fp)
-	except:
+	except Exception:
 		pass
 
 sleep, database = time.sleep, itypes.Database
@@ -190,7 +192,7 @@ sleep, database = time.sleep, itypes.Database
 def get_exc():
 	try:
 		exc = ithr.get_exc()
-	except:
+	except Exception:
 		exc = "(...)"
 	return exc
 
