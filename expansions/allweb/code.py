@@ -51,7 +51,7 @@ class expansion_temp(expansion):
 						Numb = int(Char, c06)
 						assert (-1 < Numb < 65535)
 						Char = unichr(Numb)
-					except:
+					except Exception:
 						Char = self.edefs.get(Char, "&%s;" % co)
 				else:
 					Char = self.edefs.get(co, "&%s;" % co)
@@ -79,7 +79,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("utf-8")
@@ -110,12 +110,12 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					try:
 						data = self.json.loads(data)
-					except:
+					except Exception:
 						answer = self.AnsBase[1]
 					else:
 						try:
@@ -185,12 +185,12 @@ class expansion_temp(expansion):
 							data = Opener.get_page(self.UserAgent_Moz)
 						except Web.Two.HTTPError as exc:
 							answer = str(exc)
-						except:
+						except Exception:
 							answer = self.AnsBase[0]
 						else:
 							try:
 								data = self.json.loads(data)
-							except:
+							except Exception:
 								answer = self.AnsBase[1]
 							else:
 								try:
@@ -278,7 +278,7 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					data = data.decode("cp1251")
@@ -310,7 +310,7 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					data = data.decode("cp1251")
@@ -338,7 +338,7 @@ class expansion_temp(expansion):
 						data = Opener.get_page(self.UserAgent_Moz)
 					except Web.Two.HTTPError as exc:
 						answer = str(exc)
-					except:
+					except Exception:
 						answer = self.AnsBase[0]
 					else:
 						data = data.decode("cp1251")
@@ -390,12 +390,12 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					try:
 						data = self.json.loads(data)
-					except:
+					except Exception:
 						answer = self.AnsBase[1]
 					else:
 						try:
@@ -435,12 +435,12 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent_Moz)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					try:
 						data = self.json.loads(data)
-					except:
+					except Exception:
 						answer = self.AnsBase[1]
 					else:
 						ls = ["\->"]
@@ -482,12 +482,12 @@ class expansion_temp(expansion):
 						data = Opener.get_page(self.UserAgent_Moz)
 					except Web.Two.HTTPError as exc:
 						answer = str(exc)
-					except:
+					except Exception:
 						answer = self.AnsBase[0]
 					else:
 						try:
 							data = self.json.loads(data)
-						except:
+						except Exception:
 							answer = self.AnsBase[1]
 						else:
 							try:
@@ -518,7 +518,7 @@ class expansion_temp(expansion):
 			data = Opener.get_page(self.UserAgent)
 		except Web.Two.HTTPError as exc:
 			answer = str(exc)
-		except:
+		except Exception:
 			answer = self.AnsBase[0]
 		else:
 			data = data.decode("koi8-r")
@@ -541,12 +541,12 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				try:
 					data = self.json.loads(data)
-				except:
+				except Exception:
 					answer = self.AnsBase[1]
 				else:
 					try:
@@ -617,7 +617,7 @@ class expansion_temp(expansion):
 						if not os.path.isdir(folder):
 							try:
 								os.makedirs(folder)
-							except:
+							except Exception:
 								link = None
 						if AsciiSys:
 							folder = folder.decode("utf-8")
@@ -630,7 +630,7 @@ class expansion_temp(expansion):
 							answer = str(exc)
 						except SelfExc as exc:
 							answer = "Error! %s." % exc[0].capitalize()
-						except:
+						except Exception:
 							answer = self.AnsBase[0]
 						else:
 							answer = "Done.\nPath: %s\nSize: %s" % (data[0], Size2Text(data[2]))
@@ -664,7 +664,7 @@ class expansion_temp(expansion):
 					fp.close()
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 		else:
 			answer = self.AnsBase[8] + str.join(chr(10), ["%s - %s" % (k, l) for k, l in sorted(self.PasteLangs.items())])
@@ -684,7 +684,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("cp1251")
@@ -705,7 +705,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("cp1251")
@@ -725,7 +725,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("utf-8")
@@ -746,7 +746,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("iso-8859-1")
@@ -790,7 +790,7 @@ class expansion_temp(expansion):
 								data = Opener.get_page(self.UserAgent)
 							except Web.Two.HTTPError as exc:
 								answer = str(exc)
-							except:
+							except Exception:
 								answer = self.AnsBase[0]
 							else:
 								data = data.decode("cp1251")
@@ -802,7 +802,7 @@ class expansion_temp(expansion):
 									No = No.replace(chr(44), chr(46))
 									try:
 										Numb = (Number*(float(Numb)/float(No)))
-									except:
+									except Exception:
 										answer = AnsBase[7]
 									else:
 										answer = "%.2f RUB" % (Numb)
@@ -822,7 +822,7 @@ class expansion_temp(expansion):
 						data = Opener.get_page(self.UserAgent)
 					except Web.Two.HTTPError as exc:
 						answer = str(exc)
-					except:
+					except Exception:
 						answer = self.AnsBase[0]
 					else:
 						data = data.decode("cp1251")
@@ -843,7 +843,7 @@ class expansion_temp(expansion):
 				data = Opener.get_page(self.UserAgent)
 			except Web.Two.HTTPError as exc:
 				answer = str(exc)
-			except:
+			except Exception:
 				answer = self.AnsBase[0]
 			else:
 				data = data.decode("cp1251")
@@ -871,7 +871,7 @@ class expansion_temp(expansion):
 			data = Opener.get_page(self.UserAgent)
 		except Web.Two.HTTPError as exc:
 			answer = str(exc)
-		except:
+		except Exception:
 			answer = self.AnsBase[0]
 		else:
 			data = data.decode("utf-8")
@@ -896,7 +896,7 @@ class expansion_temp(expansion):
 			data = Opener.get_page(self.UserAgent)
 		except Web.Two.HTTPError as exc:
 			answer = str(exc)
-		except:
+		except Exception:
 			answer = self.AnsBase[0]
 		else:
 			data = data.decode("cp1251")
@@ -923,7 +923,7 @@ class expansion_temp(expansion):
 					data = Opener.get_page(self.UserAgent)
 				except Web.Two.HTTPError as exc:
 					answer = str(exc)
-				except:
+				except Exception:
 					answer = self.AnsBase[0]
 				else:
 					data = data.decode("utf-8")
@@ -936,7 +936,7 @@ class expansion_temp(expansion):
 							data = Opener.get_page(self.UserAgent)
 						except Web.Two.HTTPError as exc:
 							answer = str(exc)
-						except:
+						except Exception:
 							answer = self.AnsBase[0]
 						else:
 							data = data.decode("utf-8")
@@ -984,7 +984,7 @@ class expansion_temp(expansion):
 							data = Opener.get_page(self.UserAgent_Moz)
 						except Web.Two.HTTPError as exc:
 							answer = str(exc)
-						except:
+						except Exception:
 							answer = self.AnsBase[0]
 						else:
 							data = data.decode("utf-8", "replace")
@@ -1006,7 +1006,7 @@ class expansion_temp(expansion):
 						data = Opener.get_page(self.UserAgent_Moz)
 					except Web.Two.HTTPError as exc:
 						answer = str(exc)
-					except:
+					except Exception:
 						answer = self.AnsBase[0]
 					else:
 						data = data.decode("utf-8", "replace")

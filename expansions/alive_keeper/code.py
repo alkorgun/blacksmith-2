@@ -33,7 +33,7 @@ class expansion_temp(expansion):
 						composeThr(connectAndDispatch, thrName, (disp_str,)).start()
 					except ithr.error:
 						delivery(AnsBase[28] % (disp_str))
-					except:
+					except Exception:
 						collectExc(ithr.Thread.start)
 				elif expansions.has_key(self.name):
 					disp.aKeeper.plus()
@@ -72,7 +72,7 @@ class expansion_temp(expansion):
 							composeTimer(180, ejoinTimer, TimerName, (conf.name,)).start()
 						except ithr.error:
 							pass
-						except:
+						except Exception:
 							collectExc(ithr.Thread.start)
 				elif expansions.has_key(self.name):
 					conf.aKeeper.plus()

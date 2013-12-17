@@ -42,7 +42,7 @@ class expansion_temp(expansion):
 					sock.settimeout(6)
 					try:
 						sock.connect(server)
-					except:
+					except Exception:
 						answer = "{0}:{1} is closed.".format(host, port)
 					else:
 						answer = "{0}:{1} is opened.".format(host, port)

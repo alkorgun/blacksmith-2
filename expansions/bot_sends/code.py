@@ -1,8 +1,8 @@
 # coding: utf-8
 
 #  BlackSmith mark.2
-# exp_name = "bot_sends" # /code.py v.x9
-#  Id: 18~8c
+# exp_name = "bot_sends" # /code.py v.x10
+#  Id: 18~9c
 #  Code © (2010-2013) by WitcherGeralt [alkorgun@gmail.com]
 
 class expansion_temp(expansion):
@@ -11,24 +11,25 @@ class expansion_temp(expansion):
 		expansion.__init__(self, name)
 
 	def command_clear(self, stype, source, body, disp):
-		if Chats.has_key(source[1]):
-			if ChatsAttrs[source[1]]["dirt"]:
-				ChatsAttrs[source[1]]["dirt"] = None
+		conf = source[1]
+		if conf in Chats:
+			if ChatsAttrs[conf]["dirt"]:
+				ChatsAttrs[conf]["dirt"] = None
 				if stype == sBase[1]:
-					s1_backup = Chats[source[1]].state
-					s2_backup = Chats[source[1]].status
-					Chats[source[1]].change_status(sList[2], self.AnsBase[0])
-				zero = xmpp.Message(source[1], typ = sBase[1])
+					s1_backup = Chats[conf].state
+					s2_backup = Chats[conf].status
+					Chats[conf].change_status(sList[2], self.AnsBase[0])
+				zero = xmpp.Message(conf, typ = sBase[1])
 				zero.setBody("")
 				for Numb in xrange(24):
-					if not Chats.has_key(source[1]):
+					if conf not in Chats:
 						raise SelfExc("exit")
 					Sender(disp, zero); Info["omsg"].plus()
 					if (Numb != 23):
 						sleep(1.4)
 				if stype == sBase[1]:
-					Chats[source[1]].change_status(s1_backup, s2_backup)
-				ChatsAttrs[source[1]]["dirt"] = True
+					Chats[conf].change_status(s1_backup, s2_backup)
+				ChatsAttrs[conf]["dirt"] = True
 			else:
 				answer = self.AnsBase[9]
 		else:
@@ -56,13 +57,13 @@ class expansion_temp(expansion):
 		Answer(answer, stype, source, disp)
 
 	def command_more(self, stype, source, body, disp):
-		if Chats.has_key(source[1]):
-			if Chats[source[1]].more:
-				body = "[&&] %s" % (Chats[source[1]].more)
-				Chats[source[1]].more = ""
-				Message(source[1], body, disp)
-		else:
-			Answer(AnsBase[0], stype, source, disp)
+		Chat = Chats.get(source[1])
+		if not Chat:
+			return Answer(AnsBase[0], stype, source, disp)
+		if Chat.more:
+			body = "[&&] %s" % (Chat.more)
+			Chat.more = ""
+			Message(Chat.name, body, disp)
 
 	compile_chat = compile__("^[^\s'\"@<>&]+?@(?:conference|muc|conf|chat|group)\.[\w-]+?\.[\.\w-]+?$")
 
@@ -99,13 +100,12 @@ class expansion_temp(expansion):
 		Answer(answer, stype, source, disp)
 
 	def command_echo(self, stype, source, body, disp):
-		if body:
-			if ConfLimit >= len(body):
-				Message(source[1], body, disp)
-			else:
-				Message(source[1], body[:ConfLimit], disp)
+		if not body:
+			return Answer(AnsBase[1], stype, source, disp)
+		if ConfLimit >= len(body):
+			Message(source[1], body, disp)
 		else:
-			Answer(AnsBase[1], stype, source, disp)
+			Message(source[1], body[:ConfLimit], disp)
 
 	def command_invite(self, stype, source, body, disp):
 		if Chats.has_key(source[1]):
@@ -116,7 +116,7 @@ class expansion_temp(expansion):
 					source_, arg0 = None, body.split()[0]
 					if Chats[source[1]].isHere(body):
 						if Chats[source[1]].isHereTS(body):
-							Answer(self.AnsBase[6] % (body), stype, source, disp); raise ithr.ThrKill("exit")
+							return Answer(self.AnsBase[6] % (body), stype, source, disp)
 						source_ = get_source(source[1], body)
 					elif isSource(arg0):
 						source_ = arg0.lower()

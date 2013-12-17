@@ -23,7 +23,7 @@ class expansion_temp(expansion):
 						if stype == sBase[1]:
 							Answer(AnsBase[11], stype, source, disp)
 						Message(source[0], exc, disp)
-					except:
+					except Exception:
 						answer = self.AnsBase[20]
 				else:
 					answer = self.AnsBase[21] % (body)

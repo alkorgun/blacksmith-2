@@ -18,7 +18,7 @@ class expansion_temp(expansion):
 					conf_nick = (source[1], instance)
 					instance, source_ = "%s/%s" % conf_nick, get_source(*conf_nick)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
+					return Answer(self.AnsBase[5] % (instance), stype, source, disp)
 		else:
 			instance, source_ = source[0], get_source(source[1], source[2])
 		iq = xmpp.Iq(sBase[10], to = instance)
@@ -87,7 +87,7 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
+					return Answer(self.AnsBase[5] % (instance), stype, source, disp)
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(sBase[10], to = instance)
@@ -104,11 +104,11 @@ class expansion_temp(expansion):
 			for node in stanza.getChildren():
 				try:
 					course, hours, minutes = self.compile_tzo.search(node.getTagData("tzo")).groups()
-				except:
+				except Exception:
 					pass
 				try:
 					date = self.compile_utc.search(node.getTagData("utc")).groups()
-				except:
+				except Exception:
 					pass
 				else:
 					date = ([int(digit) for digit in date] + [0, 0, 0])
@@ -121,7 +121,7 @@ class expansion_temp(expansion):
 						date = time.struct_time(date)
 					else:
 						date = time.gmtime()
-				except:
+				except Exception:
 					answer = self.AnsBase[6]
 				else:
 					answer = time.ctime(time.mktime(date) + hours*3600 + minutes*60)
@@ -149,7 +149,7 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
+					return Answer(self.AnsBase[5] % (instance), stype, source, disp)
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(sBase[10], to = instance)
@@ -181,7 +181,7 @@ class expansion_temp(expansion):
 				if Chats[source[1]].isHereTS(instance):
 					instance = "%s/%s" % (source[1], instance)
 				else:
-					Answer(self.AnsBase[5] % (instance), stype, source, disp); raise ithr.ThrKill("exit")
+					return Answer(self.AnsBase[5] % (instance), stype, source, disp)
 		else:
 			instance = source[0]
 		iq = xmpp.Iq(sBase[10], to = instance)

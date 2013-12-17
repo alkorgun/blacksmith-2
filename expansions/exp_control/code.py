@@ -69,7 +69,7 @@ class expansion_temp(expansion):
 						if exp:
 							try:
 								exp.initialize_exp()
-							except:
+							except Exception:
 								exc = exc_info()
 								exp.dels(True)
 								answer = self.AnsBase[11] % (exp_name, "\n\t* %s: %s" % exc)

@@ -274,7 +274,7 @@ class expansion_temp(expansion):
 									self.importFB2(Path, source[2].strip())
 								except SelfExc as exc:
 									answer = exc[0]
-								except:
+								except Exception:
 									if AsciiSys:
 										Path = Path.decode("utf-8")
 									collectExc(self.importFB2, "library add fb2 %s" % Path)

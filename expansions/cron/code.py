@@ -129,7 +129,7 @@ class expansion_temp(expansion):
 									date[5] = 0
 							else:
 								date[4], date[5] = 0, 0
-						except:
+						except Exception:
 							answer = AnsBase[2]
 						else:
 							Date = (Te.pop(0) if Te else None)
@@ -141,12 +141,12 @@ class expansion_temp(expansion):
 										date[1] = int(Date.pop(0))
 										if Date:
 											date[0] = int(Date.pop(0))
-								except:
+								except Exception:
 									answer = AnsBase[2]
 						if not locals().has_key(sBase[6]):
 							try:
 								date = time.struct_time(date)
-							except:
+							except Exception:
 								answer = AnsBase[2]
 							else:
 								Time, Te = time.mktime(gt), time.mktime(date)

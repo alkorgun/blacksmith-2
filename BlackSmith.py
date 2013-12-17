@@ -175,11 +175,11 @@ def check_sqlite():
 
 def exc_info():
 	exc, err, tb = sys.exc_info()
-	try:
-		exc, err = exc.__name__, err[0]
-	except Exception:
-		exc, err = str(exc), str(err)
-	return exc, err
+	if exc and err:
+		exc = exc.__name__
+		if err.args:
+			err = err[0]
+	return (exc, err)
 
 def exc_info_(fp = None):
 	try:
@@ -198,12 +198,12 @@ def get_exc():
 
 exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0] if err.args else None)
 
-def apply(instance, args = ()):
+def apply(instance, args = (), kwargs = {}):
 	try:
-		code = instance(*args)
-	except:
-		code = None
-	return code
+		data = instance(*args, **kwargs)
+	except Exception:
+		data = None
+	return data
 
 def text_color(text, color):
 	if eColors and color:
@@ -268,7 +268,7 @@ ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 50, 0)
+(BsMark, BsVer, BsRev) = (2, 52, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -368,13 +368,13 @@ Sequence = ithr.Semaphore()
 def execute_handler(handler_instance, list = (), command = None):
 	try:
 		handler_instance(*list)
-	except KeyboardInterrupt:
+	except SystemExit:
 		pass
-	except ithr.ThrKill:
+	except KeyboardInterrupt:
 		pass
 	except SelfExc:
 		pass
-	except:
+	except Exception:
 		collectExc(handler_instance, command)
 
 def call_sfunctions(ls, list = ()):
@@ -384,9 +384,9 @@ def call_sfunctions(ls, list = ()):
 def composeTimer(sleep, handler, name = None, list = (), command = None):
 	if not name:
 		name = "iTimer-%s" % (ithr.aCounter._str())
-	Timer = ithr.Timer(sleep, execute_handler, (handler, list, command,))
-	Timer.name = name
-	return Timer
+	timer = ithr.Timer(sleep, execute_handler, (handler, list, command,))
+	timer.name = name
+	return timer
 
 def composeThr(handler, name, list = (), command = None):
 	if not name.startswith(sBase[13]):
@@ -400,7 +400,7 @@ def startThr(thr, number = 0):
 		thr.start()
 	except ithr.error:
 		startThr(thr, (number + 1))
-	except:
+	except Exception:
 		collectExc(thr.start)
 
 def sThread_Run(thr, handler, command = None):
@@ -414,7 +414,7 @@ def sThread_Run(thr, handler, command = None):
 				thr._run_backup()
 			except Exception:
 				collectExc(handler, command)
-	except:
+	except Exception:
 		collectExc(sThread_Run, command)
 
 def sThread(name, inst, list = (), command = None):
@@ -511,7 +511,7 @@ class expansion(object):
 				execfile(self.insc, globals())
 			execfile(self.file, globals())
 			exp_inst = expansion_temp(self.name)
-		except:
+		except Exception:
 			exp = (None, exc_info())
 		else:
 			exp = (exp_inst, ())
@@ -577,7 +577,7 @@ def command_handler(exp_inst, handler, default, access, prefix = True):
 	Path = os.path.join(ExpsDir, exp_inst.name, default)
 	try:
 		commands = eval(get_file("%s.name" % Path).decode("utf-8"))
-	except:
+	except Exception:
 		commands = {}
 	if commands.has_key(DefLANG):
 		name = commands[DefLANG].decode("utf-8")
@@ -827,8 +827,6 @@ def delivery(body):
 		Print("\n\n%s" % (body), color1)
 	except SelfExc:
 		Print("\n\n%s" % (body), color1)
-	except ithr.ThrKill:
-		raise
 	except Exception:
 		exc_info_()
 
@@ -871,7 +869,7 @@ def Answer(body, stype, source, disp = None):
 		instance = source[1]
 	Message(instance, body, disp)
 
-def CheckFlood(disp):
+def checkFlood(disp):
 	disp = get_disp(disp)
 	if disp in Guard:
 		desc = Guard[disp]
@@ -954,8 +952,6 @@ def Sender(disp, stanza):
 		pass
 	except SelfExc as exc:
 		Print(exc_str(exc, "\n\n%s: %s!"), color2)
-	except ithr.ThrKill:
-		raise
 	except Exeption:
 		collectExc(Sender)
 
@@ -975,7 +971,7 @@ def sAttrs(stanza):
 	return (source, instance.lower(),
 					stype, resource)
 
-GetRole = lambda node: (str(node.getAffiliation()), str(node.getRole()))
+getRole = lambda node: (str(node.getAffiliation()), str(node.getRole()))
 
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
@@ -993,7 +989,7 @@ def initialize_file(filename, data = "{}"):
 		if folder and not os.path.exists(folder):
 			os.makedirs(folder, 0755)
 		cat_file(filename, data)
-	except:
+	except Exception:
 		return False
 	return True
 
@@ -1034,7 +1030,7 @@ def collectExc(inst, command = None):
 		with open(filename, "wb") as fp:
 			Info["cfw"].plus()
 			exc_info_(fp)
-	except:
+	except Exception:
 		exc_info_()
 		if GetExc and online(GenDisp):
 			delivery(error)
@@ -1062,7 +1058,7 @@ def load_expansions():
 			if exp:
 				try:
 					exp.initialize_exp()
-				except:
+				except Exception:
 					exc = exc_info()
 					exp.dels(True)
 					Print("Can't init - %s!%s" % (expDir, "\n\t* %s: %s" % exc), color2)
@@ -1114,10 +1110,9 @@ class Web(object):
 		fp = self.open(header)
 		info = fp.info()
 		size = info.get("Content-Length", -1)
-		if isNumber(size):
-			size = int(size)
-		else:
+		if not isNumber(size):
 			raise SelfExc("no info about file's size")
+		size = int(size)
 		if not filename:
 			disp = info.get("Content-Disposition")
 			if disp:
@@ -1230,7 +1225,7 @@ def check_copies():
 			cache = eval(get_file(PidFile))
 		except SyntaxError:
 			del_file(PidFile)
-		except:
+		except Exception:
 			pass
 		else:
 			try:
@@ -1239,8 +1234,10 @@ def check_copies():
 				elif OSList[0]:
 					get_pipe(cmdsDb[4] % (cache["PID"])); raise SelfExc()
 				else:
+					os.kill(cache["PID"], 15)
+					sleep(2)
 					os.kill(cache["PID"], 9); raise SelfExc()
-			except:
+			except Exception:
 				cache = base
 	apply(cat_file, (PidFile, str(cache)))
 	del cache["PID"]; Info.update(cache)
@@ -1268,7 +1265,7 @@ def join_chats():
 
 # Presence Handler
 
-def XmppPresenceCB(disp, stanza):
+def xmppPresenceCB(disp, stanza):
 	Info["prs"].plus()
 	(source, conf, stype, nick) = sAttrs(stanza)
 	if not enough_access(conf, nick):
@@ -1303,7 +1300,7 @@ def XmppPresenceCB(disp, stanza):
 							composeTimer(360, ejoinTimer, TimerName, (conf,)).start()
 						except ithr.error:
 							delivery(AnsBase[20] % (ecode, eCodesDesc[ecode], conf))
-						except:
+						except Exception:
 							collectExc(ithr.Thread.start)
 				elif ecode == eCodes[4]:
 					Chat.full_leave(eCodesDesc[ecode])
@@ -1314,7 +1311,7 @@ def XmppPresenceCB(disp, stanza):
 		elif stype in (sBase[3], None):
 			if Chat.nick == nick:
 				Chat.IamHere = True
-			role = GetRole(stanza)
+			role = getRole(stanza)
 			inst = stanza.getJid()
 			if not inst:
 				if Chat.isModer:
@@ -1327,7 +1324,7 @@ def XmppPresenceCB(disp, stanza):
 					xmpp_raise()
 			else:
 				inst = (inst.split(chr(47)))[0].lower()
-				if not Chat.isModer and Chat.nick == nick and aDesc.get(role[0], 0) >= 2:
+				if not Chat.isModer and Chat.nick == nick and aDesc.get(role[0], 0) > 1:
 					Chat.isModer = True
 					Chat.leave(AnsBase[25])
 					sleep(0.4)
@@ -1352,7 +1349,7 @@ def XmppPresenceCB(disp, stanza):
 					inst = stanza.getJid()
 					if inst:
 						inst = (inst.split(chr(47)))[0].lower()
-					role = GetRole(stanza)
+					role = getRole(stanza)
 					if Chat.isHereTS(Nick) and Chat.isHe(Nick, inst):
 						Chat.aroles_change(Nick, role, stanza)
 					else:
@@ -1367,7 +1364,7 @@ def XmppPresenceCB(disp, stanza):
 
 # Iq Handler
 
-def XmppIqCB(disp, stanza):
+def xmppIqCB(disp, stanza):
 	Info["iq"].plus()
 	ResponseChecker(disp, stanza)
 	(source, inst, stype, nick) = sAttrs(stanza)
@@ -1430,7 +1427,7 @@ class Macro:
 
 Macro = Macro()
 
-def XmppMessageCB(disp, stanza):
+def xmppMessageCB(disp, stanza):
 	Info["msg"].plus()
 	(source, inst, stype, nick) = sAttrs(stanza)
 	if not enough_access(inst, nick):
@@ -1445,7 +1442,7 @@ def XmppMessageCB(disp, stanza):
 	elif not enough_access(inst, nick, 7):
 		if not Roster["on"]:
 			xmpp_raise()
-		CheckFlood(disp)
+		checkFlood(disp)
 	botNick = (Chat.nick if isConf else DefNick)
 	if nick == botNick:
 		xmpp_raise()
@@ -1548,16 +1545,15 @@ def connect_client(inst, attrs):
 	try:
 		disp.getRoster()
 	except IOError:
-		if disp.isConnected():
-			disp.Roster = None
-		else:
+		if not disp.isConnected():
 			return (False, None)
+		disp.Roster = None
 	except Exception:
 		disp.Roster = None
 	disp.RespExp = {}
-	disp.RegisterHandler(xmpp.NS_PRESENCE, XmppPresenceCB)
-	disp.RegisterHandler(xmpp.NS_IQ, XmppIqCB)
-	disp.RegisterHandler(xmpp.NS_MESSAGE, XmppMessageCB)
+	disp.RegisterHandler(xmpp.NS_PRESENCE, xmppPresenceCB)
+	disp.RegisterHandler(xmpp.NS_IQ, xmppIqCB)
+	disp.RegisterHandler(xmpp.NS_MESSAGE, xmppMessageCB)
 	Clients[inst] = disp
 	Sender(disp, caps_add(xmpp.Presence(show = sList[0], status = DefStatus)))
 	return (True, inst)
@@ -1602,7 +1598,7 @@ def Dispatcher(disp):
 					raise IOError("disconnected!")
 		except KeyboardInterrupt:
 			break
-		except ithr.ThrKill:
+		except SystemExit:
 			break
 		except IOError:
 			disp = get_disp(disp)
@@ -1623,7 +1619,7 @@ def Dispatcher(disp):
 			zero = itypes.Number()
 		except xmpp.StreamError:
 			pass
-		except:
+		except Exception:
 			collectDFail()
 			if Info["errors"].plus() >= len(Clients.keys())*8:
 				sys_exit("Dispatch Errors!")
@@ -1674,6 +1670,8 @@ if __name__ == "__main__":
 		load_mark2()
 	except KeyboardInterrupt:
 		sys_exit("Interrupt (Ctrl+C)")
+	except SystemExit:
+		sys_exit("Got ~SIGTERM")
 	except:
 		collectExc(load_mark2)
 		sys_exit("Critical Fail!")
