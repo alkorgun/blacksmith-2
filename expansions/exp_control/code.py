@@ -14,7 +14,7 @@ class expansion_temp(expansion):
 		get_state = lambda filename: (self.AnsBase[1] if filename and os.path.isfile(filename) else self.AnsBase[2])
 		if body:
 			exp_name = body.lower()
-			if check_nosimbols(exp_name):
+			if check_nosymbols(exp_name):
 				if expansions.has_key(exp_name):
 					answer = self.AnsBase[0]
 					code_file = get_state(expansions[exp_name].file)
@@ -60,7 +60,7 @@ class expansion_temp(expansion):
 	def command_expload(self, stype, source, body, disp):
 		if body:
 			exp_name = body.strip("\\/").lower()
-			if check_nosimbols(exp_name):
+			if check_nosymbols(exp_name):
 				exp = expansion(exp_name)
 				if exp.isExp:
 					backup = expansions.get(exp_name)

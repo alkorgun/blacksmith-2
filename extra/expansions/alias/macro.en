@@ -1,0 +1,10 @@
+getting the help of macro or macro-list
+{command} ([help/taboo] [name_of_macro])
+*/{command} help poke
+bot would show help of "poke" (unless, of course, help was added)
+*/{command} taboo poke
+bot would forbid macro "bash"
+*/{command} taboo poke
+bot would allow macro "poke" (if it is forbidden, of course)
+*/{command}
+bot would show the list of all available macro

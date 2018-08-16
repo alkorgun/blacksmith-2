@@ -1,0 +1,12 @@
+chat logger's controller
+{command} (on/off)/([password] (text))
+*/{command}
+bot would show logger's state
+*/{command} off
+bot would disable logger of the current conference
+*/{command} on
+bot would enable logger of the current conference
+*/{command} password 1234
+bot would record the password for the Web interface
+*/{command} password
+bot would remove the password

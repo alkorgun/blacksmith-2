@@ -1,0 +1,16 @@
+controller of the chatroom's backups
+{command} (list/create)/([restore] [all/subject/options/owners/admins/members/outcasts] (backup_time))/([copy] [conference])
+*/{command} create
+bot would create backup of current conference (bot keeps last 3 backups (6 subjects, because it creates automatically))
+*/{command} restore options
+bot would restore options from the last backup
+*/{command} restore options 1357381600.54
+bot would restore options from backup of 1357381600.54 (Unix time)
+*/{command} restore all
+bot would restore the last backup of the conference (you can't set a time)
+*/{command} copy chat@conference.jab.com
+bot would restore the last backup of "chat@conference.jab.ru" in current conference (you must be an owner of both conferences or an admin of the bot)
+*/{command} list
+bot would show list of the backups with Unix time
+*/{command}
+bot would show list of the last backups

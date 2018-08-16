@@ -20,7 +20,7 @@ class expansion_temp(expansion):
 					s2_backup = Chats[conf].status
 					Chats[conf].change_status(sList[2], self.AnsBase[0])
 				zero = xmpp.Message(conf, typ = sBase[1])
-				zero.setBody("")
+				zero.setBody("\t")
 				for Numb in xrange(24):
 					if conf not in Chats:
 						raise SelfExc("exit")

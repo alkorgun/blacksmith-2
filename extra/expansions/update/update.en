@@ -1,0 +1,8 @@
+auto-update
+{command} (last/branches)
+*/{command} last
+bot would show last revision
+*/{command} branches
+bot would update/add the content of tree "branches"
+*/{command}
+bot would update itself from tree "trunk"

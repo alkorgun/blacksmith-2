@@ -10,7 +10,7 @@ To use Black-2 you will need:
 
 Installation:
 
-1) Type to the console (*nix):
+1) Type in console (*nix):
 svn checkout http://blacksmith-2.googlecode.com/svn/trunk/ Black-2
 
 2) Rename config_.ini to config.ini (./static/) and fill it

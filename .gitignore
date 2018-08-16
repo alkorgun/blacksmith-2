@@ -1,0 +1,8 @@
+/.project
+/.pydevproject
+/.settings/
+current/
+exceptions/
+static/clients.ini
+static/config.ini
+sessions.db

@@ -28,11 +28,11 @@ if DefLANG in ("RU", "UA"):
 	)])
 else:
 	AnsBase_temp = (
-		"\n*// Session's statistics (Pid: %d):", # 0
+		"\n*// Session statistics (Pid: %d):", # 0
 		"\n# Bot's uptime %s", # 1
 		"\n# The last working set %s", # 2
 		"\n# Obtained %s messages", # 3
-		"\n# Completed %s commands", # 4
+		"\n# Executed %s commands", # 4
 		"\n# Processed %s presences & %s iq-requests", # 5
 		"\n# Sent %s messages & %s iq-requests", # 6
 		"\n# Serve %d conferences", # 7

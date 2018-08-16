@@ -1,0 +1,40 @@
+adding new features "on the fly"
+{command} (global) ([add] [name_of_alias] [event] [var0/var1/etc.] [cond0/cond1/etc.] [<!--clause0--><!--clause1--><!--etc.-->] [flag0&flag1/flag0&flag1/etc.] (command|set|message) (command_name|affiliation|role|chat|private) (args|reason))|([add] [name] [macro] [command] (args))|([show] [name] [event|macro] (bold))|([access] [name_of_macro] [access_level])|([help] [name_of_macro] [set|clear] (text_of_help))|([del] [name] [event|macro])|(enable|disable|state|help|bold)
+*/{command} help
+bot would show the annex of this help
+*/{command} add akick0 join jid is <!--dude@jab.org--> null set kick And never come back
+bot would kick the user with JID "dude@jab.org" from the current conference with the reason "And never come back"
+*/{command} global add amoder0 join jid/role is/not_ends <!--my-admin@jab.org--><!--moderator--> null/null set moder Glory my Master
+bot would give moderator privileges with the reason "Glory my Master" to the user with JID "my-admin@jab.org" at all conferences on join
+*/{command} add msg0 message body/role cont/not_ends <!--fuck--><!--moderator--> lower/null command echo %(nick)s: decorous!
+bot would add an alias to the event "message" with the name "00" and will warn users foul-mouthed
+*/{command} global add сome_back status show/nick is/is <!--away--><!--Woody--> null/strip&layout message chat Come back Woody!
+bot would add a global alias, which responds to status changes (to "away") of users with a nick like "Woody"
+*/{command} add role0 role null null <!----> null message chat %(nick)s became - %(role)s
+bot would add an alias, what will announce any change of role
+*/{command} add punch macro echo /me strikes %(args)s $rand(1, 9) times with $rand([the sword||cheeseburger||detached $rand_user's leg])
+bot would add local macro named "punch" for the command "echo"
+*/{command} add msg1 message stype/role/body is/not_starts/re <!--groupchat--><!--none--><!--(?:http[s]?|ftp|svn)://[^\s'\"<>]+--> null/null/null message chat %(nick)s: this is a good link
+bot would notice the usefulness of a link sent to the chat
+*/{command} access punch 2
+bot would set access 2 for macro "punch"
+*/{command} help punch add comic command to alert an user
+bot would add a help for macro "punch"
+*/{command} help punch clear
+bot would delete a help
+*/{command} del msg0 message
+bot would delete alias "msg0" from the category "message" (also relevant for macro)
+*/{command} show akick0 join
+bot would show the contents of alias "akick0" from the category "join"
+*/{command} show akick0 join bold
+bot would show the alias in the "pure" form (i.e. as proper to add)
+*/{command} state
+bot would show the status of the expansion (on/off)
+*/{command} enable
+bot would enable alias (accessed 8)
+*/{command} disable
+bot would disable alias
+*/{command} bold
+bot would show the list of aliases in the "pure" form
+*/{command}
+bot would show a detailed list of aliases

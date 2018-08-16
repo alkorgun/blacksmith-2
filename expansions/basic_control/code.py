@@ -28,7 +28,7 @@ class expansion_temp(expansion):
 			if self.compile_chat.match(conf):
 				if conf not in Chats:
 					confname = dynamic % (conf)
-					if not check_nosimbols(confname):
+					if not check_nosymbols(confname):
 						confname = encode_filename(confname)
 					if not os.path.exists(confname):
 						try:

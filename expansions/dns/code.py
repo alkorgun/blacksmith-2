@@ -33,12 +33,12 @@ class expansion_temp(expansion):
 				if port.isdigit():
 					server = (host.encode("idna"), int(port))
 					if ":" in host:
-						flag = self.socket.AF_INET6
+						af = self.socket.AF_INET6
 						server = server.__add__((0, 0))
 						host = host.join(("[", "]"))
 					else:
-						flag = self.socket.AF_INET
-					sock = self.socket.socket(flag, self.socket.SOCK_STREAM)
+						af = self.socket.AF_INET
+					sock = self.socket.socket(af, self.socket.SOCK_STREAM)
 					sock.settimeout(6)
 					try:
 						sock.connect(server)

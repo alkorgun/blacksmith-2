@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 # coding: utf-8
 
 # BlackSmith's core mark.2
@@ -156,22 +156,25 @@ VarCache = {
 }
 
 Info = {
-	"cmd": itypes.Number(),		"sess": time.time(),
-	"msg": itypes.Number(),		"alls": [],
-	"cfw": itypes.Number(),		"up": 1.24,
-	"prs": itypes.Number(),		"iq": itypes.Number(),
+	"cmd": itypes.Number(), 		"sess": time.time(),
+	"msg": itypes.Number(), 		"alls": [],
+	"cfw": itypes.Number(), 		"up": 1.24,
+	"prs": itypes.Number(), 		"iq": itypes.Number(),
 	"errors": itypes.Number(),
-	"omsg": itypes.Number(),	"outiq": itypes.Number()
+	"omsg": itypes.Number(), 	"outiq": itypes.Number()
 }
 
 # Useful features
 
+
 class SelfExc(Exception):
 	pass
+
 
 def check_sqlite():
 	if not itypes.sqlite3:
 		raise SelfExc("py-sqlite3 required")
+
 
 def exc_info():
 	exc, err, tb = sys.exc_info()
@@ -181,13 +184,16 @@ def exc_info():
 			err = err[0]
 	return (exc, err)
 
-def exc_info_(fp = None):
+
+def exc_info_(fp=None):
 	try:
 		exc_info__(None, fp)
 	except Exception:
 		pass
 
+
 sleep, database = time.sleep, itypes.Database
+
 
 def get_exc():
 	try:
@@ -196,25 +202,30 @@ def get_exc():
 		exc = "(...)"
 	return exc
 
-exc_str = lambda err, data = "%s - %s": data % (err.__class__.__name__, err[0] if err.args else None)
 
-def apply(instance, args = (), kwargs = {}):
+exc_str = lambda err, data="%s - %s": data % (err.__class__.__name__, err[0] if err.args else None)
+
+
+def apply(instance, args=(), kwargs={}):
 	try:
 		data = instance(*args, **kwargs)
 	except Exception:
 		data = None
 	return data
 
+
 def text_color(text, color):
 	if eColors and color:
 		text = color + text + color0
 	return text
 
-def Print(text, color = None):
+
+def Print(text, color=None):
 	try:
 		print text_color(text, color)
 	except Exception:
 		pass
+
 
 def try_sleep(slp):
 	try:
@@ -224,17 +235,19 @@ def try_sleep(slp):
 	except:
 		pass
 
+
 def Exit(text, exit, slp):
 	Print(text, color2); try_sleep(slp)
 	if exit:
 		os._exit(0)
 	else:
-		os.execl(sys.executable, sys.executable, BsCore)
+		os.execl(sys.executable, sys.executable, *getattr(sys, "argv", [BsCore]))
+
 
 try:
 	reload(sys)
 	sys.setdefaultencoding("utf-8")
-except:
+except Exeption:
 	Print("\n\nError: can't set default encoding!", color2)
 
 stdout = "stdout.tmp"
@@ -268,7 +281,7 @@ ConDispFile = static % ("clients.ini")
 ChatsFile = dynamic % ("chats.db")
 ChatsFileBackup = dynamic % ("chats.cp")
 
-(BsMark, BsVer, BsRev) = (2, 52, 0)
+(BsMark, BsVer, BsRev) = (2, 53, 0)
 
 if os.access(SvnCache, os.R_OK):
 	Cache = open(SvnCache).readlines()
@@ -289,6 +302,7 @@ BotOS, BsPid = os.name, os.getpid()
 
 OSList = ((BotOS == "nt"), (BotOS == "posix"))
 
+
 def client_config(config, section):
 	serv = config.get(section, "serv").lower()
 	port = config.get(section, "port")
@@ -299,6 +313,7 @@ def client_config(config, section):
 	password = config.get(section, "pass")
 	jid = "%s@%s" % (user, host)
 	return (jid, (serv, port, host, user, password))
+
 
 try:
 	GenCon = ConfigParser.ConfigParser()
@@ -316,7 +331,7 @@ try:
 	IncLimit = int(GenCon.get("LIMITS", "INCOMING"))
 	PrivLimit = int(GenCon.get("LIMITS", "PRIVATE"))
 	ConfLimit = int(GenCon.get("LIMITS", "CHAT"))
-	MaxMemory = int(GenCon.get("LIMITS", "MEMORY"))*1024
+	MaxMemory = int(GenCon.get("LIMITS", "MEMORY")) * 1024
 	ConDisp = ConfigParser.ConfigParser()
 	if os.path.isfile(ConDispFile):
 		ConDisp.read(ConDispFile)
@@ -365,7 +380,8 @@ Sequence = ithr.Semaphore()
 
 # call & execute Threads & handlers
 
-def execute_handler(handler_instance, list = (), command = None):
+
+def execute_handler(handler_instance, list=(), command=None):
 	try:
 		handler_instance(*list)
 	except SystemExit:
@@ -377,23 +393,27 @@ def execute_handler(handler_instance, list = (), command = None):
 	except Exception:
 		collectExc(handler_instance, command)
 
-def call_sfunctions(ls, list = ()):
+
+def call_sfunctions(ls, list=()):
 	for inst in Handlers[ls]:
 		execute_handler(inst, list)
 
-def composeTimer(sleep, handler, name = None, list = (), command = None):
+
+def composeTimer(sleep, handler, name=None, list=(), command=None):
 	if not name:
 		name = "iTimer-%s" % (ithr.aCounter._str())
 	timer = ithr.Timer(sleep, execute_handler, (handler, list, command,))
 	timer.name = name
 	return timer
 
-def composeThr(handler, name, list = (), command = None):
+
+def composeThr(handler, name, list=(), command=None):
 	if not name.startswith(sBase[13]):
 		name = "%s-%s" % (name, ithr.aCounter._str())
 	return ithr.KThread(execute_handler, name, (handler, list, command,))
 
-def startThr(thr, number = 0):
+
+def startThr(thr, number=0):
 	if number > 2:
 		raise RuntimeError("exit")
 	try:
@@ -403,7 +423,8 @@ def startThr(thr, number = 0):
 	except Exception:
 		collectExc(thr.start)
 
-def sThread_Run(thr, handler, command = None):
+
+def sThread_Run(thr, handler, command=None):
 	try:
 		thr.start()
 	except ithr.error:
@@ -417,14 +438,18 @@ def sThread_Run(thr, handler, command = None):
 	except Exception:
 		collectExc(sThread_Run, command)
 
-def sThread(name, inst, list = (), command = None):
+
+def sThread(name, inst, list=(), command=None):
 	sThread_Run(composeThr(inst, name, list, command), inst, command)
 
-def call_efunctions(ls, list = ()):
+
+def call_efunctions(ls, list=()):
 	for inst in Handlers[ls]:
 		sThread(ls, inst, list)
 
+
 # expansions & commands
+
 
 class expansion(object):
 
@@ -455,7 +480,7 @@ class expansion(object):
 
 	auto_clear = None
 
-	def dels(self, full = False):
+	def dels(self, full=False):
 		while self.cmds:
 			cmd = self.cmds.pop()
 			if cmd in Cmds:
@@ -468,7 +493,7 @@ class expansion(object):
 		if full and expansions.has_key(self.name):
 			del expansions[self.name]
 
-	def clear_handlers(self, handler = None):
+	def clear_handlers(self, handler=None):
 
 		def Del(inst, ls):
 			if ls == "03si":
@@ -533,6 +558,7 @@ class expansion(object):
 		self.add_handler(ls, inst)
 		self.desc.setdefault(ls, []).append(inst)
 
+
 class Command(object):
 
 	def __init__(self, inst, default, name, access, help, exp):
@@ -573,7 +599,8 @@ class Command(object):
 		if locals().has_key(sBase[6]):
 			Answer(answer, stype, source, disp)
 
-def command_handler(exp_inst, handler, default, access, prefix = True):
+
+def command_handler(exp_inst, handler, default, access, prefix=True):
 	Path = os.path.join(ExpsDir, exp_inst.name, default)
 	try:
 		commands = eval(get_file("%s.name" % Path).decode("utf-8"))
@@ -593,16 +620,18 @@ def command_handler(exp_inst, handler, default, access, prefix = True):
 		sCmds.append(name)
 	exp_inst.cmds.append(name)
 
+
 # Chats, Users & Other
+
 
 class sUser(object):
 
-	def __init__(self, nick, role, source, access = None):
+	def __init__(self, nick, role, source, access=None):
 		self.nick = nick
 		self.source = source
 		self.role = role
 		self.ishere = True
-		self.date = (time.time(), Yday(), strfTime(local = False))
+		self.date = (time.time(), Yday(), strfTime(local=False))
 		self.access = access
 		if not access and access != 0:
 			self.calc_acc()
@@ -616,9 +645,10 @@ class sUser(object):
 	def calc_acc(self):
 		self.access = (aDesc.get(self.role[0], 0) + aDesc.get(self.role[1], 0))
 
+
 class sConf(object):
 
-	def __init__(self, name, disp, code = None, cPref = None, nick = DefNick, added = False):
+	def __init__(self, name, disp, code=None, cPref=None, nick=DefNick, added=False):
 		self.name = name
 		self.disp = disp
 		self.nick = nick
@@ -701,7 +731,7 @@ class sConf(object):
 		node.addChild("history", {"maxchars": "0"})
 		if self.code:
 			node.setTagData("password", self.code)
-		stanza.addChild(node = node)
+		stanza.addChild(node=node)
 		self.csend(stanza)
 
 	def subject(self, body):
@@ -718,7 +748,7 @@ class sConf(object):
 	def save_stats(self):
 		call_sfunctions("03si", (self.name,))
 
-	def leave(self, exit_status = None):
+	def leave(self, exit_status=None):
 		self.IamHere = None
 		self.isModer = True
 		self.more = ""
@@ -727,7 +757,7 @@ class sConf(object):
 			stanza.setStatus(exit_status)
 		self.csend(stanza)
 
-	def full_leave(self, status = None):
+	def full_leave(self, status=None):
 		self.leave(status)
 		del Chats[self.name]
 		self.save_stats()
@@ -736,7 +766,7 @@ class sConf(object):
 		if ChatsAttrs.has_key(self.name):
 			del ChatsAttrs[self.name]
 
-	def save(self, RealSave = True):
+	def save(self, RealSave=True):
 		if initialize_file(ChatsFile):
 			desc = eval(get_file(ChatsFile))
 			if not RealSave:
@@ -750,15 +780,15 @@ class sConf(object):
 		else:
 			delivery(self.name)
 
-	def iq_sender(self, attr, data, afrls, role, reason = str(), handler = None):
-		stanza = xmpp.Iq(sBase[9], to = self.name)
+	def iq_sender(self, attr, data, afrls, role, reason=str(), handler=None):
+		stanza = xmpp.Iq(sBase[9], to=self.name)
 		stanza.setID("Bs-i%d" % Info["outiq"].plus())
 		query = xmpp.Node(sBase[18])
 		query.setNamespace(xmpp.NS_MUC_ADMIN)
 		arole = query.addChild("item", {attr: data, afrls: role})
 		if reason:
 			arole.setTagData("reason", reason)
-		stanza.addChild(node = query)
+		stanza.addChild(node=query)
 		if not handler:
 			self.csend(stanza)
 		else:
@@ -768,37 +798,39 @@ class sConf(object):
 				kdesc = {"source": kdesc}
 			CallForResponse(self.disp, stanza, handler, kdesc)
 
-	def outcast(self, jid, reason = str(), handler = ()):
+	def outcast(self, jid, reason=str(), handler=()):
 		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[1], reason, handler)
 
-	def none(self, jid, reason = str(), handler = ()):
+	def none(self, jid, reason=str(), handler=()):
 		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[2], reason, handler)
 
-	def member(self, jid, reason = str(), handler = ()):
+	def member(self, jid, reason=str(), handler=()):
 		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[3], reason, handler)
 
-	def admin(self, jid, reason = str(), handler = ()):
+	def admin(self, jid, reason=str(), handler=()):
 		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[4], reason, handler)
 
-	def owner(self, jid, reason = str(), handler = ()):
+	def owner(self, jid, reason=str(), handler=()):
 		self.iq_sender(sBase[11], jid, aRoles[0], aRoles[5], reason, handler)
 
-	def kick(self, nick, reason = str(), handler = ()):
+	def kick(self, nick, reason=str(), handler=()):
 		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[2], reason, handler)
 
-	def visitor(self, nick, reason = str(), handler = ()):
+	def visitor(self, nick, reason=str(), handler=()):
 		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[7], reason, handler)
 
-	def participant(self, nick, reason = str(), handler = ()):
+	def participant(self, nick, reason=str(), handler=()):
 		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[8], reason, handler)
 
-	def moder(self, nick, reason = str(), handler = ()):
+	def moder(self, nick, reason=str(), handler=()):
 		self.iq_sender(sBase[12], nick, aRoles[6], aRoles[9], reason, handler)
+
 
 def get_source(source, nick):
 	if source in Chats:
 		source = getattr(Chats[source].get_user(nick), "source", None)
 	return source
+
 
 def get_access(source, nick):
 	if source in Chats:
@@ -807,9 +839,10 @@ def get_access(source, nick):
 		access = Galist.get(source, 2)
 	return access
 
-enough_access = lambda conf, nick, access = 0: (access <= get_access(conf, nick))
+enough_access = lambda conf, nick, access=0: (access <= get_access(conf, nick))
 
 object_encode = lambda obj: (obj if isinstance(obj, unicode) else str(obj).decode("utf-8", "replace"))
+
 
 def delivery(body):
 	try:
@@ -830,7 +863,8 @@ def delivery(body):
 	except Exception:
 		exc_info_()
 
-def Message(inst, body, disp = None):
+
+def Message(inst, body, disp=None):
 	body = object_encode(body)
 	if inst in Chats:
 		stype = sBase[1]
@@ -861,13 +895,15 @@ def Message(inst, body, disp = None):
 	Info["omsg"].plus()
 	Sender(disp, xmpp.Message(inst, body.strip(), stype))
 
-def Answer(body, stype, source, disp = None):
+
+def Answer(body, stype, source, disp=None):
 	if stype == sBase[0]:
 		instance = source[0]
 	else:
 		body = "%s: %s" % (source[2], object_encode(body))
 		instance = source[1]
 	Message(instance, body, disp)
+
 
 def checkFlood(disp):
 	disp = get_disp(disp)
@@ -882,6 +918,7 @@ def checkFlood(disp):
 			xmpp_raise()
 		else:
 			desc.pop(0)
+
 
 def IdleClient():
 	cls = dict()
@@ -899,6 +936,7 @@ def IdleClient():
 				return disp
 	return GenDisp
 
+
 def ejoinTimer(conf):
 	if conf in Chats:
 		Chats[conf].join()
@@ -909,13 +947,15 @@ get_disp = lambda disp: "%s@%s" % (disp._owner.User, disp._owner.Server) if isin
 
 get_nick = lambda chat: getattr(Chats.get(chat), sBase[12], DefNick)
 
+
 def online(disp):
 	disp = get_disp(disp)
 	if disp in Clients:
 		return Clients[disp].isConnected()
 	return False
 
-def CallForResponse(disp, stanza, handler, kdesc = {}):
+
+def CallForResponse(disp, stanza, handler, kdesc={}):
 	if isinstance(stanza, xmpp.Iq):
 		disp = get_disp(disp)
 		if disp in Clients:
@@ -927,8 +967,10 @@ def CallForResponse(disp, stanza, handler, kdesc = {}):
 			Clients[disp].RespExp[ID] = (handler, kdesc)
 			Sender(disp, stanza)
 
+
 def exec_bsExp(instance, disp, iq, kdesc):
 	instance(disp, iq, **kdesc)
+
 
 def ResponseChecker(disp, iq):
 	Disp, ID = disp._owner, iq.getID()
@@ -937,9 +979,11 @@ def ResponseChecker(disp, iq):
 		sThread(getattr(handler, "__name__"), exec_bsExp, (handler, disp, iq, kdesc))
 		xmpp_raise()
 
+
 def handleResponse(disp, stanza, source):
 	stype, source = source[:2]
 	Answer(AnsBase[4 if xmpp.isResultNode(stanza) else 7], stype, source, disp)
+
 
 def Sender(disp, stanza):
 	try:
@@ -952,16 +996,18 @@ def Sender(disp, stanza):
 		pass
 	except SelfExc as exc:
 		Print(exc_str(exc, "\n\n%s: %s!"), color2)
-	except Exeption:
+	except Exception:
 		collectExc(Sender)
 
-sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ = sBase[4], status = data))
+sUnavailable = lambda disp, data: Sender(disp, xmpp.Presence(typ=sBase[4], status=data))
+
 
 def caps_add(node):
 	node.setTag("c", {"node": Caps, "ver": CapsVer}, xmpp.NS_CAPS)
 	return node
 
 Yday = lambda: getattr(time.gmtime(), "tm_yday")
+
 
 def sAttrs(stanza):
 	source = stanza.getFrom()
@@ -973,14 +1019,17 @@ def sAttrs(stanza):
 
 getRole = lambda node: (str(node.getAffiliation()), str(node.getRole()))
 
+
 def xmpp_raise():
 	raise xmpp.NodeProcessed("continue")
+
 
 # Connect with FS
 
 chat_file = lambda chat, name: dynamic % ("%s/%s") % (chat, name)
 
-def initialize_file(filename, data = "{}"):
+
+def initialize_file(filename, data="{}"):
 	filename = cefile(filename)
 	if os.path.isfile(filename):
 		return True
@@ -993,25 +1042,31 @@ def initialize_file(filename, data = "{}"):
 		return False
 	return True
 
+
 def del_file(filename):
 	apply(os.remove, (cefile(filename),))
+
 
 def get_file(filename):
 	with open(cefile(filename), "r") as fp:
 		return fp.read()
 
-def cat_file(filename, data, otype = "wb"):
+
+def cat_file(filename, data, otype="wb"):
 	with Sequence:
 		with open(cefile(filename), otype) as fp:
 			fp.write(data)
 
+
 # Crashlogs
+
 
 def collectDFail():
 	with open(GenCrash, "ab") as fp:
 		exc_info_(fp)
 
-def collectExc(inst, command = None):
+
+def collectExc(inst, command=None):
 	error = get_exc()
 	VarCache["errors"].append(error)
 	inst, number = getattr(inst, "__name__") or str(inst), len(VarCache["errors"])
@@ -1045,7 +1100,9 @@ def collectExc(inst, command = None):
 		else:
 			Print("\n\nCrash file --> %s\nError's number --> %d" % (filename, number), color2)
 
+
 # Other functions
+
 
 def load_expansions():
 	Print("\n\nExpansions loading...\n", color4)
@@ -1069,6 +1126,7 @@ def load_expansions():
 		else:
 			Print("%s - isn't an expansion!" % (expDir), color2)
 
+
 def get_pipe(command):
 	try:
 		with os.popen(command) as pipe:
@@ -1079,34 +1137,35 @@ def get_pipe(command):
 		data = "(...)"
 	return data
 
+
 class Web(object):
 
-	import urllib as One, urllib2 as Two
+	import urllib as one, urllib2 as two
 
-	Opener = Two.build_opener()
+	opener = two.build_opener()
 
-	def __init__(self, link, qudesc = (), data = None, headers = {}):
+	def __init__(self, link, qudesc=(), data=None, headers={}):
 		self.link = link
 		if qudesc:
 			self.link += self.encode(qudesc)
 		self.data = data
 		self.headers = headers
 
-	encode = staticmethod(One.urlencode)
+	encode = staticmethod(one.urlencode)
 
 	def add_header(self, name, header):
 		self.headers[name] = header
 
-	def open(self, header = ()):
-		dest = self.Two.Request(self.link, self.data)
+	def open(self, header=()):
+		dest = self.two.Request(self.link, self.data)
 		if header:
 			self.add_header(*header)
 		if self.headers:
 			for header, desc in self.headers.iteritems():
 				dest.add_header(header, desc)
-		return self.Opener.open(dest)
+		return self.opener.open(dest)
 
-	def download(self, filename = None, folder = None, handler = None, fb = None, header = ()):
+	def download(self, filename=None, folder=None, handler=None, fb=None, header=()):
 		fp = self.open(header)
 		info = fp.info()
 		size = info.get("Content-Length", -1)
@@ -1121,7 +1180,7 @@ class Web(object):
 				if disp:
 					filename = (disp.group(1)).decode("utf-8")
 		if not filename:
-			filename = self.One.unquote_plus(fp.url.split("/")[-1].split("?")[0].replace("%25", "%"))
+			filename = self.one.unquote_plus(fp.url.split("/")[-1].split("?")[0].replace("%25", "%"))
 			if not filename:
 				raise SelfExc("can't get filename")
 		if folder:
@@ -1147,16 +1206,18 @@ class Web(object):
 			filename = filename.decode("utf-8")
 		return (filename, info, size)
 
-	get_page = lambda self, header = (): self.open(header).read()
+	get_page = lambda self, header=(): self.open(header).read()
 
-def get_text(body, s0, s2, s1 = "(?:.|\s)+"):
+
+def get_text(body, s0, s2, s1="(?:.|\s)+"):
 	comp = compile__("%s(%s?)%s" % (s0, s1, s2), 16)
 	body = comp.search(body)
 	if body:
 		body = (body.group(1)).strip()
 	return body
 
-def sub_desc(body, ls, sub = str()):
+
+def sub_desc(body, ls, sub=str()):
 	if isinstance(ls, dict):
 		for x, z in ls.items():
 			body = body.replace(x, z)
@@ -1171,7 +1232,9 @@ def sub_desc(body, ls, sub = str()):
 				body = body.replace(x, sub)
 	return body
 
-strfTime = lambda data = "%d.%m.%Y (%H:%M:%S)", local = True: time.strftime(data, time.localtime() if local else time.gmtime())
+
+strfTime = lambda data="%d.%m.%Y (%H:%M:%S)", local=True: time.strftime(data, time.localtime() if local else time.gmtime())
+
 
 def Time2Text(Time):
 	ext, ls = [], [("Year", None), ("Day", 365.25), ("Hour", 24), ("Minute", 60), ("Second", 60)]
@@ -1186,6 +1249,7 @@ def Time2Text(Time):
 		if not (ls and Time):
 			return str.join(chr(32), ext)
 
+
 def Size2Text(Size):
 	ext, ls = [], list("YZEPTGMK.")
 	while ls:
@@ -1199,13 +1263,15 @@ def Size2Text(Size):
 		if not (ls and Size):
 			return str.join(chr(32), ext)
 
+
 enumerated_list = lambda ls: str.join(chr(10), ["%d) %s" % (numb, line) for numb, line in enumerate(ls, 1)])
 
 isNumber = lambda obj: (not apply(int, (obj,)) is None)
 
 isSource = lambda jid: isJID.match(jid)
 
-def calculate(numb = int()):
+
+def calculate(numb=int()):
 	if OSList[0]:
 		lines = get_pipe(cmdsDb[1] % (BsPid)).splitlines()
 		if len(lines) >= 3:
@@ -1217,6 +1283,7 @@ def calculate(numb = int()):
 		if len(lines) >= 2:
 			numb = lines[1].strip()
 	return (0 if not isNumber(numb) else int(numb))
+
 
 def check_copies():
 	cache = base = {"PID": BsPid, "up": Info["sess"], "alls": []}
@@ -1242,6 +1309,7 @@ def check_copies():
 	apply(cat_file, (PidFile, str(cache)))
 	del cache["PID"]; Info.update(cache)
 
+
 def join_chats():
 	if initialize_file(ChatsFile):
 		try:
@@ -1253,7 +1321,7 @@ def join_chats():
 			confs = {}
 		Print("\n\nThere are %d rooms in the list..." % len(confs.keys()), color4)
 		for conf, desc in confs.iteritems():
-			Chats[conf] = Chat = sConf(conf, added = True, **desc)
+			Chats[conf] = Chat = sConf(conf, added=True, **desc)
 			Chat.load_all()
 			if Chat.disp in Clients:
 				Chat.join()
@@ -1263,7 +1331,9 @@ def join_chats():
 	else:
 		Print("\n\nError: unable to create the conferences-list file!", color2)
 
+
 # Presence Handler
+
 
 def xmppPresenceCB(disp, stanza):
 	Info["prs"].plus()
@@ -1362,7 +1432,9 @@ def xmppPresenceCB(disp, stanza):
 		if conf in Chats:
 			call_efunctions("02eh", (stanza, disp,))
 
+
 # Iq Handler
+
 
 def xmppIqCB(disp, stanza):
 	Info["iq"].plus()
@@ -1392,7 +1464,7 @@ def xmppIqCB(disp, stanza):
 				anode = answer.getTag(sBase[18])
 				anode.setTagData("name", ProdName)
 				anode.setTagData("version", ProdVer)
-				Python = "{0} [{1}.{2}.{3}]".format(sys.subversion[0], *sys.version_info)
+				Python = "{0} [{1}.{2}.{3}]".format(getattr(sys, "subversion", ["Python"])[0], *sys.version_info)
 				if OSList[0]:
 					Os = get_pipe(cmdsDb[5]).strip()
 				elif OSList[1]:
@@ -1401,7 +1473,7 @@ def xmppIqCB(disp, stanza):
 					Os = BotOS.capitalize()
 				anode.setTagData("os", "%s / %s" % (Os, Python))
 			elif ns == xmpp.NS_URN_TIME:
-				anode = answer.addChild(sBase[17], namespace = xmpp.NS_URN_TIME)
+				anode = answer.addChild(sBase[17], namespace=xmpp.NS_URN_TIME)
 				anode.setTagData("utc", strfTime("%Y-%m-%dT%H:%M:%SZ", False))
 				TimeZone = (time.altzone if time.daylight else time.timezone)
 				anode.setTagData("tzo", "%s%02d:%02d" % (((TimeZone < 0) and "+" or "-"),
@@ -1419,13 +1491,17 @@ def xmppIqCB(disp, stanza):
 			xmpp_raise()
 	call_efunctions("03eh", (stanza, disp,))
 
+
 # Message Handler
+
 
 class Macro:
 
 	__call__, __contains__ = lambda self, *args: None, lambda self, args: False
 
+
 Macro = Macro()
+
 
 def xmppMessageCB(disp, stanza):
 	Info["msg"].plus()
@@ -1473,7 +1549,7 @@ def xmppMessageCB(disp, stanza):
 		if stype != sBase[1]:
 			if (stanza.getTag(sBase[14])):
 				answer = xmpp.Message(source)
-				answer.setTag(sBase[15], namespace = xmpp.NS_RECEIPTS).setAttr("id", stanza.getID())
+				answer.setTag(sBase[15], namespace=xmpp.NS_RECEIPTS).setAttr("id", stanza.getID())
 				answer.setID(stanza.getID())
 				Sender(disp, answer)
 			stype = sBase[0]
@@ -1503,18 +1579,114 @@ def xmppMessageCB(disp, stanza):
 		else:
 			call_efunctions("01eh", (stanza, isConf, stype, (source, inst, nick), body, isToBs, disp,))
 
+
 # Connecting & Dispatching
+
+
+class Client(object):
+
+	def __init__(self, server, port, host, user, password):
+		self.id = "%(user)s@%(host)s" % vars()
+		self.server = server
+		self.port = port
+		self.host = host
+		self.user = user
+		self.password = password
+		self.client = None
+		self.live = True
+		self.iter = lambda: None
+
+	def connect(self, tls=True):
+		self.client = cl = xmpp.Client(self.host, self.port, debug=None)
+		Print("\n\n'%s' connecting..." % self.id, color4)
+		try:
+			conType = cl.connect((self.server, self.port), proxy=None, secure=(tls and None or False))
+		except Exception as e:
+			Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (self.id, self.server.upper(), self.port, exc_str(e)), color2)
+			return (False, None)
+		if conType:
+			conType = conType.upper()
+			if tls and conType != "TLS":
+				Print("\n'%s' was connected, but a connection isn't secure." % self.id, color1)
+			else:
+				Print("\n'%s' was successfully connected!" % self.id, color3)
+			Print("\n'%s' using - '%s'" % (self.id, conType), color4)
+		else:
+			Print("\n'%s' can't connect to '%s' (Port: %s). I'll retry later..." % (self.id, self.server.upper(), self.port), color2)
+			return (False, None)
+		Print("\n'%s' authenticating, wait..." % self.id, color4)
+		try:
+			auth = cl.auth(self.user, self.password, GenResource)
+		except Exception as e:
+			Print("Can't authenticate '%s'!\n\t%s" % (self.id, exc_str(e)), color2)
+			roneeturn (False, eCodes[2])
+		if auth == "sasl":
+			Print("\n'%s' was successfully authenticated!" % self.id, color3)
+		elif auth:
+			Print("\n'%s' was authenticated, but old authentication method used..." % self.id, color1)
+		else:
+			error, code = cl.lastErr, cl.lastErrCode
+			Print("Can't authenticate '%s'! Error: '%s' (%s)" % (self.id, code, error), color2)
+			return (False, code)
+		try:
+			cl.getRoster()
+		except IOError:
+			if not cl.isConnected():
+				return (False, None)
+			cl.Roster = None
+		except Exception:
+			cl.Roster = None
+		self.iter = cl.iter
+		cl.RespExp = {}
+		cl.RegisterHandler(xmpp.NS_PRESENCE, xmppPresenceCB)
+		cl.RegisterHandler(xmpp.NS_IQ, xmppIqCB)
+		cl.RegisterHandler(xmpp.NS_MESSAGE, xmppMessageCB)
+		Clients[self.id] = cl
+		Sender(cl, caps_add(xmpp.Presence(show=sList[0], status=DefStatus)))
+		return (True, self.id)
+
+	def dispatch(self):
+		zero = itypes.Number()
+		while VarCache["alive"]:
+			try:
+				if not disp.iter():
+					if zero.plus() >= 16:
+						raise IOError("disconnected!")
+			except KeyboardInterrupt:
+				break
+			except SystemExit:
+				break
+			except IOError:
+				disp = get_disp(disp)
+				if not reverseDisp(disp):
+					delivery(AnsBase[28] % (disp))
+					break
+				disp = Clients[disp]
+				zero = itypes.Number()
+			except xmpp.Conflict:
+				delivery(AnsBase[29] % get_disp(disp))
+				break
+			except xmpp.SystemShutdown:
+				disp = get_disp(disp)
+				if not reverseDisp(disp):
+					delivery(AnsBase[28] % (disp))
+					break
+				disp = Clients[disp]
+				zero = itypes.Number()
+			except xmpp.StreamError:
+				pass
+			except Exception:
+				collectDFail()
+				if Info["errors"].plus() >= len(Clients.keys()) * 8:
+					sys_exit("Dispatch Errors!")
+
 
 def connect_client(inst, attrs):
 	(server, cport, host, user, password) = attrs
 	disp = xmpp.Client(host, cport, None)
 	Print("\n\n'%s' connecting..." % inst, color4)
-	if ConTls:
-		conType = (None, False)
-	else:
-		conType = (False, True)
 	try:
-		conType = disp.connect((server, cport), None, *conType)
+		conType = disp.connect((server, cport), None, (None if ConTls else False))
 	except Exception as exc:
 		Print("\n'%s' can't connect to '%s' (Port: %s).\n\t%s\nI'll retry later..." % (inst, server.upper(), cport, exc_str(exc)), color2)
 		return (False, None)
@@ -1555,8 +1727,9 @@ def connect_client(inst, attrs):
 	disp.RegisterHandler(xmpp.NS_IQ, xmppIqCB)
 	disp.RegisterHandler(xmpp.NS_MESSAGE, xmppMessageCB)
 	Clients[inst] = disp
-	Sender(disp, caps_add(xmpp.Presence(show = sList[0], status = DefStatus)))
+	Sender(disp, caps_add(xmpp.Presence(show=sList[0], status=DefStatus)))
 	return (True, inst)
+
 
 def connectAndDispatch(disp):
 	if reverseDisp(disp, False):
@@ -1568,6 +1741,7 @@ def connectAndDispatch(disp):
 	else:
 		delivery(AnsBase[28] % (disp))
 
+
 def connect_clients():
 	for inst, attrs in InstancesDesc.items():
 		conn = connect_client(inst, attrs)
@@ -1576,7 +1750,8 @@ def connect_clients():
 				continue
 			composeTimer(60, connectAndDispatch, "%s-%s" % (sBase[13], inst), (inst,)).start()
 
-def reverseDisp(disp, rejoin = True):
+
+def reverseDisp(disp, rejoin=True):
 	iters = itypes.Number()
 	while 1440 > iters.plus():
 		if connect_client(disp, InstancesDesc[disp])[0]:
@@ -1587,6 +1762,7 @@ def reverseDisp(disp, rejoin = True):
 			return True
 		else:
 			sleep(60)
+
 
 def Dispatcher(disp):
 	disp = Clients[disp]
@@ -1621,10 +1797,12 @@ def Dispatcher(disp):
 			pass
 		except Exception:
 			collectDFail()
-			if Info["errors"].plus() >= len(Clients.keys())*8:
+			if Info["errors"].plus() >= len(Clients.keys()) * 8:
 				sys_exit("Dispatch Errors!")
 
+
 # load_mark2 & exit
+
 
 def load_mark2():
 	Print("\n\n%s\n\n" % (FullName), color3)
@@ -1655,7 +1833,8 @@ def load_mark2():
 		if MaxMemory and MaxMemory <= calculate():
 			sys_exit("Memory leak...")
 
-def sys_exit(exit_desclr = "Suicide!"):
+
+def sys_exit(exit_desclr="Suicide!"):
 	VarCache["alive"] = False
 	Print("\n\n%s" % (exit_desclr), color2)
 	ithr.killAllThreads()
@@ -1664,6 +1843,7 @@ def sys_exit(exit_desclr = "Suicide!"):
 			sUnavailable(disp, exit_desclr)
 	call_sfunctions("03si")
 	Exit("\n\nReloading...\n\nPress Ctrl+C to exit", 0, 30)
+
 
 if __name__ == "__main__":
 	try:
